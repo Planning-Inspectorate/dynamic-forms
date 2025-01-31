@@ -3,6 +3,8 @@
  * @typedef {import('./journey/journey-response').JourneyResponse} JourneyResponse
  */
 
+import RequiredValidator from './validator/required-validator.js';
+
 /**
  * Defines a section for a questionnaire, a set of Questions
  * @class
@@ -62,6 +64,28 @@ export class Section {
 		this.#conditionAdded = true; // set condition flag
 		const lastQuestionAdded = this.questions.length - 1;
 		this.questions[lastQuestionAdded].shouldDisplay = shouldIncludeQuestion;
+		return this;
+	}
+
+	withRequiredCondition(isQuestionMandatory, requiredFieldErrorMsg) {
+		if (this.#conditionAdded) {
+			// don't allow two conditions in a row
+			throw new Error('conditions must follow a question');
+		}
+		this.#conditionAdded = true;
+		const lastQuestionAdded = this.questions.length - 1;
+		const validators = this.questions[lastQuestionAdded].validators;
+
+		if (isQuestionMandatory) {
+			if (!validators.some((validator) => validator instanceof RequiredValidator)) {
+				validators.push(new RequiredValidator(requiredFieldErrorMsg));
+			}
+		} else {
+			this.questions[lastQuestionAdded].validators = validators.filter(
+				(validator) => !(validator instanceof RequiredValidator)
+			);
+		}
+
 		return this;
 	}
 
