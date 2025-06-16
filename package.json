@@ -9,6 +9,7 @@
     "lint": "npx eslint .",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
+    "prepare": "node .husky/install.mjs",
     "test": "node --test",
     "test-coverage": "node --test --experimental-test-coverage"
   },
@@ -27,6 +28,16 @@
     "@commitlint/config-conventional": "^19.8.1",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
     "prettier": "^3.5.3"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix"
+    ],
+    "*.{js,ts,json,md,prisma,yml,yaml,scss}": [
+      "prettier --write"
+    ]
   }
 }
