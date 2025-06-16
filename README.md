@@ -1,15 +1,20 @@
-# Dynamic form renderer
+# Dynamics Forms
+
+This package is for building [GDS](https://design-system.service.gov.uk/) forms using a configuration-based approach. It allows you to define a set of questions, and combine them into journeys. Questions can be configured to be included conditionally, based on the answers to other questions.
+
+The functionality for 'check-your-answers' pages can also be useful for generating pages outside the context of a journey or form, such as for managing data. Each row shown on the page can include a link to edit that data.
 
 > Note this is ported from Appeals: [dynamic forms](https://github.com/Planning-Inspectorate/appeal-planning-decision/tree/main/packages/forms-web-app/src/dynamic-forms), but transformed for ES6 modules and Node Test Runner. Not all functionality has been brought across, such as 'add more'.
+> There is also (as of June 2025) a version of this in the [Crown Developments repository](https://github.com/Planning-Inspectorate/crown-developments/tree/0b6d0f0458b2ed064c3aa9532e7f16d0fd45638e/packages/dynamic-forms).
+> It is hoped they can all be consolidated over time.
 
 ## Terminology
 
 - Component - A "blueprint" of a type of question. i.e. input, radio button, checkbox etc.
-- Question - A specific question within a journey which is made up of one (usually) or many -(sometimes) components and
+- Question - A specific question within a journey which is made up of one (usually) or many (sometimes) components and
   their required content.
 - Section - A group of Questions
-- Journey - An entire set of questions required for a completion of a submission (either by Appellant or LPA or other
-  user type)
+- Journey - An entire set of questions required for a completion of a submission
 - Answer - Data input by a user against a specific Question.
 - Response - a collection of answers submitted as part of a Journey.
 - Validation - Verification that an individual Answer meets the criteria of that Question. i.e. String is greater than 3
