@@ -28,7 +28,7 @@ To use this package nunjucks must be configured so that the component view files
 
 Nunjucks template paths needs configuring with the govuk-frontend and the dynamic forms folder, e.g.
 
-```ecmascript 6
+```javascript
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import nunjucks from 'nunjucks';
@@ -81,7 +81,7 @@ to add conditions to questions in multiple ways.
 
 The simplest condition applies to just one question:
 
-```ecmascript 6
+```javascript
 import { questionHasAnswer } from '@pins/dynamic-forms/src/components/utils/question-has-answer';
 
 new Section('section-key', 'Section title')
@@ -94,7 +94,7 @@ In this scenario question two will only be shown if question one has an answer o
 
 Conditions can also be added to an entire section:
 
-```ecmascript 6
+```javascript
 new Section('section-key', 'Section title')
         .withSectionCondition((response) => questionHasAnswer(response, questions.q1, 'yes'))
         .addQuestion(questions.q3)
@@ -107,7 +107,7 @@ answered 'yes' _and_ q3 is answered 'yes'.
 
 Finally, conditions can be added to multiple questions - these can overlap:
 
-```ecmascript 6
+```javascript
 new Section('section-key', 'Section title')
         .withSectionCondition((response) => questionHasAnswer(response, questions.q1, 'yes'))
         .addQuestion(questions.q2)
