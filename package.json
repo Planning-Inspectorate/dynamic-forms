@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "commitlint": "commitlint --from=$(git cherry origin/main | head -n 1 | cut -c 3-)",
+    "lint": "npx eslint .",
     "test": "node --test",
     "test-coverage": "node --test --experimental-test-coverage"
   },
@@ -21,6 +22,8 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1"
+    "@commitlint/config-conventional": "^19.8.1",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5"
   }
 }
