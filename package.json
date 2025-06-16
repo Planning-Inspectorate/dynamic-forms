@@ -4,6 +4,11 @@
   "description": "",
   "main": "./src/index.js",
   "type": "module",
+  "scripts": {
+    "commitlint": "commitlint --from=$(git cherry origin/main | head -n 1 | cut -c 3-)",
+    "test": "node --test",
+    "test-coverage": "node --test --experimental-test-coverage"
+  },
   "dependencies": {
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
@@ -13,5 +18,9 @@
   },
   "imports": {
     "#question-types": "./src/questions/question-types.d.ts"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1"
   }
 }
