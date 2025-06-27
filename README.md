@@ -135,3 +135,12 @@ These conditions combine with individual conditions and section conditions. In t
 | q6       | q1 = 'yes'        | q5 = 90          | N/A                 |
 | q7       | q1 = 'yes'        | q5 = 90          | N/A                 |
 
+
+
+## Contributing
+
+When contributing to this package, ensure changes are generic and not service-specific. Speak to the R&D devs if you are not sure. Prefer configuration over hardcoding values, and ensure the code is well documented. 
+
+Commits must follow conventional commits, and the commit types will be used by semantic-release to determine the next version number. For example `feat` commits will result in a minor version bump, while `fix` commits will result in a patch version bump. Major version bumps should be reserved for breaking changes, and should be discussed with the R&D team before being made.
+
+The package will be released automatically using semantic-release, on merge to main. This will include a git tag for the release, and publishing to NPM.

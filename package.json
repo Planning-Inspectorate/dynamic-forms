@@ -1,9 +1,13 @@
 {
   "name": "@planning-inspectorate/dynamic-forms",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.0.0-semantically-released",
+  "description": "This package is for building GDS forms using a configuration-based approach.",
   "main": "./src/index.js",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Planning-Inspectorate/dynamic-forms.git"
+  },
   "scripts": {
     "commitlint": "commitlint --from=$(git cherry origin/main | head -n 1 | cut -c 3-)",
     "lint": "npx eslint .",
@@ -30,7 +34,8 @@
     "eslint-config-prettier": "^10.1.5",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
-    "prettier": "^3.5.3"
+    "prettier": "^3.5.3",
+    "semantic-release": "^24.2.5"
   },
   "lint-staged": {
     "*.js": [
