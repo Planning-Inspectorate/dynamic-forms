@@ -1,18 +1,19 @@
-import { describe, it } from 'node:test';
+import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
 import TextEntryRedactQuestion from './question.js';
+import { configureNunjucks } from '../../lib/test-utils.js';
 
 describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
-	it('should create', () => {
-		const TITLE = 'title';
-		const QUESTION = 'Question?';
-		const FIELDNAME = 'field-name';
-		const VALIDATORS = [1, 2];
-		const HTML = '/path/to/html.njk';
-		const HINT = 'hint';
-		const LABEL = 'A label';
+	const TITLE = 'title';
+	const QUESTION = 'Question?';
+	const FIELDNAME = 'field-name';
+	const VALIDATORS = [1, 2];
+	const HTML = '/path/to/html.njk';
+	const HINT = 'hint';
+	const LABEL = 'A label';
 
-		const question = new TextEntryRedactQuestion({
+	function createQuestion() {
+		return new TextEntryRedactQuestion({
 			title: TITLE,
 			question: QUESTION,
 			fieldName: FIELDNAME,
@@ -21,6 +22,9 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			hint: HINT,
 			label: LABEL
 		});
+	}
+	it('should create', () => {
+		const question = createQuestion();
 
 		assert.strictEqual(question.title, TITLE);
 		assert.strictEqual(question.question, QUESTION);
@@ -30,5 +34,87 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 		assert.strictEqual(question.html, HTML);
 		assert.strictEqual(question.hint, HINT);
 		assert.strictEqual(question.label, LABEL);
+	});
+	it('should render default view', () => {
+		const question = createQuestion();
+		const section = {
+			name: 'section-name'
+		};
+		const journey = {
+			baseUrl: '',
+			taskListUrl: 'task',
+			journeyTemplate: 'template',
+			journeyTitle: 'title',
+			journeyId: 'manage-representations',
+			getBackLink: () => {
+				return 'back';
+			},
+			response: {
+				answers: {}
+			}
+		};
+		const customViewData = {
+			layoutTemplate: 'lib/test-layout.njk',
+			question: {
+				question: 'Redaction Question',
+				fieldName: 'field-name',
+				value: 'value',
+				valueRedacted: 'value-redacted'
+			}
+		};
+		const nunjucks = configureNunjucks();
+		const mockRes = {
+			render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
+		};
+		const viewModel = question.prepQuestionForRendering(section, journey, customViewData);
+		question.renderAction(mockRes, viewModel);
+		assert.strictEqual(mockRes.render.mock.callCount(), 1);
+		const view = mockRes.render.mock.calls[0].result;
+		assert.ok(view);
+		assert.match(view, /Redaction Question/);
+		assert.match(view, /govuk-grid-column-two-thirds">\s+<form/);
+		assert.doesNotMatch(view, /Redaction suggestions/);
+	});
+	it('should render suggestions view', () => {
+		const question = createQuestion();
+		const section = {
+			name: 'section-name'
+		};
+		const journey = {
+			baseUrl: '',
+			taskListUrl: 'task',
+			journeyTemplate: 'template',
+			journeyTitle: 'title',
+			journeyId: 'manage-representations',
+			getBackLink: () => {
+				return 'back';
+			},
+			response: {
+				answers: {}
+			}
+		};
+		const customViewData = {
+			showSuggestionsUi: true,
+			layoutTemplate: 'lib/test-layout.njk',
+			question: {
+				question: 'Redaction Question',
+				fieldName: 'field-name',
+				value: 'value',
+				valueRedacted: 'value-redacted'
+			}
+		};
+		const nunjucks = configureNunjucks();
+		const mockRes = {
+			render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
+		};
+		const viewModel = question.prepQuestionForRendering(section, journey, customViewData);
+		question.renderAction(mockRes, viewModel);
+		assert.strictEqual(mockRes.render.mock.callCount(), 1);
+		const view = mockRes.render.mock.calls[0].result;
+		assert.ok(view);
+		assert.match(view, /Redaction Question/);
+		assert.match(view, /govuk-grid-column-one-half">\s+<form/);
+		assert.doesNotMatch(view, /govuk-grid-column-two-thirds">\s+<form/);
+		assert.match(view, /Redaction suggestions/);
 	});
 });
