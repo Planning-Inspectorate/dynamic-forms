@@ -4,9 +4,8 @@ This package is for building [GDS](https://design-system.service.gov.uk/) forms 
 
 The functionality for 'check-your-answers' pages can also be useful for generating pages outside the context of a journey or form, such as for managing data. Each row shown on the page can include a link to edit that data.
 
-> Note this is ported from Appeals: [dynamic forms](https://github.com/Planning-Inspectorate/appeal-planning-decision/tree/main/packages/forms-web-app/src/dynamic-forms), but transformed for ES6 modules and Node Test Runner. Not all functionality has been brought across, such as 'add more'.
-> There is also (as of June 2025) a version of this in the [Crown Developments repository](https://github.com/Planning-Inspectorate/crown-developments/tree/0b6d0f0458b2ed064c3aa9532e7f16d0fd45638e/packages/dynamic-forms).
-> It is hoped they can all be consolidated over time.
+> Note this is ported from Appeals: [dynamic forms](https://github.com/Planning-Inspectorate/appeal-planning-decision/tree/a46f945047dc1f13d523a0853b4fcbb4bd0f6d6e/packages/forms-web-app/src/dynamic-forms), but transformed for ES6 modules and Node Test Runner. Not all functionality has been brought across, such as 'add more'.
+> It is hoped that this version can be developed over time so Appeals can move to this version.
 
 ## Terminology
 
@@ -37,7 +36,7 @@ export function configureNunjucks() {
 	// get the require function, see https://nodejs.org/api/module.html#modulecreaterequirefilename
 	const require = createRequire(import.meta.url);
 	// path to dynamic forms folder
-	const dynamicFormsRoot = path.resolve(require.resolve('@pins/dynamic-forms'), '..');
+	const dynamicFormsRoot = path.resolve(require.resolve('@planning-inspectorate/dynamic-forms'), '..');
 	// get the path to the govuk-frontend folder, in node_modules, using the node require resolution
 	const govukFrontendRoot = path.resolve(require.resolve('govuk-frontend'), '../..');
 	const appDir = path.join('some/path/to/the', 'app');
@@ -61,7 +60,7 @@ export function configureNunjucks() {
 
 ### Assets
 
-The select component can use the [accessibile-autocomplete](https://www.npmjs.com/package/accessible-autocomplete) package. This requires configuring, the component assumes the following paths are available:
+The select component can use the [accessible-autocomplete](https://www.npmjs.com/package/accessible-autocomplete) package. This requires configuring, the component assumes the following paths are available:
 
 * `/assets/css/accessible-autocomplete.min.css`
 * `/assets/js/accessible-autocomplete.min.js`
