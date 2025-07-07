@@ -3,11 +3,12 @@ import assert from 'node:assert';
 import AddressQuestion from './question.js';
 import { Address } from '../../lib/address.js';
 import AddressValidator from '../../validator/address-validator.js';
+import { configureNunjucks } from '../../lib/test-utils.js';
 
 describe('AddressQuestion', () => {
 	const TITLE = 'What is the site address?';
 	const QUESTION = 'Enter the site address details:';
-	const FIELDNAME = 'siteAddress';
+	const FIELDNAME = 'address';
 	const VIEWFOLDER = 'address-entry';
 	const VALIDATORS = [];
 	const REQUIREDFIELDS = {};
@@ -37,11 +38,11 @@ describe('AddressQuestion', () => {
 
 		const req = {
 			body: {
-				siteAddress_addressLine1: '123 Main St',
-				siteAddress_addressLine2: 'Floor 2',
-				siteAddress_townCity: 'Testville',
-				siteAddress_postcode: 'TE1 2ST',
-				siteAddress_county: 'Testshire',
+				address_addressLine1: '123 Main St',
+				address_addressLine2: 'Floor 2',
+				address_townCity: 'Testville',
+				address_postcode: 'TE1 2ST',
+				address_county: 'Testshire',
 				fieldName: FIELDNAME
 			},
 			appealsApiClient: mockApi
@@ -120,6 +121,33 @@ describe('AddressQuestion', () => {
 			assert.strictEqual(model.question.labels.townCity, 'Town or city (optional)');
 			assert.strictEqual(model.question.labels.county, 'County (optional)');
 			assert.strictEqual(model.question.labels.postcode, 'Postcode (optional)');
+		});
+
+		it('should include the hint under the h1 title', async () => {
+			const { question } = setup();
+			const hintText = 'We will not publish your address';
+			question.hint = hintText;
+
+			const response = { journeyId: 'testJourney', answers: { address: testAddress } };
+			const model = await question.prepQuestionForRendering(
+				{},
+				{ getBackLink: mock.fn(), response },
+				{ layoutTemplate: 'lib/test-layout.njk' }
+			);
+
+			assert.strictEqual(model.question.hint, hintText);
+
+			const nunjucks = configureNunjucks();
+			const mockRes = {
+				render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
+			};
+			question.renderAction(mockRes, model);
+
+			assert.strictEqual(mockRes.render.mock.callCount(), 1);
+			const view = mockRes.render.mock.calls[0].result;
+			assert.ok(view);
+			assert.match(view, /Enter the site address details:/);
+			assert.match(view, /<div class="govuk-hint">We will not publish your address<\/div>/);
 		});
 		it('should set required labels when required', async () => {
 			VALIDATORS.push(
