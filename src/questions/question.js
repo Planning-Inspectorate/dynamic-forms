@@ -10,6 +10,7 @@ import MultiFieldInputValidator from '../validator/multi-field-input-validator.j
  * @typedef {import('../journey/journey.js').Journey} Journey
  * @typedef {import('../journey/journey-response.js').JourneyResponse} JourneyResponse
  * @typedef {import('../section.js').Section} Section
+ * @typedef {import('./question-types.js').ActionLink} ActionLink
  */
 
 /**
@@ -65,6 +66,8 @@ export class Question {
 	html;
 	/** @type {string|undefined} optional question type */
 	interfaceType;
+	/** @type {ActionLink|undefined} override action link */
+	actionLink;
 
 	/** @type {string} 'not started' text to display (if a question has no answer) */
 	notStartedText = 'Not started';
@@ -108,6 +111,7 @@ export class Question {
 			shouldDisplay,
 			autocomplete,
 			editable = true,
+			actionLink,
 			viewData = {}
 		},
 		methodOverrides
@@ -128,6 +132,7 @@ export class Question {
 		this.interfaceType = interfaceType;
 		this.autocomplete = autocomplete;
 		this.editable = editable;
+		this.actionLink = actionLink;
 		this.viewData = viewData;
 
 		if (shouldDisplay) {
@@ -324,6 +329,14 @@ export class Question {
 	 * @returns {{ href: string; text: string; visuallyHiddenText: string; }|undefined}
 	 */
 	getAction(sectionSegment, journey, answer) {
+		if (this.actionLink) {
+			// show the override if its set
+			return {
+				href: this.actionLink.href,
+				text: this.actionLink.text,
+				visuallyHiddenText: this.question
+			};
+		}
 		if (!this.editable) {
 			return;
 		}

@@ -28,6 +28,7 @@ describe('./src/dynamic-forms/question.js', () => {
 		html = undefined,
 		hint = undefined,
 		autocomplete = FIELDNAME,
+		actionLink,
 		viewData
 	} = {}) => {
 		return new Question({
@@ -43,9 +44,7 @@ describe('./src/dynamic-forms/question.js', () => {
 			hint,
 			autocomplete,
 			viewData,
-			getAction: () => {
-				return 'http://example.com/action';
-			}
+			actionLink
 		});
 	};
 
@@ -326,6 +325,37 @@ describe('./src/dynamic-forms/question.js', () => {
 			const question = getTestQuestion();
 			const result = question.formatAnswerForSummary('segment', journey, null);
 			assert.strictEqual(result[0].value, question.notStartedText);
+		});
+		it('should support actionLink parameter', () => {
+			const actionLink = { href: '/custom', text: 'Custom Action' };
+			const question = getTestQuestion({ actionLink });
+			assert.deepStrictEqual(question.actionLink, actionLink);
+		});
+		it('should use actionLink in getAction if provided', () => {
+			const actionLink = { href: '/custom', text: 'Custom Action' };
+			const question = getTestQuestion({ actionLink });
+			const journey = {
+				getCurrentQuestionUrl: () => '/should-not-be-used'
+			};
+			const result = question.getAction('segment', journey, 'answer');
+			assert.deepStrictEqual(result, {
+				href: '/custom',
+				text: 'Custom Action',
+				visuallyHiddenText: question.question
+			});
+		});
+
+		it('should use default action if actionLink is not provided', () => {
+			const question = getTestQuestion();
+			const journey = {
+				getCurrentQuestionUrl: (segment, fieldName) => `/question/${segment}/${fieldName}`
+			};
+			const result = question.getAction('segment', journey, 'answer');
+			assert.deepStrictEqual(result, {
+				href: `/question/segment/${question.fieldName}`,
+				text: question.changeActionText,
+				visuallyHiddenText: question.question
+			});
 		});
 	});
 });
