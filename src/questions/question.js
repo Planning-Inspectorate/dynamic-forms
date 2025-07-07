@@ -10,6 +10,7 @@ import MultiFieldInputValidator from '../validator/multi-field-input-validator.j
  * @typedef {import('../journey/journey.js').Journey} Journey
  * @typedef {import('../journey/journey-response.js').JourneyResponse} JourneyResponse
  * @typedef {import('../section.js').Section} Section
+ * @typedef {import('../controller.js').ActionView} ActionView
  * @typedef {import('./question-types.js').ActionLink} ActionLink
  */
 
@@ -326,7 +327,7 @@ export class Question {
 	 * @param {Object} answer
 	 * @param {Journey} journey
 	 * @param {String} sectionSegment
-	 * @returns {{ href: string; text: string; visuallyHiddenText: string; }|undefined}
+	 * @returns {ActionView|ActionView[]|undefined}
 	 */
 	getAction(sectionSegment, journey, answer) {
 		if (this.actionLink) {
