@@ -233,8 +233,56 @@ describe('dynamic-form/controller', () => {
 				}
 			]);
 		});
+		it('support array of actions', async () => {
+			const mockFn = res.render.mock;
+			mockFn.resetCalls();
+			mockJourney.sections[0].questions[0].formatAnswerForSummary.mock.mockImplementation(() => [
+				{
+					key: 'Title 1a',
+					value: mockAnswer,
+					action: [
+						{
+							href: '/manage-appeals/questionnaire/123456/segment-1/title-1a',
+							text: 'Answer',
+							visuallyHiddenText: 'Answer'
+						},
+						{
+							href: '/manage-appeals/questionnaire/123456/segment-1/title-1a/edit',
+							text: 'Edit',
+							visuallyHiddenText: 'Edit'
+						}
+					]
+				}
+			]);
+			res.locals.journeyResponse.referenceId = mockRef;
+			const appeal = { a: 1, caseReference: 2 };
+
+			const pageCaption = `Appeal ${appeal.caseReference}`;
+			await list(req, res, pageCaption, { appeal });
+
+			mockSummaryListData.sections[0].list.rows[0].actions.items.push({
+				href: '/manage-appeals/questionnaire/123456/segment-1/title-1a/edit',
+				text: 'Edit',
+				visuallyHiddenText: 'Edit'
+			});
+
+			assert.strictEqual(mockFn.callCount(), 1);
+			assert.deepStrictEqual(mockFn.calls[0].arguments, [
+				mockJourney.listingPageViewPath,
+				{
+					appeal,
+					summaryListData: mockSummaryListData,
+					layoutTemplate: mockTemplateUrl,
+					journeyComplete: false,
+					pageCaption: pageCaption,
+					journeyTitle: mockJourneyTitle
+				}
+			]);
+		});
 
 		it('should format answer summary including conditional answer', async () => {
+			const mockFn = mockJourney.sections[0].questions[0].formatAnswerForSummary.mock;
+			mockFn.resetCalls();
 			res.locals.journeyResponse.referenceId = mockRef;
 
 			await list(req, res);
@@ -243,8 +291,7 @@ describe('dynamic-form/controller', () => {
 				value: 'yes',
 				conditional: 'test'
 			};
-			const mockFn = mockJourney.sections[0].questions[0].formatAnswerForSummary.mock;
-			assert.strictEqual(mockFn.callCount() > 0, true);
+			assert.strictEqual(mockFn.callCount(), 1);
 			const args = mockFn.calls[0].arguments;
 			assert.strictEqual(args[0], mockJourney.sections[0].segment);
 			assert.strictEqual(args[2], expectedAnswer.value);
