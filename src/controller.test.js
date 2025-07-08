@@ -4,7 +4,8 @@ import { list, question, buildSave } from './controller.js';
 
 import { Journey } from './journey/journey.js';
 import { SECTION_STATUS } from './section.js';
-import { mockReq, mockRes } from './lib/test-utils.js';
+
+import { mockReq, mockRes } from '#test/utils/utils.js';
 
 const res = mockRes();
 const mockBaseUrl = '/manage-appeals/questionnaire';

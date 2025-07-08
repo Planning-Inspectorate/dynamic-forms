@@ -1,7 +1,7 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
 import TextEntryRedactQuestion from './question.js';
-import { configureNunjucks } from '../../lib/test-utils.js';
+import { configureNunjucksTestEnv } from '../../../test/utils/nunjucks.js';
 
 describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 	const TITLE = 'title';
@@ -55,7 +55,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			}
 		};
 		const customViewData = {
-			layoutTemplate: 'lib/test-layout.njk',
+			layoutTemplate: 'views/layout-question.njk',
 			question: {
 				question: 'Redaction Question',
 				fieldName: 'field-name',
@@ -63,7 +63,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 				valueRedacted: 'value-redacted'
 			}
 		};
-		const nunjucks = configureNunjucks();
+		const nunjucks = configureNunjucksTestEnv();
 		const mockRes = {
 			render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
 		};
@@ -94,7 +94,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			}
 		};
 		const customViewData = {
-			layoutTemplate: 'lib/test-layout.njk',
+			layoutTemplate: 'views/layout-question.njk',
 			question: {
 				question: 'Redaction Question',
 				fieldName: 'field-name',
@@ -102,7 +102,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 				valueRedacted: 'value-redacted'
 			}
 		};
-		const nunjucks = configureNunjucks();
+		const nunjucks = configureNunjucksTestEnv();
 		const mockRes = {
 			render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
 		};
@@ -134,7 +134,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			}
 		};
 		const customViewData = {
-			layoutTemplate: 'lib/test-layout.njk',
+			layoutTemplate: 'views/layout-question.njk',
 			question: {
 				question: 'Redaction Question',
 				fieldName: 'field-name',
@@ -147,7 +147,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 				{ category: 'Address', suggestion: '123 Fake Street' }
 			]
 		};
-		const nunjucks = configureNunjucks();
+		const nunjucks = configureNunjucksTestEnv();
 		const mockRes = {
 			render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
 		};
@@ -181,7 +181,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			}
 		};
 		const customViewData = {
-			layoutTemplate: 'lib/test-layout.njk',
+			layoutTemplate: 'views/layout-question.njk',
 			question: {
 				question: 'Redaction Question',
 				fieldName: 'field-name',
@@ -193,7 +193,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 				{ category: 'Address', suggestion: '123 Fake Street' }
 			]
 		};
-		const nunjucks = configureNunjucks();
+		const nunjucks = configureNunjucksTestEnv();
 		const mockRes = {
 			render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
 		};
