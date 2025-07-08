@@ -25,7 +25,8 @@
     "nunjucks": "^3.2.4"
   },
   "imports": {
-    "#question-types": "./src/questions/question-types.d.ts"
+    "#question-types": "./src/questions/question-types.d.ts",
+    "#test/*": "./test/*"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.0.0",
