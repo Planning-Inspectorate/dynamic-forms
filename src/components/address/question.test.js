@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import AddressQuestion from './question.js';
 import { Address } from '../../lib/address.js';
 import AddressValidator from '../../validator/address-validator.js';
-import { configureNunjucks } from '../../lib/test-utils.js';
+import { configureNunjucksTestEnv } from '../../../test/utils/nunjucks.js';
 
 describe('AddressQuestion', () => {
 	const TITLE = 'What is the site address?';
@@ -132,12 +132,12 @@ describe('AddressQuestion', () => {
 			const model = await question.prepQuestionForRendering(
 				{},
 				{ getBackLink: mock.fn(), response },
-				{ layoutTemplate: 'lib/test-layout.njk' }
+				{ layoutTemplate: 'views/layout-question.njk' }
 			);
 
 			assert.strictEqual(model.question.hint, hintText);
 
-			const nunjucks = configureNunjucks();
+			const nunjucks = configureNunjucksTestEnv();
 			const mockRes = {
 				render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
 			};
