@@ -30,8 +30,11 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "body-parser": "^2.2.0",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
     "govuk-frontend": "^5.11.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",

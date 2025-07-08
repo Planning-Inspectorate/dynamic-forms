@@ -1,0 +1,41 @@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+        </div>
+    </div>
+
+    
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form action="" method="POST" novalidate>
+                <input type="hidden" name="_csrf" value="">
+
+
+                <div class="govuk-form-group">
+  <h1 class="govuk-label-wrapper">
+    <label class="govuk-label govuk-label--l" for="travelClass">
+      Which class do you want to travel in?
+    </label>
+  </h1>
+  <select class="govuk-select" id="travelClass" name="travelClass">
+    <option value="economy" data-cy="answer-economy">Economy</option>
+    <option value="business" data-cy="answer-business">Business</option>
+    <option value="first" data-cy="answer-first">First Class</option>
+  </select>
+</div>
+
+
+                <button type="submit" class="govuk-button" data-module="govuk-button" data-cy="button-save-and-continue">
+  Continue
+</button>
+
+            </form>
+        </div>
+    </div>
+    <script src="/assets/js/accessible-autocomplete.min.js"></script>
+    <script >
+        if (window.accessibleAutocomplete) {
+            accessibleAutocomplete.enhanceSelectElement({
+                selectElement: document.querySelector('#travelClass')
+            })
+        }
+    </script>

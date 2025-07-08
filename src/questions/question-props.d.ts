@@ -8,18 +8,15 @@ type QuestionTypes =
 	| 'boolean'
 	| 'radio'
 	| 'date'
+	| 'date-period'
 	| 'text-entry'
+	| 'text-entry-redact'
+	| 'select'
 	| 'single-line-input'
 	| 'multi-field-input'
 	| 'number'
 	| 'site-address'
-	| 'unit-option'
-	| 'list-add-more'
-	// strictly for add more sub question type
-	// todo refactor list add mores so there's no sub question
-	| 'case'
-	| 'address'
-	| 'listed-building';
+	| 'unit-option';
 
 interface CommonQuestionProps {
 	type: QuestionTypes;
@@ -155,21 +152,6 @@ type UnitOptionEntryQuestionProps = CommonQuestionProps & {
 	label?: string;
 };
 
-export type SubQuestionProps = CommonQuestionProps & {
-	type: 'case' | 'address' | 'listed-building';
-	viewFolder: string;
-};
-
-type ListAddMoreQuestionProps = CommonQuestionProps & {
-	type: 'list-add-more';
-	subQuestionProps: SubQuestionProps;
-	subQuestionLabel?: string;
-	subQuestionTitle?: string;
-	subQuestionFieldLabel?: string;
-	subQuestionInputClasses?: string;
-	width?: string;
-};
-
 export type QuestionProps =
 	| CheckboxQuestionProps
 	| MultiFileUploadQuestionProps
@@ -181,5 +163,4 @@ export type QuestionProps =
 	| MultiFieldInputQuestionProps
 	| NumberEntryQuestionProps
 	| SiteAddressQuestionProps
-	| UnitOptionEntryQuestionProps
-	| ListAddMoreQuestionProps;
+	| UnitOptionEntryQuestionProps;
