@@ -74,6 +74,44 @@ export class TestServer {
 	}
 
 	/**
+	 * Performs a GET request to the server, following a maximum number of redirects.
+	 * @param {string} path
+	 * @param {number} maxRedirects
+	 * @param {RequestInit} [options]
+	 * @returns {Promise<Response>}
+	 */
+	async getWithRedirects(path, maxRedirects, options = {}) {
+		if (!this.server || !this.port) {
+			throw new Error('Server is not started');
+		}
+		if (maxRedirects === 0) {
+			// can just use get() directly otherwise
+			throw new Error('maxRedirects must be greater than 0');
+		}
+		let response;
+		let currentPath = path;
+		let numRedirects = 0;
+		while (true) {
+			response = await this.get(currentPath, { ...options, redirect: 'manual' });
+			if (
+				response.status >= 300 &&
+				response.status < 400 &&
+				response.headers.has('location') &&
+				numRedirects < maxRedirects
+			) {
+				currentPath = response.headers.get('location');
+				numRedirects++;
+				continue;
+			}
+			break;
+		}
+		if (this.rememberCookies) {
+			this.#updateCookies(response);
+		}
+		return response;
+	}
+
+	/**
 	 * Performs a POST request to the server.
 	 * @param {string} path
 	 * @param {object} [body]
