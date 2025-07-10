@@ -4,6 +4,7 @@ export const COMPONENT_TYPES = Object.freeze({
 	RADIO: 'radio',
 	DATE: 'date',
 	DATE_PERIOD: 'date-period',
+	DATE_TIME: 'date-time',
 	TEXT_ENTRY: 'text-entry',
 	TEXT_ENTRY_REDACT: 'text-entry-redact',
 	SELECT: 'select',
