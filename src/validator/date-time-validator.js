@@ -12,11 +12,12 @@ import DateValidator from './date-validator.js';
 export default class DateTimeValidator extends DateValidator {
 	/**
 	 * creates an instance of a DateTimeValidator
-	 * @param {string} inputLabel - string representing the field as displayed on the UI as part of an error message
+	 * @param {string} timeInputLabel - string representing the time fields as displayed on the UI as part of an error message
+	 * @param {string} [dateInputLabel] - string representing the date fields as displayed on the UI as part of an error message
 	 */
-	constructor(inputLabel) {
-		super(inputLabel);
-		this.inputLabel = inputLabel;
+	constructor(timeInputLabel, dateInputLabel = timeInputLabel) {
+		super(dateInputLabel);
+		this.timeInputLabel = timeInputLabel;
 	}
 
 	/**
@@ -35,25 +36,27 @@ export default class DateTimeValidator extends DateValidator {
 				.notEmpty()
 				.withMessage((_, { req }) => {
 					if (!req.body[minuteInput] && req.body[periodInput] === '') {
-						return `Enter the ${this.inputLabel.toLowerCase()} time`;
+						return `Enter the ${this.timeInputLabel.toLowerCase()} time`;
 					}
 
-					return `${this.inputLabel} time must include an hour`;
+					return `${this.timeInputLabel} time must include an hour`;
 				}),
-			body(hourInput).isInt({ min: 1, max: 12 }).withMessage(`${this.inputLabel} hour must be between 1 and 12.`),
+			body(hourInput).isInt({ min: 1, max: 12 }).withMessage(`${this.timeInputLabel} hour must be between 1 and 12.`),
 			body(minuteInput)
 				.notEmpty()
 				.withMessage((_, { req }) => {
 					if (req.body[hourInput] || req.body[periodInput] !== '') {
-						return `${this.inputLabel} time must include a minute`;
+						return `${this.timeInputLabel} time must include a minute`;
 					}
 				}),
-			body(minuteInput).isInt({ min: 0, max: 59 }).withMessage(`${this.inputLabel} minute must be between 0 and 59.`),
+			body(minuteInput)
+				.isInt({ min: 0, max: 59 })
+				.withMessage(`${this.timeInputLabel} minute must be between 0 and 59.`),
 			body(periodInput)
 				.isIn(['am', 'pm'])
 				.withMessage((_, { req }) => {
 					if (req.body[hourInput] || req.body[minuteInput]) {
-						return `${this.inputLabel} time must include am/pm`;
+						return `${this.timeInputLabel} time must include am/pm`;
 					}
 				})
 		];

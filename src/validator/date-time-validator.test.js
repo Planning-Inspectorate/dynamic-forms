@@ -20,7 +20,7 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 0);
 	});
@@ -36,7 +36,7 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 0);
 	});
@@ -52,10 +52,10 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 6);
-		assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'Enter Site visit');
+		assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'Enter Site visit date');
 		assert.strictEqual(errors[`${question.fieldName}_month`].msg, undefined);
 		assert.strictEqual(errors[`${question.fieldName}_year`].msg, undefined);
 		assert.strictEqual(errors[`${question.fieldName}_hour`].msg, 'Enter the site visit time');
@@ -74,7 +74,7 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 1);
 		assert.strictEqual(errors[`${question.fieldName}_hour`].msg, 'Site visit time must include an hour');
@@ -91,7 +91,7 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 1);
 		assert.strictEqual(errors[`${question.fieldName}_minutes`].msg, 'Site visit time must include a minute');
@@ -108,7 +108,7 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 1);
 		assert.strictEqual(errors[`${question.fieldName}_period`].msg, 'Site visit time must include am/pm');
@@ -125,7 +125,7 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 2);
 		assert.strictEqual(errors[`${question.fieldName}_minutes`].msg, 'Site visit time must include a minute');
@@ -143,7 +143,7 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 2);
 		assert.strictEqual(errors[`${question.fieldName}_hour`].msg, 'Site visit time must include an hour');
@@ -161,7 +161,7 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 2);
 		assert.strictEqual(errors[`${question.fieldName}_hour`].msg, 'Site visit time must include an hour');
@@ -179,7 +179,7 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 1);
 		assert.strictEqual(errors[`${question.fieldName}_hour`].msg, 'Site visit hour must be between 1 and 12.');
@@ -196,7 +196,7 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 1);
 		assert.strictEqual(errors[`${question.fieldName}_hour`].msg, 'Site visit hour must be between 1 and 12.');
@@ -213,7 +213,7 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 1);
 		assert.strictEqual(errors[`${question.fieldName}_minutes`].msg, 'Site visit minute must be between 0 and 59.');
@@ -230,15 +230,33 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 			}
 		};
 
-		const errors = await _validationMappedErrors(req, question, 'Site visit');
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'Site visit date');
 
 		assert.strictEqual(Object.keys(errors).length, 1);
 		assert.strictEqual(errors[`${question.fieldName}_minutes`].msg, 'Site visit minute must be between 0 and 59.');
 	});
+	it('dateInputLabel defaults to using input label if not provided', async () => {
+		const req = {
+			body: {
+				['date-time-question_day']: undefined,
+				['date-time-question_month']: undefined,
+				['date-time-question_year']: undefined,
+				['date-time-question_hour']: undefined,
+				['date-time-question_minutes']: undefined,
+				['date-time-question_period']: ''
+			}
+		};
+
+		const errors = await _validationMappedErrors(req, question, 'Site visit');
+
+		assert.strictEqual(Object.keys(errors).length, 6);
+		assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'Enter Site visit');
+		assert.strictEqual(errors[`${question.fieldName}_hour`].msg, 'Enter the site visit time');
+	});
 });
 
-const _validationMappedErrors = async (req, question, inputLabel) => {
-	const dateTimeValidator = new DateTimeValidator(inputLabel);
+const _validationMappedErrors = async (req, question, inputLabel, dateInputLabel) => {
+	const dateTimeValidator = new DateTimeValidator(inputLabel, dateInputLabel);
 
 	const validationRules = dateTimeValidator.validate(question);
 
