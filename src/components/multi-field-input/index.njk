@@ -60,11 +60,13 @@
                             errorMessage: errors[inputField.fieldName] and {
                                 text: errors[inputField.fieldName].msg
                             },
+                            prefix: inputField.prefix,
+                            suffix: inputField.suffix,
                             value: inputField.value,
                             hint: {
                                 text: inputField.hint
                             },
-                            classes: "govuk-input-!-width-three-quarters",
+                            classes: inputField.classes or "govuk-input-!-width-three-quarters",
                             attributes: inputField.attributes
                         }) }}
                     {% endfor %}
