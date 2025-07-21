@@ -11,6 +11,12 @@ import { nl2br } from '../../lib/utils.js';
  */
 
 /**
+ * @typedef {Object} Suffix
+ * @property {string} text
+ * @property {string} [classes] optional property, used to add classes to the suffix/prefix
+ */
+
+/**
  * @typedef {Object} InputField
  * @property {string} fieldName
  * @property {string} label
@@ -18,6 +24,8 @@ import { nl2br } from '../../lib/utils.js';
  * @property {string} [formatPrefix] optional property, used by formatAnswerForSummary (eg task list display), to prefix answer
  * @property {function} [formatTextFunction] optional property, used to format the answer for display and value in question
  * @property {Record<string, string>} [attributes] optional property, used to add html attributes to the field
+ * @property {Suffix} [suffix] optional property, used to add a suffix to the field
+ * @property {Suffix} [prefix] optional property, used to add a prefix to the field
  */
 
 /**
