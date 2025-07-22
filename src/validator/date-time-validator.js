@@ -14,9 +14,19 @@ export default class DateTimeValidator extends DateValidator {
 	 * creates an instance of a DateTimeValidator
 	 * @param {string} timeInputLabel - string representing the time fields as displayed on the UI as part of an error message
 	 * @param {string} [dateInputLabel] - string representing the date fields as displayed on the UI as part of an error message
+	 * @param {DateValidationSettings} [dateValidationSettings] - object containing rules to apply
+	 * @param {Object} [dateErrorMessages] - object containing custom date error messages to show on validation failure
 	 */
-	constructor(timeInputLabel, dateInputLabel = timeInputLabel) {
-		super(dateInputLabel);
+	constructor(
+		timeInputLabel,
+		dateInputLabel = timeInputLabel,
+		dateValidationSettings = {
+			ensureFuture: false,
+			ensurePast: false
+		},
+		dateErrorMessages
+	) {
+		super(dateInputLabel, dateValidationSettings, dateErrorMessages);
 		this.timeInputLabel = timeInputLabel;
 	}
 
