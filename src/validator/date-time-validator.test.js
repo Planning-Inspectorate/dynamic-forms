@@ -253,10 +253,35 @@ describe('./lib/forms/custom-components/date-time/date-time-validator.js', () =>
 		assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'Enter Site visit');
 		assert.strictEqual(errors[`${question.fieldName}_hour`].msg, 'Enter the site visit time');
 	});
+	it('dateErrorMessages overrides errors returned by date validator', async () => {
+		const req = {
+			body: {
+				['date-time-question_day']: undefined,
+				['date-time-question_month']: undefined,
+				['date-time-question_year']: undefined,
+				['date-time-question_hour']: undefined,
+				['date-time-question_minutes']: undefined,
+				['date-time-question_period']: ''
+			}
+		};
+
+		const errors = await _validationMappedErrors(req, question, 'Site visit', 'site visit date', {
+			emptyErrorMessage: 'Site visit date error override'
+		});
+
+		assert.strictEqual(Object.keys(errors).length, 6);
+		assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'Site visit date error override');
+		assert.strictEqual(errors[`${question.fieldName}_hour`].msg, 'Enter the site visit time');
+	});
 });
 
-const _validationMappedErrors = async (req, question, inputLabel, dateInputLabel) => {
-	const dateTimeValidator = new DateTimeValidator(inputLabel, dateInputLabel);
+const _validationMappedErrors = async (req, question, inputLabel, dateInputLabel, dateErrorMessages) => {
+	const dateTimeValidator = new DateTimeValidator(
+		inputLabel,
+		dateInputLabel,
+		{ ensureFuture: false, ensurePast: false },
+		dateErrorMessages
+	);
 
 	const validationRules = dateTimeValidator.validate(question);
 
