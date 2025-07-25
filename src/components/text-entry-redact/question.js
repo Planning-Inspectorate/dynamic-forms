@@ -27,8 +27,18 @@ export default class TextEntryRedactQuestion extends Question {
 	 * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
 	 * @param {boolean} [params.onlyShowRedactedValueForSummary] whether to only show redacted value for summary
 	 * @param {boolean} [params.useRedactedFieldNameForSave] whether to use the redacted field name when saving answers
+	 * @param {boolean} [params.showSuggestionsUi] use the suggestions UI for this question
+	 * @param {string} [params.summaryText] summaryText to use with the details component
 	 */
-	constructor({ textEntryCheckbox, label, onlyShowRedactedValueForSummary, useRedactedFieldNameForSave, ...params }) {
+	constructor({
+		textEntryCheckbox,
+		label,
+		onlyShowRedactedValueForSummary,
+		useRedactedFieldNameForSave,
+		showSuggestionsUi,
+		summaryText,
+		...params
+	}) {
 		super({
 			...params,
 			viewFolder: 'text-entry-redact'
@@ -38,6 +48,8 @@ export default class TextEntryRedactQuestion extends Question {
 		this.label = label;
 		this.onlyShowRedactedValueForSummary = onlyShowRedactedValueForSummary;
 		this.useRedactedFieldNameForSave = useRedactedFieldNameForSave;
+		this.showSuggestionsUi = showSuggestionsUi;
+		this.summaryText = summaryText;
 	}
 
 	async getDataToSave(req, journeyResponse) {
@@ -58,6 +70,8 @@ export default class TextEntryRedactQuestion extends Question {
 		viewModel.question.value = payload ? payload[viewModel.question.fieldName] : viewModel.question.value;
 		viewModel.question.valueRedacted =
 			journey.response.answers[this.fieldName + 'Redacted'] || viewModel.question.value;
+		viewModel.question.summaryText = this.summaryText;
+		viewModel.showSuggestionsUi = this.showSuggestionsUi;
 		return viewModel;
 	}
 

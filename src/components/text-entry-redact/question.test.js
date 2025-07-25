@@ -12,7 +12,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 	const HINT = 'hint';
 	const LABEL = 'A label';
 
-	function createQuestion() {
+	function createQuestion(showSuggestionsUi = false) {
 		return new TextEntryRedactQuestion({
 			title: TITLE,
 			question: QUESTION,
@@ -20,7 +20,8 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			validators: VALIDATORS,
 			html: HTML,
 			hint: HINT,
-			label: LABEL
+			label: LABEL,
+			showSuggestionsUi
 		});
 	}
 	it('should create', () => {
@@ -72,11 +73,10 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 		const view = mockRes.render.mock.calls[0].result;
 		assert.ok(view);
 		assert.match(view, /Redaction Question/);
-		assert.match(view, /govuk-grid-column-two-thirds">\s+<form/);
 		assert.doesNotMatch(view, /Redaction suggestions/);
 	});
 	it('should render suggestions view', () => {
-		const question = createQuestion();
+		const question = createQuestion(true);
 		const section = {
 			name: 'section-name'
 		};
@@ -94,7 +94,6 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			}
 		};
 		const customViewData = {
-			showSuggestionsUi: true,
 			layoutTemplate: 'lib/test-layout.njk',
 			question: {
 				question: 'Redaction Question',
@@ -113,8 +112,51 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 		const view = mockRes.render.mock.calls[0].result;
 		assert.ok(view);
 		assert.match(view, /Redaction Question/);
-		assert.match(view, /govuk-grid-column-one-half">\s+<form/);
-		assert.doesNotMatch(view, /govuk-grid-column-two-thirds">\s+<form/);
 		assert.match(view, /Redaction suggestions/);
+		assert.match(view, /No redaction suggestions found\./);
+	});
+	it('should render suggestions view with data', () => {
+		const question = createQuestion(true);
+		const section = {
+			name: 'section-name'
+		};
+		const journey = {
+			baseUrl: '',
+			taskListUrl: 'task',
+			journeyTemplate: 'template',
+			journeyTitle: 'title',
+			journeyId: 'manage-representations',
+			getBackLink: () => {
+				return 'back';
+			},
+			response: {
+				answers: {}
+			}
+		};
+		const customViewData = {
+			layoutTemplate: 'lib/test-layout.njk',
+			question: {
+				question: 'Redaction Question',
+				fieldName: 'field-name',
+				value: 'value',
+				valueRedacted: 'value-redacted'
+			},
+			redactionSuggestions: [
+				{ category: 'Person', suggestion: 'Test Person' },
+				{ category: 'Address', suggestion: '123 Fake Street' }
+			]
+		};
+		const nunjucks = configureNunjucks();
+		const mockRes = {
+			render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
+		};
+		const viewModel = question.prepQuestionForRendering(section, journey, customViewData);
+		question.renderAction(mockRes, viewModel);
+		assert.strictEqual(mockRes.render.mock.callCount(), 1);
+		const view = mockRes.render.mock.calls[0].result;
+		assert.ok(view);
+		assert.match(view, /Redaction Question/);
+		assert.match(view, /Redaction suggestions/);
+		assert.match(view, /We have suggested some common redactions/);
 	});
 });
