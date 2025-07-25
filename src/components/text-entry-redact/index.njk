@@ -1,12 +1,12 @@
 {% extends layoutTemplate %}
 
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
-{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
-{% from "govuk/components/label/macro.njk" import govukLabel %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/label/macro.njk" import govukLabel %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 
 {% block before_content %}
     <div class="govuk-grid-row">
@@ -24,14 +24,9 @@
     {{ super() }}
 {% endblock before_content %}
 
-{% set columnWidth = 'govuk-grid-column-two-thirds' %}
-{% if showSuggestionsUi %}
-    {% set columnWidth = 'govuk-grid-column-one-half' %}
-{% endif %}
-
 {% block content %}
     <div class="govuk-grid-row">
-        <div class="{{ columnWidth }}">
+        <div class="govuk-grid-column-two-thirds">
             <form action="" method="post" novalidate>
                 <input type="hidden" name="_csrf" value="{{ _csrf }}">
 
@@ -53,15 +48,59 @@
                     {% include question.html ignore missing %}
                 {% endif %}
 
-                <label class="govuk-label govuk-label--s govuk-!-margin-top-5" for="{{ question.fieldName }}-unredacted">
-                    Original
-                    <a href="#" class="govuk-link govuk-!-margin-left-2" id="toggle-original">Hide</a>
-                </label>
+                {% if showSuggestionsUi %}
+                    <h2 class="govuk-heading-m">Redaction suggestions</h2>
+                    {% set hasSuggestions = redactionSuggestions.length > 0 %}
+                    {% if hasSuggestions %}
+                        <p class="govuk-body">
+                            We have suggested some common redactions and hidden these for you.
+                            To make these visible again, 'Reject' each suggestion.
+                        </p>
+                        {% set suggestionTableRows = [] %}
+                        {% for s in redactionSuggestions  %}
+                            {% set category = s.category %}
+                            {% if s.subCategory %}
+                                {% set category = category + " (" +  s.subCategory + ")" %}
+                            {% endif %}
+                            {% set action = 'Accept' %}
+                            {% if s.accepted %}
+                                {% set action = 'Reject' %}
+                            {% endif %}
+                            {% set suggestionTableRows = (suggestionTableRows.push([
+                                {text: s.text},
+                                {text: category },
+                                {
+                                    html: '<a href="#" class="govuk-link" data-redact="suggestion-reject-' + loop.index0 + '">' + action + '</a>'
+                                }
+                            ]), suggestionTableRows) %}
+                        {% endfor %}
+                        {{  govukTable({
+                            head: [
+                                {
+                                    text: "Redaction suggestion"
+                                },
+                                {
+                                    text: "Type of information"
+                                },
+                                {
+                                    text: "Action"
+                                }
+                            ],
+                            rows: suggestionTableRows
+                        }) }}
+                    {% else %}
+                        <p class="govuk-body">
+                            No redaction suggestions found.
+                        </p>
+                    {% endif %}
+                {% endif %}
 
-                {{ govukInsetText({
+                <h2 class="govuk-heading-m">Redaction preview</h2>
+
+                {{ govukDetails({
+                    summaryText: question.summaryText or "Original",
                     html: question.value,
-                    id: question.fieldName + "-unredacted",
-                    classes: "govuk-!-margin-top-0"
+                    id: question.fieldName + "-unredacted"
                 }) }}
 
                 {{ govukTextarea({
@@ -75,7 +114,11 @@
                     errorMessage: errors[question.fieldName] and {
                         text: errors[question.fieldName].msg
                     },
-                    classes: question.inputClasses
+                    classes: question.inputClasses,
+                    attributes: {
+                        readonly: true
+                    },
+                    rows: textAreaRows or 8
                 }) }}
 
                 <div class="govuk-button-group">
@@ -108,48 +151,6 @@
                 }) }}
             </form>
         </div>
-        {% if showSuggestionsUi %}
-            <div class="govuk-grid-column-one-half">
-                <h2 class="govuk-heading-m">Redaction suggestions</h2>
-                <p class="govuk-body">
-                    This section includes system suggestions for redactions.
-                    Each row shows the text that is suggested for redaction and the category detected.
-                    They are all redacted by default, you can reject any that should not be redacted by clicking the "Reject" link next to each suggestion.
-                </p>
-                {% set suggestionTableRows = [] %}
-                {% for s in redactionSuggestions  %}
-                    {% set category = s.category %}
-                    {% if s.subCategory %}
-                        {% set category = category + " (" +  s.subCategory + ")" %}
-                    {% endif %}
-                    {% set action = 'Accept' %}
-                    {% if s.accepted %}
-                        {% set action = 'Reject' %}
-                    {% endif %}
-                    {% set suggestionTableRows = (suggestionTableRows.push([
-                        {text: s.text},
-                        {text: category },
-                        {
-                            html: '<a href="#" class="govuk-link" data-redact="suggestion-reject-' + loop.index0 + '">' + action + '</a>'
-                        }
-                    ]), suggestionTableRows) %}
-                {% endfor %}
-                {{  govukTable({
-                    head: [
-                        {
-                            text: "Text"
-                        },
-                        {
-                            text: "Category"
-                        },
-                        {
-                            text: "Action"
-                        }
-                    ],
-                    rows: suggestionTableRows
-                }) }}
-            </div>
-        {% endif %}
 
         <script {% if cspNonce %}nonce={{ cspNonce }}{% endif %}>
           /**
