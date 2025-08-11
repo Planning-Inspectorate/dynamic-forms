@@ -17,6 +17,7 @@ export default class RadioQuestion extends OptionsQuestion {
 	 * @param {Array.<import('../../questions/options-question.js').Option>} params.options
 	 * @param {Array.<import('../../questions/question.js').BaseValidator>} [params.validators]
 	 * @param {boolean} [params.editable]
+	 * @param {Object<string, any>} [params.viewData]
 	 * @param {import('../../questions/question-types.js').ActionLink} [params.actionLink]
 	 */
 	constructor({
@@ -34,7 +35,8 @@ export default class RadioQuestion extends OptionsQuestion {
 		options,
 		validators,
 		actionLink,
-		editable
+		editable,
+		viewData
 	}) {
 		super({
 			title,
@@ -48,7 +50,8 @@ export default class RadioQuestion extends OptionsQuestion {
 			options,
 			validators,
 			actionLink,
-			editable
+			editable,
+			viewData
 		});
 
 		this.html = html;
