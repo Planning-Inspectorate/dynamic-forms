@@ -1,4 +1,5 @@
 import { Question } from '../../questions/question.js';
+import { nl2br } from '../../lib/utils.js';
 
 /**
  * @typedef {import('../../questions/question.js').QuestionViewModel} QuestionViewModel
@@ -16,6 +17,7 @@ import { Question } from '../../questions/question.js';
  */
 
 export const REDACT_CHARACTER = '█';
+export const TRUNCATED_MAX_LENGTH = 500;
 
 /**
  * @class
@@ -29,6 +31,7 @@ export default class TextEntryRedactQuestion extends Question {
 	 * @param {boolean} [params.useRedactedFieldNameForSave] whether to use the redacted field name when saving answers
 	 * @param {boolean} [params.showSuggestionsUi] use the suggestions UI for this question
 	 * @param {string} [params.summaryText] summaryText to use with the details component
+	 * @param {boolean} [params.shouldTruncateSummary] determines whether redacted comment is truncated in summary view
 	 */
 	constructor({
 		textEntryCheckbox,
@@ -37,6 +40,7 @@ export default class TextEntryRedactQuestion extends Question {
 		useRedactedFieldNameForSave,
 		showSuggestionsUi,
 		summaryText,
+		shouldTruncateSummary,
 		...params
 	}) {
 		super({
@@ -50,6 +54,7 @@ export default class TextEntryRedactQuestion extends Question {
 		this.useRedactedFieldNameForSave = useRedactedFieldNameForSave;
 		this.showSuggestionsUi = showSuggestionsUi;
 		this.summaryText = summaryText;
+		this.shouldTruncateSummary = shouldTruncateSummary;
 	}
 
 	async getDataToSave(req, journeyResponse) {
@@ -75,14 +80,27 @@ export default class TextEntryRedactQuestion extends Question {
 		return viewModel;
 	}
 
-	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
+	formatAnswerForSummary(sectionSegment, journey, answer) {
 		const redacted = journey.response.answers[this.fieldName + 'Redacted'];
+		const action = this.getAction(sectionSegment, journey, answer);
 		let toShow;
 		if (this.onlyShowRedactedValueForSummary) {
 			toShow = redacted;
 		} else {
 			toShow = redacted || answer;
 		}
-		return super.formatAnswerForSummary(sectionSegment, journey, toShow, capitals);
+
+		if (this.shouldTruncateSummary && toShow?.length > TRUNCATED_MAX_LENGTH) {
+			const truncatedToShow = toShow.substring(0, TRUNCATED_MAX_LENGTH);
+			toShow = `${truncatedToShow}... <a class="govuk-link govuk-link--no-visited-state" href="${action?.href}">Read more</a>`;
+		}
+
+		return [
+			{
+				key: this.title ?? this.question,
+				value: nl2br(toShow),
+				action
+			}
+		];
 	}
 }
