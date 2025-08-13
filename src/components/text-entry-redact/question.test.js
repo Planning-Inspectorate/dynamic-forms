@@ -159,4 +159,113 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 		assert.match(view, /Redaction suggestions/);
 		assert.match(view, /We have suggested some common redactions/);
 	});
+	it('should format answer for summary', () => {
+		const question = createQuestion();
+		const journey = {
+			baseUrl: '',
+			taskListUrl: 'task',
+			journeyTemplate: 'template',
+			journeyTitle: 'title',
+			journeyId: 'manage-representations',
+			getBackLink: () => {
+				return 'back';
+			},
+			getCurrentQuestionUrl: () => {
+				return '/redacted-comment';
+			},
+			response: {
+				answers: {}
+			}
+		};
+		const answer =
+			'It began with an ordinary morning. The air smelled faintly of dew, the street empty but for leaves drifting lazily. ████████ ██████ adjusted his collar, noting his watch was three minutes late—a stubborn old thing, loyal only to its own time. Across the street, a bakery opened, the scent of bread spilling into the cool air. A woman in a green scarf carried loaves in quiet balance. The square stirred slowly; ████████ wrote in his notebook, letting the day delay his errands, wholly unhurried and serene.';
+
+		const viewModel = question.formatAnswerForSummary('section', journey, answer);
+
+		assert.deepStrictEqual(viewModel, [
+			{
+				key: 'title',
+				value:
+					'It began with an ordinary morning. The air smelled faintly of dew, the street empty but for leaves drifting lazily. ████████ ██████ adjusted his collar, noting his watch was three minutes late—a stubborn old thing, loyal only to its own time. Across the street, a bakery opened, the scent of bread spilling into the cool air. A woman in a green scarf carried loaves in quiet balance. The square stirred slowly; ████████ wrote in his notebook, letting the day delay his errands, wholly unhurried and serene.',
+				action: {
+					href: '/redacted-comment',
+					text: 'Change',
+					visuallyHiddenText: 'Question?'
+				}
+			}
+		]);
+	});
+	it('should truncate when formating answer for summary when shouldTruncateSummary is true', () => {
+		const question = createQuestion();
+		question.shouldTruncateSummary = true;
+		const journey = {
+			baseUrl: '',
+			taskListUrl: 'task',
+			journeyTemplate: 'template',
+			journeyTitle: 'title',
+			journeyId: 'manage-representations',
+			getBackLink: () => {
+				return 'back';
+			},
+			getCurrentQuestionUrl: () => {
+				return '/redacted-comment';
+			},
+			response: {
+				answers: {}
+			}
+		};
+		const answer =
+			'It began with an ordinary morning. The air smelled faintly of dew, the street empty but for leaves drifting lazily. ████████ ██████ adjusted his collar, noting his watch was three minutes late—a stubborn old thing, loyal only to its own time. Across the street, a bakery opened, the scent of bread spilling into the cool air. A woman in a green scarf carried loaves in quiet balance. The square stirred slowly; ████████ wrote in his notebook, letting the day delay his errands, wholly unhurried and serene.';
+
+		const viewModel = question.formatAnswerForSummary('section', journey, answer);
+
+		assert.deepStrictEqual(viewModel, [
+			{
+				key: 'title',
+				value: `It began with an ordinary morning. The air smelled faintly of dew, the street empty but for leaves drifting lazily. ████████ ██████ adjusted his collar, noting his watch was three minutes late—a stubborn old thing, loyal only to its own time. Across the street, a bakery opened, the scent of bread spilling into the cool air. A woman in a green scarf carried loaves in quiet balance. The square stirred slowly; ████████ wrote in his notebook, letting the day delay his errands, wholly unhurried and s... <a class="govuk-link govuk-link--no-visited-state" href="/redacted-comment">Read more</a>`,
+				action: {
+					href: '/redacted-comment',
+					text: 'Change',
+					visuallyHiddenText: 'Question?'
+				}
+			}
+		]);
+	});
+	it('should not truncate when formating answer for summary when shouldTruncateSummary is true and length less than 500', () => {
+		const question = createQuestion();
+		question.shouldTruncateSummary = true;
+		const journey = {
+			baseUrl: '',
+			taskListUrl: 'task',
+			journeyTemplate: 'template',
+			journeyTitle: 'title',
+			journeyId: 'manage-representations',
+			getBackLink: () => {
+				return 'back';
+			},
+			getCurrentQuestionUrl: () => {
+				return '/redacted-comment';
+			},
+			response: {
+				answers: {}
+			}
+		};
+		const answer =
+			'It began, as many stories do, with an ordinary morning. The air carried the faint smell of dew, and the street was empty save for a few scattered leaves drifting lazily o████████ze too shy to commit to being wind. Jonathan Price adjusted his collar and glanced at his watch, noting with mild irritation tha███████████████████████████ree minutes late.';
+
+		const viewModel = question.formatAnswerForSummary('section', journey, answer);
+
+		assert.deepStrictEqual(viewModel, [
+			{
+				key: 'title',
+				value:
+					'It began, as many stories do, with an ordinary morning. The air carried the faint smell of dew, and the street was empty save for a few scattered leaves drifting lazily o████████ze too shy to commit to being wind. Jonathan Price adjusted his collar and glanced at his watch, noting with mild irritation tha███████████████████████████ree minutes late.',
+				action: {
+					href: '/redacted-comment',
+					text: 'Change',
+					visuallyHiddenText: 'Question?'
+				}
+			}
+		]);
+	});
 });
