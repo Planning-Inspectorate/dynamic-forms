@@ -82,7 +82,6 @@ export default class TextEntryRedactQuestion extends Question {
 
 	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
 		const redacted = journey.response.answers[this.fieldName + 'Redacted'];
-		const action = this.getAction(sectionSegment, journey, answer);
 		let toShow;
 		if (this.onlyShowRedactedValueForSummary) {
 			toShow = redacted;
@@ -91,6 +90,7 @@ export default class TextEntryRedactQuestion extends Question {
 		}
 
 		if (this.shouldTruncateSummary && toShow?.length > TRUNCATED_MAX_LENGTH) {
+			const action = this.getAction(sectionSegment, journey, answer);
 			const truncatedToShow = toShow.substring(0, TRUNCATED_MAX_LENGTH);
 			toShow = `${truncatedToShow}... <a class="govuk-link govuk-link--no-visited-state" href="${action?.href}">Read more</a>`;
 			return [
