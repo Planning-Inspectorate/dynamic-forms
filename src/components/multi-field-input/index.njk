@@ -35,8 +35,15 @@
                         text: question.question,
                         classes: "govuk-fieldset__legend--l",
                         isPageHeading: true
-                    }
+                    },
+                    describedBy: question.hint and "multi-field-hint"
                 }) %}
+
+                    {% if question.hint %}
+                        <div id="multi-field-hint" class="govuk-hint">
+                            {{ question.hint }}
+                        </div>
+                    {% endif %}
 
                     {% if question.description %}
                         <p class="govuk-body">
