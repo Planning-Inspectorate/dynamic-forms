@@ -100,7 +100,10 @@
                 {{ govukDetails({
                     summaryText: question.summaryText or "Original",
                     html: question.value,
-                    id: question.fieldName + "-unredacted"
+                    id: question.fieldName + "-unredacted",
+                    attributes: {
+                        "data-original": question.valueOriginal
+                    }
                 }) }}
 
                 {{ govukTextarea({
@@ -158,7 +161,7 @@
            * @param {HTMLButtonElement} redactSelectedText
            * @param {HTMLButtonElement} redactUndo
            * @param {HTMLButtonElement} redactUndoAll
-           * @param {HTMLDivElement} unredactedText
+           * @param {HTMLDetailsElement} unredactedText
            * @param {HTMLAnchorElement[]} rejectLinks
            * @param {import('@azure/ai-text-analytics').PiiEntity[]} suggestions
            */
@@ -207,7 +210,7 @@
               }
             });
             redactUndoAll.addEventListener('click', () => {
-              const unredated = unredactedText.textContent?.trim();
+              const unredated = unredactedText.dataset.original;
               if (history.length === 0 && textArea.value === unredated) {
                 showError('No changes to undo');
                 return;
@@ -237,7 +240,7 @@
             const redactSelectedText = document.querySelector('#redact-selected-text');
             const redactUndo = document.querySelector('#redact-undo');
             const redactUndoAll = document.querySelector('#redact-undo-all');
-            const unredactedText = document.querySelector('#{{ question.fieldName }}-unredacted > div');
+            const unredactedText = document.querySelector('#{{ question.fieldName }}-unredacted');
             const rejectLinks = document.querySelectorAll('[data-redact]');
               {% if not redactionSuggestions %}
               {% set redactionSuggestions = [] %}
@@ -256,7 +259,7 @@
             if (!redactUndoAll || !(redactUndoAll instanceof HTMLButtonElement)) {
               return;
             }
-            if (!unredactedText || !(unredactedText instanceof HTMLDivElement)) {
+            if (!unredactedText || !(unredactedText instanceof HTMLDetailsElement)) {
               return;
             }
 
