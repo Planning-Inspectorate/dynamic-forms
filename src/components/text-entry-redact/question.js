@@ -72,7 +72,7 @@ export default class TextEntryRedactQuestion extends Question {
 		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
 		viewModel.question.label = this.label;
 		viewModel.question.textEntryCheckbox = this.textEntryCheckbox;
-		viewModel.question.value = payload ? payload[viewModel.question.fieldName] : viewModel.question.value;
+		viewModel.question.value = nl2br(payload ? payload[viewModel.question.fieldName] : viewModel.question.value);
 		viewModel.question.valueRedacted =
 			journey.response.answers[this.fieldName + 'Redacted'] || viewModel.question.value;
 		viewModel.question.summaryText = this.summaryText;
