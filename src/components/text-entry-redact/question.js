@@ -75,6 +75,8 @@ export default class TextEntryRedactQuestion extends Question {
 		viewModel.question.value = nl2br(payload ? payload[viewModel.question.fieldName] : viewModel.question.value);
 		viewModel.question.valueRedacted =
 			journey.response.answers[this.fieldName + 'Redacted'] || viewModel.question.value;
+		viewModel.question.valueOriginal =
+			journey.response.answers[this.fieldName + 'Original'] || viewModel.question.value;
 		viewModel.question.summaryText = this.summaryText;
 		viewModel.showSuggestionsUi = this.showSuggestionsUi;
 		return viewModel;

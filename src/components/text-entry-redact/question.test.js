@@ -139,7 +139,8 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 				question: 'Redaction Question',
 				fieldName: 'field-name',
 				value: 'value',
-				valueRedacted: 'value-redacted'
+				valueRedacted: 'value-redacted',
+				valueOriginal: 'value'
 			},
 			redactionSuggestions: [
 				{ category: 'Person', suggestion: 'Test Person' },
@@ -151,6 +152,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
 		};
 		const viewModel = question.prepQuestionForRendering(section, journey, customViewData);
+		assert.strictEqual(viewModel.question.valueOriginal, 'value');
 		question.renderAction(mockRes, viewModel);
 		assert.strictEqual(mockRes.render.mock.callCount(), 1);
 		const view = mockRes.render.mock.calls[0].result;
@@ -158,6 +160,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 		assert.match(view, /Redaction Question/);
 		assert.match(view, /Redaction suggestions/);
 		assert.match(view, /We have suggested some common redactions/);
+		assert.match(view, /data-original="value"/);
 	});
 	it('should use <br> tags for newlines', () => {
 		const question = createQuestion(true);
