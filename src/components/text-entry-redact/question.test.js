@@ -159,6 +159,48 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 		assert.match(view, /Redaction suggestions/);
 		assert.match(view, /We have suggested some common redactions/);
 	});
+	it('should use <br> tags for newlines', () => {
+		const question = createQuestion(true);
+		const section = {
+			name: 'section-name'
+		};
+		const journey = {
+			baseUrl: '',
+			taskListUrl: 'task',
+			journeyTemplate: 'template',
+			journeyTitle: 'title',
+			journeyId: 'manage-representations',
+			getBackLink: () => {
+				return 'back';
+			},
+			response: {
+				answers: {}
+			}
+		};
+		const customViewData = {
+			layoutTemplate: 'lib/test-layout.njk',
+			question: {
+				question: 'Redaction Question',
+				fieldName: 'field-name',
+				value: 'This is my comment.\nIt has multiple lines.\r\nHere is another line.',
+				valueRedacted: 'value-redacted'
+			},
+			redactionSuggestions: [
+				{ category: 'Person', suggestion: 'Test Person' },
+				{ category: 'Address', suggestion: '123 Fake Street' }
+			]
+		};
+		const nunjucks = configureNunjucks();
+		const mockRes = {
+			render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
+		};
+		const viewModel = question.prepQuestionForRendering(section, journey, customViewData);
+		question.renderAction(mockRes, viewModel);
+		assert.strictEqual(mockRes.render.mock.callCount(), 1);
+		const view = mockRes.render.mock.calls[0].result;
+		assert.ok(view);
+		assert.match(view, /This is my comment\.<br>It has multiple lines\.<br>Here is another line\./);
+	});
 	it('should format answer for summary', () => {
 		const question = createQuestion();
 		const journey = {
