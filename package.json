@@ -28,7 +28,7 @@
     "#question-types": "./src/questions/question-types.d.ts"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.8.1",
+    "@commitlint/cli": "^20.0.0",
     "@commitlint/config-conventional": "^19.8.1",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
