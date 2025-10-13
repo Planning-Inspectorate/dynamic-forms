@@ -15,6 +15,7 @@ export default class SelectQuestion extends OptionsQuestion {
 	 * @param {string} [params.html]
 	 * @param {string} [params.legend] - optional legend, used instead of h1
 	 * @param {Array.<import('../../questions/options-question.js').Option>} params.options
+	 * @param {Object<string, any>} [params.viewData]
 	 * @param {Array.<import('../../questions/question.js').BaseValidator>} [params.validators]
 	 */
 	constructor({
@@ -30,7 +31,8 @@ export default class SelectQuestion extends OptionsQuestion {
 		html,
 		legend,
 		options,
-		validators
+		validators,
+		viewData
 	}) {
 		super({
 			title,
@@ -42,7 +44,8 @@ export default class SelectQuestion extends OptionsQuestion {
 			pageTitle,
 			description,
 			options,
-			validators
+			validators,
+			viewData
 		});
 
 		this.html = html;
