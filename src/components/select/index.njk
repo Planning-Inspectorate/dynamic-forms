@@ -79,7 +79,17 @@
     <script {% if cspNonce %}nonce={{ cspNonce }}{% endif %}>
         if (window.accessibleAutocomplete) {
             accessibleAutocomplete.enhanceSelectElement({
-                selectElement: document.querySelector('#{{ question.fieldName }}')
+                selectElement: document.querySelector('#{{ question.fieldName }}'),
+                onConfirm: () => {
+                    let input = document.querySelector('#{{ question.fieldName }}');
+                    let select = document.querySelector('#{{ question.fieldName }}-select');
+                    let options = Array.from(select.options);
+                    if (!input.value || !options.some(option => option.value === input.value)) {
+                        select.options.selectedIndex = -1;
+                    } else {
+                        select.options.selectedIndex = options.findIndex(option => option.value === input.value);
+                    }
+                }
             })
         }
     </script>
