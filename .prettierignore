@@ -4,3 +4,4 @@ package-lock.json
 README.md
 *.njk
 .env*
+test/snapshots/*

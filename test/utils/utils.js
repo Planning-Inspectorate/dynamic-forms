@@ -43,3 +43,12 @@ export const mockRes = () => {
 
 	return res;
 };
+
+/**
+ * escapes all RegExp meta-characters in a string
+ * @param {string} s
+ * @returns {string}
+ */
+export function escapeForRegExp(s) {
+	return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}

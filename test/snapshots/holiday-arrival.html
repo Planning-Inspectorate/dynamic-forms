@@ -1,0 +1,101 @@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+        </div>
+    </div>
+
+    
+    <style >
+        .pins-select--width-4 {
+            min-width: 4.5em !important;
+            max-width: 4.5em !important;
+        }
+    </style>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form action="" method="post" novalidate>
+                <input type="hidden" name="_csrf" value="">
+                <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" role="group">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">
+        When would you like to arrive at your destination?
+      </h1>
+    </legend>
+    <div class="govuk-date-input" id="holidayArrival">
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="holidayArrival_day">
+            Day
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="holidayArrival_day" name="holidayArrival_day" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="holidayArrival_month">
+            Month
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="holidayArrival_month" name="holidayArrival_month" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="holidayArrival_year">
+            Year
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="holidayArrival_year" name="holidayArrival_year" type="text" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" role="group">
+                        <div id="holidayArrival-hint" class="govuk-hint">For example, 9:30am or 2:55pm</div>
+                        <div class="govuk-date-input" id=holidayArrival>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+  <label class="govuk-label" for="holidayArrival_hour">
+    Hour
+  </label>
+  <input class="govuk-input govuk-input--width-2" id="holidayArrival_hour" name="holidayArrival_hour" type="text">
+</div>
+
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+  <label class="govuk-label" for="holidayArrival_minutes">
+    Minute
+  </label>
+  <input class="govuk-input govuk-input--width-2" id="holidayArrival_minutes" name="holidayArrival_minutes" type="text">
+</div>
+
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+  <label class="govuk-label" for="holidayArrival_period">
+    am or pm
+  </label>
+  <select class="govuk-select govuk-select pins-select--width-4" id="holidayArrival_period" name="holidayArrival_period">
+    <option value="" selected></option>
+    <option value="am">AM</option>
+    <option value="pm">PM</option>
+  </select>
+</div>
+
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button type="submit" class="govuk-button" data-module="govuk-button" data-cy="button-save-and-continue">
+  Continue
+</button>
+            </form>
+        </div>
+    </div>
+
+
