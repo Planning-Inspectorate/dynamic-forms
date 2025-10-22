@@ -88,7 +88,11 @@ export default class MultiFieldInputQuestion extends Question {
 		let responseToSave = { answers: {} };
 
 		for (const inputField of this.inputFields) {
-			responseToSave.answers[inputField.fieldName] = req.body[inputField.fieldName]?.trim();
+			let value = req.body[inputField.fieldName];
+			if (typeof value === 'string') {
+				value = value.trim();
+			}
+			responseToSave.answers[inputField.fieldName] = value;
 			journeyResponse.answers[inputField.fieldName] = responseToSave.answers[inputField.fieldName];
 		}
 
