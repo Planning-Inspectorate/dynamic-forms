@@ -39,11 +39,11 @@
                     describedBy: question.hint and "multi-field-hint"
                 }) %}
 
-                    {% if question.hint %}
+                    {%- if question.hint -%}
                         <div id="multi-field-hint" class="govuk-hint">
                             {{ question.hint }}
                         </div>
-                    {% endif %}
+                    {%- endif %}
 
                     {% if question.description %}
                         <p class="govuk-body">
