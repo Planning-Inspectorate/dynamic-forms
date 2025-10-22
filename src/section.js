@@ -80,6 +80,9 @@ export class Section {
 	 * @returns {Section}
 	 */
 	addQuestion(question) {
+		if (!question) {
+			throw new Error('question is required');
+		}
 		this.questions.push(question);
 		this.#conditionAdded = false; // reset condition flag
 		this.#applyConditions(question);
