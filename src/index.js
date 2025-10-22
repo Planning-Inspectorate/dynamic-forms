@@ -1,3 +1,10 @@
+/**
+ * @typedef {import('./questions/question-props.js').QuestionTypes} QuestionTypes
+ */
+
+/**
+ * @type {Readonly<{CHECKBOX: QuestionTypes, BOOLEAN: QuestionTypes, RADIO: QuestionTypes, DATE: QuestionTypes, DATE_PERIOD: QuestionTypes, TEXT_ENTRY: QuestionTypes, TEXT_ENTRY_REDACT: QuestionTypes, SELECT: QuestionTypes, SINGLE_LINE_INPUT: QuestionTypes, MULTI_FIELD_INPUT: QuestionTypes, NUMBER: QuestionTypes, ADDRESS: QuestionTypes, UNIT_OPTION: QuestionTypes}>}
+ */
 export const COMPONENT_TYPES = Object.freeze({
 	CHECKBOX: 'checkbox',
 	BOOLEAN: 'boolean',
@@ -12,6 +19,5 @@ export const COMPONENT_TYPES = Object.freeze({
 	MULTI_FIELD_INPUT: 'multi-field-input',
 	NUMBER: 'number',
 	ADDRESS: 'site-address',
-	UNIT_OPTION: 'unit-option',
-	LIST_ADD_MORE: 'list-add-more'
+	UNIT_OPTION: 'unit-option'
 });
