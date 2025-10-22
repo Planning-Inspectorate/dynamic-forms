@@ -39,7 +39,7 @@
                         classes: "govuk-radios",
                         idPrefix: question.fieldName,
                         name: question.fieldName,
-                        hint: { text: question.hint },
+                        hint: question.hint and { text: question.hint },
                         errorMessage: errors[question.fieldName] and {
                             text: errors[question.fieldName].msg
                         },
@@ -72,7 +72,7 @@
                             classes: "govuk-radios",
                             idPrefix: question.fieldName,
                             name: question.fieldName,
-                            hint: { text: question.hint },
+                            hint: question.hint and { text: question.hint },
                             errorMessage: errors[question.fieldName] and {
                                 text: errors[question.fieldName].msg
                             },
