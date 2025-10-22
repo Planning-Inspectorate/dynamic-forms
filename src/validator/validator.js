@@ -12,7 +12,10 @@ const validate = async (req, res, next) => {
 	}
 	if (req.body && typeof req.body === 'object' && req.body.constructor === Object) {
 		for (const key of Object.keys(req.body)) {
-			req.body[key] = req.body[key].trim();
+			if (typeof req.body[key] === 'string') {
+				// Trim whitespace from string values in req.body
+				req.body[key] = req.body[key].trim();
+			}
 		}
 	} else {
 		throw new Error(`req.body is not an object: ${req.body} :: ${typeof req.body}`);
