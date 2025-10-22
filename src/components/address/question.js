@@ -24,7 +24,7 @@ export default class AddressQuestion extends Question {
 			viewFolder: 'address'
 		});
 
-		for (const validator of params.validators) {
+		for (const validator of params.validators || []) {
 			if (validator instanceof AddressValidator) {
 				this.requiredFields = validator.requiredFields;
 			}
