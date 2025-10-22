@@ -143,3 +143,11 @@ When contributing to this package, ensure changes are generic and not service-sp
 Commits must follow conventional commits, and the commit types will be used by semantic-release to determine the next version number. For example `feat` commits will result in a minor version bump, while `fix` commits will result in a patch version bump. Major version bumps should be reserved for breaking changes, and should be discussed with the R&D team before being made.
 
 The package will be released automatically using semantic-release, on merge to main. This will include a git tag for the release, and publishing to NPM.
+
+### Tests
+
+There are some lightweight tests in the `test` directory which sets up a basic journey and checks the rendering for each question as well as redirect logic.
+
+When adding a new question type, be sure to add an example question into `test/questions.js`, and mock answers into `test/questions.test.js#mockAnswerBody` and `test/questions.test.js#mockAnswer`. Also, the question should be added to the journey in `test/journey.js`.
+
+To update any snapshots with rendering changes (or new questions), run `node --test --test-update-snapshots`.
