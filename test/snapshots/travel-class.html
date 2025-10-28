@@ -16,7 +16,10 @@
       Which class do you want to travel in?
     </label>
   </h1>
-  <select class="govuk-select" id="travelClass" name="travelClass">
+  <div id="travelClass-hint" class="govuk-hint">
+    
+  </div>
+  <select class="govuk-select" id="travelClass" name="travelClass" aria-describedby="travelClass-hint">
     <option value="economy" data-cy="answer-economy">Economy</option>
     <option value="business" data-cy="answer-business">Business</option>
     <option value="first" data-cy="answer-first">First Class</option>
