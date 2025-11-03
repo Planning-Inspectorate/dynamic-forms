@@ -1,4 +1,5 @@
 {% extends layoutTemplate %}
+
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -6,9 +7,6 @@
 {% from "./task-list-single-section.njk" import singleTaskList %}
 
 {% block dynTaskList %}
-    {% block beforeTaskList %}
-    {% endblock %}
-
     <style {% if cspNonce %}nonce={{ cspNonce }}{% endif %}>
         .app-task-list {
           padding-left: 0;
@@ -37,8 +35,4 @@
             {% endif %}
         </div>
     </div>
-
-    {% block afterTaskList %}
-    {% endblock %}
-
 {% endblock %}
