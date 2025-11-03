@@ -35,7 +35,7 @@
     {{ super() }}
 {% endblock before_content %}
 
-{% block content %}
+{% block dynQuestionContent %}
     <style {% if cspNonce %}nonce={{ cspNonce }}{% endif %}>
         .pins-select--width-4 {
             min-width: 4.5em !important;
