@@ -55,7 +55,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			}
 		};
 		const customViewData = {
-			layoutTemplate: 'views/layout-question.njk',
+			layoutTemplate: 'views/layout-journey.njk',
 			question: {
 				question: 'Redaction Question',
 				fieldName: 'field-name',
@@ -94,7 +94,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			}
 		};
 		const customViewData = {
-			layoutTemplate: 'views/layout-question.njk',
+			layoutTemplate: 'views/layout-journey.njk',
 			question: {
 				question: 'Redaction Question',
 				fieldName: 'field-name',
@@ -134,7 +134,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			}
 		};
 		const customViewData = {
-			layoutTemplate: 'views/layout-question.njk',
+			layoutTemplate: 'views/layout-journey.njk',
 			question: {
 				question: 'Redaction Question',
 				fieldName: 'field-name',
@@ -181,7 +181,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			}
 		};
 		const customViewData = {
-			layoutTemplate: 'views/layout-question.njk',
+			layoutTemplate: 'views/layout-journey.njk',
 			question: {
 				question: 'Redaction Question',
 				fieldName: 'field-name',

@@ -132,7 +132,7 @@ describe('AddressQuestion', () => {
 			const model = await question.prepQuestionForRendering(
 				{},
 				{ getBackLink: mock.fn(), response },
-				{ layoutTemplate: 'views/layout-question.njk' }
+				{ layoutTemplate: 'views/layout-journey.njk' }
 			);
 
 			assert.strictEqual(model.question.hint, hintText);

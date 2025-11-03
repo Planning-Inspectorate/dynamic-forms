@@ -30,7 +30,7 @@ export function createJourney(questions, response) {
 				.addQuestion(questions.luggageWeight)
 		],
 		taskListUrl: 'check-your-answers',
-		journeyTemplate: 'views/layout-question.njk',
+		journeyTemplate: 'views/layout-journey.njk',
 		listingPageViewPath: 'views/layout-check-your-answers.njk',
 		journeyTitle: 'Holiday Booking',
 		returnToListing: false,
