@@ -124,12 +124,12 @@ export async function list(req, res, pageCaption, viewData) {
 		summaryListData.sections.push(sectionView);
 	}
 
-	return res.render(journey.listingPageViewPath, {
+	return res.render('components/task-list/index', {
 		...viewData,
 		pageCaption,
 		summaryListData,
 		journeyComplete: journey.isComplete(),
-		layoutTemplate: journey.journeyTemplate,
+		layoutTemplate: journey.listingPageViewPath,
 		journeyTitle: journey.journeyTitle
 	});
 }

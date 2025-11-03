@@ -223,11 +223,11 @@ describe('dynamic-form/controller', () => {
 			const mockFn = res.render.mock;
 			assert.strictEqual(mockFn.callCount(), 1);
 			assert.deepStrictEqual(mockFn.calls[0].arguments, [
-				mockJourney.listingPageViewPath,
+				'components/task-list/index',
 				{
 					appeal,
 					summaryListData: mockSummaryListData,
-					layoutTemplate: mockTemplateUrl,
+					layoutTemplate: mockListingPath,
 					journeyComplete: false,
 					pageCaption: pageCaption,
 					journeyTitle: mockJourneyTitle
@@ -269,11 +269,11 @@ describe('dynamic-form/controller', () => {
 
 			assert.strictEqual(mockFn.callCount(), 1);
 			assert.deepStrictEqual(mockFn.calls[0].arguments, [
-				mockJourney.listingPageViewPath,
+				'components/task-list/index',
 				{
 					appeal,
 					summaryListData: mockSummaryListData,
-					layoutTemplate: mockTemplateUrl,
+					layoutTemplate: mockListingPath,
 					journeyComplete: false,
 					pageCaption: pageCaption,
 					journeyTitle: mockJourneyTitle
