@@ -1,26 +1,9 @@
 {% extends layoutTemplate %}
 
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/label/macro.njk" import govukLabel %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-
-{% block before_content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            {% if errorSummary %}
-                {{ govukErrorSummary({
-                    titleText: "There is a problem",
-                    errorList: errorSummary,
-                    attributes: {"data-cy": "error-wrapper"}
-                }) }}
-            {% endif %}
-        </div>
-    </div>
-
-    {{ super() }}
-{% endblock before_content %}
 
 {% block dynQuestionContent %}
     <div class="govuk-grid-row">

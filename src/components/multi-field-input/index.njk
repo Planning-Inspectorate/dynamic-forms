@@ -1,28 +1,11 @@
 {% extends layoutTemplate %}
 
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/label/macro.njk" import govukLabel %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set inputFields = question.inputFields %}
-
-{% block before_content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            {% if errorSummary %}
-                {{ govukErrorSummary({
-                    titleText: "There is a problem",
-                    errorList: errorSummary,
-                    attributes: {"data-cy": "error-wrapper"}
-                }) }}
-            {% endif %}
-        </div>
-    </div>
-
-    {{ super() }}
-{% endblock before_content %}
 
 {% block dynQuestionContent %}
     <div class="govuk-grid-row">
