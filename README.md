@@ -21,7 +21,7 @@ The functionality for 'check-your-answers' pages can also be useful for generati
 
 ## Requirements
 
-To use this package nunjucks must be configured so that the component view files are available, and static assets must be made available for certain components and styling.
+To use this package nunjucks must be configured so that the component view files are available, and static assets must be made available for certain components and styling. Some nunjucks templates are required to correctly render the question pages and task list views.
 
 ### Nunjucks
 
@@ -67,11 +67,76 @@ The select component can use the [accessible-autocomplete](https://www.npmjs.com
 
 ### Layouts
 
-The layout file used for the journey should include the following blocks:
+There are two layout files that need to be configured for dynamic-forms: journey and task list.
 
-TODO!
+**Journey template**
+
+The journey template is used for question pages. It must include a block called `dynQuestionContent`, and a block called `head` (which the default gov.uk template has).
+It should also include the rendering of the errorSummary component. The path to this template is configured via the `journeyTemplate` property on a Journey.
+
+e.g.
+
+```nunjucks
+{% extends "govuk/template.njk" %}
+
+{% block beforeContent %}
+    {% if errorSummary %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                {{ govukErrorSummary({
+                    titleText: "There is a problem",
+                    errorList: errorSummary,
+                    attributes: {"data-cy": "error-wrapper"}
+                }) }}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-xl">
+                {% if pageCaption %}
+                    <span class="govuk-caption-xl">{{ pageCaption }}</span>
+                {% endif %}
+                {{ pageHeading }}
+            </h1>
+        </div>
+    </div>
+    
+    {% block dynQuestionContent %}{% endblock %}
+{% endblock %}
+```
+
+**Task list template**
+
+The task list template is used for the task list or "check your answers" page. It must include a block called `dynTaskList`. The path to this template is configured via the `taskListTemplate` property on a Journey.
+
+e.g.
+
+```nunjucks
+{% extends "govuk/template.njk" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-xl">
+                {% if pageCaption %}
+                    <span class="govuk-caption-xl">{{ pageCaption }}</span>
+                {% endif %}
+                {{ pageHeading }}
+            </h1>
+        </div>
+    </div>
+    
+    {% block dynTaskList %}{% endblock %}
+{% endblock %}
+```
 
 ## Usage
+
+The test directory includes a very basic journey in `test/journey.js`. This may be a useful guide for setting up a journey and associated questions. Also in `test/questions.test.js` there is a function `createAppWithQuestions` which may be a useful guide for setting up the appropriate controllers and routes for a journey.
 
 ### Conditions
 
