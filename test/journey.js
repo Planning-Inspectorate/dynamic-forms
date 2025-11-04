@@ -31,7 +31,7 @@ export function createJourney(questions, response) {
 		],
 		taskListUrl: 'check-your-answers',
 		journeyTemplate: 'views/layout-journey.njk',
-		listingPageViewPath: 'views/layout-check-your-answers.njk',
+		taskListTemplate: 'views/layout-check-your-answers.njk',
 		journeyTitle: 'Holiday Booking',
 		returnToListing: false,
 		makeBaseUrl: () => '/',

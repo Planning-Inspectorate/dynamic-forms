@@ -129,7 +129,7 @@ export async function list(req, res, pageCaption, viewData) {
 		pageCaption,
 		summaryListData,
 		journeyComplete: journey.isComplete(),
-		layoutTemplate: journey.listingPageViewPath,
+		layoutTemplate: journey.taskListTemplate,
 		journeyTitle: journey.journeyTitle
 	});
 }

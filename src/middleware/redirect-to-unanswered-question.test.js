@@ -46,7 +46,7 @@ describe('redirectToUnansweredQuestion Middleware', () => {
 	const params = {
 		journeyId: 'id-1',
 		journeyTemplate: 'statement-template.njk',
-		listingPageViewPath: 'dynamic-components/task-list/statement',
+		taskListTemplate: 'dynamic-components/task-list/statement',
 		journeyTitle: 'Manage your appeals',
 		sections: [
 			new Section('', 'section-1')

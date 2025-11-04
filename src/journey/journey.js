@@ -29,8 +29,8 @@ export class Journey {
 	taskListUrl = '';
 	/** @type {string} journeyTemplate - nunjucks template file used for */
 	journeyTemplate = '';
-	/** @type {string} listingPageViewPath - nunjucks template file used for listing page */
-	listingPageViewPath = '';
+	/** @type {string} taskListTemplate - nunjucks template file used for listing page */
+	taskListTemplate = '';
 	/** @type {string} informationPageViewPath - nunjucks template file used for pdf summary information page */
 	informationPageViewPath = '';
 	/** @type {boolean} defines how the next/previous question handles end of sections */
@@ -46,7 +46,7 @@ export class Journey {
 	 * @param {string} [options.taskListUrl] - task list url - added to base url, can be left undefined
 	 * @param {JourneyResponse} options.response - user's response
 	 * @param {string} options.journeyTemplate - template used for all views
-	 * @param {string} options.listingPageViewPath - path to njk view for listing page
+	 * @param {string} options.taskListTemplate - path to njk view for listing page
 	 * @param {string} [options.informationPageViewPath] - path to njk view for pdf summary page
 	 * @param {string} options.journeyTitle - part of the title in the njk view
 	 * @param {boolean} [options.returnToListing] - defines how the next/previous question handles end of sections
@@ -59,7 +59,7 @@ export class Journey {
 		taskListUrl,
 		response,
 		journeyTemplate,
-		listingPageViewPath,
+		taskListTemplate,
 		informationPageViewPath,
 		journeyTitle,
 		returnToListing,
@@ -86,10 +86,10 @@ export class Journey {
 		}
 		this.journeyTemplate = journeyTemplate;
 
-		if (!listingPageViewPath || typeof listingPageViewPath !== 'string') {
-			throw new Error('listingPageViewPath should be a string.');
+		if (!taskListTemplate || typeof taskListTemplate !== 'string') {
+			throw new Error('taskListTemplate should be a string.');
 		}
-		this.listingPageViewPath = listingPageViewPath;
+		this.taskListTemplate = taskListTemplate;
 
 		this.informationPageViewPath = informationPageViewPath || '';
 
