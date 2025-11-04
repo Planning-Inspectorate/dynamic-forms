@@ -231,7 +231,7 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 					}
 				},
 				journeyTemplate: 'mock template',
-				listingPageViewPath: 'mock path',
+				taskListTemplate: 'mock path',
 				journeyTitle: 'mock title',
 				sections: []
 			});
@@ -265,7 +265,7 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 					}
 				},
 				journeyTemplate: 'mock template',
-				listingPageViewPath: 'mock path',
+				taskListTemplate: 'mock path',
 				journeyTitle: 'mock title',
 				sections: []
 			});
@@ -299,7 +299,7 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 					}
 				},
 				journeyTemplate: 'mock template',
-				listingPageViewPath: 'mock path',
+				taskListTemplate: 'mock path',
 				journeyTitle: 'mock title',
 				sections: []
 			});

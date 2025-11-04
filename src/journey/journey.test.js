@@ -53,7 +53,7 @@ describe('Journey class', () => {
 				answers: {}
 			},
 			journeyTemplate: 'mock template',
-			listingPageViewPath: 'mock path',
+			taskListTemplate: 'mock path',
 			journeyTitle: 'mock title'
 		};
 	});
@@ -114,23 +114,23 @@ describe('Journey class', () => {
 			assert.throws(() => new Journey(constructorArgs), new Error('journeyTemplate should be a string.'));
 		});
 
-		it('should set listingPageViewPath', () => {
-			constructorArgs.listingPageViewPath = 'test';
+		it('should set taskListTemplate', () => {
+			constructorArgs.taskListTemplate = 'test';
 			const journey = new Journey(constructorArgs);
 
-			assert.strictEqual(journey.listingPageViewPath, constructorArgs.listingPageViewPath);
+			assert.strictEqual(journey.taskListTemplate, constructorArgs.taskListTemplate);
 		});
 
-		it('should error if listingPageViewPath not provided', () => {
-			constructorArgs.listingPageViewPath = '';
+		it('should error if taskListTemplate not provided', () => {
+			constructorArgs.taskListTemplate = '';
 
-			assert.throws(() => new Journey(constructorArgs), new Error('listingPageViewPath should be a string.'));
+			assert.throws(() => new Journey(constructorArgs), new Error('taskListTemplate should be a string.'));
 		});
 
-		it('should error if listingPageViewPath not a string', () => {
-			constructorArgs.listingPageViewPath = 123;
+		it('should error if taskListTemplate not a string', () => {
+			constructorArgs.taskListTemplate = 123;
 
-			assert.throws(() => new Journey(constructorArgs), new Error('listingPageViewPath should be a string.'));
+			assert.throws(() => new Journey(constructorArgs), new Error('taskListTemplate should be a string.'));
 		});
 
 		it('should set journeyTitle', () => {
