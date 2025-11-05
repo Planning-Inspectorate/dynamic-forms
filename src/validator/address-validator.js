@@ -143,7 +143,7 @@ export default class AddressValidator extends BaseValidator {
 		return validator
 			.isLength({ min: postcodeMinLength, max: postcodeMaxLength })
 			.bail()
-			.withMessage(`Postcode must be between ${postcodeMinLength} and ${postcodeMaxLength} characters`)
+			.withMessage(`Postcode must be less than ${postcodeMaxLength} characters`)
 			.custom((postcode) => {
 				return validatePostcode(postcode);
 			});
