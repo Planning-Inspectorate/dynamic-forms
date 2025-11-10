@@ -34,7 +34,7 @@
                         id: question.fieldName,
                         name: question.fieldName,
                         value: question.value,
-                        hint: { text: question.hint },
+                        hint: question.hint and { text: question.hint },
                         errorMessage: errors[question.fieldName] and {
                             text: errors[question.fieldName].msg
                         },
@@ -58,7 +58,7 @@
                         id: question.fieldName,
                         name: question.fieldName,
                         value: question.value,
-                        hint: { text: question.hint },
+                        hint: question.hint and { text: question.hint },
                         errorMessage: errors[question.fieldName] and {
                             text: errors[question.fieldName].msg
                         },

@@ -15,7 +15,7 @@
                     errorMessage: errors[question.fieldName] and {
                         text: errors[question.fieldName].msg
                     },
-                    hint: {
+                    hint: question.description and {
                         text: question.description
                     },
                     fieldset: {
