@@ -30,7 +30,7 @@
                                 classes: "govuk-fieldset__legend--l"
                             }
                         },
-                        hint: { text: question.hint },
+                        hint: question.hint and { text: question.hint },
                         items: question.options
                     }) }}
 
@@ -42,7 +42,7 @@
                         errorMessage: errors[question.fieldName] and {
                             text: errors[question.fieldName].msg
                         },
-                        hint: {
+                        hint: htmlHint and {
                             html: htmlHint
                         },
                         fieldset: {
