@@ -69,13 +69,13 @@
 
                 <div class="govuk-form-group{% if errors[hour].msg or errors[minutes].msg or errors[period].msg %} govuk-form-group--error{% endif %}">
                     <fieldset class="govuk-fieldset" role="group">
-                        <div id="{{ question.fieldName }}-hint" class="govuk-hint">For example, 9:30am or 2:55pm</div>
+                        <div id="{{ question.fieldName }}-time-hint" class="govuk-hint">For example, 9:30am or 2:55pm</div>
                         {% if errors[hour].msg or errors[minutes].msg or errors[period].msg %}
                             <p id="{{ question.fieldName }}-error" class="govuk-error-message">
                                 <span class="govuk-visually-hidden">Error:</span> {{ errors[hour].msg or errors[minutes].msg or errors[period].msg }}
                             </p>
                         {% endif %}
-                        <div class="govuk-date-input" id={{ question.fieldName }}>
+                        <div class="govuk-date-input" id="{{ question.fieldName }}-time">
                             <div class="govuk-date-input__item">
                                 {{ govukInput({
                                     classes: "govuk-input--width-2 govuk-input--error" if errors[question.fieldName] or errors[hour] else "govuk-input--width-2",
