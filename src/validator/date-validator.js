@@ -184,8 +184,8 @@ export default class DateValidator extends BaseValidator {
 			noDayMonthErrorMessage: `${capitalisedInputLabel} must include a day and month`,
 			noDayYearErrorMessage: `${capitalisedInputLabel} must include a day and year`,
 			noMonthYearErrorMessage: `${capitalisedInputLabel} must include a month and year`,
-			invalidDateErrorMessage: `${capitalisedInputLabel} must be a real date`,
-			invalidMonthErrorMessage: `${capitalisedInputLabel} month must be a real month`,
+			invalidDateErrorMessage: `${capitalisedInputLabel} day must be a real day`,
+			invalidMonthErrorMessage: `${capitalisedInputLabel} month must be between 1 and 12`,
 			invalidYearErrorMessage: `${capitalisedInputLabel} year must include 4 numbers`,
 			futureDateErrorMessage: `${capitalisedInputLabel} must be today or in the past`,
 			pastDateErrorMessage: `${capitalisedInputLabel} must be today or in the future`
