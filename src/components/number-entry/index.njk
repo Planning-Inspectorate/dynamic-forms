@@ -12,7 +12,7 @@
             {%- endif %}
 
             <form action="" method="post" novalidate>
-                <input type="hidden" name="_csrf" value="{{ _csrf }}">
+                {% if _csrf %}<input type="hidden" name="_csrf" value="{{ _csrf }}">{% endif %}
                 {{ govukInput({
                     hint: question.hint and {
                         text: question.hint
