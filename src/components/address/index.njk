@@ -14,7 +14,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form action="" method="post" novalidate>
-                <input type="hidden" name="_csrf" value="{{ _csrf }}">
+                {% if _csrf %}<input type="hidden" name="_csrf" value="{{ _csrf }}">{% endif %}
                 {% call govukFieldset({
                     legend: {
                         text: question.question,
