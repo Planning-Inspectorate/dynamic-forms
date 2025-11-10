@@ -18,7 +18,9 @@
                     }
                 }) %}
 
-                    <p class="govuk-body">{{ question.description }}</p>
+                    {%- if question.description %}
+                        <p class="govuk-body">{{ question.description }}</p>
+                    {%- endif -%}
                     {% if question.html %}
                         {% include question.html ignore missing %}
                     {% endif %}
