@@ -196,7 +196,7 @@ describe('./src/dynamic-forms/validator/date-validator.js', () => {
 			const errors = await _validationMappedErrors(req, question, 'the required date');
 
 			assert.strictEqual(Object.keys(errors).length, 1);
-			assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'The required date day must be a real day');
+			assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'The required date must be a real date');
 		});
 
 		it('throws error if invalid month provided', async () => {
@@ -215,7 +215,7 @@ describe('./src/dynamic-forms/validator/date-validator.js', () => {
 			const errors = await _validationMappedErrors(req, question, 'the required date');
 
 			assert.strictEqual(Object.keys(errors).length, 1);
-			assert.strictEqual(errors[`${question.fieldName}_month`].msg, 'The required date month must be between 1 and 12');
+			assert.strictEqual(errors[`${question.fieldName}_month`].msg, 'The required date month must be a real month');
 		});
 
 		it('throws error if invalid year provided', async () => {
@@ -336,8 +336,8 @@ describe('./src/dynamic-forms/validator/date-validator.js', () => {
 			const errors = await _validationMappedErrors(req, question, 'the required date');
 
 			assert.strictEqual(Object.keys(errors).length, 3);
-			assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'The required date day must be a real day');
-			assert.strictEqual(errors[`${question.fieldName}_month`].msg, 'The required date month must be between 1 and 12');
+			assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'The required date must be a real date');
+			assert.strictEqual(errors[`${question.fieldName}_month`].msg, 'The required date month must be a real month');
 			assert.strictEqual(errors[`${question.fieldName}_year`].msg, 'The required date year must include 4 numbers');
 		});
 
@@ -357,8 +357,8 @@ describe('./src/dynamic-forms/validator/date-validator.js', () => {
 			const errors = await _validationMappedErrors(req, question, 'the required date');
 
 			assert.strictEqual(Object.keys(errors).length, 3);
-			assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'The required date day must be a real day');
-			assert.strictEqual(errors[`${question.fieldName}_month`].msg, 'The required date month must be between 1 and 12');
+			assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'The required date must be a real date');
+			assert.strictEqual(errors[`${question.fieldName}_month`].msg, 'The required date month must be a real month');
 			assert.strictEqual(errors[`${question.fieldName}_year`].msg, 'The required date year must include 4 numbers');
 		});
 
