@@ -66,7 +66,7 @@ export default class AddressValidator extends BaseValidator {
 		if (!this.requiredFields?.addressLine1) {
 			validator.optional({ checkFalsy: true });
 		} else {
-			validator.notEmpty().withMessage(`Enter an address line 1`);
+			validator.notEmpty().withMessage(`Enter address line 1, typically the building and street`);
 		}
 
 		return validator
