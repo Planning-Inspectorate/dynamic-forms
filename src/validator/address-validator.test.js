@@ -74,7 +74,7 @@ describe('AddressValidator', () => {
 		const errors = await _validationMappedErrors(req, question);
 
 		assert.strictEqual(Object.keys(errors).length, 5);
-		assert.strictEqual(errors.testField_addressLine1.msg, 'Enter an address line 1');
+		assert.strictEqual(errors.testField_addressLine1.msg, 'Enter address line 1, typically the building and street');
 		assert.strictEqual(errors.testField_addressLine2.msg, 'Enter an address line 2');
 		assert.strictEqual(errors.testField_townCity.msg, 'Enter a town or city');
 		assert.strictEqual(errors.testField_county.msg, 'Enter a county');
