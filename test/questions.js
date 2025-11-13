@@ -164,6 +164,14 @@ export const questionProps = {
 				conditional: { label: 'Weight in pounds', fieldName: 'luggageWeightValue_lbs', suffix: 'lbs' }
 			}
 		]
+	},
+	contactEmail: {
+		type: COMPONENT_TYPES.EMAIL,
+		title: 'Contact Email',
+		question: 'What is your email address for booking confirmations?',
+		fieldName: 'contactEmail',
+		url: 'contact-email',
+		label: 'Email address'
 	}
 };
 
@@ -183,7 +191,8 @@ export const questionsInOrder = [
 	questionProps.companions,
 	questionProps.nights,
 	questionProps.hotelAddress,
-	questionProps.luggageWeight
+	questionProps.luggageWeight,
+	questionProps.contactEmail
 ];
 
 export const getQuestions = () => createQuestions(questionProps, questionClasses, {});

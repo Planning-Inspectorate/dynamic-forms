@@ -199,7 +199,63 @@ These conditions combine with individual conditions and section conditions. In t
 | q6       | q1 = 'yes'        | q5 = 90          | N/A                 |
 | q7       | q1 = 'yes'        | q5 = 90          | N/A                 |
 
+### Email Validation
 
+Email validation is provided through the `EmailValidator` class and `EmailQuestion` component. The validator uses express-validator's robust email validation with configurable options.
+
+#### Basic Usage
+
+```javascript
+import EmailQuestion from '@planning-inspectorate/dynamic-forms/src/components/email/question.js';
+import EmailValidator from '@planning-inspectorate/dynamic-forms/src/validator/email-validator.js';
+
+const emailQuestion = new EmailQuestion({
+    title: 'Contact Information',
+    question: 'What is your email address?',
+    fieldName: 'email',
+    validators: [
+        new EmailValidator({
+            errorMessage: 'Enter an email address in the correct format, like name@example.com'
+        })
+    ]
+});
+```
+
+The `EmailQuestion` automatically configures the input with `type="email"`, `spellcheck="false"`, and `autocomplete="email"` for optimal user experience.
+
+#### Advanced Validation Options
+
+For stricter email validation requirements:
+
+```javascript
+const businessEmailValidator = new EmailValidator({
+    options: {
+        allowDisplayName: false,        // Reject "Name <email@domain.com>" format
+        requireTld: true,              // Require top-level domain (default: true)
+        allowUtf8LocalPart: false,     // Only ASCII characters in local part
+        allowIpDomain: false           // Don't allow IP addresses as domain
+    },
+    errorMessage: 'Enter a valid business email address'
+});
+```
+
+#### Alternative: Single Line Input
+
+You can also use `SingleLineInputQuestion` with email attributes:
+
+```javascript
+import SingleLineInputQuestion from '@planning-inspectorate/dynamic-forms/src/components/single-line-input/question.js';
+import EmailValidator from '@planning-inspectorate/dynamic-forms/src/validator/email-validator.js';
+
+const emailQuestion = new SingleLineInputQuestion({
+    title: 'Contact Information',
+    question: 'What is your email address?',
+    fieldName: 'email',
+    inputAttributes: { type: 'email', spellcheck: 'false' },
+    autocomplete: 'email',
+    validators: [new EmailValidator()]
+});
+```
 
 ## Contributing
 

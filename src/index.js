@@ -3,7 +3,7 @@
  */
 
 /**
- * @type {Readonly<{CHECKBOX: QuestionTypes, BOOLEAN: QuestionTypes, RADIO: QuestionTypes, DATE: QuestionTypes, DATE_PERIOD: QuestionTypes, TEXT_ENTRY: QuestionTypes, TEXT_ENTRY_REDACT: QuestionTypes, SELECT: QuestionTypes, SINGLE_LINE_INPUT: QuestionTypes, MULTI_FIELD_INPUT: QuestionTypes, NUMBER: QuestionTypes, ADDRESS: QuestionTypes, UNIT_OPTION: QuestionTypes}>}
+ * @type {Readonly<{CHECKBOX: QuestionTypes, BOOLEAN: QuestionTypes, RADIO: QuestionTypes, DATE: QuestionTypes, DATE_PERIOD: QuestionTypes, TEXT_ENTRY: QuestionTypes, TEXT_ENTRY_REDACT: QuestionTypes, SELECT: QuestionTypes, SINGLE_LINE_INPUT: QuestionTypes, MULTI_FIELD_INPUT: QuestionTypes, NUMBER: QuestionTypes, ADDRESS: QuestionTypes, UNIT_OPTION: QuestionTypes, EMAIL: QuestionTypes}>}
  */
 export const COMPONENT_TYPES = Object.freeze({
 	CHECKBOX: 'checkbox',
@@ -19,5 +19,6 @@ export const COMPONENT_TYPES = Object.freeze({
 	MULTI_FIELD_INPUT: 'multi-field-input',
 	NUMBER: 'number',
 	ADDRESS: 'site-address',
-	UNIT_OPTION: 'unit-option'
+	UNIT_OPTION: 'unit-option',
+	EMAIL: 'email'
 });
