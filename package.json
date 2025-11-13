@@ -9,7 +9,7 @@
     "url": "git+https://github.com/Planning-Inspectorate/dynamic-forms.git"
   },
   "scripts": {
-    "commitlint": "commitlint --from=$(git cherry origin/main | head -n 1 | cut -c 3-)",
+    "commitlint": "commitlint --from=$(git rev-parse $(git cherry origin/main | head -n 1 | cut -c 3-)^1)",
     "lint": "npx eslint .",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
