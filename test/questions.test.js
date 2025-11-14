@@ -59,7 +59,7 @@ export async function createAppWithQuestions(ctx) {
 	return server;
 }
 
-describe('question pages', () => {
+describe('question pages', { concurrency: false }, () => {
 	it('should have a test for each question type', () => {
 		const questionsByType = new Map();
 		for (const q of questionsInOrder) {
@@ -79,7 +79,7 @@ describe('question pages', () => {
 	for (let i = 0; i < questionsInOrder.length; i++) {
 		const q = questionsInOrder[i];
 
-		it(`should render question: ${q.url}`, async (ctx) => {
+		it(`should render question: ${q.url}`, { concurrency: false }, async (ctx) => {
 			const testServer = await createAppWithQuestions(ctx);
 
 			const response = await testServer.get('/questions/' + q.url, {
@@ -108,7 +108,7 @@ describe('question pages', () => {
 			});
 		});
 
-		it(`should POST valid data for question: ${q.url} and redirect to next`, async (ctx) => {
+		it(`should POST valid data for question: ${q.url} and redirect to next`, { concurrency: false }, async (ctx) => {
 			const testServer = await createAppWithQuestions(ctx);
 			const payload = mockAnswerBody(q);
 			const response = await testServer.post(`/questions/${q.url}`, payload, { redirect: 'manual' });
@@ -193,6 +193,8 @@ export function mockAnswerBody(q) {
 				[q.fieldName]: 'kg',
 				[q.options[0].conditional.fieldName]: 10
 			};
+		case COMPONENT_TYPES.EMAIL:
+			return { [q.fieldName]: 'test@example.com' };
 		default:
 			return { [q.fieldName]: 'test' };
 	}
@@ -240,6 +242,8 @@ export function mockAnswer(q) {
 		}
 		case COMPONENT_TYPES.UNIT_OPTION:
 			return '10 kg';
+		case COMPONENT_TYPES.EMAIL:
+			return 'test@example.com';
 		default:
 			return 'test';
 	}

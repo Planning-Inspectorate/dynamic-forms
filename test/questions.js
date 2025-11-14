@@ -1,6 +1,7 @@
 import { COMPONENT_TYPES } from '../src/index.js';
 import { createQuestions } from '../src/questions/create-questions.js';
 import { questionClasses } from '../src/questions/questions.js';
+import EmailValidator from '../src/validator/email-validator.js';
 
 /**
  * @typedef {import('../src/questions/question-props.js').QuestionProps} Props
@@ -171,7 +172,8 @@ export const questionProps = {
 		question: 'What is your email address for booking confirmations?',
 		fieldName: 'contactEmail',
 		url: 'contact-email',
-		label: 'Email address'
+		label: 'Email address',
+		validators: [new EmailValidator()]
 	}
 };
 
