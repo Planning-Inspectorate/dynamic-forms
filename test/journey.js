@@ -28,6 +28,7 @@ export function createJourney(questions, response) {
 				.addQuestion(questions.nights)
 				.addQuestion(questions.hotelAddress)
 				.addQuestion(questions.luggageWeight)
+				.addQuestion(questions.contactEmail) // added email question
 		],
 		taskListUrl: 'check-your-answers',
 		journeyTemplate: 'views/layout-journey.njk',
