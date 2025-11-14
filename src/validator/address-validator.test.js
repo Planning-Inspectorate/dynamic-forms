@@ -6,6 +6,7 @@ import AddressValidator, {
 	addressLine1MaxLength,
 	addressLine2MaxLength,
 	postcodeMaxLength,
+	postcodeMinLength,
 	townCityMaxLength
 } from './address-validator.js';
 
@@ -107,7 +108,10 @@ describe('AddressValidator', () => {
 			`Address line 2 must be ${addressLine2MaxLength} characters or less`
 		);
 		assert.strictEqual(errors.testField_townCity.msg, `Town or city must be ${townCityMaxLength} characters or less`);
-		assert.strictEqual(errors.testField_postcode.msg, `Postcode must be less than ${postcodeMaxLength} characters`);
+		assert.strictEqual(
+			errors.testField_postcode.msg,
+			`Postcode must be between ${postcodeMinLength} and ${postcodeMaxLength} characters`
+		);
 	});
 });
 

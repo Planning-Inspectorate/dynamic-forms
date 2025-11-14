@@ -21,8 +21,8 @@ export const townCityMaxLength = 250;
 export const townCityMinLength = 0;
 export const countyMaxLength = 250;
 export const countyMinLength = 0;
-export const postcodeMaxLength = 10;
-export const postcodeMinLength = 1;
+export const postcodeMaxLength = 7;
+export const postcodeMinLength = 5;
 
 /**
  * enforces address fields are within allowed parameters
@@ -143,7 +143,7 @@ export default class AddressValidator extends BaseValidator {
 		return validator
 			.isLength({ min: postcodeMinLength, max: postcodeMaxLength })
 			.bail()
-			.withMessage(`Postcode must be less than ${postcodeMaxLength} characters`)
+			.withMessage(`Postcode must be between ${postcodeMinLength} and ${postcodeMaxLength} characters`)
 			.custom((postcode) => {
 				return validatePostcode(postcode);
 			});
