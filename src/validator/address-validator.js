@@ -21,7 +21,7 @@ export const townCityMaxLength = 250;
 export const townCityMinLength = 0;
 export const countyMaxLength = 250;
 export const countyMinLength = 0;
-export const postcodeMaxLength = 7;
+export const postcodeMaxLength = 8;
 export const postcodeMinLength = 5;
 
 /**
