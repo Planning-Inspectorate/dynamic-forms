@@ -125,4 +125,44 @@ describe('src/dynamic-forms/validator/email-validator.js', () => {
 			.run(req);
 		assert.strictEqual(validationResult.errors.length, 0);
 	});
+
+	it('should reject UTF8 characters when allowUtf8LocalPart is false', async () => {
+		const req = {
+			body: {
+				email: 'tëst@example.com'
+			}
+		};
+		const question = {
+			fieldName: 'email'
+		};
+		const validationResult = await new EmailValidator({
+			options: { allowUtf8LocalPart: false }
+		})
+			.validate(question)
+			.run(req);
+
+		assert.strictEqual(validationResult.errors.length, 1);
+		assert.strictEqual(
+			validationResult.errors[0].msg,
+			'Enter an email address in the correct format, like name@example.com'
+		);
+	});
+
+	it('should accept UTF8 characters when allowUtf8LocalPart is true (default)', async () => {
+		const req = {
+			body: {
+				email: 'tëst@example.com'
+			}
+		};
+		const question = {
+			fieldName: 'email'
+		};
+		const validationResult = await new EmailValidator({
+			options: { allowUtf8LocalPart: true }
+		})
+			.validate(question)
+			.run(req);
+
+		assert.strictEqual(validationResult.errors.length, 0);
+	});
 });

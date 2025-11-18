@@ -24,7 +24,7 @@ export default class EmailValidator extends BaseValidator {
 		this.options = {
 			allow_display_name: options.allowDisplayName || false,
 			require_tld: options.requireTld !== false, // Default to true
-			allow_utf8_local_part: options.allowUtf8LocalPart || true,
+			allow_utf8_local_part: options.allowUtf8LocalPart !== undefined ? options.allowUtf8LocalPart : true,
 			allow_ip_domain: options.allowIpDomain || false,
 			...options
 		};

@@ -59,7 +59,7 @@ export async function createAppWithQuestions(ctx) {
 	return server;
 }
 
-describe('question pages', { concurrency: false }, () => {
+describe('question pages', () => {
 	it('should have a test for each question type', () => {
 		const questionsByType = new Map();
 		for (const q of questionsInOrder) {
