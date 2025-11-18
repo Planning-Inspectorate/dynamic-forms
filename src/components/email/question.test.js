@@ -119,7 +119,28 @@ describe('src/dynamic-forms/components/email/question.js', () => {
 		assert.strictEqual(viewModel.question.fieldName, 'email');
 		assert.strictEqual(viewModel.question.label, 'Your Email');
 		assert.strictEqual(viewModel.question.value, 'test@example.com');
-		assert.strictEqual(viewModel.question.attributes.type, 'email');
+		assert.strictEqual(viewModel.question.type, 'email');
 		assert.strictEqual(viewModel.question.attributes.spellcheck, 'false');
+	});
+
+	it('should not capitalize email addresses in summary', () => {
+		const emailQuestion = new EmailQuestion({
+			title: 'Email Address',
+			question: 'What is your email address?',
+			fieldName: 'email'
+		});
+
+		const mockSection = { segment: 'contact' };
+		const mockJourney = {
+			getCurrentQuestionUrl: () => '/questions/email'
+		};
+		const emailAddress = 'test@example.com';
+
+		const summary = emailQuestion.formatAnswerForSummary(mockSection.segment, mockJourney, emailAddress);
+
+		// Should preserve the original case of the email address
+		assert.strictEqual(summary.length, 1);
+		assert.match(summary[0].value, /test@example\.com/);
+		assert.doesNotMatch(summary[0].value, /Test@example\.com/);
 	});
 });

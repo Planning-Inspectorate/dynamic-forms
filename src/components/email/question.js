@@ -39,4 +39,17 @@ export default class EmailQuestion extends SingleLineInputQuestion {
 			autocomplete: autocomplete
 		});
 	}
+
+	/**
+	 * Override formatAnswerForSummary to prevent capitalization of email addresses
+	 * Email addresses should remain in their original case (typically lowercase)
+	 * @param {string} sectionSegment
+	 * @param {import('../../journey/journey.js').Journey} journey
+	 * @param {string} answer
+	 * @returns {Array}
+	 */
+	formatAnswerForSummary(sectionSegment, journey, answer) {
+		// Call parent method with capitals=false to prevent email capitalization
+		return super.formatAnswerForSummary(sectionSegment, journey, answer, false);
+	}
 }
