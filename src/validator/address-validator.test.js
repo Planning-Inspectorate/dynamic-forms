@@ -113,6 +113,86 @@ describe('AddressValidator', () => {
 			`Postcode must be between ${postcodeMinLength} and ${postcodeMaxLength} characters`
 		);
 	});
+	it('should validate a valid 8-character postcode without errors', async () => {
+		const question = {
+			fieldName: 'testField'
+		};
+
+		const req = {
+			body: {
+				testField_addressLine1: 'A Building',
+				testField_addressLine2: 'A Street',
+				testField_townCity: 'Test town',
+				testField_postcode: 'DN55 1PT'
+			}
+		};
+
+		const errors = await _validationMappedErrors(req, question);
+
+		assert.deepStrictEqual(errors, {});
+	});
+	// New postcode tests
+	it('should validate a valid 5-character postcode without a space', async () => {
+		const question = { fieldName: 'testField' };
+		const req = {
+			body: {
+				testField_addressLine1: 'A Building',
+				testField_addressLine2: 'A Street',
+				testField_townCity: 'Test town',
+				testField_postcode: 'M11AA'
+			}
+		};
+		const errors = await _validationMappedErrors(req, question);
+		assert.deepStrictEqual(errors, {});
+	});
+
+	it('should reject a postcode with multiple spaces', async () => {
+		const question = { fieldName: 'testField' };
+		const req = {
+			body: {
+				testField_addressLine1: 'A Building',
+				testField_addressLine2: 'A Street',
+				testField_townCity: 'Test town',
+				testField_postcode: 'AB1  2CD'
+			}
+		};
+		const errors = await _validationMappedErrors(req, question);
+		assert.strictEqual(errors.testField_postcode.msg, 'Enter a valid postcode');
+	});
+
+	it('should reject a postcode shorter than 5 characters', async () => {
+		const question = { fieldName: 'testField' };
+		const req = {
+			body: {
+				testField_addressLine1: 'A Building',
+				testField_addressLine2: 'A Street',
+				testField_townCity: 'Test town',
+				testField_postcode: 'A1 1'
+			}
+		};
+		const errors = await _validationMappedErrors(req, question);
+		assert.strictEqual(
+			errors.testField_postcode.msg,
+			`Postcode must be between ${postcodeMinLength} and ${postcodeMaxLength} characters`
+		);
+	});
+
+	it('should reject a postcode longer than 8 characters', async () => {
+		const question = { fieldName: 'testField' };
+		const req = {
+			body: {
+				testField_addressLine1: 'A Building',
+				testField_addressLine2: 'A Street',
+				testField_townCity: 'Test town',
+				testField_postcode: 'DN55 1PTA'
+			}
+		};
+		const errors = await _validationMappedErrors(req, question);
+		assert.strictEqual(
+			errors.testField_postcode.msg,
+			`Postcode must be between ${postcodeMinLength} and ${postcodeMaxLength} characters`
+		);
+	});
 });
 
 const _validationMappedErrors = async (req, question) => {
