@@ -206,19 +206,31 @@ Email validation is provided through the `EmailValidator` class and `EmailQuesti
 #### Basic Usage
 
 ```javascript
-import EmailQuestion from '@planning-inspectorate/dynamic-forms/src/components/email/question.js';
+import { COMPONENT_TYPES } from '@planning-inspectorate/dynamic-forms/src/index.js';
+import { createQuestions } from '@planning-inspectorate/dynamic-forms/src/questions/create-questions.js';
+import { questionClasses } from '@planning-inspectorate/dynamic-forms/src/questions/questions.js';
 import EmailValidator from '@planning-inspectorate/dynamic-forms/src/validator/email-validator.js';
 
-const emailQuestion = new EmailQuestion({
-    title: 'Contact Information',
-    question: 'What is your email address?',
-    fieldName: 'email',
-    validators: [
-        new EmailValidator({
-            errorMessage: 'Enter an email address in the correct format, like name@example.com'
-        })
-    ]
-});
+// Define question configuration
+const questionProps = {
+    contactEmail: {
+        type: COMPONENT_TYPES.EMAIL,
+        title: 'Contact Information',
+        question: 'What is your email address?',
+        fieldName: 'contactEmail',
+        url: 'contact-email',
+        label: 'Email address',
+        validators: [
+            new EmailValidator({
+                errorMessage: 'Enter an email address in the correct format, like name@example.com'
+            })
+        ]
+    }
+};
+
+// Create questions using the factory function
+const questions = createQuestions(questionProps, questionClasses, {});
+const emailQuestion = questions.contactEmail;
 ```
 
 The `EmailQuestion` automatically configures the input with `type="email"`, `spellcheck="false"`, and `autocomplete="email"` for optimal user experience.
@@ -239,22 +251,31 @@ const businessEmailValidator = new EmailValidator({
 });
 ```
 
-#### Alternative: Single Line Input
+#### Alternative: Single Line Input with Email Attributes
 
-You can also use `SingleLineInputQuestion` with email attributes:
+You can also configure a single line input with email-specific attributes:
 
 ```javascript
-import SingleLineInputQuestion from '@planning-inspectorate/dynamic-forms/src/components/single-line-input/question.js';
+import { COMPONENT_TYPES } from '@planning-inspectorate/dynamic-forms/src/index.js';
+import { createQuestions } from '@planning-inspectorate/dynamic-forms/src/questions/create-questions.js';
+import { questionClasses } from '@planning-inspectorate/dynamic-forms/src/questions/questions.js';
 import EmailValidator from '@planning-inspectorate/dynamic-forms/src/validator/email-validator.js';
 
-const emailQuestion = new SingleLineInputQuestion({
-    title: 'Contact Information',
-    question: 'What is your email address?',
-    fieldName: 'email',
-    inputAttributes: { type: 'email', spellcheck: 'false' },
-    autocomplete: 'email',
-    validators: [new EmailValidator()]
-});
+const questionProps = {
+    contactEmail: {
+        type: COMPONENT_TYPES.SINGLE_LINE_INPUT,
+        title: 'Contact Information',
+        question: 'What is your email address?',
+        fieldName: 'contactEmail',
+        url: 'contact-email',
+        label: 'Email address',
+        inputAttributes: { type: 'email', spellcheck: 'false' },
+        autocomplete: 'email',
+        validators: [new EmailValidator()]
+    }
+};
+
+const questions = createQuestions(questionProps, questionClasses, {});
 ```
 
 ## Contributing

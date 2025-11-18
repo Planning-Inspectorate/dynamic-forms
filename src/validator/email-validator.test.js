@@ -16,8 +16,8 @@ describe('src/dynamic-forms/validator/email-validator.js', () => {
 		return await new EmailValidator().validate(question).run(req);
 	};
 
-	// Test cases for valid email addresses
-	const validEmailTests = [
+	// Valid email addresses
+	const validEmails = [
 		'test@example.com',
 		'test+tag@example.com',
 		'first.last@example.com',
@@ -26,19 +26,17 @@ describe('src/dynamic-forms/validator/email-validator.js', () => {
 		'verylongusernamethatisusuallynotrecommended@verylongdomainnamethatisalsounusual.com'
 	];
 
-	// Test cases for invalid email addresses
-	const invalidEmailTests = ['invalid-email', 'test@', 'testexample.com', '', 'test @example.com'];
-
-	// Run tests for valid emails
-	validEmailTests.forEach((email) => {
+	validEmails.forEach((email) => {
 		it(`should validate "${email}" as a correct email address`, async () => {
 			const validationResult = await createValidationTest(email);
 			assert.strictEqual(validationResult.errors.length, 0);
 		});
 	});
 
-	// Run tests for invalid emails
-	invalidEmailTests.forEach((email) => {
+	// Invalid email addresses
+	const invalidEmails = ['invalid-email', 'test@', 'testexample.com', '', 'test @example.com'];
+
+	invalidEmails.forEach((email) => {
 		it(`should invalidate "${email}" as an incorrect email format`, async () => {
 			const validationResult = await createValidationTest(email);
 			assert.strictEqual(validationResult.errors.length, 1);
