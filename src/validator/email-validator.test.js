@@ -3,34 +3,61 @@ import assert from 'node:assert';
 import EmailValidator from './email-validator.js';
 
 describe('src/dynamic-forms/validator/email-validator.js', () => {
-	it('should validate a correct email address', async () => {
+	// Helper function to create validation test
+	const createValidationTest = async (email, fieldName = 'email') => {
 		const req = {
 			body: {
-				email: 'test@example.com'
+				[fieldName]: email
 			}
 		};
 		const question = {
-			fieldName: 'email'
+			fieldName
 		};
-		const validationResult = await new EmailValidator().validate(question).run(req);
-		assert.strictEqual(validationResult.errors.length, 0);
+		return await new EmailValidator().validate(question).run(req);
+	};
+
+	// Test cases for valid email addresses
+	const validEmailTests = [
+		'test@example.com',
+		'test+tag@example.com',
+		'first.last@example.com',
+		'user@mail.example.com',
+		'test@example.org',
+		'verylongusernamethatisusuallynotrecommended@verylongdomainnamethatisalsounusual.com'
+	];
+
+	// Test cases for invalid email addresses
+	const invalidEmailTests = ['invalid-email', 'test@', 'testexample.com', '', 'test @example.com'];
+
+	// Run tests for valid emails
+	validEmailTests.forEach((email) => {
+		it(`should validate "${email}" as a correct email address`, async () => {
+			const validationResult = await createValidationTest(email);
+			assert.strictEqual(validationResult.errors.length, 0);
+		});
 	});
 
-	it('should invalidate an incorrect email format', async () => {
+	// Run tests for invalid emails
+	invalidEmailTests.forEach((email) => {
+		it(`should invalidate "${email}" as an incorrect email format`, async () => {
+			const validationResult = await createValidationTest(email);
+			assert.strictEqual(validationResult.errors.length, 1);
+			assert.strictEqual(
+				validationResult.errors[0].msg,
+				'Enter an email address in the correct format, like name@example.com'
+			);
+		});
+	});
+
+	it('should handle undefined email field as invalid', async () => {
 		const req = {
-			body: {
-				email: 'invalid-email'
-			}
+			body: {}
 		};
 		const question = {
 			fieldName: 'email'
 		};
 		const validationResult = await new EmailValidator().validate(question).run(req);
 		assert.strictEqual(validationResult.errors.length, 1);
-		assert.strictEqual(
-			validationResult.errors[0].msg,
-			'Enter an email address in the correct format, like name@example.com'
-		);
 	});
 
 	it('should use custom error message when provided', async () => {
@@ -46,71 +73,6 @@ describe('src/dynamic-forms/validator/email-validator.js', () => {
 		const validationResult = await new EmailValidator({ errorMessage: customMessage }).validate(question).run(req);
 		assert.strictEqual(validationResult.errors.length, 1);
 		assert.strictEqual(validationResult.errors[0].msg, customMessage);
-	});
-
-	it('should validate email with plus sign in local part', async () => {
-		const req = {
-			body: {
-				email: 'test+tag@example.com'
-			}
-		};
-		const question = {
-			fieldName: 'email'
-		};
-		const validationResult = await new EmailValidator().validate(question).run(req);
-		assert.strictEqual(validationResult.errors.length, 0);
-	});
-
-	it('should validate email with dots in local part', async () => {
-		const req = {
-			body: {
-				email: 'first.last@example.com'
-			}
-		};
-		const question = {
-			fieldName: 'email'
-		};
-		const validationResult = await new EmailValidator().validate(question).run(req);
-		assert.strictEqual(validationResult.errors.length, 0);
-	});
-
-	it('should invalidate email without domain', async () => {
-		const req = {
-			body: {
-				email: 'test@'
-			}
-		};
-		const question = {
-			fieldName: 'email'
-		};
-		const validationResult = await new EmailValidator().validate(question).run(req);
-		assert.strictEqual(validationResult.errors.length, 1);
-	});
-
-	it('should invalidate email without @ symbol', async () => {
-		const req = {
-			body: {
-				email: 'testexample.com'
-			}
-		};
-		const question = {
-			fieldName: 'email'
-		};
-		const validationResult = await new EmailValidator().validate(question).run(req);
-		assert.strictEqual(validationResult.errors.length, 1);
-	});
-
-	it('should validate email with subdomain', async () => {
-		const req = {
-			body: {
-				email: 'user@mail.example.com'
-			}
-		};
-		const question = {
-			fieldName: 'email'
-		};
-		const validationResult = await new EmailValidator().validate(question).run(req);
-		assert.strictEqual(validationResult.errors.length, 0);
 	});
 
 	it('should handle display names when option is enabled', async () => {
@@ -162,68 +124,5 @@ describe('src/dynamic-forms/validator/email-validator.js', () => {
 			.validate(question)
 			.run(req);
 		assert.strictEqual(validationResult.errors.length, 0);
-	});
-
-	it('should handle empty string as invalid email', async () => {
-		const req = {
-			body: {
-				email: ''
-			}
-		};
-		const question = {
-			fieldName: 'email'
-		};
-		const validationResult = await new EmailValidator().validate(question).run(req);
-		assert.strictEqual(validationResult.errors.length, 1);
-	});
-
-	it('should handle undefined email field as invalid', async () => {
-		const req = {
-			body: {}
-		};
-		const question = {
-			fieldName: 'email'
-		};
-		const validationResult = await new EmailValidator().validate(question).run(req);
-		assert.strictEqual(validationResult.errors.length, 1);
-	});
-
-	it('should validate international domain names', async () => {
-		const req = {
-			body: {
-				email: 'test@example.org'
-			}
-		};
-		const question = {
-			fieldName: 'email'
-		};
-		const validationResult = await new EmailValidator().validate(question).run(req);
-		assert.strictEqual(validationResult.errors.length, 0);
-	});
-
-	it('should validate long email addresses', async () => {
-		const req = {
-			body: {
-				email: 'verylongusernamethatisusuallynotrecommended@verylongdomainnamethatisalsounusual.com'
-			}
-		};
-		const question = {
-			fieldName: 'email'
-		};
-		const validationResult = await new EmailValidator().validate(question).run(req);
-		assert.strictEqual(validationResult.errors.length, 0);
-	});
-
-	it('should invalidate emails with spaces', async () => {
-		const req = {
-			body: {
-				email: 'test @example.com'
-			}
-		};
-		const question = {
-			fieldName: 'email'
-		};
-		const validationResult = await new EmailValidator().validate(question).run(req);
-		assert.strictEqual(validationResult.errors.length, 1);
 	});
 });
