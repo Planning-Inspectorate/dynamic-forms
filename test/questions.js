@@ -1,6 +1,7 @@
 import { COMPONENT_TYPES } from '../src/index.js';
 import { createQuestions } from '../src/questions/create-questions.js';
 import { questionClasses } from '../src/questions/questions.js';
+import EmailValidator from '../src/validator/email-validator.js';
 
 /**
  * @typedef {import('../src/questions/question-props.js').QuestionProps} Props
@@ -164,6 +165,15 @@ export const questionProps = {
 				conditional: { label: 'Weight in pounds', fieldName: 'luggageWeightValue_lbs', suffix: 'lbs' }
 			}
 		]
+	},
+	contactEmail: {
+		type: COMPONENT_TYPES.EMAIL,
+		title: 'Contact Email',
+		question: 'What is your email address for booking confirmations?',
+		fieldName: 'contactEmail',
+		url: 'contact-email',
+		label: 'Email address',
+		validators: [new EmailValidator()]
 	}
 };
 
@@ -183,7 +193,8 @@ export const questionsInOrder = [
 	questionProps.companions,
 	questionProps.nights,
 	questionProps.hotelAddress,
-	questionProps.luggageWeight
+	questionProps.luggageWeight,
+	questionProps.contactEmail
 ];
 
 export const getQuestions = () => createQuestions(questionProps, questionClasses, {});
