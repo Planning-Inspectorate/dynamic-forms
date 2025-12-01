@@ -10,6 +10,7 @@ import SingleLineInputQuestion from '../components/single-line-input/question.js
 import MultiFieldInputQuestion from '../components/multi-field-input/question.js';
 import NumberEntryQuestion from '../components/number-entry/question.js';
 import UnitOptionEntryQuestion from '../components/unit-option-entry/question.js';
+import EmailQuestion from '../components/email/question.js';
 
 import { COMPONENT_TYPES } from '../index.js';
 import TextEntryRedactQuestion from '../components/text-entry-redact/question.js';
@@ -33,5 +34,6 @@ export const questionClasses = Object.freeze({
 	[COMPONENT_TYPES.SINGLE_LINE_INPUT]: SingleLineInputQuestion,
 	[COMPONENT_TYPES.MULTI_FIELD_INPUT]: MultiFieldInputQuestion,
 	[COMPONENT_TYPES.NUMBER]: NumberEntryQuestion,
-	[COMPONENT_TYPES.UNIT_OPTION]: UnitOptionEntryQuestion
+	[COMPONENT_TYPES.UNIT_OPTION]: UnitOptionEntryQuestion,
+	[COMPONENT_TYPES.EMAIL]: EmailQuestion
 });
