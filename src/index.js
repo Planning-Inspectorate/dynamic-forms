@@ -1,7 +1,3 @@
-/**
- * @typedef {import('./questions/question-props.js').QuestionTypes} QuestionTypes
- */
-
 // Components
 import AddressQuestion from './components/address/question.js';
 import DateValidator from './validator/date-validator.js';
@@ -73,7 +69,5 @@ export { StringValidator };
 export * from './validator/unit-option-entry-validator.js';
 export * from './validator/valid-option-validator.js';
 export * from './validator/validation-error-handler.js';
-// import validate from './validator/validator.js';
-// export { validate };
 export { default as validate } from './validator/validator.js';
 export * from './validator/validator.js';

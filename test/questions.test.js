@@ -193,6 +193,8 @@ export function mockAnswerBody(q) {
 				[q.fieldName]: 'kg',
 				[q.options[0].conditional.fieldName]: 10
 			};
+		case COMPONENT_TYPES.EMAIL:
+			return { [q.fieldName]: 'test@example.com' };
 		default:
 			return { [q.fieldName]: 'test' };
 	}
@@ -240,6 +242,8 @@ export function mockAnswer(q) {
 		}
 		case COMPONENT_TYPES.UNIT_OPTION:
 			return '10 kg';
+		case COMPONENT_TYPES.EMAIL:
+			return 'test@example.com';
 		default:
 			return 'test';
 	}

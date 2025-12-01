@@ -36,7 +36,12 @@ export default class SingleLineInputQuestion extends Question {
 		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
 		viewModel.question.label = this.label;
 		viewModel.question.value = payload ? payload[viewModel.question.fieldName] : viewModel.question.value;
-		viewModel.question.attributes = this.inputAttributes;
+
+		// Extract type from attributes to pass separately to avoid duplication
+		const { type, ...otherAttributes } = this.inputAttributes;
+		viewModel.question.attributes = otherAttributes;
+		viewModel.question.type = type;
+
 		viewModel.question.classes = this.classes;
 		return viewModel;
 	}
