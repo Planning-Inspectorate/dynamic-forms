@@ -4,17 +4,7 @@
   "description": "This package is for building GDS forms using a configuration-based approach.",
   "main": "./src/index.js",
   "type": "module",
-  "types": "./index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./index.d.ts",
-      "default": "./index.js"
-    },
-    "./src/*": {
-      "types": "./src/*.d.ts",
-      "default": "./src/*.js"
-    }
-  },
+  "types": "./types/src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Planning-Inspectorate/dynamic-forms.git"
