@@ -5,7 +5,6 @@
  */
 
 import RequiredValidator from './validator/required-validator.js';
-import MultiFieldInputQuestion from './components/multi-field-input/question.js';
 
 /**
  * Defines a section for a questionnaire, a set of Questions
@@ -200,7 +199,7 @@ export class Section {
 				continue;
 			}
 			// if question is a multi field input question, check all fields
-			if (question instanceof MultiFieldInputQuestion) {
+			if (question.inputFields) {
 				for (const field of question.inputFields) {
 					if (question.fieldIsRequired(field.fieldName)) {
 						requiredQuestionCount++;
