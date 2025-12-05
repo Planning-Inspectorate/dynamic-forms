@@ -43,7 +43,7 @@ export * from './middleware/redirect-to-unanswered-question'
 
 // Questions
 export { Question } from './questions/question'
-export * from './questions/create-questions'
+export { createQuestions } from './questions/create-questions';
 export * from './questions/options-question'
 export { questionClasses } from './questions/questions';
 
