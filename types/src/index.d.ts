@@ -66,7 +66,8 @@ export * from './validator/document-upload-validator';
 export * from './validator/multi-field-input-validator';
 export * from './validator/numeric-validator';
 export * from './validator/required-file-upload-validator';
-export * from './validator/required-validator';
+import RequiredValidator from './validator/required-validator';
+export { RequiredValidator }
 export * from './validator/same-answer-validator';
 import StringValidator from './validator/string-validator'
 export { StringValidator }
