@@ -125,6 +125,6 @@ export class Journey {
     setResponse(journeyResponse: JourneyResponse): void;
     #private;
 }
-export type JourneyResponse = import("./journey-response").JourneyResponse;
-export type Section = import("../section").Section;
-export type Question = import("../questions/question").Question;
+type JourneyResponse = import("./journey-response").JourneyResponse;
+type Section = import("../section").Section;
+type Question = import("../questions/question").Question;

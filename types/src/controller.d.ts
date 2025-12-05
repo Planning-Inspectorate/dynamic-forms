@@ -26,10 +26,10 @@ export function question(req: any, res: any): Promise<any>;
  * @returns {import('express').Handler}
  */
 export function buildSave(saveData: SaveDataFn, redirectToTaskListOnSuccess?: boolean): any;
-export type Journey = import("./journey/journey.js").Journey;
-export type Question = import("./questions/question.js").Question;
-export type Section = import("./section").Section;
-export type SectionView = {
+type Journey = import("./journey/journey.js").Journey;
+type Question = import("./questions/question.js").Question;
+type Section = import("./section").Section;
+type SectionView = {
     heading: string;
     status: string;
     list: {

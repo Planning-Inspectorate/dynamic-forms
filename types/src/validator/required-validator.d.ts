@@ -17,5 +17,5 @@ export default class RequiredValidator extends BaseValidator {
      */
     validate(questionObj: Question): any;
 }
-export type Question = typeof import("../questions/question.js");
+type Question = typeof import("../questions/question.js");
 import BaseValidator from './base-validator.js';

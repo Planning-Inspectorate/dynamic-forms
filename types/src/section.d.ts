@@ -80,7 +80,7 @@ export const SECTION_STATUS: Readonly<{
     IN_PROGRESS: "In progress";
     COMPLETE: "Completed";
 }>;
-export type Question = import("./questions/question").Question;
-export type JourneyResponse = import("./journey/journey-response").JourneyResponse;
-export type QuestionCondition = ((response: JourneyResponse) => boolean);
-export type SectionStatus = string;
+type Question = import("./questions/question").Question;
+type JourneyResponse = import("./journey/journey-response").JourneyResponse;
+type QuestionCondition = ((response: JourneyResponse) => boolean);
+type SectionStatus = string;

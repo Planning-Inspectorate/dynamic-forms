@@ -17,5 +17,5 @@ export default class RequiredFileUploadValidator extends BaseValidator {
      */
     validate(questionObj: Question, journeyResponse: any): any;
 }
-export type Question = typeof import("../questions/question.js");
+type Question = typeof import("../questions/question.js");
 import BaseValidator from './base-validator.js';

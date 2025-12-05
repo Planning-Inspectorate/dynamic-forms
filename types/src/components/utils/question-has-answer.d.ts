@@ -17,4 +17,4 @@ export const questionHasNonEmptyStringAnswer: (response: JourneyResponse, questi
 /** @type {(response: JourneyResponse, question: any) => boolean} */
 export const questionHasNonEmptyNumberAnswer: (response: JourneyResponse, question: any) => boolean;
 export type JourneyResponse = import("../../journey/journey-response").JourneyResponse;
-export type Question = import("../../questions/question").Question;
+type Question = import("../../questions/question").Question;
