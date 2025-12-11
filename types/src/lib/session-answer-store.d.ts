@@ -33,9 +33,7 @@
  * @param {string} [opts.reqParam] - optional request parameter to use as a key
  * @returns {import('../controller').SaveDataFn}
  */
-export function buildSaveDataToSession({ reqParam }?: {
-    reqParam?: string;
-}): import("../controller").SaveDataFn;
+export function buildSaveDataToSession({ reqParam }?: { reqParam?: string }): import('../controller').SaveDataFn;
 /**
  * A function to clear journey answers from the session
  *
@@ -58,13 +56,18 @@ export function buildSaveDataToSession({ reqParam }?: {
  * @param {string} [params.reqParam] - optional request parameter used as a key
  * @returns {void}
  */
-export function clearDataFromSession({ req, journeyId, replaceWith, reqParam }: {
-    req: any;
-    journeyId: string;
-    replaceWith?: {
-        [x: string]: any;
-    };
-    reqParam?: string;
+export function clearDataFromSession({
+	req,
+	journeyId,
+	replaceWith,
+	reqParam
+}: {
+	req: any;
+	journeyId: string;
+	replaceWith?: {
+		[x: string]: any;
+	};
+	reqParam?: string;
 }): void;
 /**
  * Fetch session answers from the session
@@ -79,4 +82,4 @@ export function buildGetJourneyResponseFromSession(journeyId: string, reqParam?:
  *
  * @type {import('../controller').SaveDataFn}
  */
-export const saveDataToSession: import("../controller").SaveDataFn;
+export const saveDataToSession: import('../controller').SaveDataFn;

@@ -14,27 +14,27 @@ export const postcodeMinLength: 5;
  * @class
  */
 export default class AddressValidator extends BaseValidator {
-    /**
-     * creates an instance of an AddressValidator
-     * @param {Object} opts
-     * @param {boolean} [opts.required]
-     * @param {{[key: string]: boolean}} [opts.requiredFields]
-     */
-    constructor(opts: {
-        required?: boolean;
-        requiredFields?: {
-            [key: string]: boolean;
-        };
-    });
-    requiredFields: {
-        [key: string]: boolean;
-    };
-    /**
-     * validates response body using questionObj fieldname
-     * @param {Question} questionObj
-     */
-    validate(questionObj: Question): any[];
-    isRequired(): any;
-    #private;
+	/**
+	 * creates an instance of an AddressValidator
+	 * @param {Object} opts
+	 * @param {boolean} [opts.required]
+	 * @param {{[key: string]: boolean}} [opts.requiredFields]
+	 */
+	constructor(opts: {
+		required?: boolean;
+		requiredFields?: {
+			[key: string]: boolean;
+		};
+	});
+	requiredFields: {
+		[key: string]: boolean;
+	};
+	/**
+	 * validates response body using questionObj fieldname
+	 * @param {Question} questionObj
+	 */
+	validate(questionObj: Question): any[];
+	isRequired(): any;
+	#private;
 }
 import BaseValidator from './base-validator.js';

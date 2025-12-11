@@ -5,9 +5,14 @@
  * @param {string} [options.format] date formatting string
  * @returns {string} formatted date string or empty string if invalid value passed in
  */
-export function formatDateForDisplay(date?: Date | string, { format }?: {
-    format?: string;
-}): string;
+export function formatDateForDisplay(
+	date?: Date | string,
+	{
+		format
+	}?: {
+		format?: string;
+	}
+): string;
 /**
  * @typedef {Object} DateTimeParams
  * @property {number} year
@@ -49,11 +54,11 @@ export function dateIsAfterToday(date: Date): boolean;
 export function dateIsBeforeToday(date: Date): boolean;
 export function dateIsToday(date: Date): boolean;
 export type DateTimeParams = {
-    year: number;
-    month: number;
-    day: number;
-    hour?: number;
-    minute?: number;
-    second?: number;
-    convertToUTC?: boolean;
+	year: number;
+	month: number;
+	day: number;
+	hour?: number;
+	minute?: number;
+	second?: number;
+	convertToUTC?: boolean;
 };

@@ -5,17 +5,17 @@ export const requiredCoordinateLength: 6;
  * @property {string} fieldName
  */
 export default class CoordinatesValidator extends BaseValidator {
-    /**
-     * @param {CoordinateField} northing
-     * @param {CoordinateField} easting
-     */
-    constructor(northing: CoordinateField, easting: CoordinateField);
-    northing: CoordinateField;
-    easting: CoordinateField;
-    validate(): any[];
+	/**
+	 * @param {CoordinateField} northing
+	 * @param {CoordinateField} easting
+	 */
+	constructor(northing: CoordinateField, easting: CoordinateField);
+	northing: CoordinateField;
+	easting: CoordinateField;
+	validate(): any[];
 }
 export type CoordinateField = {
-    title: string;
-    fieldName: string;
+	title: string;
+	fieldName: string;
 };
 import BaseValidator from './base-validator.js';

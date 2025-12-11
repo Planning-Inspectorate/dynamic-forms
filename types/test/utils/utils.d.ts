@@ -11,14 +11,14 @@ export function mockLogger(): any;
  */
 export function escapeForRegExp(s: string): string;
 export function mockReq(): {
-    log: any;
-    params: {};
-    body: {};
+	log: any;
+	params: {};
+	body: {};
 };
 export function mockRes(): {
-    locals: {};
-    redirect: any;
-    status: any;
-    render: any;
-    send: any;
+	locals: {};
+	redirect: any;
+	status: any;
+	render: any;
+	send: any;
 };

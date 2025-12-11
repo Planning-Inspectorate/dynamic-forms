@@ -1,6 +1,7 @@
 /**
  * @typedef {import('./questions/question-props.js').QuestionTypes} QuestionTypes
  */
+
 /**
  * @type {Readonly<{CHECKBOX: QuestionTypes, BOOLEAN: QuestionTypes, RADIO: QuestionTypes, DATE: QuestionTypes, DATE_PERIOD: QuestionTypes, TEXT_ENTRY: QuestionTypes, TEXT_ENTRY_REDACT: QuestionTypes, SELECT: QuestionTypes, SINGLE_LINE_INPUT: QuestionTypes, MULTI_FIELD_INPUT: QuestionTypes, NUMBER: QuestionTypes, ADDRESS: QuestionTypes, UNIT_OPTION: QuestionTypes}>}
  */
@@ -21,11 +22,29 @@ export const COMPONENT_TYPES: Readonly<{
 }>;
 export type QuestionTypes = any;
 
+// Components
+export * from './components/address/question';
+export * from './components/boolean/question';
+export * from './components/checkbox/question';
+export * from './components/date/question';
+export * from './components/date-period/question';
+export * from './components/multi-field-input/question';
+export * from './components/number-entry/question';
+export * from './components/radio/question';
+export * from './components/select/question';
+export * from './components/single-line-input/question';
+export * from './components/text-entry/question';
+export * from './components/text-entry-redact/question';
+export * from './components/unit-option-entry/question';
+export * from './components/utils/persisted-number-answer';
+export * from './components/utils/question-has-answer';
+export * from './components/utils/question-utils';
+
 // Controller
 export * from './controller';
 
 // Journey
-export { Journey } from './journey/journey';
+export * from './journey/journey';
 export { JourneyType, JourneyResponse } from './journey/journey-response';
 
 // lib

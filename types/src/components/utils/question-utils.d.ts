@@ -19,14 +19,14 @@ export function getLinkedCasesForQuestion(journeyResponse: JourneyResponse, fiel
  */
 export function getListedBuildingForQuestion(journeyResponse: JourneyResponse, fieldName: string): any;
 export function conditionalIsJustHTML(conditional: unknown): conditional is {
-    html: string;
+	html: string;
 };
 declare namespace _default {
-    export { getAddressesForQuestion };
-    export { getConditionalAnswer };
-    export { getConditionalFieldName };
-    export { getListedBuildingForQuestion };
-    export { getLinkedCasesForQuestion };
+	export { getAddressesForQuestion };
+	export { getConditionalAnswer };
+	export { getConditionalFieldName };
+	export { getListedBuildingForQuestion };
+	export { getLinkedCasesForQuestion };
 }
 export default _default;
-export type JourneyResponse = import("../../journey/journey-response").JourneyResponse;
+export type JourneyResponse = import('../../journey/journey-response').JourneyResponse;

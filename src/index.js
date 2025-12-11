@@ -22,36 +22,34 @@ export const COMPONENT_TYPES = Object.freeze({
 	UNIT_OPTION: 'unit-option'
 });
 
-
 // Controller
-export * from './controller'
+export * from './controller';
 
 // Journey
-export { Journey } from './journey/journey'
-export { JourneyType, JourneyResponse } from './journey/journey-response'
+export { Journey } from './journey/journey';
+export { JourneyType, JourneyResponse } from './journey/journey-response';
 
 // lib
-export * from './lib/address'
-export * from './lib/address-utils'
-export * from './lib/date-utils'
-export * from './lib/session-answer-store'
-export * from './lib/utils'
+export * from './lib/address';
+export * from './lib/address-utils';
+export * from './lib/date-utils';
+export * from './lib/session-answer-store';
+export * from './lib/utils';
 
 // middleware
-export * from './middleware/build-get-journey'
-export * from './middleware/check-not-submitted'
-export * from './middleware/dynamic-req-files-to-req-body-files'
-export * from './middleware/redirect-to-unanswered-question'
+export * from './middleware/build-get-journey';
+export * from './middleware/check-not-submitted';
+export * from './middleware/dynamic-req-files-to-req-body-files';
+export * from './middleware/redirect-to-unanswered-question';
 
 // Questions
-export { Question } from './questions/question'
+export { Question } from './questions/question';
 export { createQuestions } from './questions/create-questions';
-export * from './questions/options-question'
+export * from './questions/options-question';
 export { questionClasses } from './questions/questions';
 
-
 // Section
-export { Section } from './section'
+export { Section } from './section';
 
 // validators
 export * from './validator/address-validator';
@@ -63,16 +61,16 @@ export * from './validator/date-period-validator';
 export * from './validator/date-time-validator';
 export { DateQuestion, DateValidationSettings } from './validator/date-validator';
 import DateValidator from './validator/date-validator';
-export { DateValidator }
+export { DateValidator };
 export * from './validator/document-upload-validator';
 export * from './validator/multi-field-input-validator';
 export * from './validator/numeric-validator';
 export * from './validator/required-file-upload-validator';
 export { default as RequiredValidator } from './validator/required-validator.js';
 export * from './validator/same-answer-validator';
-import StringValidator from './validator/string-validator'
-export { StringValidator }
-export * from './validator/unit-option-entry-validator'
-export * from './validator/valid-option-validator'
-export * from './validator/validation-error-handler'
+import StringValidator from './validator/string-validator';
+export { StringValidator };
+export * from './validator/unit-option-entry-validator';
+export * from './validator/valid-option-validator';
+export * from './validator/validation-error-handler';
 export * from './validator/validator';

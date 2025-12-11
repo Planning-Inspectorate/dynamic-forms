@@ -4,6 +4,8 @@
  * @typedef {import('../../journey/journey-response.js').JourneyResponse} JourneyResponse
  * @typedef {import('../../section').Section} Section
  */
+import { Section } from '../../section';
+
 /**
  * UnitOptions are the options displayed in the radio format - in this case the value
  * represents the unit.
@@ -29,33 +31,35 @@
  *}} UnitOption
  */
 export default class UnitOptionEntryQuestion extends Question {
-    /** @type {Array<UnitOption>} */
-    options: Array<UnitOption>;
-    conditionalFieldName: any;
-    label: any;
-    optionJoinString: string;
-    /**
-     * gets the view model for this question
-     * @param {Section} section - the current section
-     * @param {Journey} journey - the journey we are in
-     * @param {Record<string, unknown>} [customViewData] additional data to send to view
-     * @param {Record<string, unknown>} [payload]
-     * @returns {QuestionViewModel & {
-     *   question: QuestionViewModel['question'] & {
-     *     options:UnitOption[]
-     *   }
-     * }}
-     */
-    prepQuestionForRendering(section: Section, journey: Journey, customViewData?: Record<string, unknown>, payload?: Record<string, unknown>): QuestionViewModel & {
-        question: QuestionViewModel["question"] & {
-            options: UnitOption[];
-        };
-    };
+	/** @type {Array<UnitOption>} */
+	options: Array<UnitOption>;
+	conditionalFieldName: any;
+	label: any;
+	optionJoinString: string;
+	/**
+	 * gets the view model for this question
+	 * @param {Section} section - the current section
+	 * @param {Journey} journey - the journey we are in
+	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
+	 * @param {Record<string, unknown>} [payload]
+	 * @returns {QuestionViewModel & {
+	 *   question: QuestionViewModel['question'] & {
+	 *     options:UnitOption[]
+	 *   }
+	 * }}
+	 */
+	prepQuestionForRendering(
+		section: Section,
+		journey: Journey,
+		customViewData?: Record<string, unknown>,
+		payload?: Record<string, unknown>
+	): QuestionViewModel & {
+		question: QuestionViewModel['question'] & {
+			options: UnitOption[];
+		};
+	};
 }
-export type QuestionViewModel = import("../../questions/question.js").QuestionViewModel;
-export type Journey = import("../../journey/journey.js").Journey;
-export type JourneyResponse = import("../../journey/journey-response.js").JourneyResponse;
-export type Section = import("../../section").Section;
+
 /**
  * UnitOptions are the options displayed in the radio format - in this case the value
  * represents the unit.
@@ -65,19 +69,20 @@ export type Section = import("../../section").Section;
  * eg 'siteAreaSquareMetres_hectares' - this is required for validation and saving to the DB
  */
 export type UnitOption = {
-    text: string;
-    value: string;
-    hint?: object;
-    checked?: boolean | undefined;
-    attributes?: Record<string, string>;
-    behaviour?: "exclusive";
-    conditional: {
-        fieldName: string;
-        suffix: string;
-        value?: unknown;
-        label?: string;
-        hint?: string;
-        conversionFactor?: number;
-    };
+	text: string;
+	value: string;
+	hint?: object;
+	checked?: boolean | undefined;
+	attributes?: Record<string, string>;
+	behaviour?: 'exclusive';
+	conditional: {
+		fieldName: string;
+		suffix: string;
+		value?: unknown;
+		label?: string;
+		hint?: string;
+		conversionFactor?: number;
+	};
 };
-import { Question } from '../../questions/question.js';
+import { Question, QuestionViewModel } from '../../questions/question.js';
+import { Journey } from '../../journey/journey';

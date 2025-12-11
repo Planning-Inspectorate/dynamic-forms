@@ -26,41 +26,40 @@ export function question(req: any, res: any): Promise<any>;
  * @returns {import('express').Handler}
  */
 export function buildSave(saveData: SaveDataFn, redirectToTaskListOnSuccess?: boolean): any;
-type Journey = import("./journey/journey.js").Journey;
-type Question = import("./questions/question.js").Question;
-type Section = import("./section").Section;
 type SectionView = {
-    heading: string;
-    status: string;
-    list: {
-        rows: Array<RowView>;
-    };
+	heading: string;
+	status: string;
+	list: {
+		rows: Array<RowView>;
+	};
 };
 export type RowView = {
-    key: {
-        text: string;
-    };
-    value: {
-        text: string;
-    } | {
-        html: string;
-    };
-    actions?: {
-        items: ActionView[];
-    };
+	key: {
+		text: string;
+	};
+	value:
+		| {
+				text: string;
+		  }
+		| {
+				html: string;
+		  };
+	actions?: {
+		items: ActionView[];
+	};
 };
 export type ActionView = {
-    href: string;
-    text: string;
-    visuallyHiddenText?: string;
+	href: string;
+	text: string;
+	visuallyHiddenText?: string;
 };
 export type SaveParams = {
-    req: any;
-    res: any;
-    journeyId: string;
-    referenceId: string;
-    data: {
-        [x: string]: any;
-    };
+	req: any;
+	res: any;
+	journeyId: string;
+	referenceId: string;
+	data: {
+		[x: string]: any;
+	};
 };
 export type SaveDataFn = (params: SaveParams) => Promise<void>;

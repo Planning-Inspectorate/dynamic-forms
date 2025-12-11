@@ -21,85 +21,90 @@
  * @property {Suffix} [suffix] optional property, used to add a suffix to the field
  * @property {Suffix} [prefix] optional property, used to add a prefix to the field
  */
+import { Journey } from '../../journey/journey';
+
 /**
  * @class
  */
 export default class MultiFieldInputQuestion extends Question {
-    /**
-     * @param {import('#question-types').QuestionParameters} params
-     * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
-     * @param {Record<string, string>} [params.inputAttributes] html attributes to add to the input
-     * @param {InputField[]} params.inputFields input fields
-     */
-    constructor({ label, inputAttributes, inputFields, ...params }: any);
-    /** @type {Record<string, string>} */
-    inputAttributes: Record<string, string>;
-    label: any;
-    inputFields: any;
-    prepQuestionForRendering(section: any, journey: any, customViewData: any, payload: any): import("../../questions/question.js").QuestionViewModel;
-    /**
-     * returns the formatted answers values to be used to build task list elements
-     * @param {Journey} journey
-     * @param {String} sectionSegment
-     * @returns {Array<{
-     *   key: string;
-     *   value: string | Object;
-     *   action: {
-     *     href: string;
-     *     text: string;
-     *     visuallyHiddenText: string;
-     *   };
-     * }>}
-     */
-    formatAnswerForSummary(sectionSegment: string, journey: Journey): Array<{
-        key: string;
-        value: string | any;
-        action: {
-            href: string;
-            text: string;
-            visuallyHiddenText: string;
-        };
-    }>;
-    #private;
+	/**
+	 * @param {import('#question-types').QuestionParameters} params
+	 * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
+	 * @param {Record<string, string>} [params.inputAttributes] html attributes to add to the input
+	 * @param {InputField[]} params.inputFields input fields
+	 */
+	constructor({ label, inputAttributes, inputFields, ...params }: any);
+	/** @type {Record<string, string>} */
+	inputAttributes: Record<string, string>;
+	label: any;
+	inputFields: any;
+	prepQuestionForRendering(
+		section: any,
+		journey: any,
+		customViewData: any,
+		payload: any
+	): import('../../questions/question.js').QuestionViewModel;
+	/**
+	 * returns the formatted answers values to be used to build task list elements
+	 * @param {Journey} journey
+	 * @param {String} sectionSegment
+	 * @returns {Array<{
+	 *   key: string;
+	 *   value: string | Object;
+	 *   action: {
+	 *     href: string;
+	 *     text: string;
+	 *     visuallyHiddenText: string;
+	 *   };
+	 * }>}
+	 */
+	formatAnswerForSummary(
+		sectionSegment: string,
+		journey: Journey
+	): Array<{
+		key: string;
+		value: string | any;
+		action: {
+			href: string;
+			text: string;
+			visuallyHiddenText: string;
+		};
+	}>;
 }
-export type QuestionViewModel = import("../../questions/question.js").QuestionViewModel;
-export type Journey = import("../../journey/journey.js").Journey;
-export type JourneyResponse = import("../../journey/journey-response.js").JourneyResponse;
-export type Section = import("../../section").Section;
-export type BaseValidator = typeof import("../../validator/base-validator");
+
 export type Suffix = {
-    text: string;
-    /**
-     * optional property, used to add classes to the suffix/prefix
-     */
-    classes?: string;
+	text: string;
+	/**
+	 * optional property, used to add classes to the suffix/prefix
+	 */
+	classes?: string;
 };
 export type InputField = {
-    fieldName: string;
-    label: string;
-    /**
-     * optional property, used by formatAnswerForSummary (eg task list display), effective default to line break
-     */
-    formatJoinString?: string;
-    /**
-     * optional property, used by formatAnswerForSummary (eg task list display), to prefix answer
-     */
-    formatPrefix?: string;
-    /**
-     * optional property, used to format the answer for display and value in question
-     */
-    formatTextFunction?: Function;
-    /**
-     * optional property, used to add html attributes to the field
-     */
-    attributes?: Record<string, string>;
-    /**
-     * optional property, used to add a suffix to the field
-     */
-    suffix?: Suffix;
-    /**
-     * optional property, used to add a prefix to the field
-     */
-    prefix?: Suffix;
+	fieldName: string;
+	label: string;
+	/**
+	 * optional property, used by formatAnswerForSummary (eg task list display), effective default to line break
+	 */
+	formatJoinString?: string;
+	/**
+	 * optional property, used by formatAnswerForSummary (eg task list display), to prefix answer
+	 */
+	formatPrefix?: string;
+	/**
+	 * optional property, used to format the answer for display and value in question
+	 */
+	formatTextFunction?: Function;
+	/**
+	 * optional property, used to add html attributes to the field
+	 */
+	attributes?: Record<string, string>;
+	/**
+	 * optional property, used to add a suffix to the field
+	 */
+	suffix?: Suffix;
+	/**
+	 * optional property, used to add a prefix to the field
+	 */
+	prefix?: Suffix;
 };
 import { Question } from '../../questions/question.js';

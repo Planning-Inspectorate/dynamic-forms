@@ -8,4 +8,7 @@
  * @returns {import('express').Handler}
  */
 export function redirectToUnansweredQuestion(conditions?: ShouldDisplayCondition[]): any;
-export type ShouldDisplayCondition = (arg0: import("../section").Question, arg1: import("../journey/journey-response").JourneyResponse) => boolean;
+export type ShouldDisplayCondition = (
+	arg0: import('../section').Question,
+	arg1: import('../journey/journey-response').JourneyResponse
+) => boolean;
