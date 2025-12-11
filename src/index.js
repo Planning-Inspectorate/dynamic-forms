@@ -22,6 +22,24 @@ export const COMPONENT_TYPES = Object.freeze({
 	UNIT_OPTION: 'unit-option'
 });
 
+// Components
+export * from './components/address/question';
+export * from './components/boolean/question';
+export * from './components/checkbox/question';
+export * from './components/date/question';
+export * from './components/date-period/question';
+export * from './components/multi-field-input/question';
+export * from './components/number-entry/question';
+export * from './components/radio/question';
+export * from './components/select/question';
+export * from './components/single-line-input/question';
+export * from './components/text-entry/question';
+export * from './components/text-entry-redact/question';
+export * from './components/unit-option-entry/question';
+export * from './components/utils/persisted-number-answer';
+export * from './components/utils/question-has-answer';
+export * from './components/utils/question-utils';
+
 // Controller
 export * from './controller';
 
