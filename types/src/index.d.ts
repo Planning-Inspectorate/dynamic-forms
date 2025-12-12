@@ -37,7 +37,7 @@ export * from './components/text-entry/question';
 export * from './components/text-entry-redact/question';
 export * from './components/unit-option-entry/question';
 export * from './components/utils/persisted-number-answer';
-export * from './components/utils/question-has-answer';
+export { questionHasAnswer } from './components/utils/question-has-answer';
 export * from './components/utils/question-utils';
 
 // Controller
