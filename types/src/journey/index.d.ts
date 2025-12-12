@@ -1,2 +1,2 @@
-export { Journey } from './journey';
-export { JourneyType, JourneyResponse } from './journey-response';
+export { Journey } from './journey.d.ts';
+export { JourneyType, JourneyResponse } from './journey-response.d.ts';

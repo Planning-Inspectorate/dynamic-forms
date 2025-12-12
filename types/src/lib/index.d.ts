@@ -1,5 +1,5 @@
-export { Address } from './address';
-export { addressToViewModel } from './address-utils';
+export { Address } from './address.d.ts';
+export { addressToViewModel } from './address-utils.d.ts';
 export {
 	formatDateForDisplay,
 	parseDateInput,
@@ -17,5 +17,5 @@ export {
 	clearDataFromSession,
 	buildGetJourneyResponseFromSession,
 	saveDataToSession
-} from './session-answer-store';
-export { nl2br, capitalize } from './utils';
+} from './session-answer-store.d.ts';
+export { nl2br, capitalize } from './utils.d.ts';

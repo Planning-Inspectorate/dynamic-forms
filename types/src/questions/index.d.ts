@@ -1,6 +1,6 @@
-export { Question, ActionLink, PreppedQuestion, QuestionViewModel } from './question';
-export { createQuestions } from './create-questions';
-import OptionsQuestion from './options-question';
+export { Question, ActionLink, PreppedQuestion, QuestionViewModel } from './question.d.ts';
+export { createQuestions } from './create-questions.d.ts';
+import OptionsQuestion from './options-question.d.ts';
 export { OptionsQuestion };
-export { Option, OptionsViewModel } from './options-question';
-export { questionClasses } from './questions';
+export { Option, OptionsViewModel } from './options-question.d.ts';
+export { questionClasses } from './questions.d.ts';
