@@ -26,6 +26,12 @@
  * @property {boolean} showBackToListLink
  * @property {string} listLink
  */
+import { JourneyResponse } from './options-question';
+import { Journey } from '../journey/journey';
+import { ActionView } from '../controller';
+import { Section } from '../section';
+import BaseValidator from '../validator/base-validator';
+
 /**
  * A specific question within a journey which is made up of one (usually) or many (sometimes) components and their required content.
  * @class
@@ -222,11 +228,6 @@ export class Question {
 	 */
 	isAnswered(journeyResponse: JourneyResponse, fieldName?: string): boolean;
 }
-export type BaseValidator = typeof import('../validator/base-validator.js');
-export type Journey = import('../journey/journey.js').Journey;
-export type JourneyResponse = import('../journey/journey-response.js').JourneyResponse;
-export type Section = import('../section.js').Section;
-export type ActionView = import('../controller.js').ActionView;
 export type ActionLink = any;
 export type PreppedQuestion = {
 	value: any;

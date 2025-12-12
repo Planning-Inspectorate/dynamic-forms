@@ -1,12 +1,14 @@
 /** @typedef {import('../../journey/journey-response').JourneyResponse} JourneyResponse */
 /** @typedef {import('../../questions/question').Question} Question */
+import { Question } from '../../questions/question';
+import { JourneyResponse } from './question-utils';
 /** @type {(response: JourneyResponse) => {and: (questionKeyTuples: [any, unknown][]) => boolean, or: (questionKeyTuples: [any, unknown][]) => boolean}} */
 export const logicalCombinations: (response: JourneyResponse) => {
 	and: (questionKeyTuples: [any, unknown][]) => boolean;
 	or: (questionKeyTuples: [any, unknown][]) => boolean;
 };
 /** @type {(response: JourneyResponse, question: any, expectedValue: unknown) => boolean} */
-export const questionHasAnswer: (response: JourneyResponse, question: any, expectedValue: unknown) => boolean;
+export const questionHasAnswer: (response: JourneyResponse, question: Question, expectedValue: unknown) => boolean;
 export function questionArrayMeetsCondition(
 	response: JourneyResponse,
 	question: any,
@@ -24,5 +26,3 @@ export const questionsHaveAnswers: (
 export const questionHasNonEmptyStringAnswer: (response: JourneyResponse, question: any) => boolean;
 /** @type {(response: JourneyResponse, question: any) => boolean} */
 export const questionHasNonEmptyNumberAnswer: (response: JourneyResponse, question: any) => boolean;
-export type JourneyResponse = import('../../journey/journey-response').JourneyResponse;
-type Question = import('../../questions/question').Question;

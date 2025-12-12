@@ -6,6 +6,8 @@
  * @property {Boolean} ensureFuture
  * @property {Boolean} ensurePast
  */
+import DateQuestion from '../components/date/question';
+
 /**
  * enforces a user has entered a valid date
  * @class
@@ -39,7 +41,6 @@ export default class DateValidator extends BaseValidator {
 	validate(questionObj: DateQuestion): any[];
 	#private;
 }
-export type DateQuestion = typeof import('../components/date/question.js');
 export type DateValidationSettings = {
 	ensureFuture: boolean;
 	ensurePast: boolean;

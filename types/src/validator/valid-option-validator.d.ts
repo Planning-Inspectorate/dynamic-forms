@@ -1,6 +1,8 @@
 /**
  * @typedef {import('../questions/options-question.js')} OptionsQuestion
  */
+import OptionsQuestion from '../questions/options-question';
+
 /**
  * enforces a field is within the question's predefined list of options
  * @class
@@ -17,5 +19,4 @@ export default class ValidOptionValidator extends BaseValidator {
 	 */
 	validate(questionObj: OptionsQuestion): any;
 }
-export type OptionsQuestion = typeof import('../questions/options-question.js');
 import BaseValidator from './base-validator.js';

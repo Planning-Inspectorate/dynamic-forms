@@ -27,6 +27,8 @@
  *   }
  *}} Option
  */
+import { Journey } from '../journey/journey';
+
 /**
  * @typedef {QuestionViewModel & { question: { options: Option[] } }} OptionsViewModel
  */
@@ -54,10 +56,6 @@ export default class OptionsQuestion extends Question {
 		payload?: Record<string, unknown>
 	): QuestionViewModel;
 }
-export type QuestionViewModel = import('./question').QuestionViewModel;
-export type Journey = import('../journey/journey.js').Journey;
-export type JourneyResponse = import('../journey/journey-response.js').JourneyResponse;
-export type Section = import('../section.js').Section;
 export type Option = {
 	text: string;
 	value: string;
@@ -84,4 +82,5 @@ export type OptionsViewModel = QuestionViewModel & {
 		options: Option[];
 	};
 };
-import { Question } from './question.js';
+import { Question, QuestionViewModel } from './question.js';
+import { Section } from '../section';

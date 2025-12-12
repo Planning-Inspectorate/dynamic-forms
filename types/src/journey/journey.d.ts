@@ -8,6 +8,10 @@
  * @typedef {import('../section').Section} Section
  * @typedef {import('../questions/question').Question} Question
  */
+import { JourneyResponse } from './journey-response';
+import { Question } from '../questions/question';
+import { Section } from '../section';
+
 /**
  * A journey (An entire set of questions required for a completion of a submission)
  * @class
@@ -136,6 +140,3 @@ export class Journey {
 	 */
 	setResponse(journeyResponse: JourneyResponse): void;
 }
-type JourneyResponse = import('./journey-response').JourneyResponse;
-type Section = import('../section').Section;
-type Question = import('../questions/question').Question;

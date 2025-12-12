@@ -1,3 +1,5 @@
+import { JourneyResponse } from '../../journey/journey-response';
+
 /**
  * @typedef {import('../../journey/journey-response').JourneyResponse} JourneyResponse
  */
@@ -29,4 +31,3 @@ declare namespace _default {
 	export { getLinkedCasesForQuestion };
 }
 export default _default;
-export type JourneyResponse = import('../../journey/journey-response').JourneyResponse;
