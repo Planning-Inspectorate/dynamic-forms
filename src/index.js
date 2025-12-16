@@ -23,7 +23,7 @@ export const COMPONENT_TYPES = Object.freeze({
 });
 
 // Components
-export * from './components/address/question';
+// export * from './components/address/question';
 import AddressQuestion from './components/address/question.js';
 export { AddressQuestion };
 export * from './components/boolean/question';
