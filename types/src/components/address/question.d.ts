@@ -6,7 +6,7 @@
  * @typedef {import('appeals-service-api').Api.SubmissionAddress} SubmissionAddress
  */
 
-import { Question } from '../../questions';
+import type { Question } from '../../questions/question.d.ts';
 
 export default class AddressQuestion extends Question {
 	/**
