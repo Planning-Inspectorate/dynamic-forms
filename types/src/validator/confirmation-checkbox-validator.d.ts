@@ -19,5 +19,4 @@ export default class ConfirmationCheckboxValidator extends BaseValidator {
 	 */
 	validate(): any;
 }
-type Question = typeof import('../questions/question.js');
 import BaseValidator from './base-validator.js';

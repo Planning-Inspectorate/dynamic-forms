@@ -19,5 +19,5 @@ export default class ConditionalRequiredValidator extends BaseValidator {
 	getConditionalFieldName(questionObj: any, option: any): string;
 	isValueIncluded(questionObj: any, value: any): any;
 }
-type Question = typeof import('../questions/question.js');
+import { Question } from '../questions';
 import BaseValidator from './base-validator.js';

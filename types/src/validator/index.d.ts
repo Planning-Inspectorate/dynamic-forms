@@ -1,3 +1,4 @@
+export * from './address-validator.d.ts';
 import AddressValidator from './address-validator.d.ts';
 export { AddressValidator };
 
@@ -45,7 +46,7 @@ export { StringValidator };
 import UnitOptionEntryValidator from './unit-option-entry-validator.d.ts';
 export { UnitOptionEntryValidator };
 
-import validate from './validator';
+import validate from './validator.d.ts';
 export { validate };
 
 import ValidOptionValidator from './valid-option-validator.d.ts';
