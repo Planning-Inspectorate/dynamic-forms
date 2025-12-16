@@ -91,4 +91,6 @@ export { StringValidator };
 export * from './validator/unit-option-entry-validator';
 export * from './validator/valid-option-validator';
 export * from './validator/validation-error-handler';
+import validate from './validator/validator.js';
+export { validate };
 export * from './validator/validator';

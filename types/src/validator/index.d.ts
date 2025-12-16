@@ -45,6 +45,9 @@ export { StringValidator };
 import UnitOptionEntryValidator from './unit-option-entry-validator.d.ts';
 export { UnitOptionEntryValidator };
 
+import validate from './validator';
+export { validate };
+
 import ValidOptionValidator from './valid-option-validator.d.ts';
 export { ValidOptionValidator };
 
