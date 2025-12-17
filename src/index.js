@@ -78,7 +78,6 @@ export * from './validator/confirmation-checkbox-validator.js';
 export * from './validator/coordinates-validator.js';
 export * from './validator/date-period-validator.js';
 export * from './validator/date-time-validator.js';
-export { DateQuestion, DateValidationSettings } from './validator/date-validator.js';
 import DateValidator from './validator/date-validator.js';
 export { DateValidator };
 export * from './validator/document-upload-validator.js';
