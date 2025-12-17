@@ -28,71 +28,71 @@ import AddressQuestion from './components/address/question.js';
 export { AddressQuestion };
 export * from './components/boolean/question.js';
 export * from './components/checkbox/question.js';
-export * from './components/date/question';
-export * from './components/date-period/question';
-export * from './components/multi-field-input/question';
-export * from './components/number-entry/question';
-export * from './components/radio/question';
-export * from './components/select/question';
-export * from './components/single-line-input/question';
-export * from './components/text-entry/question';
-export * from './components/text-entry-redact/question';
-export * from './components/unit-option-entry/question';
-export * from './components/utils/persisted-number-answer';
-export * from './components/utils/question-has-answer';
-export * from './components/utils/question-utils';
+export * from './components/date/question.js';
+export * from './components/date-period/question.js';
+export * from './components/multi-field-input/question.js';
+export * from './components/number-entry/question.js';
+export * from './components/radio/question.js';
+export * from './components/select/question.js';
+export * from './components/single-line-input/question.js';
+export * from './components/text-entry/question.js';
+export * from './components/text-entry-redact/question.js';
+export * from './components/unit-option-entry/question.js';
+export * from './components/utils/persisted-number-answer.js';
+export * from './components/utils/question-has-answer.js';
+export * from './components/utils/question-utils.js';
 
 // Controller
-export * from './controller';
+export * from './controller.js';
 
 // Journey
 export { Journey } from './journey/journey';
-export { JourneyType, JourneyResponse } from './journey/journey-response';
+export { JourneyType, JourneyResponse } from './journey/journey-response.js';
 
 // lib
-export * from './lib/address';
-export * from './lib/address-utils';
-export * from './lib/date-utils';
-export * from './lib/session-answer-store';
-export * from './lib/utils';
+export * from './lib/address.js';
+export * from './lib/address-utils.js';
+export * from './lib/date-utils.js';
+export * from './lib/session-answer-store.js';
+export * from './lib/utils.js';
 
 // middleware
-export * from './middleware/build-get-journey';
-export * from './middleware/check-not-submitted';
-export * from './middleware/dynamic-req-files-to-req-body-files';
-export * from './middleware/redirect-to-unanswered-question';
+export * from './middleware/build-get-journey.js';
+export * from './middleware/check-not-submitted.js';
+export * from './middleware/dynamic-req-files-to-req-body-files.js';
+export * from './middleware/redirect-to-unanswered-question.js';
 
 // Questions
-export { Question } from './questions/question';
-export { createQuestions } from './questions/create-questions';
-export * from './questions/options-question';
-export { questionClasses } from './questions/questions';
+export { Question } from './questions/question.js';
+export { createQuestions } from './questions/create-questions.js';
+export * from './questions/options-question.js';
+export { questionClasses } from './questions/questions.js';
 
 // Section
-export { Section } from './section';
+export { Section } from './section.js';
 
 // validators
-export * from './validator/address-validator';
-export * from './validator/base-validator';
-export * from './validator/conditional-required-validator';
-export * from './validator/confirmation-checkbox-validator';
-export * from './validator/coordinates-validator';
-export * from './validator/date-period-validator';
-export * from './validator/date-time-validator';
-export { DateQuestion, DateValidationSettings } from './validator/date-validator';
-import DateValidator from './validator/date-validator';
+export * from './validator/address-validator.js';
+export * from './validator/base-validator.js';
+export * from './validator/conditional-required-validator.js';
+export * from './validator/confirmation-checkbox-validator.js';
+export * from './validator/coordinates-validator.js';
+export * from './validator/date-period-validator.js';
+export * from './validator/date-time-validator.js';
+export { DateQuestion, DateValidationSettings } from './validator/date-validator.js';
+import DateValidator from './validator/date-validator.js';
 export { DateValidator };
-export * from './validator/document-upload-validator';
-export * from './validator/multi-field-input-validator';
-export * from './validator/numeric-validator';
-export * from './validator/required-file-upload-validator';
+export * from './validator/document-upload-validator.js';
+export * from './validator/multi-field-input-validator.js';
+export * from './validator/numeric-validator.js';
+export * from './validator/required-file-upload-validator.js';
 export { default as RequiredValidator } from './validator/required-validator.js';
-export * from './validator/same-answer-validator';
-import StringValidator from './validator/string-validator';
+export * from './validator/same-answer-validator.js';
+import StringValidator from './validator/string-validator.js';
 export { StringValidator };
-export * from './validator/unit-option-entry-validator';
-export * from './validator/valid-option-validator';
-export * from './validator/validation-error-handler';
+export * from './validator/unit-option-entry-validator.js';
+export * from './validator/valid-option-validator.js';
+export * from './validator/validation-error-handler.js';
 import validate from './validator/validator.js';
 export { validate };
-export * from './validator/validator';
+export * from './validator/validator.js';
