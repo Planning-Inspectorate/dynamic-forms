@@ -23,7 +23,6 @@ export const COMPONENT_TYPES = Object.freeze({
 });
 
 // Components
-// export * from './components/address/question';
 import AddressQuestion from './components/address/question.js';
 export { AddressQuestion };
 export * from './components/boolean/question.js';
@@ -46,7 +45,7 @@ export * from './components/utils/question-utils.js';
 export * from './controller.js';
 
 // Journey
-export { Journey } from './journey/journey';
+export { Journey } from './journey/journey.js';
 export { JourneyType, JourneyResponse } from './journey/journey-response.js';
 
 // lib
