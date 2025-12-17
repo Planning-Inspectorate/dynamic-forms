@@ -46,7 +46,7 @@ export * from './controller.js';
 
 // Journey
 export { Journey } from './journey/journey.js';
-export { JourneyType, JourneyResponse } from './journey/journey-response.js';
+export { JourneyResponse } from './journey/journey-response.js';
 
 // lib
 export * from './lib/address.js';
