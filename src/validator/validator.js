@@ -27,6 +27,7 @@ const validate = async (req, res, next) => {
 };
 
 export default validate;
+export { validate };
 
 export function buildValidateBody(questions) {
 	return async (req, res, next) => {
