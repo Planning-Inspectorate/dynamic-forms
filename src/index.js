@@ -26,8 +26,8 @@ export const COMPONENT_TYPES = Object.freeze({
 // export * from './components/address/question';
 import AddressQuestion from './components/address/question.js';
 export { AddressQuestion };
-export * from './components/boolean/question';
-export * from './components/checkbox/question';
+export * from './components/boolean/question.js';
+export * from './components/checkbox/question.js';
 export * from './components/date/question';
 export * from './components/date-period/question';
 export * from './components/multi-field-input/question';
