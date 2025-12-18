@@ -11,9 +11,9 @@ import MultiFieldInputQuestion from '../components/multi-field-input/question.js
 import NumberEntryQuestion from '../components/number-entry/question.js';
 import UnitOptionEntryQuestion from '../components/unit-option-entry/question.js';
 
-import { COMPONENT_TYPES } from '../index.js';
 import TextEntryRedactQuestion from '../components/text-entry-redact/question.js';
 import DateTimeQuestion from '../components/date-time/question.js';
+import { COMPONENT_TYPES } from '../components/utils/component-types.js';
 
 // This looks a bit grim because so few of our
 // Questions overlap with Question correctly.

@@ -14,3 +14,4 @@ export * from './unit-option-entry/question.d.ts';
 export * from './utils/persisted-number-answer.d.ts';
 export { questionHasAnswer } from './utils/question-has-answer.d.ts';
 export * from './utils/question-utils.d.ts';
+export { COMPONENT_TYPES } from './utils/component-types';

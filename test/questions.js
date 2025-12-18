@@ -1,6 +1,6 @@
-import { COMPONENT_TYPES } from '../src/index.js';
 import { createQuestions } from '../src/questions/create-questions.js';
 import { questionClasses } from '../src/questions/questions.js';
+import { COMPONENT_TYPES } from '../src/components/utils/component-types.js';
 
 /**
  * @typedef {import('../src/questions/question-props.js').QuestionProps} Props
