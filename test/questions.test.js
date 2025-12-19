@@ -42,18 +42,25 @@ export async function createAppWithQuestions(ctx) {
 
 	app.get('/check-your-answers', getJourneyResponse, getJourney, (req, res) => list(req, res, '', {}));
 
-	app.use((error, req, res, next) => {
-		if (error) {
-			console.error('Internal Server Error:', error);
-		}
-		next();
-	});
-
 	app.use((req, res) => {
 		res.status(404);
 	});
 
-	const server = new TestServer(app, { rememberCookies: true });
+	/**
+	 * @type {import('express').ErrorRequestHandler}
+	 */
+	function errorHandler(error, req, res, next) {
+		console.error('Internal Server Error:', error);
+		if (res.headersSent) {
+			return next(error);
+		}
+		res.status(500);
+		res.render('error', { error });
+	}
+
+	app.use(errorHandler);
+
+	const server = new TestServer(app, { rememberCookies: true, timeoutMs: 2000 });
 	await server.start();
 	ctx.after(async () => await server.stop());
 	return server;
