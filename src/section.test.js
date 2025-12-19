@@ -1,6 +1,6 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
-import { Section, SECTION_STATUS } from './section.js';
+import { END_OF_SECTION, Section, SECTION_STATUS } from './section.js';
 import RequiredValidator from './validator/required-validator.js';
 
 const mockQuestion = {
@@ -12,6 +12,13 @@ const mockQuestion = {
 
 const mockQuestion2 = {
 	fieldName: 'visitRarely',
+	isRequired: () => true,
+	shouldDisplay: () => true,
+	isAnswered: () => false
+};
+
+const mockQuestion3 = {
+	fieldName: 'mockQuestion3',
 	isRequired: () => true,
 	shouldDisplay: () => true,
 	isAnswered: () => false
@@ -573,6 +580,85 @@ describe('./src/dynamic-forms/section.js', () => {
 			section.questions.push({ validators: [customValidator] });
 			section.withRequiredCondition(false);
 			assert.throws(() => section.withRequiredCondition(false));
+		});
+	});
+
+	describe('getNextQuestion', () => {
+		const newSection = () => {
+			const q1 = { ...mockQuestion };
+			const q2 = { ...mockQuestion2 };
+			const q3 = { ...mockQuestion3 };
+			const section = new Section('s1', 'S').addQuestion(q1).addQuestion(q2).addQuestion(q3);
+			return { section, q1, q2, q3 };
+		};
+
+		it('should take the first question if takeNextQuestion is set', () => {
+			const { section, q1 } = newSection();
+			const next = section.getNextQuestion({
+				questionFieldName: '',
+				response: {},
+				takeNextQuestion: true,
+				reverse: false
+			});
+			assert.strictEqual(next, q1);
+		});
+		it('should take second question if first is matched', () => {
+			const { section, q1, q2 } = newSection();
+			const next = section.getNextQuestion({
+				questionFieldName: q1.fieldName,
+				response: {},
+				takeNextQuestion: false,
+				reverse: false
+			});
+			assert.strictEqual(next, q2);
+		});
+		it('should return END_OF_SECTION if last question matched', () => {
+			const { section, q3 } = newSection();
+			const next = section.getNextQuestion({
+				questionFieldName: q3.fieldName,
+				response: {},
+				takeNextQuestion: false,
+				reverse: false
+			});
+			assert.strictEqual(next, END_OF_SECTION);
+		});
+		it('should return null if no questions match', () => {
+			const { section } = newSection();
+			const next = section.getNextQuestion({
+				questionFieldName: 'random-field-name',
+				response: {},
+				takeNextQuestion: false,
+				reverse: false
+			});
+			assert.strictEqual(next, null);
+		});
+		it('should return question only if it "shouldDisplay"', () => {
+			const { section, q1, q2, q3 } = newSection();
+			// skip q2
+			q2.shouldDisplay = mock.fn(() => false);
+			const next = section.getNextQuestion({
+				questionFieldName: q1.fieldName,
+				response: {},
+				takeNextQuestion: false,
+				reverse: false
+			});
+			assert.strictEqual(q2.shouldDisplay.mock.callCount(), 1);
+			assert.strictEqual(next, q3);
+		});
+		it(`should return END_OF_SECTION if remaining questions shouldn't display`, () => {
+			const { section, q1, q2, q3 } = newSection();
+			// skip q2 & q3
+			q2.shouldDisplay = mock.fn(() => false);
+			q3.shouldDisplay = mock.fn(() => false);
+			const next = section.getNextQuestion({
+				questionFieldName: q1.fieldName,
+				response: {},
+				takeNextQuestion: false,
+				reverse: false
+			});
+			assert.strictEqual(q2.shouldDisplay.mock.callCount(), 1);
+			assert.strictEqual(q3.shouldDisplay.mock.callCount(), 1);
+			assert.strictEqual(next, END_OF_SECTION);
 		});
 	});
 });
