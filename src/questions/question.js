@@ -279,19 +279,17 @@ export class Question {
 	}
 
 	/**
-	 * Handles redirect after saving
+	 * Handles redirect after saving. Kept around for backwards compatibility.
+	 *
 	 * @param {import('express').Response} res
 	 * @param {Journey} journey
 	 * @param {string} sectionSegment
 	 * @param {string} questionSegment
 	 * @returns {void}
+	 * @deprecated - use `journey.redirectToNextQuestion`
 	 */
 	handleNextQuestion(res, journey, sectionSegment, questionSegment) {
-		let next = journey.getNextQuestionUrl(sectionSegment, questionSegment);
-		if (next === null) {
-			next = journey.taskListUrl;
-		}
-		return res.redirect(next);
+		return journey.redirectToNextQuestion(res, sectionSegment, questionSegment);
 	}
 
 	/**

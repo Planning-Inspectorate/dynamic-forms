@@ -213,7 +213,7 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				return res.redirect(journey.taskListUrl);
 			}
 			// move to the next question
-			return questionObj.handleNextQuestion(res, journey, sectionObj.segment, questionObj.fieldName);
+			return journey.redirectToNextQuestion(res, sectionObj.segment, questionObj.fieldName);
 		} catch (err) {
 			const viewModel = questionObj.prepQuestionForRendering(sectionObj, journey, {
 				errorSummary: err.errorSummary ?? [{ text: err.toString(), href: '#' }]
