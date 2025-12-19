@@ -180,8 +180,7 @@ const sampleQuestionObj = {
 	checkForSavingErrors: mock.fn(),
 	prepQuestionForRendering: mock.fn(),
 	formatAnswerForSummary: mock.fn(() => [mockAnswer]),
-	viewFolder: 'sampleType',
-	handleNextQuestion: mock.fn()
+	viewFolder: 'sampleType'
 };
 
 const mockSection = {
@@ -480,10 +479,7 @@ describe('dynamic-form/controller', () => {
 			const journeyId = 'has-questionnaire';
 			const expectedUrl = 'redirect-url';
 			const sampleQuestionObjWithActions = {
-				...sampleQuestionObj,
-				handleNextQuestion: mock.fn((res, journey) => {
-					res.redirect(journey.getNextQuestionUrl());
-				})
+				...sampleQuestionObj
 			};
 
 			req.params = {
@@ -515,10 +511,7 @@ describe('dynamic-form/controller', () => {
 			const journeyId = 'has-questionnaire';
 			const expectedUrl = 'redirect-url';
 			const sampleQuestionObjWithActions = {
-				...sampleQuestionObj,
-				handleNextQuestion: mock.fn((res, journey) => {
-					res.redirect(journey.getNextQuestionUrl());
-				})
+				...sampleQuestionObj
 			};
 
 			req.params = {
