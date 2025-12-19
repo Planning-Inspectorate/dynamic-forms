@@ -3,6 +3,7 @@
  * (e.g. questionnaire). Specific journeys should be       *
  * instances of this class                                 *
  ***********************************************************/
+import { END_OF_SECTION } from '#src/section.js';
 
 /**
  * @typedef {import('./journey-response').JourneyResponse} JourneyResponse
@@ -215,7 +216,8 @@ export class Journey {
 	}
 
 	/**
-	 * Get url for the next question in this section
+	 * Get url for the next question in the journey
+	 *
 	 * @param {string} sectionSegment - section segment
 	 * @param {string} questionSegment - question segment
 	 * @param {boolean} [reverse] - if passed in this will get the previous question
@@ -231,7 +233,6 @@ export class Journey {
 
 		for (let i = sectionsStart; reverse ? i >= 0 : i < numberOfSections; reverse ? i-- : i++) {
 			const currentSection = this.sections[i];
-			const numberOfQuestions = currentSection.questions.length;
 
 			if (currentSection.segment === sectionSegment) {
 				foundSection = true;
@@ -242,17 +243,16 @@ export class Journey {
 				if (this.returnToListing && i !== currentSectionIndex) {
 					return null;
 				}
-
-				const questionsStart = reverse ? numberOfQuestions - 1 : 0;
-				for (let j = questionsStart; reverse ? j >= 0 : j < numberOfQuestions; reverse ? j-- : j++) {
-					const question = currentSection.questions[j];
-					if (takeNextQuestion && question.shouldDisplay(this.response)) {
-						return this.#buildQuestionUrl(currentSection.segment, question.url ? question.url : question.fieldName);
-					}
-
-					if (question.fieldName === questionSegment) {
-						takeNextQuestion = true;
-					}
+				const question = currentSection.getNextQuestion({
+					questionFieldName: questionSegment,
+					response: this.response,
+					takeNextQuestion,
+					reverse
+				});
+				if (question === END_OF_SECTION) {
+					takeNextQuestion = true; // get the first question from the following section
+				} else if (question) {
+					return this.#buildQuestionUrl(currentSection.segment, question.url ? question.url : question.fieldName);
 				}
 			}
 		}
