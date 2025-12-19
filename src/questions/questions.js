@@ -15,6 +15,7 @@ import EmailQuestion from '../components/email/question.js';
 import { COMPONENT_TYPES } from '../index.js';
 import TextEntryRedactQuestion from '../components/text-entry-redact/question.js';
 import DateTimeQuestion from '../components/date-time/question.js';
+import ManageListQuestion from '../components/manage-list/question.js';
 
 // This looks a bit grim because so few of our
 // Questions overlap with Question correctly.
@@ -35,5 +36,6 @@ export const questionClasses = Object.freeze({
 	[COMPONENT_TYPES.MULTI_FIELD_INPUT]: MultiFieldInputQuestion,
 	[COMPONENT_TYPES.NUMBER]: NumberEntryQuestion,
 	[COMPONENT_TYPES.UNIT_OPTION]: UnitOptionEntryQuestion,
-	[COMPONENT_TYPES.EMAIL]: EmailQuestion
+	[COMPONENT_TYPES.EMAIL]: EmailQuestion,
+	[COMPONENT_TYPES.MANAGE_LIST]: ManageListQuestion
 });

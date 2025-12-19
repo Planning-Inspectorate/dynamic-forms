@@ -9,6 +9,14 @@ import EmailValidator from '../src/validator/email-validator.js';
 
 /** @type {Record<string, Props>} */
 export const questionProps = {
+	manageListTest: {
+		type: COMPONENT_TYPES.MANAGE_LIST,
+		title: 'Holiday Activities',
+		question: 'Which activities do you want to do on holiday?',
+		fieldName: 'manageListTest',
+		url: 'manage-list-test',
+		label: 'Select all that apply'
+	},
 	holidayActivities: {
 		type: COMPONENT_TYPES.CHECKBOX,
 		title: 'Holiday Activities',
@@ -179,6 +187,7 @@ export const questionProps = {
 
 // questions in order for the journey - used to check the journey redirects to the next question correctly
 export const questionsInOrder = [
+	questionProps.manageListTest,
 	questionProps.holidayActivities,
 	questionProps.addInsurance,
 	questionProps.travelInsuranceType,

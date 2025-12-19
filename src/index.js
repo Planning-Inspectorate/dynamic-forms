@@ -20,5 +20,6 @@ export const COMPONENT_TYPES = Object.freeze({
 	NUMBER: 'number',
 	ADDRESS: 'site-address',
 	UNIT_OPTION: 'unit-option',
-	EMAIL: 'email'
+	EMAIL: 'email',
+	MANAGE_LIST: 'manage-list'
 });

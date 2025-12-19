@@ -13,6 +13,7 @@ export function createJourney(questions, response) {
 		journeyId: JOURNEY_ID,
 		sections: [
 			new Section('Holiday Details', 'questions')
+				.addQuestion(questions.manageListTest, new Section())
 				.addQuestion(questions.holidayActivities)
 				.addQuestion(questions.addInsurance)
 				.addQuestion(questions.travelInsuranceType)

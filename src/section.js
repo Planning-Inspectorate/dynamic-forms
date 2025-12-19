@@ -5,6 +5,7 @@
  */
 
 import RequiredValidator from './validator/required-validator.js';
+import ManageListQuestion from './components/manage-list/question.js';
 
 /**
  * A value indicating the final question of a section has been reached
@@ -83,11 +84,18 @@ export class Section {
 	/**
 	 * Fluent API method for adding questions
 	 * @param {any} question
+	 * @param {Section} [manageListSection]
 	 * @returns {Section}
 	 */
-	addQuestion(question) {
+	addQuestion(question, manageListSection) {
 		if (!question) {
 			throw new Error('question is required');
+		}
+		if (question instanceof ManageListQuestion) {
+			if (!manageListSection) {
+				throw new Error('manage list questions require a section');
+			}
+			question.section = manageListSection;
 		}
 		this.questions.push(question);
 		this.#conditionAdded = false; // reset condition flag
