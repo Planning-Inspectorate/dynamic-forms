@@ -198,6 +198,23 @@ export class Journey {
 	}
 
 	/**
+	 * Handles redirect to the next question in the journey
+	 * Used after question post/saving
+	 *
+	 * @param {import('express').Response} res
+	 * @param {string} sectionSegment
+	 * @param {string} questionSegment
+	 * @returns {void}
+	 */
+	redirectToNextQuestion(res, sectionSegment, questionSegment) {
+		let next = this.getNextQuestionUrl(sectionSegment, questionSegment);
+		if (next === null) {
+			next = this.taskListUrl;
+		}
+		return res.redirect(next);
+	}
+
+	/**
 	 * Get url for the next question in this section
 	 * @param {string} sectionSegment - section segment
 	 * @param {string} questionSegment - question segment
