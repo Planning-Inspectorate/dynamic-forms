@@ -7,6 +7,13 @@
 import RequiredValidator from './validator/required-validator.js';
 
 /**
+ * A value indicating the final question of a section has been reached
+ *
+ * @type {Symbol}
+ */
+export const END_OF_SECTION = Symbol('END_OF_SECTION');
+
+/**
  * Defines a section for a questionnaire, a set of Questions
  * @class
  */
@@ -181,6 +188,35 @@ export class Section {
 		}
 		this.#multiQuestionConditions[conditionName].ended = true;
 		return this;
+	}
+
+	/**
+	 * Get the next question in this section given a questionParam (question fieldName)
+	 * @param {Object} params
+	 * @param {string} params.questionFieldName
+	 * @param {import('#src/journey/journey-response.js').JourneyResponse} params.response
+	 * @param {boolean} [params.takeNextQuestion]
+	 * @param {boolean} [params.reverse]
+	 * @returns {Question|Symbol|null}
+	 */
+	getNextQuestion({ questionFieldName, response, takeNextQuestion = false, reverse = false }) {
+		const numberOfQuestions = this.questions.length;
+
+		const questionsStart = reverse ? numberOfQuestions - 1 : 0;
+		for (let i = questionsStart; reverse ? i >= 0 : i < numberOfQuestions; reverse ? i-- : i++) {
+			const question = this.questions[i];
+			if (takeNextQuestion && question.shouldDisplay(response)) {
+				return question;
+			}
+
+			if (question.fieldName === questionFieldName) {
+				takeNextQuestion = true;
+			}
+		}
+		if (takeNextQuestion) {
+			return END_OF_SECTION;
+		}
+		return null;
 	}
 
 	/**

@@ -1,8 +1,9 @@
 import { describe, it, mock, beforeEach } from 'node:test';
 import assert from 'node:assert';
 import { Journey } from './journey.js';
+import { Section } from '#src/section.js';
 
-const mockSections = [
+const mockSectionDetails = [
 	{
 		segment: 'section1',
 		questions: [
@@ -40,6 +41,11 @@ const mockSections = [
 		]
 	}
 ];
+const mockSections = mockSectionDetails.map((data, index) => {
+	const section = new Section(`section ${index}`, data.segment);
+	section.questions = data.questions;
+	return section;
+});
 
 describe('Journey class', () => {
 	let constructorArgs;
