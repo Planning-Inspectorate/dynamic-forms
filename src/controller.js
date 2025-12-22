@@ -148,7 +148,9 @@ export async function question(req, res) {
 		return res.redirect(journey.taskListUrl);
 	}
 
-	const viewModel = question.prepQuestionForRendering(section, journey);
+	const viewModel = question.prepQuestionForRendering(section, journey, {
+		originalUrl: req.originalUrl
+	});
 	return question.renderAction(res, viewModel);
 }
 
