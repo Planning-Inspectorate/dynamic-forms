@@ -16,7 +16,8 @@ type QuestionTypes =
 	| 'multi-field-input'
 	| 'number'
 	| 'site-address'
-	| 'unit-option';
+	| 'unit-option'
+	| 'manage-list';
 
 interface CommonQuestionProps {
 	type: QuestionTypes;

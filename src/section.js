@@ -82,12 +82,19 @@ export class Section {
 
 	/**
 	 * Fluent API method for adding questions
-	 * @param {any} question
+	 * @param {import('#src/questions/question.js').Question} question
+	 * @param {import('#src/components/manage-list/manage-list-section.js').ManageListSection} [manageListSection]
 	 * @returns {Section}
 	 */
-	addQuestion(question) {
+	addQuestion(question, manageListSection) {
 		if (!question) {
 			throw new Error('question is required');
+		}
+		if (question.isManageListQuestion) {
+			if (!manageListSection || !manageListSection.isManageListSection) {
+				throw new Error('manage list questions require a ManageListSection');
+			}
+			question.section = manageListSection;
 		}
 		this.questions.push(question);
 		this.#conditionAdded = false; // reset condition flag

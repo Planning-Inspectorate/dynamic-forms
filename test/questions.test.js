@@ -13,6 +13,7 @@ import path from 'path';
 import { COMPONENT_TYPES } from '../src/index.js';
 import { escapeForRegExp, snapshotsDir } from './utils/utils.js';
 import { BOOLEAN_OPTIONS } from '../src/components/boolean/question.js';
+import { mockRandomUUID } from '#src/lib/uuid.test.js';
 
 /**
  * @param {import('node:test').TestContext} ctx
@@ -91,6 +92,7 @@ describe('question pages', () => {
 		const q = questionsInOrder[i];
 
 		it(`should render question: ${q.url}`, async (ctx) => {
+			mockRandomUUID(ctx);
 			const testServer = await createAppWithQuestions(ctx);
 
 			const response = await testServer.get('/questions/' + q.url, {
@@ -206,6 +208,16 @@ export function mockAnswerBody(q) {
 			};
 		case COMPONENT_TYPES.EMAIL:
 			return { [q.fieldName]: 'test@example.com' };
+		case COMPONENT_TYPES.MANAGE_LIST: {
+			// manage list questions not available here so just hard coded
+			return {
+				[q.fieldName]: [
+					{ travelCompanionName: 'Companion 1', travelCompanionEmail: 'compaion-1@example.com' },
+					{ travelCompanionName: 'Companion 2', travelCompanionEmail: 'compaion-2@example.com' },
+					{ travelCompanionName: 'Companion 3', travelCompanionEmail: 'compaion-3@example.com' }
+				]
+			};
+		}
 		default:
 			return { [q.fieldName]: 'test' };
 	}
@@ -255,6 +267,9 @@ export function mockAnswer(q) {
 			return '10 kg';
 		case COMPONENT_TYPES.EMAIL:
 			return 'test@example.com';
+		case COMPONENT_TYPES.MANAGE_LIST: {
+			return `3 ${q.title}`;
+		}
 		default:
 			return 'test';
 	}
