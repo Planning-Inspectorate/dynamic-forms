@@ -53,6 +53,42 @@ describe('./src/dynamic-forms/section.js', () => {
 			assert.strictEqual(question.isRequired, mockQuestion.isRequired);
 			assert.strictEqual(question.shouldDisplay(), mockQuestion.shouldDisplay());
 		});
+
+		it('should support manage list questions', () => {
+			const section = new Section('s1', 'S');
+			assert.strictEqual(section.questions.length, 0);
+			const q = {
+				get isManageListQuestion() {
+					return true;
+				}
+			};
+			const manageListSection = {
+				get isManageListSection() {
+					return true;
+				}
+			};
+			section.addQuestion(q, manageListSection);
+			assert.strictEqual(section.questions.length, 1);
+			assert.strictEqual(q.section, manageListSection);
+		});
+
+		it('should throw if no manageListSection provided for a manage list question', () => {
+			const section = new Section('s1', 'S');
+			assert.strictEqual(section.questions.length, 0);
+			const q = {
+				get isManageListQuestion() {
+					return true;
+				}
+			};
+			assert.throws(
+				() => section.addQuestion(q),
+				(thrown) => {
+					assert.strictEqual(thrown.message, 'manage list questions require a ManageListSection');
+					return true;
+				}
+			);
+			assert.strictEqual(section.questions.length, 0);
+		});
 	});
 
 	describe('getStatus', () => {
