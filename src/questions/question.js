@@ -289,7 +289,10 @@ export class Question {
 	 * @deprecated - use `journey.redirectToNextQuestion`
 	 */
 	handleNextQuestion(res, journey, sectionSegment, questionSegment) {
-		return journey.redirectToNextQuestion(res, sectionSegment, questionSegment);
+		return journey.redirectToNextQuestion(res, {
+			section: sectionSegment,
+			question: questionSegment
+		});
 	}
 
 	/**

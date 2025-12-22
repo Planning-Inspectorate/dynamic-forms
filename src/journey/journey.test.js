@@ -300,7 +300,7 @@ describe('Journey class', () => {
 				journey.sections = mockSections;
 				journey.returnToListing = returnToListing;
 
-				const nextQuestionUrl = journey.getNextQuestionUrl(section, name, false);
+				const nextQuestionUrl = journey.getNextQuestionUrl({ section: section, question: name }, false);
 
 				assert.strictEqual(nextQuestionUrl, null);
 			});
@@ -315,7 +315,7 @@ describe('Journey class', () => {
 				journey.sections = mockSections;
 				journey.returnToListing = returnToListing;
 
-				const nextQuestionUrl = journey.getNextQuestionUrl(section, name, false);
+				const nextQuestionUrl = journey.getNextQuestionUrl({ section: section, question: name }, false);
 
 				assert.strictEqual(nextQuestionUrl, null);
 			});
@@ -331,7 +331,7 @@ describe('Journey class', () => {
 				journey.sections = mockSections;
 				journey.returnToListing = returnToListing;
 
-				const nextQuestionUrl = journey.getNextQuestionUrl(section.segment, name, false);
+				const nextQuestionUrl = journey.getNextQuestionUrl({ section: section.segment, question: name }, false);
 
 				assert.strictEqual(nextQuestionUrl, `${constructorArgs.makeBaseUrl()}/${section.segment}/${nextQuestionName}`);
 			});
@@ -356,7 +356,7 @@ describe('Journey class', () => {
 				journey.sections = mockSections;
 				journey.returnToListing = returnToListing;
 
-				const nextQuestionUrl = journey.getNextQuestionUrl(section.segment, name, false);
+				const nextQuestionUrl = journey.getNextQuestionUrl({ section: section.segment, question: name }, false);
 
 				assert.strictEqual(nextQuestionUrl, `${constructorArgs.makeBaseUrl()}/${section.segment}/${nextQuestionName}`);
 			});
@@ -372,7 +372,7 @@ describe('Journey class', () => {
 				journey.sections = mockSections;
 				journey.returnToListing = returnToListing;
 
-				const nextQuestionUrl = journey.getNextQuestionUrl(section.segment, name, true);
+				const nextQuestionUrl = journey.getNextQuestionUrl({ section: section.segment, question: name }, true);
 
 				assert.strictEqual(nextQuestionUrl, `${constructorArgs.makeBaseUrl()}/${section.segment}/${prevQuestionName}`);
 			});
@@ -387,7 +387,7 @@ describe('Journey class', () => {
 				journey.sections = mockSections;
 				journey.returnToListing = returnToListing;
 
-				const nextQuestionUrl = journey.getNextQuestionUrl(section.segment, name, false);
+				const nextQuestionUrl = journey.getNextQuestionUrl({ section: section.segment, question: name }, false);
 
 				assert.strictEqual(nextQuestionUrl, null);
 			});
@@ -404,7 +404,7 @@ describe('Journey class', () => {
 				journey.sections = mockSections;
 				journey.returnToListing = false;
 
-				const nextQuestionUrl = journey.getNextQuestionUrl(section.segment, name, true);
+				const nextQuestionUrl = journey.getNextQuestionUrl({ section: section.segment, question: name }, true);
 
 				assert.strictEqual(
 					nextQuestionUrl,
@@ -422,7 +422,7 @@ describe('Journey class', () => {
 				journey.sections = mockSections;
 				journey.returnToListing = returnToListing;
 
-				const nextQuestionUrl = journey.getNextQuestionUrl(section.segment, name, true);
+				const nextQuestionUrl = journey.getNextQuestionUrl({ section: section.segment, question: name }, true);
 
 				assert.strictEqual(nextQuestionUrl, null);
 			});
@@ -437,7 +437,7 @@ describe('Journey class', () => {
 				journey.sections = mockSections;
 				journey.returnToListing = true;
 
-				const nextQuestionUrl = journey.getNextQuestionUrl(section.segment, name, false);
+				const nextQuestionUrl = journey.getNextQuestionUrl({ section: section.segment, question: name }, false);
 				assert.strictEqual(nextQuestionUrl, null);
 			});
 		}
@@ -451,7 +451,7 @@ describe('Journey class', () => {
 				journey.sections = mockSections;
 				journey.returnToListing = true;
 
-				const nextQuestionUrl = journey.getNextQuestionUrl(section.segment, name, true);
+				const nextQuestionUrl = journey.getNextQuestionUrl({ section: section.segment, question: name }, true);
 
 				assert.strictEqual(nextQuestionUrl, null);
 			});
@@ -466,7 +466,7 @@ describe('Journey class', () => {
 			const journey = new Journey(constructorArgs);
 			journey.sections = mockSections;
 
-			const nextQuestionUrl = journey.getNextQuestionUrl(section.segment, name, false);
+			const nextQuestionUrl = journey.getNextQuestionUrl({ section: section.segment, question: name }, false);
 
 			assert.strictEqual(nextQuestionUrl, `base/${section.segment}/${nextQuestionName}?id=1`);
 		});
