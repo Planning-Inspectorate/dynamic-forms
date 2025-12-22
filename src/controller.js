@@ -141,15 +141,15 @@ export async function question(req, res) {
 	//render an individual question
 	const { journey } = res.locals;
 
-	const sectionObj = journey.getSection(req.params.section);
-	const questionObj = journey.getQuestionByParams(req.params);
+	const section = journey.getSection(req.params.section);
+	const question = journey.getQuestionByParams(req.params);
 
-	if (!questionObj || !sectionObj) {
+	if (!question || !section) {
 		return res.redirect(journey.taskListUrl);
 	}
 
-	const viewModel = questionObj.prepQuestionForRendering(sectionObj, journey);
-	return questionObj.renderAction(res, viewModel);
+	const viewModel = question.prepQuestionForRendering(section, journey);
+	return question.renderAction(res, viewModel);
 }
 
 /**
@@ -177,22 +177,22 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 		/** @type {import('./journey/journey-response.js').JourneyResponse} */
 		const journeyResponse = res.locals.journeyResponse;
 
-		const sectionObj = journey.getSection(req.params.section);
-		const questionObj = journey.getQuestionByParams(req.params);
+		const section = journey.getSection(req.params.section);
+		const question = journey.getQuestionByParams(req.params);
 
-		if (!questionObj || !sectionObj) {
+		if (!question || !section) {
 			return res.redirect(journey.taskListUrl);
 		}
 
 		try {
 			// check for validation errors
-			const errorViewModel = questionObj.checkForValidationErrors(req, sectionObj, journey);
+			const errorViewModel = question.checkForValidationErrors(req, section, journey);
 			if (errorViewModel) {
-				return questionObj.renderAction(res, errorViewModel);
+				return question.renderAction(res, errorViewModel);
 			}
 
 			// save
-			const data = await questionObj.getDataToSave(req, journeyResponse);
+			const data = await question.getDataToSave(req, journeyResponse);
 
 			await saveData({
 				req,
@@ -203,20 +203,20 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 			});
 
 			// check for saving errors
-			const saveViewModel = questionObj.checkForSavingErrors(req, sectionObj, journey);
+			const saveViewModel = question.checkForSavingErrors(req, section, journey);
 			if (saveViewModel) {
-				return questionObj.renderAction(res, saveViewModel);
+				return question.renderAction(res, saveViewModel);
 			}
 			if (redirectToTaskListOnSuccess) {
 				return res.redirect(journey.taskListUrl);
 			}
 			// move to the next question
-			return journey.redirectToNextQuestion(res, sectionObj.segment, questionObj.fieldName);
+			return journey.redirectToNextQuestion(res, section.segment, question.fieldName);
 		} catch (err) {
-			const viewModel = questionObj.prepQuestionForRendering(sectionObj, journey, {
+			const viewModel = question.prepQuestionForRendering(section, journey, {
 				errorSummary: err.errorSummary ?? [{ text: err.toString(), href: '#' }]
 			});
-			return questionObj.renderAction(res, viewModel);
+			return question.renderAction(res, viewModel);
 		}
 	};
 }
