@@ -325,6 +325,7 @@ describe('dynamic-form/controller', () => {
 
 		it('should render the question template', async () => {
 			sampleQuestionObj.renderAction.mock.resetCalls();
+			sampleQuestionObj.prepQuestionForRendering.mock.resetCalls();
 			req.params.referenceId = mockRef;
 			const mockAnswer = 'sampleAnswer';
 			const mockBackLink = 'back';
@@ -342,6 +343,13 @@ describe('dynamic-form/controller', () => {
 
 			assert.strictEqual(sampleQuestionObj.renderAction.mock.callCount(), 1);
 			assert.deepStrictEqual(sampleQuestionObj.renderAction.mock.calls[0].arguments, [res, mockQuestionRendering]);
+			assert.strictEqual(sampleQuestionObj.prepQuestionForRendering.mock.callCount(), 1);
+			assert.ok(sampleQuestionObj.prepQuestionForRendering.mock.calls[0].arguments[2]);
+			assert.ok(sampleQuestionObj.prepQuestionForRendering.mock.calls[0].arguments[2].originalUrl);
+			assert.strictEqual(
+				sampleQuestionObj.prepQuestionForRendering.mock.calls[0].arguments[2].originalUrl,
+				req.originalUrl
+			);
 		});
 	});
 
