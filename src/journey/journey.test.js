@@ -199,15 +199,15 @@ describe('Journey class', () => {
 		});
 	});
 
-	describe('getQuestionBySectionAndName', () => {
+	describe('getQuestionByParams', () => {
 		it('should return the correct question by section and name', () => {
 			const journey = new Journey(constructorArgs);
 			journey.sections = mockSections;
 
-			const question = journey.getQuestionBySectionAndName(
-				mockSections[0].segment,
-				mockSections[0].questions[1].fieldName
-			);
+			const question = journey.getQuestionByParams({
+				section: mockSections[0].segment,
+				question: mockSections[0].questions[1].fieldName
+			});
 
 			assert.strictEqual(question, mockSections[0].questions[1]);
 		});
@@ -216,7 +216,7 @@ describe('Journey class', () => {
 			const journey = new Journey(constructorArgs);
 			journey.sections = mockSections;
 
-			const question = journey.getQuestionBySectionAndName('a', 'b');
+			const question = journey.getQuestionByParams({ section: 'a', question: 'b' });
 
 			assert.strictEqual(question, undefined);
 		});
@@ -225,7 +225,7 @@ describe('Journey class', () => {
 			const journey = new Journey(constructorArgs);
 			journey.sections = mockSections;
 
-			const question = journey.getQuestionBySectionAndName(mockSections[0].segment, 'nope');
+			const question = journey.getQuestionByParams({ section: mockSections[0].segment, question: 'nope' });
 
 			assert.strictEqual(question, undefined);
 		});
