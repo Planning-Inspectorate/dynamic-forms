@@ -10,7 +10,37 @@
         <div class="govuk-grid-column-two-thirds">
             <form action="" method="post" novalidate>
                 {% if _csrf %}<input type="hidden" name="_csrf" value="{{ _csrf }}">{% endif %}
-                {% if question.label %}
+                {% if question.descriptive %}
+                    <h1 class="govuk-heading-l">
+                        {{ question.descriptive.title }}
+                    </h1>
+
+                    {% if question.html %}
+                        {% include question.html ignore missing %}
+                    {% endif %}
+
+                    {% for paragraph in question.descriptive.paragraphs %}
+                        <p class="govuk-body">{{ paragraph }}</p>
+                    {% endfor %}
+
+                    <h2 class="govuk-heading-m">
+                        {{ question.question }}
+                    </h2>
+
+                    {{ govukTextarea({
+                        label: {
+                            text: question.label
+                        },
+                        id: question.fieldName,
+                        name: question.fieldName,
+                        value: question.value,
+                        hint: question.hint and { text: question.hint },
+                        errorMessage: errors[question.fieldName] and {
+                            text: errors[question.fieldName].msg
+                        },
+                        classes: question.inputClasses
+                    }) }}
+                {% elif question.label %}
                     <h1 class="govuk-heading-l">
                         {{ question.question }}
                     </h1>

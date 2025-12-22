@@ -49,6 +49,8 @@ export class Question {
 	question;
 	/** @type {string|undefined} - additional information to user about the question */
 	description;
+	/** @type {{title: string, paragraphs: string[]}} provides a more descriptive question, adherent to a pre-defined standard page layout */
+	descriptive;
 	/** @type {string} the folder name of the view */
 	viewFolder;
 	/** @type {string} the unique name of the input on the page, also used as a url segment (should this be separated) */
@@ -105,6 +107,7 @@ export class Question {
 			url,
 			pageTitle,
 			description,
+			descriptive,
 			validators,
 			html,
 			hint,
@@ -129,6 +132,7 @@ export class Question {
 		this.html = html;
 		this.pageTitle = pageTitle ?? question;
 		this.description = description;
+		this.descriptive = descriptive;
 		this.hint = hint;
 		this.interfaceType = interfaceType;
 		this.autocomplete = autocomplete;
@@ -169,6 +173,7 @@ export class Question {
 				fieldName: this.fieldName,
 				pageTitle: this.pageTitle,
 				description: this.description,
+				descriptive: this.descriptive,
 				html: this.html,
 				hint: this.hint,
 				interfaceType: this.interfaceType,

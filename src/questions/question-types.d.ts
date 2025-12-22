@@ -21,6 +21,8 @@ export interface QuestionParameters {
 	actionLink?: ActionLink;
 	// static view data for this question
 	viewData?: Object<string, any>;
+	//enables a more descriptive view of the question
+	descriptive?: { title: string; paragraphs: string[] };
 }
 
 export interface ActionLink {

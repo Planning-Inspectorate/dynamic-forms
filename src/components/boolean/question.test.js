@@ -8,11 +8,13 @@ describe('./src/dynamic-forms/components/boolean/question.js', () => {
 	const DESCRIPTION = 'Tina Turner question';
 	const FIELDNAME = 'likeTinaTurner';
 	const HTML = 'some/path.html';
+	const DESCRIPTIVE = { title: 'Tina', paragraphs: ['Her name', 'is Tina'] };
 	const newQuestion = () => {
 		return new BooleanQuestion({
 			title: TITLE,
 			question: QUESTION,
 			description: DESCRIPTION,
+			descriptive: DESCRIPTIVE,
 			fieldName: FIELDNAME,
 			html: HTML
 		});
@@ -23,6 +25,9 @@ describe('./src/dynamic-forms/components/boolean/question.js', () => {
 		assert.strictEqual(booleanQuestion.question, QUESTION);
 		assert.strictEqual(booleanQuestion.description, DESCRIPTION);
 		assert.strictEqual(booleanQuestion.fieldName, FIELDNAME);
+		assert.strictEqual(booleanQuestion.html, HTML);
+		assert.strictEqual(booleanQuestion.descriptive.title, DESCRIPTIVE.title);
+		assert.strictEqual(booleanQuestion.descriptive.paragraphs, DESCRIPTIVE.paragraphs);
 		assert.strictEqual(booleanQuestion.html, HTML);
 		assert.strictEqual(booleanQuestion.options[0].text, 'Yes');
 		assert.strictEqual(booleanQuestion.options[0].value, 'yes');

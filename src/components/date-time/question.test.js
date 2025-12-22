@@ -42,6 +42,7 @@ describe('./lib/forms/custom-components/date-time/question.js', () => {
 				fieldName: 'siteVisitDate',
 				pageTitle: 'When is the site visit?',
 				description: undefined,
+				descriptive: undefined,
 				html: undefined,
 				hint: undefined,
 				interfaceType: undefined,

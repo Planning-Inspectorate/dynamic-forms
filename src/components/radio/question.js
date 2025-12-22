@@ -11,6 +11,7 @@ export default class RadioQuestion extends OptionsQuestion {
 	 * @param {string} [params.hint]
 	 * @param {string} [params.pageTitle]
 	 * @param {string} [params.description]
+	 * @param {{title: string, paragraphs: string[]}} [params.descriptive]
 	 * @param {string} [params.label]
 	 * @param {string} [params.html]
 	 * @param {string} [params.legend] - optional legend, used instead of h1
@@ -36,7 +37,8 @@ export default class RadioQuestion extends OptionsQuestion {
 		validators,
 		actionLink,
 		editable,
-		viewData
+		viewData,
+		descriptive
 	}) {
 		super({
 			title,
@@ -51,7 +53,8 @@ export default class RadioQuestion extends OptionsQuestion {
 			validators,
 			actionLink,
 			editable,
-			viewData
+			viewData,
+			descriptive
 		});
 
 		this.html = html;

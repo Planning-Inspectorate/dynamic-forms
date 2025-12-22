@@ -9,6 +9,7 @@ describe('./src/dynamic-forms/question.js', () => {
 	const TITLE = 'Question1';
 	const QUESTION_STRING = 'What is your favourite colour?';
 	const DESCRIPTION = 'A question about your favourite colour';
+	const DESCRIPTIVE = { title: 'a title', paragraphs: ['para1', 'para2'] };
 	const TYPE = 'Select';
 	const FIELDNAME = 'favouriteColour';
 	const URL = '/test';
@@ -20,6 +21,7 @@ describe('./src/dynamic-forms/question.js', () => {
 		title = TITLE,
 		question = QUESTION_STRING,
 		description = DESCRIPTION,
+		descriptive = DESCRIPTIVE,
 		viewFolder = TYPE,
 		fieldName = FIELDNAME,
 		url = URL,
@@ -36,6 +38,7 @@ describe('./src/dynamic-forms/question.js', () => {
 			pageTitle,
 			question,
 			description,
+			descriptive,
 			viewFolder,
 			fieldName,
 			url,
@@ -60,6 +63,7 @@ describe('./src/dynamic-forms/question.js', () => {
 			assert.strictEqual(question.url, URL);
 			assert.strictEqual(question.pageTitle, QUESTION_STRING);
 			assert.strictEqual(question.description, DESCRIPTION);
+			assert.strictEqual(question.descriptive, DESCRIPTIVE);
 			assert.strictEqual(question.validators, VALIDATORS);
 			assert.strictEqual(question.html, HTML);
 			assert.strictEqual(question.hint, HINT);
@@ -142,6 +146,7 @@ describe('./src/dynamic-forms/question.js', () => {
 				fieldName: question.fieldName,
 				pageTitle: question.pageTitle,
 				description: question.description,
+				descriptive: question.descriptive,
 				html: question.html,
 				hint: undefined,
 				interfaceType: undefined,
