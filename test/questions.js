@@ -174,6 +174,27 @@ export const questionProps = {
 		url: 'contact-email',
 		label: 'Email address',
 		validators: [new EmailValidator()]
+	},
+	travelCompanions: {
+		type: COMPONENT_TYPES.MANAGE_LIST,
+		title: 'Travel Companions',
+		question: 'Travel Companions',
+		fieldName: 'travelCompanions',
+		url: 'travel-companions'
+	},
+	travelCompanionName: {
+		type: COMPONENT_TYPES.SINGLE_LINE_INPUT,
+		title: 'Travel Companion Name',
+		question: 'Travel Companion Name',
+		fieldName: 'travelCompanionName',
+		url: 'travel-companions-name'
+	},
+	travelCompanionEmail: {
+		type: COMPONENT_TYPES.EMAIL,
+		title: 'Travel Companion Email',
+		question: 'Travel Companion Email',
+		fieldName: 'travelCompanionEmail',
+		url: 'travel-companion-email'
 	}
 };
 
@@ -194,7 +215,8 @@ export const questionsInOrder = [
 	questionProps.nights,
 	questionProps.hotelAddress,
 	questionProps.luggageWeight,
-	questionProps.contactEmail
+	questionProps.contactEmail,
+	questionProps.travelCompanions
 ];
 
 export const getQuestions = () => createQuestions(questionProps, questionClasses, {});

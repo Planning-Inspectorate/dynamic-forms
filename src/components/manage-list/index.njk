@@ -1,0 +1,45 @@
+{% extends layoutTemplate %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block dynQuestionContent %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form action="" method="post" novalidate>
+                {% if _csrf %}<input type="hidden" name="_csrf" value="{{ _csrf }}">{% endif %}
+
+                <h1 class="govuk-heading-l">You have added {{ question.value.length }} {{ question.pageTitle }}</h1>
+
+                <dl class="govuk-summary-list">
+                    {% for item in question.value %}
+                        <div class="govuk-summary-list__row ">
+                            <dt class="govuk-summary-list__key govuk-!-font-weight-regular">
+                                {{ item.name }}
+                            </dt>
+                            <dd class="govuk-summary-list__actions">
+                                <ul class="govuk-summary-list__actions-list">
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> contact details</span></a>
+                                    </li>
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="#">Remove<span class="govuk-visually-hidden"> contact details</span></a>
+                                    </li>
+                                </ul>
+                            </dd>
+                        </div>
+                    {% endfor %}
+                </dl>
+
+                <p class="govuk-body">
+                    <a href="{{ originalUrl }}/{{ question.addAnotherLink }}" class="govuk-link">Add another</a>
+                </p>
+
+                {{ govukButton({
+                    text: continueButtonText,
+                    type: "submit",
+                    attributes: { "data-cy":"button-save-and-continue"}
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}
