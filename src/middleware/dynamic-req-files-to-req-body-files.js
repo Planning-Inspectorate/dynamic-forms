@@ -16,10 +16,9 @@ export default () => (req, res, next) => {
 		return next();
 	}
 
-	const { section, question } = req.params;
 	const { journey } = res.locals;
 
-	const questionObj = journey.getQuestionBySectionAndName(section, question);
+	const questionObj = journey.getQuestionByParams(req.params);
 	const filesPropertyPath = questionObj.fieldName;
 
 	if (typeof req.files[filesPropertyPath] === 'undefined') {

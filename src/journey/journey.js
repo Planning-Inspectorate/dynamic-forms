@@ -169,18 +169,17 @@ export class Journey {
 
 	/**
 	 * gets a question from the object's sections based on a section + question names
-	 * @param {string} sectionSegment segment of the section to find the question in
-	 * @param {string} questionSegment fieldname of the question to lookup
+	 * @param {import('./journey-types.d.ts').RouteParams} params
 	 * @returns {Question | undefined} question found by lookup
 	 */
-	getQuestionBySectionAndName(sectionSegment, questionSegment) {
-		const section = this.getSection(sectionSegment);
+	getQuestionByParams(params) {
+		const section = this.getSection(params.section);
 
 		if (!section) {
 			return undefined;
 		}
 
-		return this.#getQuestion(section, questionSegment);
+		return this.#getQuestion(section, params.question);
 	}
 
 	/**

@@ -139,11 +139,10 @@ export async function list(req, res, pageCaption, viewData) {
  */
 export async function question(req, res) {
 	//render an individual question
-	const { section, question } = req.params;
 	const { journey } = res.locals;
 
-	const sectionObj = journey.getSection(section);
-	const questionObj = journey.getQuestionBySectionAndName(section, question);
+	const sectionObj = journey.getSection(req.params.section);
+	const questionObj = journey.getQuestionByParams(req.params);
 
 	if (!questionObj || !sectionObj) {
 		return res.redirect(journey.taskListUrl);
@@ -173,14 +172,13 @@ export async function question(req, res) {
  */
 export function buildSave(saveData, redirectToTaskListOnSuccess) {
 	return async (req, res) => {
-		const { section, question } = req.params;
 		/** @type {import('./journey/journey.js').Journey} */
 		const journey = res.locals.journey;
 		/** @type {import('./journey/journey-response.js').JourneyResponse} */
 		const journeyResponse = res.locals.journeyResponse;
 
-		const sectionObj = journey.getSection(section);
-		const questionObj = journey.getQuestionBySectionAndName(section, question);
+		const sectionObj = journey.getSection(req.params.section);
+		const questionObj = journey.getQuestionByParams(req.params);
 
 		if (!questionObj || !sectionObj) {
 			return res.redirect(journey.taskListUrl);
