@@ -8,7 +8,7 @@ describe('dynamic-forms/middleware/dynamic-req-files-to-req-body-files', () => {
 	let mockRes;
 	let filesPropertyPath = `example-files-property-path-${counter}`;
 
-	const mockGetQuestionBySectionAndName = mock.fn(() => {
+	const mockgetQuestionByParams = mock.fn(() => {
 		return { fieldName: filesPropertyPath };
 	});
 
@@ -24,7 +24,7 @@ describe('dynamic-forms/middleware/dynamic-req-files-to-req-body-files', () => {
 			cookie: mock.fn(),
 			locals: {
 				journeyResponse: mock.fn(),
-				journey: { getQuestionBySectionAndName: mockGetQuestionBySectionAndName }
+				journey: { getQuestionByParams: mockgetQuestionByParams }
 			},
 			redirect: mock.fn(),
 			render: mock.fn(),

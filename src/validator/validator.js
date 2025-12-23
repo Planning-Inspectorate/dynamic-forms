@@ -2,11 +2,9 @@ import { validationResult } from 'express-validator';
 
 /** @type {import('express').Handler} */
 const validate = async (req, res, next) => {
-	const { section, question } = req.params;
-
 	const { journey, journeyResponse } = res.locals;
 
-	const questionObj = journey.getQuestionBySectionAndName(section, question);
+	const questionObj = journey.getQuestionByParams(req.params);
 	if (!questionObj) {
 		throw new Error('unknown question type');
 	}

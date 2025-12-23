@@ -67,6 +67,14 @@ function buildSectionRowViewModel(key, value, action) {
 }
 
 /**
+ * @param {object} [viewData]
+ * @returns {import('express').Handler}
+ */
+export function buildList(viewData = {}) {
+	return (req, res) => list(req, res, viewData.pageCaption, viewData);
+}
+
+/**
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  * @param {string} pageCaption
@@ -139,18 +147,19 @@ export async function list(req, res, pageCaption, viewData) {
  */
 export async function question(req, res) {
 	//render an individual question
-	const { section, question } = req.params;
 	const { journey } = res.locals;
 
-	const sectionObj = journey.getSection(section);
-	const questionObj = journey.getQuestionBySectionAndName(section, question);
+	const section = journey.getSection(req.params.section);
+	const question = journey.getQuestionByParams(req.params);
 
-	if (!questionObj || !sectionObj) {
+	if (!question || !section) {
 		return res.redirect(journey.taskListUrl);
 	}
 
-	const viewModel = questionObj.prepQuestionForRendering(sectionObj, journey);
-	return questionObj.renderAction(res, viewModel);
+	const viewModel = question.prepQuestionForRendering(section, journey, {
+		originalUrl: req.originalUrl
+	});
+	return question.renderAction(res, viewModel);
 }
 
 /**
@@ -173,28 +182,27 @@ export async function question(req, res) {
  */
 export function buildSave(saveData, redirectToTaskListOnSuccess) {
 	return async (req, res) => {
-		const { section, question } = req.params;
 		/** @type {import('./journey/journey.js').Journey} */
 		const journey = res.locals.journey;
 		/** @type {import('./journey/journey-response.js').JourneyResponse} */
 		const journeyResponse = res.locals.journeyResponse;
 
-		const sectionObj = journey.getSection(section);
-		const questionObj = journey.getQuestionBySectionAndName(section, question);
+		const section = journey.getSection(req.params.section);
+		const question = journey.getQuestionByParams(req.params);
 
-		if (!questionObj || !sectionObj) {
+		if (!question || !section) {
 			return res.redirect(journey.taskListUrl);
 		}
 
 		try {
 			// check for validation errors
-			const errorViewModel = questionObj.checkForValidationErrors(req, sectionObj, journey);
+			const errorViewModel = question.checkForValidationErrors(req, section, journey);
 			if (errorViewModel) {
-				return questionObj.renderAction(res, errorViewModel);
+				return question.renderAction(res, errorViewModel);
 			}
 
 			// save
-			const data = await questionObj.getDataToSave(req, journeyResponse);
+			const data = await question.getDataToSave(req, journeyResponse);
 
 			await saveData({
 				req,
@@ -205,20 +213,23 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 			});
 
 			// check for saving errors
-			const saveViewModel = questionObj.checkForSavingErrors(req, sectionObj, journey);
+			const saveViewModel = question.checkForSavingErrors(req, section, journey);
 			if (saveViewModel) {
-				return questionObj.renderAction(res, saveViewModel);
+				return question.renderAction(res, saveViewModel);
 			}
 			if (redirectToTaskListOnSuccess) {
 				return res.redirect(journey.taskListUrl);
 			}
 			// move to the next question
-			return questionObj.handleNextQuestion(res, journey, sectionObj.segment, questionObj.fieldName);
+			return journey.redirectToNextQuestion(res, {
+				section: section.segment,
+				question: question.fieldName
+			});
 		} catch (err) {
-			const viewModel = questionObj.prepQuestionForRendering(sectionObj, journey, {
+			const viewModel = question.prepQuestionForRendering(section, journey, {
 				errorSummary: err.errorSummary ?? [{ text: err.toString(), href: '#' }]
 			});
-			return questionObj.renderAction(res, viewModel);
+			return question.renderAction(res, viewModel);
 		}
 	};
 }

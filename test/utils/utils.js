@@ -28,7 +28,8 @@ export function mockLogger() {
 export const mockReq = () => ({
 	log: mockLogger(),
 	params: {},
-	body: {}
+	body: {},
+	originalUrl: '/original-url'
 });
 export const mockRes = () => {
 	const res = {

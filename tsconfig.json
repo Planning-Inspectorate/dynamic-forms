@@ -1,0 +1,23 @@
+{
+	"include": ["**/*.ts", "**/*.js"],
+	"exclude": ["node_modules", "packages/database/src/client/**", "**/*.test.ts", "test/**"],
+	"compilerOptions": {
+		"allowImportingTsExtensions": true,
+		"allowJs": true,
+		"allowSyntheticDefaultImports": true,
+		"baseUrl": ".",
+		"checkJs": false,
+		"erasableSyntaxOnly": true,
+		"esModuleInterop": true,
+		"module": "NodeNext",
+		"moduleResolution": "nodenext",
+		"strict": true,
+		"target": "esnext",
+		"skipLibCheck": true,
+		"paths": {
+			"#question-types": ["./src/questions/question-types.d.ts"],
+			"#src/*": ["./src/*"],
+			"#test/*": ["./test/*"]
+		}
+	}
+}

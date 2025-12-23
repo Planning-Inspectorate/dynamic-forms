@@ -12,7 +12,7 @@ describe('./src/dynamic-forms/validator/validator.js', () => {
 			locals: {
 				journeyResponse: {},
 				journey: {
-					getQuestionBySectionAndName: function () {
+					getQuestionByParams: function () {
 						return null;
 					}
 				}
@@ -50,7 +50,7 @@ describe('./src/dynamic-forms/validator/validator.js', () => {
 		};
 
 		mockRes.locals.journey = {
-			getQuestionBySectionAndName: function () {
+			getQuestionByParams: function () {
 				return {
 					validators: [new RequiredValidator()],
 					fieldName: 'field1'
@@ -78,7 +78,7 @@ describe('./src/dynamic-forms/validator/validator.js', () => {
 		};
 
 		mockRes.locals.journey = {
-			getQuestionBySectionAndName: function () {
+			getQuestionByParams: function () {
 				return {
 					validators: [new RequiredValidator()],
 					fieldName: 'field1'
@@ -106,7 +106,7 @@ describe('./src/dynamic-forms/validator/validator.js', () => {
 		};
 
 		mockRes.locals.journey = {
-			getQuestionBySectionAndName: function () {
+			getQuestionByParams: function () {
 				return {
 					validators: [new RequiredValidator()],
 					fieldName: 'field1'
@@ -133,7 +133,7 @@ describe('./src/dynamic-forms/validator/validator.js', () => {
 		};
 
 		mockRes.locals.journey = {
-			getQuestionBySectionAndName: function () {
+			getQuestionByParams: function () {
 				return {
 					validators: [new RequiredValidator(), new ValidOptionValidator()],
 					fieldName: 'field1',
@@ -174,7 +174,7 @@ describe('./src/dynamic-forms/validator/validator.js', () => {
 		};
 
 		mockRes.locals.journey = {
-			getQuestionBySectionAndName: function () {
+			getQuestionByParams: function () {
 				return {
 					validators: [new RequiredValidator(), new ValidOptionValidator()],
 					fieldName: 'field1',
@@ -217,7 +217,7 @@ describe('./src/dynamic-forms/validator/validator.js', () => {
 		};
 
 		mockRes.locals.journey = {
-			getQuestionBySectionAndName: function () {
+			getQuestionByParams: function () {
 				return {
 					validators: [new AddressValidator()],
 					fieldName: 'field1'

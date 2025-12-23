@@ -8,10 +8,12 @@ export class TestServer {
 	// Private cookie jar for storing cookies between requests
 	/** @type {Object<string, string>} */
 	#cookieJar = {};
+	#timeoutMs;
 
 	/**
 	 * @param {import('http').RequestListener} requestListener
 	 * @param {object} [options]
+	 * @param {number} [options.timeoutMs] - timeout to use for fetch requests
 	 * @param {boolean} [options.rememberCookies] - If true, cookies are stored and sent with each request
 	 */
 	constructor(requestListener, options = {}) {
@@ -19,6 +21,7 @@ export class TestServer {
 		this.server = null;
 		this.port = null;
 		this.rememberCookies = Boolean(options.rememberCookies);
+		this.#timeoutMs = options.timeoutMs || 5000;
 	}
 
 	/**
@@ -66,11 +69,7 @@ export class TestServer {
 		}
 		const fetchOptions = { headers: {}, ...DEFAULT_OPTIONS, ...options, method: 'GET' };
 		this.#addCookies(fetchOptions.headers);
-		const response = await fetch(`http://localhost:${this.port}${path}`, fetchOptions);
-		if (this.rememberCookies) {
-			this.#updateCookies(response);
-		}
-		return response;
+		return this.#fetch(path, fetchOptions);
 	}
 
 	/**
@@ -131,11 +130,34 @@ export class TestServer {
 			body: JSON.stringify(body)
 		};
 		this.#addCookies(fetchOptions.headers);
-		const response = await fetch(`http://localhost:${this.port}${path}`, fetchOptions);
-		if (this.rememberCookies) {
-			this.#updateCookies(response);
+		return this.#fetch(path, fetchOptions);
+	}
+
+	/**
+	 * Perform a fetch request with a timeout
+	 *
+	 * @param {string} path
+	 * @param {RequestInit} [options]
+	 */
+	async #fetch(path, options) {
+		// set up an abort controller to cancel requests after timeout
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), this.#timeoutMs);
+		options.signal = controller.signal;
+		try {
+			const response = await fetch(`http://localhost:${this.port}${path}`, options);
+			if (this.rememberCookies) {
+				this.#updateCookies(response);
+			}
+			return response;
+		} catch (error) {
+			if (error instanceof Error && error.name === 'AbortError') {
+				throw new Error(`Request to ${path} timed out after ${this.#timeoutMs}ms`);
+			}
+			throw error;
+		} finally {
+			clearTimeout(timeoutId);
 		}
-		return response;
 	}
 
 	#addCookies(headers) {
