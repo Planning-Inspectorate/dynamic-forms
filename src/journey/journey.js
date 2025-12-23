@@ -204,15 +204,16 @@ export class Journey {
 	/**
 	 * Get the back link for the journey - e.g. the previous question
 	 *
-	 * @param {string} sectionSegment - section segment
-	 * @param {string} questionSegment - question segment
+	 * @param {Object} options
+	 * @param {import('./journey-types.d.ts').RouteParams} options.params
+	 * @param {import('#src/components/manage-list/question.js')} [options.manageListQuestion]
 	 * @returns {string|null} url for the next question, or null if unmatched
 	 */
-	getBackLink(sectionSegment, questionSegment) {
-		const previousQuestion = this.getNextQuestionUrl(
-			{ section: sectionSegment, question: questionSegment },
-			{ reverse: true }
-		);
+	getBackLink({ params, manageListQuestion }) {
+		const previousQuestion = this.getNextQuestionUrl(params, {
+			manageListQuestion,
+			reverse: true
+		});
 		if (!previousQuestion) {
 			return this.initialBackLink;
 		}
@@ -245,6 +246,7 @@ export class Journey {
 	getNextQuestionUrl(params, { reverse = false, manageListQuestion } = {}) {
 		const numberOfSections = this.sections.length;
 		const sectionsStart = reverse ? numberOfSections - 1 : 0;
+		const questionFieldName = manageListQuestion ? params.manageListQuestion : params.question;
 
 		let currentSectionIndex;
 		let foundSection = false;
@@ -263,7 +265,7 @@ export class Journey {
 					return null;
 				}
 				const question = currentSection.getNextQuestion({
-					questionFieldName: params.question,
+					questionFieldName,
 					response: this.response,
 					manageListQuestion,
 					takeNextQuestion,

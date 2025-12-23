@@ -241,7 +241,7 @@ describe('Journey class', () => {
 			journey.sections = mockSections;
 			journey.returnToListing = false;
 
-			const backLinks = journey.getBackLink(section.segment, name);
+			const backLinks = journey.getBackLink({ params: { section: section.segment, question: name } });
 
 			assert.strictEqual(backLinks, `${constructorArgs.makeBaseUrl()}/${section.segment}/${prevQuestionName}`);
 		});
@@ -257,7 +257,7 @@ describe('Journey class', () => {
 				journey.sections = mockSections;
 				journey.returnToListing = false;
 
-				const backLink = journey.getBackLink(section.segment, name, true);
+				const backLink = journey.getBackLink({ params: { section: section.segment, question: name } });
 
 				assert.strictEqual(backLink, `${constructorArgs.makeBaseUrl()}/${prevSection.segment}/${prevQuestionName}`);
 			});
@@ -271,7 +271,7 @@ describe('Journey class', () => {
 			journey.sections = mockSections;
 			journey.returnToListing = false;
 
-			const backLink = journey.getBackLink(section.segment, name, true);
+			const backLink = journey.getBackLink({ params: { section: section.segment, question: name } });
 
 			assert.strictEqual(backLink, null);
 		});
@@ -284,7 +284,7 @@ describe('Journey class', () => {
 			journey.sections = mockSections;
 			journey.returnToListing = false;
 
-			const backLink = journey.getBackLink(section.segment, name, true);
+			const backLink = journey.getBackLink({ params: { section: section.segment, question: name } });
 
 			assert.strictEqual(backLink, '/some/back/link');
 		});
@@ -519,7 +519,7 @@ describe('Journey class', () => {
 				};
 				const params = {
 					section: 'section-1',
-					question: 'manage-list-question',
+					question: 'question-1,',
 					manageListAction: 'add',
 					manageListItemId: 'item-id-1',
 					manageListQuestion: 'question-2'

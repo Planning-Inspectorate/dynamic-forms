@@ -175,8 +175,6 @@ describe('./src/dynamic-forms/question.js', () => {
 			assert.deepStrictEqual(result.answer, journey.response.answers[question.fieldName]);
 			assert.deepStrictEqual(result.layoutTemplate, journey.journeyTemplate);
 			assert.deepStrictEqual(result.pageCaption, section.name);
-			assert.deepStrictEqual(result.navigation, ['', 'back']);
-			assert.deepStrictEqual(result.backLink, 'back');
 			assert.deepStrictEqual(result.showBackToListLink, question.showBackToListLink);
 			assert.deepStrictEqual(result.listLink, journey.taskListUrl);
 			assert.deepStrictEqual(result.journeyTitle, journey.journeyTitle);
@@ -230,7 +228,7 @@ describe('./src/dynamic-forms/question.js', () => {
 			const expectedResult = { a: 1 };
 			const req = { body: { errors: { error: 'we have an error' } } };
 			const question = getTestQuestion();
-			question.prepQuestionForRendering = mock.fn(() => expectedResult);
+			question.toViewModel = mock.fn(() => expectedResult);
 
 			const result = question.checkForValidationErrors(req);
 
