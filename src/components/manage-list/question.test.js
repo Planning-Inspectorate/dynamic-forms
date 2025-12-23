@@ -13,13 +13,14 @@ describe('components/manage-list/question', () => {
 	const QUESTION = 'Manage list';
 	const DESCRIPTION = 'A list of things';
 	const FIELDNAME = 'manageListTest';
-	const newQuestion = () => {
+	const newQuestion = (options = {}) => {
 		return new ManageListQuestion({
 			title: TITLE,
 			question: QUESTION,
 			description: DESCRIPTION,
 			fieldName: FIELDNAME,
-			titleSingular: 'Thing'
+			titleSingular: 'Thing',
+			...options
 		});
 	};
 	it('should create', () => {
@@ -42,16 +43,18 @@ describe('components/manage-list/question', () => {
 		assert.strictEqual(viewModel?.question?.firstQuestionUrl, 'first-question');
 	});
 
-	const questionWithManageQuestions = (ctx) => {
-		const q = newQuestion();
+	const questionWithManageQuestions = (ctx, options) => {
+		const q = newQuestion(options);
 		const innerQ1 = {
 			url: 'first-question',
+			title: 'Q 1',
 			formatAnswerForSummary() {
 				return [{ value: 'mock answer' }];
 			}
 		};
 		const innerQ2 = {
 			url: 'second-question',
+			title: 'Q 2',
 			formatAnswerForSummary() {
 				return [{ value: 'mock answer 2' }];
 			}
@@ -72,7 +75,10 @@ describe('components/manage-list/question', () => {
 		assert.strictEqual(viewModel?.question?.valueSummary.length, 3);
 		assert.deepStrictEqual(viewModel?.question?.valueSummary[0], {
 			id: 'id-1',
-			value: ['mock answer', 'mock answer 2']
+			value: [
+				{ question: 'Q 1', answer: 'mock answer' },
+				{ question: 'Q 2', answer: 'mock answer 2' }
+			]
 		});
 	});
 
@@ -96,5 +102,25 @@ describe('components/manage-list/question', () => {
 		ctx.assert.fileSnapshot(res.render.mock.calls[0].result, path.join(snapshotsDir(), 'manage-list-render.html'), {
 			serializers: [(v) => v]
 		});
+	});
+
+	it('should render with answers & questions', (ctx) => {
+		const { q, journey } = questionWithManageQuestions(ctx, {
+			showManageListQuestions: true
+		});
+		const viewModel = q.prepQuestionForRendering({}, journey);
+		const nunjucks = configureNunjucksTestEnv();
+		const res = {
+			render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
+		};
+		q.renderAction(res, viewModel);
+		assert.strictEqual(res.render.mock.callCount(), 1);
+		ctx.assert.fileSnapshot(
+			res.render.mock.calls[0].result,
+			path.join(snapshotsDir(), 'manage-list-render-questions.html'),
+			{
+				serializers: [(v) => v]
+			}
+		);
 	});
 });
