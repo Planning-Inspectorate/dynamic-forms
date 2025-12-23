@@ -238,7 +238,7 @@ export class Section {
 				return question;
 			}
 
-			if (question.fieldName === questionFieldName) {
+			if (question.fieldName === questionFieldName || question.url === questionFieldName) {
 				takeNextQuestion = true;
 			}
 		}
