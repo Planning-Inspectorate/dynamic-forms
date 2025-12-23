@@ -1,5 +1,6 @@
 import { Section } from '../src/section.js';
 import { Journey } from '../src/journey/journey.js';
+import { ManageListSection } from '#src/components/manage-list/manage-list-section.js';
 
 export const JOURNEY_ID = 'holiday-journey';
 
@@ -29,6 +30,10 @@ export function createJourney(questions, response) {
 				.addQuestion(questions.hotelAddress)
 				.addQuestion(questions.luggageWeight)
 				.addQuestion(questions.contactEmail)
+				.addQuestion(
+					questions.travelCompanions,
+					new ManageListSection().addQuestion(questions.travelCompanionName).addQuestion(questions.travelCompanionEmail)
+				)
 		],
 		taskListUrl: 'check-your-answers',
 		journeyTemplate: 'views/layout-journey.njk',

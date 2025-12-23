@@ -143,10 +143,11 @@ export async function list(req, res, pageCaption, viewData) {
 }
 
 /**
+ * Render an individual question
+ *
  * @type {import('express').Handler}
  */
 export async function question(req, res) {
-	//render an individual question
 	const { journey } = res.locals;
 
 	const section = journey.getSection(req.params.section);
@@ -156,8 +157,23 @@ export async function question(req, res) {
 		return res.redirect(journey.taskListUrl);
 	}
 
-	const viewModel = question.prepQuestionForRendering(section, journey, {
-		originalUrl: req.originalUrl
+	let manageListQuestion;
+	if (question.isInManagedListSection) {
+		// find parent question for the manage list
+		manageListQuestion = journey.getQuestionByParams({ section: req.params.section, question: req.params.question });
+		if (!manageListQuestion) {
+			return res.redirect(journey.taskListUrl);
+		}
+	}
+
+	const viewModel = question.toViewModel({
+		params: req.params,
+		manageListQuestion,
+		section,
+		journey,
+		customViewData: {
+			originalUrl: req.originalUrl
+		}
 	});
 	return question.renderAction(res, viewModel);
 }
@@ -194,9 +210,18 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 			return res.redirect(journey.taskListUrl);
 		}
 
+		let manageListQuestion;
+		if (question.isInManagedListSection) {
+			// find parent question for the manage list
+			manageListQuestion = journey.getQuestionByParams({ section: req.params.section, question: req.params.question });
+			if (!manageListQuestion) {
+				return res.redirect(journey.taskListUrl);
+			}
+		}
+
 		try {
 			// check for validation errors
-			const errorViewModel = question.checkForValidationErrors(req, section, journey);
+			const errorViewModel = question.checkForValidationErrors(req, section, journey, manageListQuestion);
 			if (errorViewModel) {
 				return question.renderAction(res, errorViewModel);
 			}
@@ -221,13 +246,17 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				return res.redirect(journey.taskListUrl);
 			}
 			// move to the next question
-			return journey.redirectToNextQuestion(res, {
-				section: section.segment,
-				question: question.fieldName
-			});
+			return journey.redirectToNextQuestion(res, req.params, manageListQuestion);
 		} catch (err) {
-			const viewModel = question.prepQuestionForRendering(section, journey, {
-				errorSummary: err.errorSummary ?? [{ text: err.toString(), href: '#' }]
+			const viewModel = question.toViewModel({
+				params: req.params,
+				manageListQuestion,
+				section,
+				journey,
+				customViewData: {
+					originalUrl: req.originalUrl,
+					errorSummary: err.errorSummary ?? [{ text: err.toString(), href: '#' }]
+				}
 			});
 			return question.renderAction(res, viewModel);
 		}

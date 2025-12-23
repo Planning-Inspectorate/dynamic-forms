@@ -30,7 +30,6 @@ import MultiFieldInputValidator from '../validator/multi-field-input-validator.j
  * @property {string} layoutTemplate
  * @property {string} pageCaption
  * @property {string} [continueButtonText]
- * @property {Array.<string>} navigation
  * @property {string} backLink
  * @property {boolean} showBackToListLink
  * @property {string} listLink
@@ -91,6 +90,7 @@ export class Question {
 		title: '',
 		text: ''
 	};
+	#isInManagedListSection = false;
 
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
@@ -151,7 +151,56 @@ export class Question {
 	}
 
 	/**
+	 * Is this question a manage list question?
+	 * Implemented as a getter so manage list question implementations can override it,
+	 * but it cannot be changed at runtime.
+	 *
+	 * @returns {boolean}
+	 */
+	get isManageListQuestion() {
+		return false;
+	}
+
+	/**
+	 * Is this question added to a ManagedListSection?
+	 *
+	 * @returns {boolean}
+	 */
+	get isInManagedListSection() {
+		return this.#isInManagedListSection;
+	}
+
+	set isInManagedListSection(value) {
+		if (!value) {
+			throw new Error('Question isInManagedListSection is false by default');
+		}
+		this.#isInManagedListSection = value;
+	}
+
+	/**
 	 * gets the view model for this question
+	 *
+	 * Wraps prepQuestionForRendering to add the back link - which requires more parameters
+	 * that prepQuestionForRendering doesn't need
+	 *
+	 * @param {Object} options
+	 * @param {import('#src/journey/journey-types.d.ts').RouteParams} options.params
+	 * @param {import('#src/components/manage-list/question.js')} [options.manageListQuestion]
+	 * @param {Section} section - the current section
+	 * @param {Journey} journey - the journey we are in
+	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
+	 * @param {unknown} [payload]
+	 * @returns {QuestionViewModel}
+	 */
+	toViewModel({ params, manageListQuestion, section, journey, customViewData, payload }) {
+		const viewModel = this.prepQuestionForRendering(section, journey, customViewData, payload);
+		viewModel.backLink = journey.getBackLink({ params, manageListQuestion });
+		return viewModel;
+	}
+
+	/**
+	 * gets the base view model for this question
+	 *
 	 * @param {Section} section - the current section
 	 * @param {Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
@@ -160,8 +209,6 @@ export class Question {
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload) {
 		const answer = journey.response.answers[this.fieldName] || '';
-		const backLink = journey.getBackLink(section.segment, this.fieldName);
-
 		return {
 			question: {
 				value: answer,
@@ -179,8 +226,6 @@ export class Question {
 			layoutTemplate: journey.journeyTemplate,
 			pageCaption: section?.name,
 
-			navigation: ['', backLink],
-			backLink,
 			showBackToListLink: this.showBackToListLink,
 			listLink: journey.taskListUrl,
 			journeyTitle: journey.journeyTitle,
@@ -212,23 +257,26 @@ export class Question {
 	 * check for validation errors
 	 * @param {import('express').Request} req
 	 * @param {Journey} journey
-	 * @param {Section} sectionObj
+	 * @param {Section} section
+	 * @param {import('#src/components/manage-list/question.js')} [manageListQuestion]
 	 * @returns {QuestionViewModel|undefined} returns the view model for displaying the error or undefined if there are no errors
 	 */
-	checkForValidationErrors(req, sectionObj, journey) {
+	checkForValidationErrors(req, section, journey, manageListQuestion) {
 		const { body = {} } = req;
 		const { errors = {}, errorSummary = [] } = body;
 
 		if (Object.keys(errors).length > 0) {
-			return this.prepQuestionForRendering(
-				sectionObj,
+			return this.toViewModel({
+				params: req.params,
+				section,
 				journey,
-				{
+				customViewData: {
 					errors,
 					errorSummary
 				},
-				body
-			);
+				payload: body,
+				manageListQuestion
+			});
 		}
 	}
 

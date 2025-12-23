@@ -82,12 +82,19 @@ export class Section {
 
 	/**
 	 * Fluent API method for adding questions
-	 * @param {any} question
+	 * @param {import('#src/questions/question.js').Question} question
+	 * @param {import('#src/components/manage-list/manage-list-section.js').ManageListSection} [manageListSection]
 	 * @returns {Section}
 	 */
-	addQuestion(question) {
+	addQuestion(question, manageListSection) {
 		if (!question) {
 			throw new Error('question is required');
+		}
+		if (question.isManageListQuestion) {
+			if (!manageListSection || !manageListSection.isManageListSection) {
+				throw new Error('manage list questions require a ManageListSection');
+			}
+			question.section = manageListSection;
 		}
 		this.questions.push(question);
 		this.#conditionAdded = false; // reset condition flag
@@ -192,23 +199,46 @@ export class Section {
 
 	/**
 	 * Get the next question in this section given a questionParam (question fieldName)
-	 * @param {string} questionFieldName
-	 * @param {import('#src/journey/journey-response.js').JourneyResponse} response
-	 * @param {boolean} [takeNextQuestion]
-	 * @param {boolean} [reverse]
+	 * @param {import('./section-types.d.ts').GetNextQuestionParams} params
 	 * @returns {Question|Symbol|null}
 	 */
-	getNextQuestion({ questionFieldName, response, takeNextQuestion = false, reverse = false }) {
-		const numberOfQuestions = this.questions.length;
+	getNextQuestion(params) {
+		const { manageListQuestion } = params;
+		if (manageListQuestion) {
+			// first check if the next question is within the manage list section
+			const next = Section.getNextQuestion({
+				...params,
+				questions: manageListQuestion.section.questions
+			});
+			if (next === END_OF_SECTION) {
+				// after the manage list section questions, go back to the manage list question
+				return manageListQuestion;
+			}
+			return next;
+		}
+		return Section.getNextQuestion({
+			...params,
+			questions: this.questions
+		});
+	}
+
+	/**
+	 * Implementation of getNextQuestion given a list of questions
+	 *
+	 * @param {import('./section-types.d.ts').StaticGetNextQuestionParams} params
+	 * @returns {Question|Symbol|null}
+	 */
+	static getNextQuestion({ questions, questionFieldName, response, takeNextQuestion = false, reverse = false }) {
+		const numberOfQuestions = questions.length;
 
 		const questionsStart = reverse ? numberOfQuestions - 1 : 0;
 		for (let j = questionsStart; reverse ? j >= 0 : j < numberOfQuestions; reverse ? j-- : j++) {
-			const question = this.questions[j];
+			const question = questions[j];
 			if (takeNextQuestion && question.shouldDisplay(response)) {
 				return question;
 			}
 
-			if (question.fieldName === questionFieldName) {
+			if (question.fieldName === questionFieldName || question.url === questionFieldName) {
 				takeNextQuestion = true;
 			}
 		}

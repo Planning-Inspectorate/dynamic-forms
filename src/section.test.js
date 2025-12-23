@@ -53,6 +53,42 @@ describe('./src/dynamic-forms/section.js', () => {
 			assert.strictEqual(question.isRequired, mockQuestion.isRequired);
 			assert.strictEqual(question.shouldDisplay(), mockQuestion.shouldDisplay());
 		});
+
+		it('should support manage list questions', () => {
+			const section = new Section('s1', 'S');
+			assert.strictEqual(section.questions.length, 0);
+			const q = {
+				get isManageListQuestion() {
+					return true;
+				}
+			};
+			const manageListSection = {
+				get isManageListSection() {
+					return true;
+				}
+			};
+			section.addQuestion(q, manageListSection);
+			assert.strictEqual(section.questions.length, 1);
+			assert.strictEqual(q.section, manageListSection);
+		});
+
+		it('should throw if no manageListSection provided for a manage list question', () => {
+			const section = new Section('s1', 'S');
+			assert.strictEqual(section.questions.length, 0);
+			const q = {
+				get isManageListQuestion() {
+					return true;
+				}
+			};
+			assert.throws(
+				() => section.addQuestion(q),
+				(thrown) => {
+					assert.strictEqual(thrown.message, 'manage list questions require a ManageListSection');
+					return true;
+				}
+			);
+			assert.strictEqual(section.questions.length, 0);
+		});
 	});
 
 	describe('getStatus', () => {
@@ -659,6 +695,59 @@ describe('./src/dynamic-forms/section.js', () => {
 			assert.strictEqual(q2.shouldDisplay.mock.callCount(), 1);
 			assert.strictEqual(q3.shouldDisplay.mock.callCount(), 1);
 			assert.strictEqual(next, END_OF_SECTION);
+		});
+		describe('manageListQuestions', () => {
+			const newSectionWithManageList = () => {
+				const q1 = { ...mockQuestion };
+				const manageListQ = {
+					get isManageListQuestion() {
+						return true;
+					}
+				};
+				const q3 = { ...mockQuestion2 };
+				const q4 = { ...mockQuestion3 };
+				const manageListSection = {
+					questions: [q3, q4],
+					get isManageListSection() {
+						return true;
+					}
+				};
+				const section = new Section('s1', 'S').addQuestion(q1).addQuestion(manageListQ, manageListSection);
+				return { section, q1, manageListQ, q3, q4 };
+			};
+			it(`should get first question within a manage list section`, () => {
+				const { section, manageListQ, q3 } = newSectionWithManageList();
+				const next = section.getNextQuestion({
+					questionFieldName: manageListQ.fieldName,
+					response: {},
+					manageListQuestion: manageListQ,
+					takeNextQuestion: true,
+					reverse: false
+				});
+				assert.strictEqual(next, q3);
+			});
+			it(`should get second question within a manage list section`, () => {
+				const { section, manageListQ, q3, q4 } = newSectionWithManageList();
+				const next = section.getNextQuestion({
+					questionFieldName: q3.fieldName,
+					response: {},
+					manageListQuestion: manageListQ,
+					takeNextQuestion: false,
+					reverse: false
+				});
+				assert.strictEqual(next, q4);
+			});
+			it(`should return to manage list question after manage list section is complete`, () => {
+				const { section, manageListQ, q4 } = newSectionWithManageList();
+				const next = section.getNextQuestion({
+					questionFieldName: q4.fieldName,
+					response: {},
+					manageListQuestion: manageListQ,
+					takeNextQuestion: false,
+					reverse: false
+				});
+				assert.strictEqual(next, manageListQ);
+			});
 		});
 	});
 });
