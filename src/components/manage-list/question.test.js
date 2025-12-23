@@ -1,9 +1,12 @@
-import { describe, it } from 'node:test';
+import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
 import ManageListQuestion from '#src/components/manage-list/question.js';
 import { ManageListSection } from '#src/components/manage-list/manage-list-section.js';
 import { mockJourney } from '#test/mock/journey.js';
 import { mockRandomUUID } from '#src/lib/uuid.test.js';
+import { configureNunjucksTestEnv } from '#test/utils/nunjucks.js';
+import path from 'path';
+import { snapshotsDir } from '#test/utils/utils.js';
 
 describe('components/manage-list/question', () => {
 	const TITLE = 'Things';
@@ -15,7 +18,8 @@ describe('components/manage-list/question', () => {
 			title: TITLE,
 			question: QUESTION,
 			description: DESCRIPTION,
-			fieldName: FIELDNAME
+			fieldName: FIELDNAME,
+			titleSingular: 'Thing'
 		});
 	};
 	it('should create', () => {
@@ -28,13 +32,48 @@ describe('components/manage-list/question', () => {
 		assert.strictEqual(q.isManageListQuestion, true);
 	});
 
-	it('should populate addAnotherLink', (ctx) => {
+	it('should populate addAnotherLink & firstQuestionUrl', (ctx) => {
 		const q = newQuestion();
 		mockRandomUUID(ctx);
 		q.section = new ManageListSection().addQuestion({ url: 'first-question' });
 		const viewModel = q.prepQuestionForRendering({}, mockJourney());
 		// add/<v4-guid>/<question-url>
 		assert.match(viewModel?.question?.addAnotherLink, /^add\/00000000-0000-0000-0000-000000000000\/first-question/);
+		assert.strictEqual(viewModel?.question?.firstQuestionUrl, 'first-question');
+	});
+
+	const questionWithManageQuestions = (ctx) => {
+		const q = newQuestion();
+		const innerQ1 = {
+			url: 'first-question',
+			formatAnswerForSummary() {
+				return [{ value: 'mock answer' }];
+			}
+		};
+		const innerQ2 = {
+			url: 'second-question',
+			formatAnswerForSummary() {
+				return [{ value: 'mock answer 2' }];
+			}
+		};
+		mockRandomUUID(ctx);
+		const journey = mockJourney();
+		journey.response.answers = {
+			[FIELDNAME]: [{ id: 'id-1' }, { id: 'id-2' }, { id: 'id-3' }]
+		};
+		q.section = new ManageListSection().addQuestion(innerQ1).addQuestion(innerQ2);
+		return { q, journey };
+	};
+
+	it('should format answers to questions in the section', (ctx) => {
+		const { q, journey } = questionWithManageQuestions(ctx);
+		const viewModel = q.prepQuestionForRendering({}, journey);
+		assert.ok(Array.isArray(viewModel?.question?.valueSummary));
+		assert.strictEqual(viewModel?.question?.valueSummary.length, 3);
+		assert.deepStrictEqual(viewModel?.question?.valueSummary[0], {
+			id: 'id-1',
+			value: ['mock answer', 'mock answer 2']
+		});
 	});
 
 	it('should format list answer for summary', (ctx) => {
@@ -43,5 +82,19 @@ describe('components/manage-list/question', () => {
 		const answerForSummary = q.formatAnswerForSummary('section-1', mockJourney(), [{}, {}, {}]);
 		assert.strictEqual(answerForSummary.length, 1);
 		assert.strictEqual(answerForSummary[0].value, '3 Things');
+	});
+
+	it('should render with answers', (ctx) => {
+		const { q, journey } = questionWithManageQuestions(ctx);
+		const viewModel = q.prepQuestionForRendering({}, journey);
+		const nunjucks = configureNunjucksTestEnv();
+		const res = {
+			render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
+		};
+		q.renderAction(res, viewModel);
+		assert.strictEqual(res.render.mock.callCount(), 1);
+		ctx.assert.fileSnapshot(res.render.mock.calls[0].result, path.join(snapshotsDir(), 'manage-list-render.html'), {
+			serializers: [(v) => v]
+		});
 	});
 });

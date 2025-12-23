@@ -11,18 +11,30 @@
                 <h1 class="govuk-heading-l">You have added {{ question.value.length }} {{ question.pageTitle }}</h1>
 
                 <dl class="govuk-summary-list">
-                    {% for item in question.value %}
+                    {% for item in question.valueSummary %}
                         <div class="govuk-summary-list__row ">
-                            <dt class="govuk-summary-list__key govuk-!-font-weight-regular">
-                                {{ item.name }}
+                            <dt class="govuk-summary-list__key">
+                                {{ titleSingular }} {{ loop.index }}
+                            </dt>
+                            <dt class="govuk-summary-list__value">
+                                {% for value in item.value %}
+                                    {{ value }}
+                                    {% if not loop.last %}
+                                    <br>
+                                    {% endif %}
+                                {% endfor %}
                             </dt>
                             <dd class="govuk-summary-list__actions">
                                 <ul class="govuk-summary-list__actions-list">
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> contact details</span></a>
+                                        <a class="govuk-link" href="{{ originalUrl }}/edit/{{ item.id }}/{{ question.firstQuestionUrl }}">
+                                            Change <span class="govuk-visually-hidden">{{ titleSingular }} {{ loop.index }}</span>
+                                        </a>
                                     </li>
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="#">Remove<span class="govuk-visually-hidden"> contact details</span></a>
+                                        <a class="govuk-link" href="{{ originalUrl }}/remove/{{ item.id }}/confirm">
+                                            Remove <span class="govuk-visually-hidden">{{ titleSingular }} {{ loop.index }}</span>
+                                        </a>
                                     </li>
                                 </ul>
                             </dd>
