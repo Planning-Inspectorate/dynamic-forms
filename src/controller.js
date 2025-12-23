@@ -67,6 +67,14 @@ function buildSectionRowViewModel(key, value, action) {
 }
 
 /**
+ * @param {object} [viewData]
+ * @returns {import('express').Handler}
+ */
+export function buildList(viewData = {}) {
+	return (req, res) => list(req, res, viewData.pageCaption, viewData);
+}
+
+/**
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  * @param {string} pageCaption
