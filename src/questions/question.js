@@ -91,6 +91,7 @@ export class Question {
 		title: '',
 		text: ''
 	};
+	#isInManagedListSection = false;
 
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
@@ -148,6 +149,33 @@ export class Question {
 			// @ts-ignore
 			this[methodName] = methodOverride.bind(this);
 		});
+	}
+
+	/**
+	 * Is this question a manage list question?
+	 * Implemented as a getter so manage list question implementations can override it,
+	 * but it cannot be changed at runtime.
+	 *
+	 * @returns {boolean}
+	 */
+	get isManageListQuestion() {
+		return false;
+	}
+
+	/**
+	 * Is this question added to a ManagedListSection?
+	 *
+	 * @returns {boolean}
+	 */
+	get isInManagedListSection() {
+		return this.#isInManagedListSection;
+	}
+
+	set isInManagedListSection(value) {
+		if (!value) {
+			throw new Error('Question isInManagedListSection is false by default');
+		}
+		this.#isInManagedListSection = value;
 	}
 
 	/**

@@ -143,10 +143,11 @@ export async function list(req, res, pageCaption, viewData) {
 }
 
 /**
+ * Render an individual question
+ *
  * @type {import('express').Handler}
  */
 export async function question(req, res) {
-	//render an individual question
 	const { journey } = res.locals;
 
 	const section = journey.getSection(req.params.section);
@@ -194,6 +195,15 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 			return res.redirect(journey.taskListUrl);
 		}
 
+		let manageListQuestion;
+		if (question.isInManagedListSection) {
+			// find parent question for the manage list
+			manageListQuestion = journey.getQuestionByParams({ section: req.params.section, question: req.params.question });
+			if (!manageListQuestion) {
+				return res.redirect(journey.taskListUrl);
+			}
+		}
+
 		try {
 			// check for validation errors
 			const errorViewModel = question.checkForValidationErrors(req, section, journey);
@@ -221,10 +231,15 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				return res.redirect(journey.taskListUrl);
 			}
 			// move to the next question
-			return journey.redirectToNextQuestion(res, {
-				section: section.segment,
-				question: question.fieldName
-			});
+			return journey.redirectToNextQuestion(
+				res,
+				{
+					...req.params,
+					section: section.segment,
+					question: question.fieldName
+				},
+				manageListQuestion
+			);
 		} catch (err) {
 			const viewModel = question.prepQuestionForRendering(section, journey, {
 				errorSummary: err.errorSummary ?? [{ text: err.toString(), href: '#' }]

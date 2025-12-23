@@ -187,7 +187,7 @@ export const questionProps = {
 		title: 'Travel Companion Name',
 		question: 'Travel Companion Name',
 		fieldName: 'travelCompanionName',
-		url: 'travel-companions-name'
+		url: 'travel-companion-name'
 	},
 	travelCompanionEmail: {
 		type: COMPONENT_TYPES.EMAIL,
@@ -217,6 +217,13 @@ export const questionsInOrder = [
 	questionProps.luggageWeight,
 	questionProps.contactEmail,
 	questionProps.travelCompanions
+];
+
+export const manageListQuestions = [
+	{
+		manageListQuestion: questionProps.travelCompanions,
+		questions: [questionProps.travelCompanionName, questionProps.travelCompanionEmail]
+	}
 ];
 
 export const getQuestions = () => createQuestions(questionProps, questionClasses, {});
