@@ -6,7 +6,7 @@ export default class ManageListQuestion extends Question {
 	#section;
 
 	/**
-	 * @param {import('#question-types').QuestionParameters & {titleSingular: string}} params
+	 * @param {import('#question-types').QuestionParameters & {titleSingular: string, showManageListQuestions: boolean}} params
 	 */
 	constructor(params) {
 		super({
@@ -15,7 +15,8 @@ export default class ManageListQuestion extends Question {
 			viewFolder: 'manage-list',
 			viewData: {
 				...params.viewData,
-				titleSingular: params.titleSingular
+				titleSingular: params.titleSingular,
+				showManageListQuestions: params.showManageListQuestions
 			}
 		});
 	}
@@ -51,7 +52,7 @@ export default class ManageListQuestion extends Question {
 	/**
 	 * Format the answers to each of the manage list questions
 	 * @param {{id: string, [k: string]: string}} answer
-	 * @returns {string[]}
+	 * @returns {{question: string, answer: string}[]}
 	 */
 	#formatItemAnswers(answer) {
 		if (this.section.questions.length === 0) {
@@ -61,10 +62,15 @@ export default class ManageListQuestion extends Question {
 			getCurrentQuestionUrl() {}
 		};
 		return this.section.questions.map((q) => {
-			return q
+			const formatted = q
 				.formatAnswerForSummary('', mockJourney, answer[q.fieldName])
 				.map((a) => a.value)
 				.join(', ');
+
+			return {
+				question: q.title,
+				answer: formatted
+			};
 		});
 	}
 

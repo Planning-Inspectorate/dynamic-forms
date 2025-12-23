@@ -18,9 +18,13 @@
                             </dt>
                             <dt class="govuk-summary-list__value">
                                 {% for value in item.value %}
-                                    {{ value }}
+                                    {% if showManageListQuestions %}
+                                    {{ value.question }}:<br>
+                                    {% endif %}
+                                    {{ value.answer }}
                                     {% if not loop.last %}
-                                    <br>
+                                    <br>{% if showManageListQuestions %}<br>{% endif %}
+
                                     {% endif %}
                                 {% endfor %}
                             </dt>
