@@ -546,6 +546,70 @@ describe('dynamic-form/controller', () => {
 			assert.match(res.redirect.mock.calls[0].arguments[0], /\/task-list$/);
 			assert.strictEqual(mockJourney.getNextQuestionUrl.mock.callCount(), 0);
 		});
+
+		describe('manageListQuestions', () => {
+			const setupJourney = () => {
+				const q = {
+					fieldName: 'question-2',
+					get isInManageListSection() {
+						return true;
+					},
+					checkForValidationErrors: mock.fn(),
+					getDataToSave: mock.fn(),
+					checkForSavingErrors: mock.fn()
+				};
+				const manageListQ = {
+					get isManageListQuestion() {
+						return true;
+					}
+				};
+				const req = {
+					params: {
+						section: 'section-1',
+						question: 'question-1',
+						manageListAction: 'add',
+						manageListItemId: 'item-id-1',
+						manageListQuestion: 'question-6'
+					}
+				};
+				const journey = {
+					getSection: mock.fn(() => ({ segment: 'section-2' })),
+					getQuestionByParams: mock.fn(),
+					redirectToNextQuestion: mock.fn()
+				};
+				const res = {
+					locals: {
+						journey,
+						journeyResponse: { answers: {} }
+					},
+					redirect: mock.fn()
+				};
+				journey.getQuestionByParams.mock.mockImplementationOnce(() => q, 0);
+				journey.getQuestionByParams.mock.mockImplementationOnce(() => manageListQ, 1);
+				return { journey, manageListQ, req, res, q };
+			};
+			it('should find the parent manage list question', async () => {
+				const { journey, manageListQ, req, res } = setupJourney();
+				const saveData = mock.fn();
+				await buildSave(saveData)(req, res, 'journey-1');
+				assert.strictEqual(journey.getSection.mock.callCount(), 1);
+				assert.strictEqual(journey.getQuestionByParams.mock.callCount(), 2);
+				assert.strictEqual(journey.redirectToNextQuestion.mock.callCount(), 1);
+				assert.strictEqual(journey.redirectToNextQuestion.mock.calls[0].arguments[2], manageListQ);
+			});
+			it('should preserve request route params', async () => {
+				const { journey, req, res, q } = setupJourney();
+				const saveData = mock.fn();
+				await buildSave(saveData)(req, res, 'journey-1');
+				assert.strictEqual(journey.redirectToNextQuestion.mock.callCount(), 1);
+				const params = journey.redirectToNextQuestion.mock.calls[0].arguments[1];
+				assert.strictEqual(params.manageListAction, req.params.manageListAction);
+				assert.strictEqual(params.manageListItemId, req.params.manageListItemId);
+				assert.strictEqual(params.manageListQuestion, req.params.manageListQuestion);
+				assert.strictEqual(params.section, 'section-2');
+				assert.strictEqual(params.question, q.fieldName);
+			});
+		});
 	});
 });
 

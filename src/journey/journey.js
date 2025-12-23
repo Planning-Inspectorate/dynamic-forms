@@ -140,7 +140,11 @@ export class Journey {
 	 * @returns {string} url for a question
 	 */
 	#buildQuestionUrl(params) {
-		return this.#prependPathToUrl(this.baseUrl, `${params.section}/${params.question}`);
+		const parts = [params.section, params.question];
+		if (params.manageListAction) {
+			parts.push(params.manageListAction, params.manageListItemId, params.manageListQuestion);
+		}
+		return this.#prependPathToUrl(this.baseUrl, parts.join('/'));
 	}
 
 	/**
@@ -158,12 +162,21 @@ export class Journey {
 	 * Get question within a section
 	 * @param {Section} section
 	 * @param {string} questionSegment
+	 * @param {{action: string, itemId: string, question: string}} [manageListParams]
 	 * @returns {Question | undefined} question if it belongs in the given section
 	 */
-	#getQuestion(section, questionSegment) {
-		return section?.questions.find((q) => {
-			return q.fieldName === questionSegment || q.url === questionSegment;
-		});
+	#getQuestion(section, questionSegment, manageListParams) {
+		const matchQuestion = (q, toMatch) => {
+			return q.fieldName === toMatch || q.url === toMatch;
+		};
+		const question = section?.questions.find((q) => matchQuestion(q, questionSegment));
+		if (!question) {
+			return undefined;
+		}
+		if (manageListParams && question.isManageListQuestion) {
+			return question.section.questions.find((q) => matchQuestion(q, manageListParams.question));
+		}
+		return question;
 	}
 
 	/**
@@ -177,8 +190,15 @@ export class Journey {
 		if (!section) {
 			return undefined;
 		}
-
-		return this.#getQuestion(section, params.question);
+		let manageListParams;
+		if (params.manageListAction && params.manageListItemId && params.manageListQuestion) {
+			manageListParams = {
+				action: params.manageListAction,
+				itemId: params.manageListItemId,
+				question: params.manageListQuestion
+			};
+		}
+		return this.#getQuestion(section, params.question, manageListParams);
 	}
 
 	/**
@@ -189,7 +209,10 @@ export class Journey {
 	 * @returns {string|null} url for the next question, or null if unmatched
 	 */
 	getBackLink(sectionSegment, questionSegment) {
-		const previousQuestion = this.getNextQuestionUrl({ section: sectionSegment, question: questionSegment }, true);
+		const previousQuestion = this.getNextQuestionUrl(
+			{ section: sectionSegment, question: questionSegment },
+			{ reverse: true }
+		);
 		if (!previousQuestion) {
 			return this.initialBackLink;
 		}
@@ -202,10 +225,11 @@ export class Journey {
 	 *
 	 * @param {import('express').Response} res
 	 * @param {import('./journey-types.d.ts').RouteParams} params
+	 * @param {import('#src/components/manage-list/question.js')} [manageListQuestion]
 	 * @returns {void}
 	 */
-	redirectToNextQuestion(res, params) {
-		const next = this.getNextQuestionUrl(params) ?? this.taskListUrl;
+	redirectToNextQuestion(res, params, manageListQuestion) {
+		const next = this.getNextQuestionUrl(params, { manageListQuestion }) ?? this.taskListUrl;
 		return res.redirect(next);
 	}
 
@@ -213,10 +237,12 @@ export class Journey {
 	 * Get url for the next question in the journey
 	 *
 	 * @param {import('./journey-types.d.ts').RouteParams} params
-	 * @param {boolean} [reverse] - if passed in this will get the previous question
+	 * @param {Object} options
+	 * @param {boolean} [options.reverse] - if passed in this will get the previous question
+	 * @param {import('#src/components/manage-list/question.js')} [options.manageListQuestion]
 	 * @returns {string|null} url for the next question, or null if unmatched
 	 */
-	getNextQuestionUrl(params, reverse = false) {
+	getNextQuestionUrl(params, { reverse = false, manageListQuestion } = {}) {
 		const numberOfSections = this.sections.length;
 		const sectionsStart = reverse ? numberOfSections - 1 : 0;
 
@@ -239,17 +265,24 @@ export class Journey {
 				const question = currentSection.getNextQuestion({
 					questionFieldName: params.question,
 					response: this.response,
+					manageListQuestion,
 					takeNextQuestion,
 					reverse
 				});
 				if (question === END_OF_SECTION) {
 					takeNextQuestion = true; // get the first question from the following section
 				} else if (question) {
-					const newParams = {
-						...params,
+					let newParams = {
 						section: currentSection.segment,
 						question: question.url || question.fieldName
 					};
+					if (question.isInManageListSection && manageListQuestion) {
+						newParams = {
+							...params,
+							question: manageListQuestion.url,
+							manageListQuestion: question.url || question.fieldName
+						};
+					}
 					return this.#buildQuestionUrl(newParams);
 				}
 			}

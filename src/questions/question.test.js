@@ -63,6 +63,7 @@ describe('./src/dynamic-forms/question.js', () => {
 			assert.strictEqual(question.validators, VALIDATORS);
 			assert.strictEqual(question.html, HTML);
 			assert.strictEqual(question.hint, HINT);
+			assert.strictEqual(question.isManageListQuestion, false);
 		});
 		it('should support viewData field', () => {
 			const question = getTestQuestion({ viewData: { test: 'test' } });
@@ -106,6 +107,30 @@ describe('./src/dynamic-forms/question.js', () => {
 			assert.throws(
 				() => new Question({ title: TITLE, question: QUESTION_STRING, fieldName: FIELDNAME }),
 				new Error('viewFolder parameter is mandatory')
+			);
+		});
+	});
+
+	describe('isInManageListSection', () => {
+		it('should default to false', () => {
+			const question = getTestQuestion();
+			assert.strictEqual(question.isInManageListSection, false);
+		});
+		it('should support setting isInManageListSection', () => {
+			const question = getTestQuestion();
+			assert.strictEqual(question.isInManageListSection, false);
+			question.isInManageListSection = true;
+			assert.strictEqual(question.isInManageListSection, true);
+		});
+		it('should not support setting isInManageListSection false', () => {
+			const question = getTestQuestion();
+			assert.strictEqual(question.isInManageListSection, false);
+			assert.throws(
+				() => (question.isInManageListSection = false),
+				(error) => {
+					assert.strictEqual(error.message, 'Question isInManageListSection is false by default');
+					return true;
+				}
 			);
 		});
 	});
