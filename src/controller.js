@@ -221,7 +221,7 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 
 		try {
 			// check for validation errors
-			const errorViewModel = question.checkForValidationErrors(req, section, journey);
+			const errorViewModel = question.checkForValidationErrors(req, section, journey, manageListQuestion);
 			if (errorViewModel) {
 				return question.renderAction(res, errorViewModel);
 			}
@@ -246,18 +246,17 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				return res.redirect(journey.taskListUrl);
 			}
 			// move to the next question
-			return journey.redirectToNextQuestion(
-				res,
-				{
-					...req.params,
-					section: section.segment,
-					question: question.fieldName
-				},
-				manageListQuestion
-			);
+			return journey.redirectToNextQuestion(res, req.params, manageListQuestion);
 		} catch (err) {
-			const viewModel = question.prepQuestionForRendering(section, journey, {
-				errorSummary: err.errorSummary ?? [{ text: err.toString(), href: '#' }]
+			const viewModel = question.toViewModel({
+				params: req.params,
+				manageListQuestion,
+				section,
+				journey,
+				customViewData: {
+					originalUrl: req.originalUrl,
+					errorSummary: err.errorSummary ?? [{ text: err.toString(), href: '#' }]
+				}
 			});
 			return question.renderAction(res, viewModel);
 		}
