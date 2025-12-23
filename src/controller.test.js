@@ -178,6 +178,7 @@ const sampleQuestionObj = {
 	getDataToSave: mock.fn(),
 	checkForValidationErrors: mock.fn(),
 	checkForSavingErrors: mock.fn(),
+	toViewModel: mock.fn(),
 	prepQuestionForRendering: mock.fn(),
 	formatAnswerForSummary: mock.fn(() => [mockAnswer]),
 	viewFolder: 'sampleType'
@@ -325,13 +326,13 @@ describe('dynamic-form/controller', () => {
 
 		it('should render the question template', async () => {
 			sampleQuestionObj.renderAction.mock.resetCalls();
-			sampleQuestionObj.prepQuestionForRendering.mock.resetCalls();
+			sampleQuestionObj.toViewModel.mock.resetCalls();
 			req.params.referenceId = mockRef;
 			const mockAnswer = 'sampleAnswer';
 			const mockBackLink = 'back';
 			const mockQuestionRendering = 'test';
 
-			sampleQuestionObj.prepQuestionForRendering.mock.mockImplementationOnce(() => mockQuestionRendering);
+			sampleQuestionObj.toViewModel.mock.mockImplementationOnce(() => mockQuestionRendering);
 
 			mockJourney.getQuestionByParams = mock.fn();
 			mockJourney.getQuestionByParams.mock.mockImplementationOnce(() => sampleQuestionObj);
@@ -343,13 +344,11 @@ describe('dynamic-form/controller', () => {
 
 			assert.strictEqual(sampleQuestionObj.renderAction.mock.callCount(), 1);
 			assert.deepStrictEqual(sampleQuestionObj.renderAction.mock.calls[0].arguments, [res, mockQuestionRendering]);
-			assert.strictEqual(sampleQuestionObj.prepQuestionForRendering.mock.callCount(), 1);
-			assert.ok(sampleQuestionObj.prepQuestionForRendering.mock.calls[0].arguments[2]);
-			assert.ok(sampleQuestionObj.prepQuestionForRendering.mock.calls[0].arguments[2].originalUrl);
-			assert.strictEqual(
-				sampleQuestionObj.prepQuestionForRendering.mock.calls[0].arguments[2].originalUrl,
-				req.originalUrl
-			);
+			assert.strictEqual(sampleQuestionObj.toViewModel.mock.callCount(), 1);
+			const args = sampleQuestionObj.toViewModel.mock.calls[0].arguments[0];
+			assert.ok(args);
+			assert.ok(args?.customViewData?.originalUrl);
+			assert.strictEqual(args?.customViewData?.originalUrl, req.originalUrl);
 		});
 	});
 
@@ -404,7 +403,7 @@ describe('dynamic-form/controller', () => {
 			const sampleQuestionObjWithActions = {
 				...sampleQuestionObj,
 				saveAction: mock.fn(),
-				prepQuestionForRendering: mock.fn(() => expectedViewModel),
+				toViewModel: mock.fn(() => expectedViewModel),
 				renderAction: mock.fn()
 			};
 
@@ -434,20 +433,25 @@ describe('dynamic-form/controller', () => {
 			await buildSave(saveData)(req, res, journeyId);
 
 			assert.strictEqual(saveData.mock.callCount(), 1);
-			assert.deepStrictEqual(saveData.mock.calls[0].arguments, [
-				{
-					req,
-					res,
-					journeyId: journeyParams.journeyId,
-					referenceId: journeyParams.referenceId,
-					data: undefined
-				}
-			]);
+			assert.deepStrictEqual(
+				saveData.mock.calls[0].arguments,
+				[
+					{
+						req,
+						res,
+						journeyId: journeyParams.journeyId,
+						referenceId: journeyParams.referenceId,
+						data: undefined
+					}
+				],
+				'save data args'
+			);
 
-			assert.deepStrictEqual(sampleQuestionObjWithActions.renderAction.mock.calls[0].arguments, [
-				res,
-				expectedViewModel
-			]);
+			assert.deepStrictEqual(
+				sampleQuestionObjWithActions.renderAction.mock.calls[0].arguments,
+				[res, expectedViewModel],
+				'render args'
+			);
 		});
 
 		it('should handle validation errors', async () => {
@@ -573,7 +577,7 @@ describe('dynamic-form/controller', () => {
 					}
 				};
 				const journey = {
-					getSection: mock.fn(() => ({ segment: 'section-2' })),
+					getSection: mock.fn(() => ({ segment: 'section-1' })),
 					getQuestionByParams: mock.fn(),
 					redirectToNextQuestion: mock.fn()
 				};
@@ -598,16 +602,12 @@ describe('dynamic-form/controller', () => {
 				assert.strictEqual(journey.redirectToNextQuestion.mock.calls[0].arguments[2], manageListQ);
 			});
 			it('should preserve request route params', async () => {
-				const { journey, req, res, q } = setupJourney();
+				const { journey, req, res } = setupJourney();
 				const saveData = mock.fn();
 				await buildSave(saveData)(req, res, 'journey-1');
 				assert.strictEqual(journey.redirectToNextQuestion.mock.callCount(), 1);
 				const params = journey.redirectToNextQuestion.mock.calls[0].arguments[1];
-				assert.strictEqual(params.manageListAction, req.params.manageListAction);
-				assert.strictEqual(params.manageListItemId, req.params.manageListItemId);
-				assert.strictEqual(params.manageListQuestion, req.params.manageListQuestion);
-				assert.strictEqual(params.section, 'section-2');
-				assert.strictEqual(params.question, q.fieldName);
+				assert.deepStrictEqual(params, req.params);
 			});
 		});
 	});
