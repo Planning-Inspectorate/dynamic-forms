@@ -6,13 +6,17 @@ export default class ManageListQuestion extends Question {
 	#section;
 
 	/**
-	 * @param {import('#question-types').QuestionParameters} params
+	 * @param {import('#question-types').QuestionParameters & {titleSingular: string}} params
 	 */
 	constructor(params) {
 		super({
 			...params,
 			pageTitle: params.title,
-			viewFolder: 'manage-list'
+			viewFolder: 'manage-list',
+			viewData: {
+				...params.viewData,
+				titleSingular: params.titleSingular
+			}
 		});
 	}
 
@@ -31,7 +35,37 @@ export default class ManageListQuestion extends Question {
 	prepQuestionForRendering(section, journey, customViewData, payload) {
 		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload);
 		viewModel.question.addAnotherLink = this.#addAnotherLink;
+		viewModel.question.firstQuestionUrl = this.#firstQuestionUrl;
+		viewModel.question.valueSummary = [];
+		if (viewModel.question.value && Array.isArray(viewModel.question.value)) {
+			viewModel.question.valueSummary = viewModel.question.value.map((v) => {
+				return {
+					id: v.id,
+					value: this.#formatItemAnswers(v)
+				};
+			});
+		}
 		return viewModel;
+	}
+
+	/**
+	 * Format the answers to each of the manage list questions
+	 * @param {{id: string, [k: string]: string}} answer
+	 * @returns {string[]}
+	 */
+	#formatItemAnswers(answer) {
+		if (this.section.questions.length === 0) {
+			return [];
+		}
+		const mockJourney = {
+			getCurrentQuestionUrl() {}
+		};
+		return this.section.questions.map((q) => {
+			return q
+				.formatAnswerForSummary('', mockJourney, answer[q.fieldName])
+				.map((a) => a.value)
+				.join(', ');
+		});
 	}
 
 	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
@@ -52,8 +86,20 @@ export default class ManageListQuestion extends Question {
 			return '';
 		}
 		const nextItemId = Uuid.randomUUID();
-		const firstQuestion = this.section.questions[0].url;
+		const firstQuestion = this.#firstQuestionUrl;
 		return `add/${nextItemId}/${firstQuestion}`;
+	}
+
+	/**
+	 * First question URL
+	 *
+	 * @returns {string}
+	 */
+	get #firstQuestionUrl() {
+		if (this.section.questions.length === 0) {
+			return '';
+		}
+		return this.section.questions[0].url;
 	}
 
 	get section() {
