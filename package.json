@@ -3,6 +3,7 @@
   "version": "0.0.0-semantically-released",
   "description": "This package is for building GDS forms using a configuration-based approach.",
   "main": "./src/index.js",
+  "types": "./src/index.d.ts",
   "type": "module",
   "repository": {
     "type": "git",
