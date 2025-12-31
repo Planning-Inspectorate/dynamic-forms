@@ -24,6 +24,13 @@
     "express-validator": "^7.2.1",
     "nunjucks": "^3.2.4"
   },
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js",
+      "default": "./src/index.js"
+    }
+	},
   "imports": {
     "#question-types": "./src/questions/question-types.d.ts",
     "#test/*": "./test/*"

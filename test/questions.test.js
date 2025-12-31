@@ -10,9 +10,9 @@ import validate from '../src/validator/validator.js';
 import { validationErrorHandler } from '../src/validator/validation-error-handler.js';
 import { buildSave, list, question } from '../src/controller.js';
 import path from 'path';
-import { COMPONENT_TYPES } from '../src/index.js';
 import { escapeForRegExp, snapshotsDir } from './utils/utils.js';
 import { BOOLEAN_OPTIONS } from '../src/components/boolean/question.js';
+import { COMPONENT_TYPES } from '../src/components/utils/component-types.js';
 
 /**
  * @param {import('node:test').TestContext} ctx
