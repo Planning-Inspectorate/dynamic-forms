@@ -90,6 +90,19 @@ describe('components/manage-list/question', () => {
 		assert.strictEqual(answerForSummary[0].value, '3 Things');
 	});
 
+	it('should support showing all answers in the format list answer for summary', (ctx) => {
+		const { q } = questionWithManageQuestions(ctx, { showAnswersInSummary: true });
+		const answerForSummary = q.formatAnswerForSummary('section-1', mockJourney(), [{}, {}, {}]);
+		assert.strictEqual(answerForSummary.length, 1);
+		ctx.assert.fileSnapshot(
+			answerForSummary[0].value.replaceAll('\r\n', '\n'),
+			path.join(snapshotsDir(), 'manage-list-answer-summary.html'),
+			{
+				serializers: [(v) => v]
+			}
+		);
+	});
+
 	it('should render with answers', (ctx) => {
 		const { q, journey } = questionWithManageQuestions(ctx);
 		const viewModel = q.prepQuestionForRendering({}, journey);
