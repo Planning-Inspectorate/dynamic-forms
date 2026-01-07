@@ -511,7 +511,7 @@ describe('Journey class', () => {
 			it('should preserve params for manage list question', () => {
 				const question = {
 					url: 'question-3',
-					isInManagedListSection: true
+					isInManageListSection: true
 				};
 				const manageListQuestion = {
 					url: 'manage-list-question',

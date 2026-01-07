@@ -11,11 +11,11 @@ describe('components/manage-list/manage-list-section', () => {
 		const mls = new ManageListSection();
 		assert.strictEqual(mls.isManageListSection, true);
 	});
-	it('should mark each question with isInManagedListSection', () => {
+	it('should mark each question with isInManageListSection', () => {
 		const mls = new ManageListSection();
 		const mockSetter = mock.fn();
 		const q = {
-			set isInManagedListSection(value) {
+			set isInManageListSection(value) {
 				mockSetter(value);
 			}
 		};
@@ -33,7 +33,7 @@ describe('components/manage-list/manage-list-section', () => {
 		assert.throws(
 			() => mls.addQuestion(q),
 			(thrown) => {
-				assert.strictEqual(thrown.message, 'manage list sections do not support nested managed list questions');
+				assert.strictEqual(thrown.message, 'manage list sections do not support nested manage list questions');
 				return true;
 			}
 		);
@@ -44,7 +44,7 @@ describe('components/manage-list/manage-list-section', () => {
 		assert.throws(
 			() => mls.addQuestion(q, {}),
 			(thrown) => {
-				assert.strictEqual(thrown.message, 'manage list sections do not support nested managed list questions');
+				assert.strictEqual(thrown.message, 'manage list sections do not support nested manage list questions');
 				return true;
 			}
 		);

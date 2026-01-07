@@ -30,10 +30,10 @@ export class ManageListSection extends Section {
 			throw new Error('question is required');
 		}
 		if (question.isManageListQuestion || Boolean(manageListSection)) {
-			throw new Error('manage list sections do not support nested managed list questions');
+			throw new Error('manage list sections do not support nested manage list questions');
 		}
-		// mark that this question is within a managed list section for routing and controller logic
-		question.isInManagedListSection = true;
+		// mark that this question is within a manage list section for routing and controller logic
+		question.isInManageListSection = true;
 		return super.addQuestion(question);
 	}
 }

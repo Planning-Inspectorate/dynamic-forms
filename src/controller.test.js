@@ -395,7 +395,9 @@ describe('dynamic-form/controller', () => {
 			const mocks = [sampleQuestionObj.checkForValidationErrors.mock, sampleQuestionObj.checkForSavingErrors.mock];
 			for (const mockFn of mocks) {
 				assert.strictEqual(mockFn.callCount(), 1);
-				assert.deepStrictEqual(mockFn.calls[0].arguments, [req, sections[0], mockJourney]);
+				assert.deepStrictEqual(mockFn.calls[0].arguments[0], req);
+				assert.deepStrictEqual(mockFn.calls[0].arguments[1], sections[0]);
+				assert.deepStrictEqual(mockFn.calls[0].arguments[2], mockJourney);
 			}
 		});
 
@@ -559,7 +561,7 @@ describe('dynamic-form/controller', () => {
 			const setupJourney = () => {
 				const q = {
 					fieldName: 'question-2',
-					get isInManagedListSection() {
+					get isInManageListSection() {
 						return true;
 					},
 					checkForValidationErrors: mock.fn(),

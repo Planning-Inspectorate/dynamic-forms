@@ -90,7 +90,7 @@ export class Question {
 		title: '',
 		text: ''
 	};
-	#isInManagedListSection = false;
+	#isInManageListSection = false;
 
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
@@ -162,19 +162,19 @@ export class Question {
 	}
 
 	/**
-	 * Is this question added to a ManagedListSection?
+	 * Is this question added to a ManageListSection?
 	 *
 	 * @returns {boolean}
 	 */
-	get isInManagedListSection() {
-		return this.#isInManagedListSection;
+	get isInManageListSection() {
+		return this.#isInManageListSection;
 	}
 
-	set isInManagedListSection(value) {
+	set isInManageListSection(value) {
 		if (!value) {
-			throw new Error('Question isInManagedListSection is false by default');
+			throw new Error('Question isInManageListSection is false by default');
 		}
-		this.#isInManagedListSection = value;
+		this.#isInManageListSection = value;
 	}
 
 	/**
@@ -337,7 +337,10 @@ export class Question {
 	 * @deprecated - use `journey.redirectToNextQuestion`
 	 */
 	handleNextQuestion(res, journey, sectionSegment, questionSegment) {
-		return journey.redirectToNextQuestion(res, sectionSegment, questionSegment);
+		return journey.redirectToNextQuestion(res, {
+			section: sectionSegment,
+			question: questionSegment
+		});
 	}
 
 	/**

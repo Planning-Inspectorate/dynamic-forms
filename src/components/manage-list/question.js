@@ -1,12 +1,23 @@
 import { Question } from '../../questions/question.js';
 import { Uuid } from '#src/lib/uuid.js';
+import escape from 'escape-html';
+import { nunjucksEnv } from '#src/components/utils/nunjucks.js';
+
+/**
+ * @typedef {Object} ManageListQuestionParameters
+ * @property {string} titleSingular - the single name of the list item, e.g. "Holiday activity"
+ * @property {boolean} [showManageListQuestions] - whether to show the question titles as well as answers on the manage list summary page
+ * @property {boolean} [showAnswersInSummary] - whether to show the answers on the main check-your-answers page (or just a count)
+ */
 
 export default class ManageListQuestion extends Question {
 	/** @type {import('../../section.js').Section} */
 	#section;
+	/** @type {boolean} */
+	#showAnswersInSummary;
 
 	/**
-	 * @param {import('#question-types').QuestionParameters & {titleSingular: string, showManageListQuestions: boolean}} params
+	 * @param {import('#question-types').QuestionParameters & {titleSingular: string, showManageListQuestions: boolean, showAnswersInSummary: boolean}} params
 	 */
 	constructor(params) {
 		super({
@@ -19,6 +30,7 @@ export default class ManageListQuestion extends Question {
 				showManageListQuestions: params.showManageListQuestions
 			}
 		});
+		this.#showAnswersInSummary = params.showAnswersInSummary || false;
 	}
 
 	/**
@@ -64,7 +76,7 @@ export default class ManageListQuestion extends Question {
 		return this.section.questions.map((q) => {
 			const formatted = q
 				.formatAnswerForSummary('', mockJourney, answer[q.fieldName])
-				.map((a) => a.value)
+				.map((a) => escape(a.value))
 				.join(', ');
 
 			return {
@@ -81,11 +93,25 @@ export default class ManageListQuestion extends Question {
 		return responseToSave;
 	}
 
-	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
+	formatAnswerForSummary(sectionSegment, journey, answer) {
+		let formattedAnswer = this.notStartedText;
 		if (answer && Array.isArray(answer)) {
-			answer = `${answer.length} ${this.title}`;
+			if (this.#showAnswersInSummary) {
+				const answers = answer.map((a) => this.#formatItemAnswers(a));
+				formattedAnswer = nunjucksEnv().render('components/manage-list/answer-summary-list.njk', { answers });
+			} else if (answer.length > 0) {
+				formattedAnswer = `${answer.length} ${this.title}`;
+			}
 		}
-		return super.formatAnswerForSummary(sectionSegment, journey, answer, capitals);
+		const action = this.getAction(sectionSegment, journey, answer);
+		const key = this.title ?? this.question;
+		return [
+			{
+				key: key,
+				value: formattedAnswer,
+				action: action
+			}
+		];
 	}
 
 	/**

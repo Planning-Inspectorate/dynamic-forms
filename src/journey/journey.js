@@ -162,10 +162,10 @@ export class Journey {
 	 * Get question within a section
 	 * @param {Section} section
 	 * @param {string} questionSegment
-	 * @param {{action: string, itemId: string, question: string}} [managedListParams]
+	 * @param {{action: string, itemId: string, question: string}} [manageListParams]
 	 * @returns {Question | undefined} question if it belongs in the given section
 	 */
-	#getQuestion(section, questionSegment, managedListParams) {
+	#getQuestion(section, questionSegment, manageListParams) {
 		const matchQuestion = (q, toMatch) => {
 			return q.fieldName === toMatch || q.url === toMatch;
 		};
@@ -173,8 +173,8 @@ export class Journey {
 		if (!question) {
 			return undefined;
 		}
-		if (managedListParams && question.isManageListQuestion) {
-			return question.section.questions.find((q) => matchQuestion(q, managedListParams.question));
+		if (manageListParams && question.isManageListQuestion) {
+			return question.section.questions.find((q) => matchQuestion(q, manageListParams.question));
 		}
 		return question;
 	}
@@ -190,15 +190,15 @@ export class Journey {
 		if (!section) {
 			return undefined;
 		}
-		let managedListParams;
+		let manageListParams;
 		if (params.manageListAction && params.manageListItemId && params.manageListQuestion) {
-			managedListParams = {
+			manageListParams = {
 				action: params.manageListAction,
 				itemId: params.manageListItemId,
 				question: params.manageListQuestion
 			};
 		}
-		return this.#getQuestion(section, params.question, managedListParams);
+		return this.#getQuestion(section, params.question, manageListParams);
 	}
 
 	/**
@@ -230,10 +230,7 @@ export class Journey {
 	 * @returns {void}
 	 */
 	redirectToNextQuestion(res, params, manageListQuestion) {
-		let next = this.getNextQuestionUrl(params, { manageListQuestion });
-		if (next === null) {
-			next = this.taskListUrl;
-		}
+		const next = this.getNextQuestionUrl(params, { manageListQuestion }) ?? this.taskListUrl;
 		return res.redirect(next);
 	}
 
@@ -281,7 +278,7 @@ export class Journey {
 						section: currentSection.segment,
 						question: question.url || question.fieldName
 					};
-					if (question.isInManagedListSection && manageListQuestion) {
+					if (question.isInManageListSection && manageListQuestion) {
 						newParams = {
 							...params,
 							question: manageListQuestion.url,

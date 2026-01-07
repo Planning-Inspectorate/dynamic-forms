@@ -111,24 +111,24 @@ describe('./src/dynamic-forms/question.js', () => {
 		});
 	});
 
-	describe('isInManagedListSection', () => {
+	describe('isInManageListSection', () => {
 		it('should default to false', () => {
 			const question = getTestQuestion();
-			assert.strictEqual(question.isInManagedListSection, false);
+			assert.strictEqual(question.isInManageListSection, false);
 		});
-		it('should support setting isInManagedListSection', () => {
+		it('should support setting isInManageListSection', () => {
 			const question = getTestQuestion();
-			assert.strictEqual(question.isInManagedListSection, false);
-			question.isInManagedListSection = true;
-			assert.strictEqual(question.isInManagedListSection, true);
+			assert.strictEqual(question.isInManageListSection, false);
+			question.isInManageListSection = true;
+			assert.strictEqual(question.isInManageListSection, true);
 		});
-		it('should not support setting isInManagedListSection false', () => {
+		it('should not support setting isInManageListSection false', () => {
 			const question = getTestQuestion();
-			assert.strictEqual(question.isInManagedListSection, false);
+			assert.strictEqual(question.isInManageListSection, false);
 			assert.throws(
-				() => (question.isInManagedListSection = false),
+				() => (question.isInManageListSection = false),
 				(error) => {
-					assert.strictEqual(error.message, 'Question isInManagedListSection is false by default');
+					assert.strictEqual(error.message, 'Question isInManageListSection is false by default');
 					return true;
 				}
 			);
@@ -175,8 +175,6 @@ describe('./src/dynamic-forms/question.js', () => {
 			assert.deepStrictEqual(result.answer, journey.response.answers[question.fieldName]);
 			assert.deepStrictEqual(result.layoutTemplate, journey.journeyTemplate);
 			assert.deepStrictEqual(result.pageCaption, section.name);
-			assert.deepStrictEqual(result.navigation, ['', 'back']);
-			assert.deepStrictEqual(result.backLink, 'back');
 			assert.deepStrictEqual(result.showBackToListLink, question.showBackToListLink);
 			assert.deepStrictEqual(result.listLink, journey.taskListUrl);
 			assert.deepStrictEqual(result.journeyTitle, journey.journeyTitle);
@@ -230,7 +228,7 @@ describe('./src/dynamic-forms/question.js', () => {
 			const expectedResult = { a: 1 };
 			const req = { body: { errors: { error: 'we have an error' } } };
 			const question = getTestQuestion();
-			question.prepQuestionForRendering = mock.fn(() => expectedResult);
+			question.toViewModel = mock.fn(() => expectedResult);
 
 			const result = question.checkForValidationErrors(req);
 

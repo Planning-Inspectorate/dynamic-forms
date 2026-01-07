@@ -56,16 +56,12 @@ export async function createAppWithQuestions(ctx) {
 	 * @type {import('express').ErrorRequestHandler}
 	 */
 	function errorHandler(error, req, res, next) {
-		if (error) {
-			console.error('Internal Server Error:', error);
-			if (res.headersSent) {
-				return next(error);
-			}
-			res.status(500);
-			res.render('error', { error });
-		} else {
-			next();
+		console.error('Internal Server Error:', error);
+		if (res.headersSent) {
+			return next(error);
 		}
+		res.status(500);
+		res.render('error', { error });
 	}
 
 	app.use(errorHandler);

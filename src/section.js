@@ -232,8 +232,8 @@ export class Section {
 		const numberOfQuestions = questions.length;
 
 		const questionsStart = reverse ? numberOfQuestions - 1 : 0;
-		for (let j = questionsStart; reverse ? j >= 0 : j < numberOfQuestions; reverse ? j-- : j++) {
-			const question = questions[j];
+		for (let i = questionsStart; reverse ? i >= 0 : i < numberOfQuestions; reverse ? i-- : i++) {
+			const question = questions[i];
 			if (takeNextQuestion && question.shouldDisplay(response)) {
 				return question;
 			}

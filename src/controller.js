@@ -158,7 +158,7 @@ export async function question(req, res) {
 	}
 
 	let manageListQuestion;
-	if (question.isInManagedListSection) {
+	if (question.isInManageListSection) {
 		// find parent question for the manage list
 		manageListQuestion = journey.getQuestionByParams({ section: req.params.section, question: req.params.question });
 		if (!manageListQuestion) {
@@ -211,7 +211,7 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 		}
 
 		let manageListQuestion;
-		if (question.isInManagedListSection) {
+		if (question.isInManageListSection) {
 			// find parent question for the manage list
 			manageListQuestion = journey.getQuestionByParams({ section: req.params.section, question: req.params.question });
 			if (!manageListQuestion) {
