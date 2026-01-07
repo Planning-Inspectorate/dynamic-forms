@@ -234,6 +234,8 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				res,
 				journeyId: journeyResponse.journeyId,
 				referenceId: journeyResponse.referenceId,
+				isManagedListItem: question.isInManagedListSection,
+				managedListQuestionFieldName: manageListQuestion?.fieldName,
 				data
 			});
 

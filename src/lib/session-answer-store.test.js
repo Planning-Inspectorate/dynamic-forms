@@ -80,7 +80,24 @@ describe('session-answer-store', () => {
 				}
 			});
 		});
-
+		it('should handle managedLists correctly', async () => {
+			const req = mockReq();
+			req.params = { manageListItemId: '12345' };
+			req.session = {};
+			const journeyId = 'j-1';
+			const data = { answers: { q1: 'a1' } };
+			const isManagedListItem = true;
+			const managedListQuestionFieldName = 'myManagedList';
+			const saveDataToSession = buildSaveDataToSession();
+			await saveDataToSession({ req, journeyId, data, isManagedListItem, managedListQuestionFieldName });
+			assert.deepStrictEqual(req.session, {
+				forms: {
+					'j-1': {
+						myManagedList: [{ id: '12345', q1: 'a1' }]
+					}
+				}
+			});
+		});
 		it('should overwrite existing data by reqParam & journeyId', async () => {
 			const req = mockReq();
 			req.params = { myParam: 'req-1' };
