@@ -74,6 +74,13 @@ export default class ManageListQuestion extends Question {
 		});
 	}
 
+	async getDataToSave(req, journeyResponse) {
+		let responseToSave = { answers: {} };
+		const data = journeyResponse.answers[this.fieldName];
+		responseToSave.answers[this.fieldName] = data || [];
+		return responseToSave;
+	}
+
 	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
 		if (answer && Array.isArray(answer)) {
 			answer = `${answer.length} ${this.title}`;

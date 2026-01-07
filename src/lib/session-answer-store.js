@@ -39,7 +39,7 @@ import { booleanToYesNoValue } from '../components/boolean/question.js';
  * @returns {import('../controller').SaveDataFn}
  */
 export function buildSaveDataToSession({ reqParam } = {}) {
-	return async ({ req, journeyId, data }) => {
+	return async ({ req, journeyId, data, isManagedListItem, managedListQuestionFieldName }) => {
 		if (!req.session) {
 			throw new Error('request session required');
 		}
@@ -51,9 +51,23 @@ export function buildSaveDataToSession({ reqParam } = {}) {
 			forms = forms[reqParamValue] || (forms[reqParamValue] = {});
 		}
 		const answers = forms[journeyId] || (forms[journeyId] = {});
+		if (isManagedListItem) {
+			if (!answers[managedListQuestionFieldName]) {
+				answers[managedListQuestionFieldName] = [];
+			}
+			const index = answers[managedListQuestionFieldName].findIndex((item) => item.id === req.params.manageListItemId);
 
-		for (const [k, v] of Object.entries(data?.answers || {})) {
-			answers[k] = v;
+			for (const [k, v] of Object.entries(data?.answers || {})) {
+				if (index !== -1) {
+					answers[managedListQuestionFieldName][index][k] = v;
+				} else {
+					answers[managedListQuestionFieldName].push({ id: req.params.manageListItemId, [k]: v });
+				}
+			}
+		} else {
+			for (const [k, v] of Object.entries(data?.answers || {})) {
+				answers[k] = v;
+			}
 		}
 	};
 }
