@@ -77,19 +77,7 @@ export default class DatePeriodQuestion extends Question {
 		return responseToSave;
 	}
 
-	/**
-	 * gets the view model for this question
-	 * @param {Section} section - the current section
-	 * @param {Journey} journey - the journey we are in
-	 * @param {Object|undefined} [customViewData] additional data to send to view
-	 * @param {Object|undefined} [payload] the current payload
-	 * @returns {QuestionViewModel & { answer: Record<string, unknown> }}
-	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-
-		/** @type {Record<string, unknown>} */
-		let answer;
+	answerForViewModel(answers, isPayload) {
 		let startDay;
 		let startMonth;
 		let startYear;
@@ -97,15 +85,15 @@ export default class DatePeriodQuestion extends Question {
 		let endMonth;
 		let endYear;
 
-		if (payload) {
-			startDay = payload[`${this.fieldName}_start_day`];
-			startMonth = payload[`${this.fieldName}_start_month`];
-			startYear = payload[`${this.fieldName}_start_year`];
-			endDay = payload[`${this.fieldName}_end_day`];
-			endMonth = payload[`${this.fieldName}_end_month`];
-			endYear = payload[`${this.fieldName}_end_year`];
+		if (isPayload) {
+			startDay = answers[`${this.fieldName}_start_day`];
+			startMonth = answers[`${this.fieldName}_start_month`];
+			startYear = answers[`${this.fieldName}_start_year`];
+			endDay = answers[`${this.fieldName}_end_day`];
+			endMonth = answers[`${this.fieldName}_end_month`];
+			endYear = answers[`${this.fieldName}_end_year`];
 		} else {
-			const answerPeriod = journey.response.answers[this.fieldName];
+			const answerPeriod = answers[this.fieldName];
 			if (answerPeriod && answerPeriod.start) {
 				const startDate = new Date(answerPeriod.start);
 				startDay = formatDateForDisplay(startDate, { format: 'd' });
@@ -120,7 +108,7 @@ export default class DatePeriodQuestion extends Question {
 			}
 		}
 
-		answer = {
+		return {
 			[`${this.fieldName}_start_day`]: startDay,
 			[`${this.fieldName}_start_month`]: startMonth,
 			[`${this.fieldName}_start_year`]: startYear,
@@ -128,8 +116,6 @@ export default class DatePeriodQuestion extends Question {
 			[`${this.fieldName}_end_month`]: endMonth,
 			[`${this.fieldName}_end_year`]: endYear
 		};
-
-		return { ...viewModel, answer, question: { ...viewModel.question, value: answer } };
 	}
 
 	/**

@@ -305,3 +305,6 @@ When implement a new component, extend the base `Question` class. Common methods
 * `formatAnswerForSummary` - used for check-your-answers display
 * `getDataToSave` - answer data to save
 * `addCustomDataToViewModel` - customise the view model with extra data/configuration
+* `answerForViewModel` - customise the view model answer value
+
+Where possible `addCustomDataToViewModel` and `answerForViewModel` should be overridden instead of `prepQuestionForRendering`.

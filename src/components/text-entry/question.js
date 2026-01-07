@@ -33,12 +33,6 @@ export default class TextEntryQuestion extends Question {
 		this.label = label;
 	}
 
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-		viewModel.question.value = payload ? payload[viewModel.question.fieldName] : viewModel.question.value;
-		return viewModel;
-	}
-
 	/**
 	 * @param {import('#question').QuestionViewModel} viewModel
 	 */

@@ -40,27 +40,28 @@ export default class AddressQuestion extends Question {
 	}
 
 	/**
-	 * @param {Section} section
-	 * @param {Journey} journey
-	 * @param {Record<string, unknown>} customViewData
-	 * @returns {QuestionViewModel}
+	 * @param {Record<string, any>} answers
+	 * @returns {*|string}
 	 */
-	prepQuestionForRendering(section, journey, customViewData) {
-		const viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-		const address = journey.response.answers[this.fieldName] || {};
-
-		// will only ever have 1
-		if (address) {
-			viewModel.question.value = {
-				addressLine1: address.addressLine1 || '',
-				addressLine2: address.addressLine2 || '',
-				townCity: address.townCity || '',
-				county: address.county || '',
-				postcode: address.postcode || ''
+	answerForViewModel(answers) {
+		let address = answers[this.fieldName];
+		if (!address) {
+			address = {
+				addressLine1: answers[this.fieldName + '_addressLine1'],
+				addressLine2: answers[this.fieldName + '_addressLine2'],
+				townCity: answers[this.fieldName + '_townCity'],
+				county: answers[this.fieldName + '_county'],
+				postcode: answers[this.fieldName + '_postcode']
 			};
 		}
 
-		return viewModel;
+		return {
+			addressLine1: address?.addressLine1 || '',
+			addressLine2: address?.addressLine2 || '',
+			townCity: address?.townCity || '',
+			county: address?.county || '',
+			postcode: address?.postcode || ''
+		};
 	}
 
 	/**
