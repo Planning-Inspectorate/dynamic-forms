@@ -1,5 +1,5 @@
 import { formatDateForDisplay, parseDateInput } from '../../lib/date-utils.js';
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 import { nl2br } from '../../lib/utils.js';
 import escape from 'escape-html';
 

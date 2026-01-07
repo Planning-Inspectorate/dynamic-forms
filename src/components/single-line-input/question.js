@@ -1,4 +1,4 @@
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 
 /**
  * @typedef {import('../../questions/question.js').QuestionViewModel} QuestionViewModel

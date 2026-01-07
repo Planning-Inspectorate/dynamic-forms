@@ -1,4 +1,4 @@
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 import { Uuid } from '#src/lib/uuid.js';
 import escape from 'escape-html';
 import { nunjucksEnv } from '#src/components/utils/nunjucks.js';

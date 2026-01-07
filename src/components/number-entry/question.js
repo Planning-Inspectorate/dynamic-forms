@@ -1,4 +1,4 @@
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 import { getPersistedNumberAnswer } from '../utils/persisted-number-answer.js';
 
 /**
