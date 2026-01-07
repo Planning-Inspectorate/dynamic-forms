@@ -26,9 +26,15 @@ export default class IdentifierQuestion extends Question {
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload) {
 		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-		viewModel.question.inputClasses = this.inputClasses;
-		viewModel.question.label = this.label;
 		viewModel.question.value = payload ? payload[viewModel.question.fieldName] : viewModel.question.value;
 		return viewModel;
+	}
+
+	/**
+	 * @param {import('#question').QuestionViewModel} viewModel
+	 */
+	addCustomDataToViewModel(viewModel) {
+		viewModel.question.inputClasses = this.inputClasses;
+		viewModel.question.label = this.label;
 	}
 }

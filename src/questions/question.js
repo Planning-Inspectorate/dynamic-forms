@@ -25,7 +25,7 @@ import MultiFieldInputValidator from '../validator/multi-field-input-validator.j
  */
 
 /**
- * @typedef {Object} QuestionViewModel
+ * @typedef {Record<string, any>} QuestionViewModel
  * @property {PreppedQuestion} question
  * @property {string} layoutTemplate
  * @property {string} pageCaption
@@ -209,7 +209,8 @@ export class Question {
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload) {
 		const answer = journey.response.answers[this.fieldName] || '';
-		return {
+
+		const viewModel = {
 			question: {
 				value: answer,
 				question: this.question,
@@ -236,7 +237,18 @@ export class Question {
 			...customViewData,
 			...this.viewData
 		};
+		this.addCustomDataToViewModel(viewModel);
+		return viewModel;
 	}
+
+	/**
+	 * Question implementations can override this to add configuration or other values to the view model
+	 *
+	 * If possible override this method instead of prepQuestionForRendering for simple changes to the view model
+	 *
+	 * @param {QuestionViewModel} viewModel
+	 */ // eslint-disable-next-line no-unused-vars
+	addCustomDataToViewModel(viewModel) {}
 
 	/**
 	 * renders the question

@@ -45,8 +45,10 @@ export default class ManageListQuestion extends Question {
 		return true;
 	}
 
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload);
+	/**
+	 * @param {import('#question').QuestionViewModel} viewModel
+	 */
+	addCustomDataToViewModel(viewModel) {
 		viewModel.question.addAnotherLink = this.#addAnotherLink;
 		viewModel.question.firstQuestionUrl = this.#firstQuestionUrl;
 		viewModel.question.valueSummary = [];
@@ -58,7 +60,6 @@ export default class ManageListQuestion extends Question {
 				};
 			});
 		}
-		return viewModel;
 	}
 
 	/**

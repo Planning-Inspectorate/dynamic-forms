@@ -87,7 +87,6 @@ export default class DatePeriodQuestion extends Question {
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload) {
 		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-		viewModel.labels = this.labels;
 
 		/** @type {Record<string, unknown>} */
 		let answer;
@@ -131,6 +130,13 @@ export default class DatePeriodQuestion extends Question {
 		};
 
 		return { ...viewModel, answer, question: { ...viewModel.question, value: answer } };
+	}
+
+	/**
+	 * @param {import('#question').QuestionViewModel} viewModel
+	 */
+	addCustomDataToViewModel(viewModel) {
+		viewModel.labels = this.labels;
 	}
 
 	/**
