@@ -1,6 +1,5 @@
 import { Question } from '#question';
 import { Uuid } from '#src/lib/uuid.js';
-import escape from 'escape-html';
 import { nunjucksEnv } from '#src/components/utils/nunjucks.js';
 
 /**
@@ -77,7 +76,7 @@ export default class ManageListQuestion extends Question {
 		return this.section.questions.map((q) => {
 			const formatted = q
 				.formatAnswerForSummary('', mockJourney, answer[q.fieldName])
-				.map((a) => escape(a.value))
+				.map((a) => a.value)
 				.join(', ');
 
 			return {
