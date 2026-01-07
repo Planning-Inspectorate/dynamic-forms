@@ -1,7 +1,7 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
-import { Question } from './question.js';
 import { mockRes } from '../../test/utils/utils.js';
+import { Question } from '#question';
 
 const res = mockRes();
 

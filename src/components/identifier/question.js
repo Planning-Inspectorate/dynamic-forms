@@ -1,4 +1,4 @@
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 
 export default class IdentifierQuestion extends Question {
 	/** @type {string|undefined} page h1, optional, will default to use question's label */

@@ -1,4 +1,4 @@
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 import escape from 'escape-html';
 import { nl2br } from '../../lib/utils.js';
 
