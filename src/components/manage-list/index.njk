@@ -21,7 +21,7 @@
                                     {% if showManageListQuestions %}
                                     {{ value.question }}:<br>
                                     {% endif %}
-                                    {{ value.answer }}
+                                    {{ value.answer | safe }}
                                     {% if not loop.last %}
                                     <br>{% if showManageListQuestions %}<br>{% endif %}
 
