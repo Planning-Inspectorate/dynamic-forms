@@ -72,9 +72,9 @@ export default class OptionsQuestion extends Question {
 	 * @returns {QuestionViewModel}
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload) {
-		const answer = payload ? payload[this.fieldName] : journey.response.answers[this.fieldName] || '';
-
 		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload);
+		const answers = payload ? payload : journey.response.answers;
+		const answer = viewModel.question.value;
 
 		viewModel.question.options = [];
 
@@ -96,9 +96,7 @@ export default class OptionsQuestion extends Question {
 				let conditionalField = { ...optionData.conditional };
 
 				conditionalField.fieldName = getConditionalFieldName(this.fieldName, conditionalField.fieldName);
-				conditionalField.value = payload
-					? payload[conditionalField.fieldName]
-					: journey.response.answers[conditionalField.fieldName] || '';
+				conditionalField.value = answers[conditionalField.fieldName] || '';
 
 				optionData.conditional = {
 					html: nunjucks.render(`./components/conditional/${conditionalField.type}.njk`, {

@@ -78,12 +78,12 @@ export default class UnitOptionEntryQuestion extends Question {
 	 * }}
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload) {
-		const answer = payload ? payload[this.fieldName] : journey.response.answers[this.fieldName] || '';
-
 		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload);
+		const answer = viewModel.question.value;
+		const answers = journey.response.answers;
 
 		/** @type {Array<UnitOption>} */
-		const options = [];
+		viewModel.question.options = [];
 
 		for (const option of this.options) {
 			let optionData = { ...option };
@@ -101,7 +101,7 @@ export default class UnitOptionEntryQuestion extends Question {
 				if (conditionalIsJustHTML(conditionalField)) continue;
 
 				const conversionFactor = conditionalField.conversionFactor || 1;
-				const unconvertedAnswer = journey.response.answers[this.conditionalFieldName];
+				const unconvertedAnswer = answers[this.conditionalFieldName];
 
 				const existingValue =
 					answer === optionData.value && typeof unconvertedAnswer === 'number'
@@ -119,10 +119,10 @@ export default class UnitOptionEntryQuestion extends Question {
 				};
 			}
 
-			options.push(optionData);
+			viewModel.question.options.push(optionData);
 		}
 
-		return { ...viewModel, question: { ...viewModel.question, options } };
+		return viewModel;
 	}
 
 	/**

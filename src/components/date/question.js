@@ -50,29 +50,17 @@ export default class DateQuestion extends Question {
 		return responseToSave;
 	}
 
-	/**
-	 * gets the view model for this question
-	 * @param {Section} section - the current section
-	 * @param {Journey} journey - the journey we are in
-	 * @param {Object|undefined} [customViewData] additional data to send to view
-	 * @returns {QuestionViewModel & { answer: Record<string, unknown> }}
-	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-
-		/** @type {Record<string, unknown>} */
-		let answer = {};
+	answerForViewModel(answers, isPayload) {
 		let day;
 		let month;
 		let year;
 
-		if (payload) {
-			day = payload[`${this.fieldName}_day`];
-			month = payload[`${this.fieldName}_month`];
-			year = payload[`${this.fieldName}_year`];
+		if (isPayload && answers) {
+			day = answers[`${this.fieldName}_day`];
+			month = answers[`${this.fieldName}_month`];
+			year = answers[`${this.fieldName}_year`];
 		} else {
-			const answerDateString = journey.response.answers[this.fieldName];
-
+			const answerDateString = answers[this.fieldName];
 			if (answerDateString && (typeof answerDateString === 'string' || answerDateString instanceof Date)) {
 				const answerDate = new Date(answerDateString);
 				day = formatDateForDisplay(answerDate, { format: 'd' });
@@ -81,13 +69,11 @@ export default class DateQuestion extends Question {
 			}
 		}
 
-		answer = {
+		return {
 			[`${this.fieldName}_day`]: day,
 			[`${this.fieldName}_month`]: month,
 			[`${this.fieldName}_year`]: year
 		};
-
-		return { ...viewModel, answer, question: { ...viewModel.question, value: answer } };
 	}
 
 	/**

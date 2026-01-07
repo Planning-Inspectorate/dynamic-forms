@@ -56,20 +56,13 @@ export default class MultiFieldInputQuestion extends Question {
 		}
 	}
 
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-
-		const inputFields = this.inputFields.map((inputField) => {
-			return payload
-				? { ...inputField, value: this.#formatValue(payload[inputField.fieldName], inputField.formatTextFunction) }
-				: {
-						...inputField,
-						value: this.#formatValue(journey.response.answers[inputField.fieldName], inputField.formatTextFunction)
-					};
+	answerForViewModel(answers) {
+		return this.inputFields.map((inputField) => {
+			return {
+				...inputField,
+				value: this.#formatValue(answers[inputField.fieldName], inputField.formatTextFunction)
+			};
 		});
-
-		viewModel.question.inputFields = inputFields;
-		return viewModel;
 	}
 
 	/**

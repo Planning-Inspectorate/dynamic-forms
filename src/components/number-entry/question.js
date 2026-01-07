@@ -21,14 +21,14 @@ export default class NumberEntryQuestion extends Question {
 		this.label = label;
 	}
 
+	answerForViewModel(answers) {
+		return getPersistedNumberAnswer(answers[this.fieldName] || '');
+	}
+
 	/**
 	 * @param {import('#question').QuestionViewModel} viewModel
 	 */
 	addCustomDataToViewModel(viewModel) {
-		const persistedAnswer = getPersistedNumberAnswer(viewModel.question.value);
-		viewModel.question.value = persistedAnswer;
-		viewModel.answer = persistedAnswer;
-
 		viewModel.question.label = this.label;
 		viewModel.question.suffix = this.suffix;
 	}

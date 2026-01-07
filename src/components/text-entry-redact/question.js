@@ -69,13 +69,16 @@ export default class TextEntryRedactQuestion extends Question {
 	}
 
 	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-		viewModel.question.value = nl2br(payload ? payload[viewModel.question.fieldName] : viewModel.question.value);
-		viewModel.question.valueRedacted =
-			journey.response.answers[this.fieldName + 'Redacted'] || viewModel.question.value;
-		viewModel.question.valueOriginal =
-			journey.response.answers[this.fieldName + 'Original'] || viewModel.question.value;
+		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload);
+		const answers = journey.response.answers;
+		const answer = viewModel.question.value;
+		viewModel.question.valueRedacted = answers[this.fieldName + 'Redacted'] || answer;
+		viewModel.question.valueOriginal = answers[this.fieldName + 'Original'] || answer;
 		return viewModel;
+	}
+
+	answerForViewModel(answers) {
+		return nl2br(answers[this.fieldName]);
 	}
 
 	/**

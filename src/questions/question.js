@@ -208,7 +208,8 @@ export class Question {
 	 * @returns {QuestionViewModel}
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload) {
-		const answer = journey.response.answers[this.fieldName] || '';
+		const answers = payload || journey.response.answers;
+		const answer = this.answerForViewModel(answers, Boolean(payload));
 
 		const viewModel = {
 			question: {
@@ -239,6 +240,19 @@ export class Question {
 		};
 		this.addCustomDataToViewModel(viewModel);
 		return viewModel;
+	}
+
+	/**
+	 * The answer to this question for use in the viewModel
+	 *
+	 * Question implementations can override this for more complex answer types
+	 *
+	 * @param {Record<string, any>} answers - collection of answers to pull the answer from, may be from the response or the request/payload
+	 * @param {Boolean} isPayload - whether the answers object is from the request/payload
+	 * @returns {*|string}
+	 */ // eslint-disable-next-line no-unused-vars
+	answerForViewModel(answers, isPayload) {
+		return answers[this.fieldName] || '';
 	}
 
 	/**
