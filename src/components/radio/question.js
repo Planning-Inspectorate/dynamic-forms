@@ -60,13 +60,11 @@ export default class RadioQuestion extends OptionsQuestion {
 	}
 
 	/**
-	 * adds label property to view model
+	 * @param {import('#question').QuestionViewModel} viewModel
 	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload);
+	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.legend = this.legend;
-		return viewModel;
 	}
 
 	/**

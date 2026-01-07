@@ -70,16 +70,22 @@ export default class TextEntryRedactQuestion extends Question {
 
 	prepQuestionForRendering(section, journey, customViewData, payload) {
 		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-		viewModel.question.label = this.label;
-		viewModel.question.textEntryCheckbox = this.textEntryCheckbox;
 		viewModel.question.value = nl2br(payload ? payload[viewModel.question.fieldName] : viewModel.question.value);
 		viewModel.question.valueRedacted =
 			journey.response.answers[this.fieldName + 'Redacted'] || viewModel.question.value;
 		viewModel.question.valueOriginal =
 			journey.response.answers[this.fieldName + 'Original'] || viewModel.question.value;
+		return viewModel;
+	}
+
+	/**
+	 * @param {import('#question').QuestionViewModel} viewModel
+	 */
+	addCustomDataToViewModel(viewModel) {
+		viewModel.question.label = this.label;
+		viewModel.question.textEntryCheckbox = this.textEntryCheckbox;
 		viewModel.question.summaryText = this.summaryText;
 		viewModel.showSuggestionsUi = this.showSuggestionsUi;
-		return viewModel;
 	}
 
 	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {

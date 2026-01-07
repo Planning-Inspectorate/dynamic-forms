@@ -60,9 +60,14 @@ export default class AddressQuestion extends Question {
 			};
 		}
 
-		viewModel.question.labels = this.addressLabels;
-
 		return viewModel;
+	}
+
+	/**
+	 * @param {import('#question').QuestionViewModel} viewModel
+	 */
+	addCustomDataToViewModel(viewModel) {
+		viewModel.question.labels = this.addressLabels;
 	}
 
 	/**

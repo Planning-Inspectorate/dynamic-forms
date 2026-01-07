@@ -69,9 +69,15 @@ export default class MultiFieldInputQuestion extends Question {
 		});
 
 		viewModel.question.inputFields = inputFields;
+		return viewModel;
+	}
+
+	/**
+	 * @param {import('#question').QuestionViewModel} viewModel
+	 */
+	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.attributes = this.inputAttributes;
-		return viewModel;
 	}
 
 	/**

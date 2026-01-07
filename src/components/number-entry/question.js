@@ -22,21 +22,15 @@ export default class NumberEntryQuestion extends Question {
 	}
 
 	/**
-	 * adds label and suffix property to view model
+	 * @param {import('#question').QuestionViewModel} viewModel
 	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload);
-
-		const answer = journey.response.answers[this.fieldName];
-		const persistedAnswer = getPersistedNumberAnswer(answer);
-
+	addCustomDataToViewModel(viewModel) {
+		const persistedAnswer = getPersistedNumberAnswer(viewModel.question.value);
 		viewModel.question.value = persistedAnswer;
 		viewModel.answer = persistedAnswer;
 
 		viewModel.question.label = this.label;
 		viewModel.question.suffix = this.suffix;
-
-		return viewModel;
 	}
 
 	/**

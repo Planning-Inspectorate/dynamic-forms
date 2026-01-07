@@ -297,3 +297,11 @@ There are some lightweight tests in the `test` directory which sets up a basic j
 When adding a new question type, be sure to add an example question into `test/questions.js`, and mock answers into `test/questions.test.js#mockAnswerBody` and `test/questions.test.js#mockAnswer`. Also, the question should be added to the journey in `test/journey.js`.
 
 To update any snapshots with rendering changes (or new questions), run `node --test --test-update-snapshots`.
+
+### Components
+
+When implement a new component, extend the base `Question` class. Common methods to override are:
+
+* `formatAnswerForSummary` - used for check-your-answers display
+* `getDataToSave` - answer data to save
+* `addCustomDataToViewModel` - customise the view model with extra data/configuration

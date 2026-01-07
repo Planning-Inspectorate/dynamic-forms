@@ -27,7 +27,8 @@
   "imports": {
     "#question-types": "./src/questions/question-types.d.ts",
     "#src/*": "./src/*",
-    "#test/*": "./test/*"
+    "#test/*": "./test/*",
+    "#question":  "./src/questions/question.js"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.0.0",

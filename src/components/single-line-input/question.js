@@ -34,15 +34,20 @@ export default class SingleLineInputQuestion extends Question {
 
 	prepQuestionForRendering(section, journey, customViewData, payload) {
 		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-		viewModel.question.label = this.label;
 		viewModel.question.value = payload ? payload[viewModel.question.fieldName] : viewModel.question.value;
+		return viewModel;
+	}
 
+	/**
+	 * @param {import('#question').QuestionViewModel} viewModel
+	 */
+	addCustomDataToViewModel(viewModel) {
+		viewModel.question.label = this.label;
 		// Extract type from attributes to pass separately to avoid duplication
 		const { type, ...otherAttributes } = this.inputAttributes;
 		viewModel.question.attributes = otherAttributes;
 		viewModel.question.type = type;
 
 		viewModel.question.classes = this.classes;
-		return viewModel;
 	}
 }
