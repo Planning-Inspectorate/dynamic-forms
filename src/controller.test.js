@@ -386,6 +386,8 @@ describe('dynamic-form/controller', () => {
 					res,
 					journeyId: journeyParams.journeyId,
 					referenceId: journeyParams.referenceId,
+					isManageListItem: undefined,
+					manageListQuestionFieldName: undefined,
 					data: undefined
 				}
 			]);
@@ -443,7 +445,9 @@ describe('dynamic-form/controller', () => {
 						res,
 						journeyId: journeyParams.journeyId,
 						referenceId: journeyParams.referenceId,
-						data: undefined
+						data: undefined,
+						isManageListItem: undefined,
+						manageListQuestionFieldName: undefined
 					}
 				],
 				'save data args'
