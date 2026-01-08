@@ -184,6 +184,8 @@ export async function question(req, res) {
  * @property {import('express').Response} res
  * @property {string} journeyId
  * @property {string} referenceId
+ * @property {boolean} isManageListItem
+ * @property {string} [manageListQuestionFieldName]
  * @property {Object<string, any>} data
  */
 
@@ -234,6 +236,8 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				res,
 				journeyId: journeyResponse.journeyId,
 				referenceId: journeyResponse.referenceId,
+				isManageListItem: question.isInManageListSection,
+				manageListQuestionFieldName: manageListQuestion?.fieldName,
 				data
 			});
 

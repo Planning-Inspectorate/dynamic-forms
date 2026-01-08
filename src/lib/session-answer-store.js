@@ -35,11 +35,12 @@ import { booleanToYesNoValue } from '../components/boolean/question.js';
  *
  *
  * @param {Object} opts
- * @param {string} [opts.reqParam] - optional request parameter to use as a key
+ * @param {string} [opts.reqParam]
+ * - optional request parameter to use as a key
  * @returns {import('../controller').SaveDataFn}
  */
 export function buildSaveDataToSession({ reqParam } = {}) {
-	return async ({ req, journeyId, data }) => {
+	return async ({ req, journeyId, data, isManageListItem, manageListQuestionFieldName }) => {
 		if (!req.session) {
 			throw new Error('request session required');
 		}
@@ -50,8 +51,16 @@ export function buildSaveDataToSession({ reqParam } = {}) {
 			// key by a further param
 			forms = forms[reqParamValue] || (forms[reqParamValue] = {});
 		}
-		const answers = forms[journeyId] || (forms[journeyId] = {});
+		let answers = forms[journeyId] || (forms[journeyId] = {});
+		if (isManageListItem) {
+			const answersList = answers[manageListQuestionFieldName] || (answers[manageListQuestionFieldName] = []);
+			answers = answersList.find((item) => item.id === req.params.manageListItemId);
 
+			if (!answers) {
+				answers = { id: req.params.manageListItemId };
+				answersList.push(answers);
+			}
+		}
 		for (const [k, v] of Object.entries(data?.answers || {})) {
 			answers[k] = v;
 		}
