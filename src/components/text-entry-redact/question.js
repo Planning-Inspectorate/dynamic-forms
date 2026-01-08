@@ -68,9 +68,9 @@ export default class TextEntryRedactQuestion extends Question {
 		return super.getDataToSave(req, journeyResponse);
 	}
 
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload);
-		const answers = journey.response.answers;
+	prepQuestionForRendering(section, journey, customViewData, payload, options) {
+		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload, options);
+		const answers = this.answerObjectFromJourneyResponse(journey.response, options);
 		const answer = viewModel.question.value;
 		viewModel.question.valueRedacted = answers[this.fieldName + 'Redacted'] || answer;
 		viewModel.question.valueOriginal = answers[this.fieldName + 'Original'] || answer;

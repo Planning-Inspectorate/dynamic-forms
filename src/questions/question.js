@@ -186,14 +186,17 @@ export class Question {
 	 * @param {Object} options
 	 * @param {import('#src/journey/journey-types.d.ts').RouteParams} options.params
 	 * @param {import('#src/components/manage-list/question.js')} [options.manageListQuestion]
-	 * @param {Section} section - the current section
-	 * @param {Journey} journey - the journey we are in
-	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
-	 * @param {unknown} [payload]
+	 * @param {Section} options.section - the current section
+	 * @param {Journey} options.journey - the journey we are in
+	 * @param {Record<string, unknown>} [options.customViewData] additional data to send to view
+	 * @param {unknown} [options.payload]
 	 * @returns {QuestionViewModel}
 	 */
 	toViewModel({ params, manageListQuestion, section, journey, customViewData, payload }) {
-		const viewModel = this.prepQuestionForRendering(section, journey, customViewData, payload);
+		const viewModel = this.prepQuestionForRendering(section, journey, customViewData, payload, {
+			params,
+			manageListQuestion
+		});
 		viewModel.backLink = journey.getBackLink({ params, manageListQuestion });
 		return viewModel;
 	}
@@ -205,10 +208,11 @@ export class Question {
 	 * @param {Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {unknown} [payload]
+	 * @param {import('./question-types.d.ts').PrepQuestionForRenderingOptions} [options] - required to support manage list question
 	 * @returns {QuestionViewModel}
 	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		const answers = payload || journey.response.answers;
+	prepQuestionForRendering(section, journey, customViewData, payload, options) {
+		const answers = payload || this.answerObjectFromJourneyResponse(journey.response, options);
 		const answer = this.answerForViewModel(answers, Boolean(payload));
 
 		const viewModel = {
@@ -263,6 +267,32 @@ export class Question {
 	 * @param {QuestionViewModel} viewModel
 	 */ // eslint-disable-next-line no-unused-vars
 	addCustomDataToViewModel(viewModel) {}
+
+	/**
+	 * Get the answers object from the journey response, which may be nested in an array for manage list questions
+	 *
+	 * @param {JourneyResponse} response
+	 * @param {import('./question-types.d.ts').PrepQuestionForRenderingOptions} [options]
+	 * @returns {Record<string, any>}
+	 */
+	answerObjectFromJourneyResponse(response, { params, manageListQuestion } = {}) {
+		if (this.isInManageListSection) {
+			if (!params?.manageListItemId) {
+				throw new Error('no list item id for manage list question');
+			}
+			if (!manageListQuestion) {
+				throw new Error('no manageListQuestion for manage list question');
+			}
+			// if this is a manage list question, the response is within the 'parent' manage list answers array
+			const answers = response.answers[manageListQuestion.fieldName];
+			if (!Array.isArray(answers)) {
+				return {};
+			}
+			const itemId = params.manageListItemId;
+			return answers.find((a) => a.id === itemId) || {};
+		}
+		return response.answers;
+	}
 
 	/**
 	 * renders the question

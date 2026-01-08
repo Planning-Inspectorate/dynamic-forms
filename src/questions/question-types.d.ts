@@ -1,5 +1,7 @@
 import BaseValidator from '../validator/base-validator';
 import { JourneyResponse } from '../journey/journey-response';
+import { RouteParams } from '#src/journey/journey-types.d.ts';
+import ManageListQuestion from '#src/components/manage-list/question.js';
 
 export interface QuestionParameters {
 	title: string;
@@ -26,4 +28,28 @@ export interface QuestionParameters {
 export interface ActionLink {
 	text: string;
 	href: string;
+}
+
+export interface QuestionViewModel {
+	question: {
+		value: string | number | Record<string, any>;
+		question: string;
+		fieldName: string;
+		pageTitle: string;
+		description?: string;
+		html?: string;
+	};
+	layoutTemplate: string;
+	pageCaption: string;
+	continueButtonText: string;
+	backLink: string;
+	showBackToListLink: string;
+	listLink: string;
+	journeyTitle: string;
+	[k: string]: any;
+}
+
+export interface PrepQuestionForRenderingOptions {
+	params: RouteParams;
+	manageListQuestion?: ManageListQuestion;
 }
