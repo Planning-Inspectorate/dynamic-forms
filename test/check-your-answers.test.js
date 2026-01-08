@@ -1,9 +1,10 @@
 import { describe, it } from 'node:test';
 import assert from 'assert';
-import { questionsInOrder } from './questions.js';
+import { manageListQuestions, questionsInOrder } from './questions.js';
 import path from 'path';
 import { escapeForRegExp, snapshotsDir } from './utils/utils.js';
 import { createAppWithQuestions, mockAnswer, mockAnswerBody } from './questions.test.js';
+import { COMPONENT_TYPES } from '#src/index.js';
 
 describe('check-your-answers', () => {
 	it(`should render all question rows with no answers`, async (ctx) => {
@@ -39,6 +40,23 @@ describe('check-your-answers', () => {
 
 		// 'answer' each question
 		for (const q of questionsInOrder) {
+			// Save happens on subquestion for manage list questions
+			if (q.type === COMPONENT_TYPES.MANAGE_LIST) {
+				// Get the list of subquestions for this manage list question
+				const manageListQuestion = manageListQuestions.find(
+					(question) => question.manageListQuestion.fieldName === q.fieldName
+				);
+				const subQuestionAnswers = mockAnswerBody(q)[manageListQuestion.manageListQuestion.fieldName];
+				// Post to them individually
+				for (const answer of subQuestionAnswers) {
+					const id = answer.id;
+					for (const subQuestion of manageListQuestion.questions) {
+						const key = subQuestion.fieldName;
+						const body = { [key]: answer[key] };
+						await testServer.post(`/questions/${q.url}/add/${id}/${subQuestion.url}`, body, { redirect: 'manual' });
+					}
+				}
+			}
 			await testServer.post(`/questions/${q.url}`, mockAnswerBody(q), { redirect: 'manual' });
 		}
 

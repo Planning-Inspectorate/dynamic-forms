@@ -257,9 +257,9 @@ export function mockAnswerBody(q) {
 			// manage list questions not available here so just hard coded
 			return {
 				[q.fieldName]: [
-					{ travelCompanionName: 'Companion 1', travelCompanionEmail: 'compaion-1@example.com' },
-					{ travelCompanionName: 'Companion 2', travelCompanionEmail: 'compaion-2@example.com' },
-					{ travelCompanionName: 'Companion 3', travelCompanionEmail: 'compaion-3@example.com' }
+					{ id: '1234', travelCompanionName: 'Companion 1', travelCompanionEmail: 'companion-1@example.com' },
+					{ id: '4567', travelCompanionName: 'Companion 2', travelCompanionEmail: 'companion-2@example.com' },
+					{ id: '8901', travelCompanionName: 'Companion 3', travelCompanionEmail: 'companion-3@example.com' }
 				]
 			};
 		}
