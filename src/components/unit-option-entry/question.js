@@ -71,16 +71,17 @@ export default class UnitOptionEntryQuestion extends Question {
 	 * @param {Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {Record<string, unknown>} [payload]
+	 * @param {import('#src/questions/question-types.d.ts').PrepQuestionForRenderingOptions} options
 	 * @returns {QuestionViewModel & {
 	 *   question: QuestionViewModel['question'] & {
 	 *     options:UnitOption[]
 	 *   }
 	 * }}
 	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload);
+	prepQuestionForRendering(section, journey, customViewData, payload, options) {
+		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload, options);
 		const answer = viewModel.question.value;
-		const answers = journey.response.answers;
+		const answers = this.answerObjectFromJourneyResponse(journey.response, options);
 
 		/** @type {Array<UnitOption>} */
 		viewModel.question.options = [];

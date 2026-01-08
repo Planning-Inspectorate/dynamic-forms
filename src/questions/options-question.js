@@ -69,11 +69,12 @@ export default class OptionsQuestion extends Question {
 	 * @param {Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {Record<string, unknown>} [payload]
+	 * @param {import('#src/questions/question-types.d.ts').PrepQuestionForRenderingOptions} options
 	 * @returns {QuestionViewModel}
 	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload);
-		const answers = payload ? payload : journey.response.answers;
+	prepQuestionForRendering(section, journey, customViewData, payload, options) {
+		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload, options);
+		const answers = payload || this.answerObjectFromJourneyResponse(journey.response, options);
 		const answer = viewModel.question.value;
 
 		viewModel.question.options = [];

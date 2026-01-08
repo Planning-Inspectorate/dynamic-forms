@@ -208,6 +208,76 @@ describe('./src/dynamic-forms/question.js', () => {
 		});
 	});
 
+	describe('answerObjectFromJourney', () => {
+		it('should return journey response for regular questions', () => {
+			const question = getTestQuestion();
+			const answers = { myField: 'my-value' };
+			const journeyResponse = {
+				answers
+			};
+			const got = question.answerObjectFromJourneyResponse(journeyResponse);
+			assert.strictEqual(got, answers);
+		});
+		it('should return the manage list item object for manage list questions', () => {
+			const question = getTestQuestion();
+			question.isInManageListSection = true;
+			const manageListQuestion = {
+				fieldName: 'manageListQuestion'
+			};
+			const answers = {
+				id: '1',
+				myField: 'my-value'
+			};
+			const journeyResponse = {
+				answers: {
+					manageListQuestion: [answers]
+				}
+			};
+			const params = { manageListItemId: '1' };
+			const got = question.answerObjectFromJourneyResponse(journeyResponse, { params, manageListQuestion });
+			assert.strictEqual(got, answers);
+		});
+
+		it('should fallback to {} if manage list item id not found', () => {
+			const question = getTestQuestion();
+			question.isInManageListSection = true;
+			const manageListQuestion = {
+				fieldName: 'manageListQuestion'
+			};
+			const answers = {
+				id: '2',
+				myField: 'my-value'
+			};
+			const journeyResponse = {
+				answers: {
+					manageListQuestion: [answers]
+				}
+			};
+			const params = { manageListItemId: '1' };
+			let got = question.answerObjectFromJourneyResponse(journeyResponse, { params, manageListQuestion });
+			assert.deepStrictEqual(got, {});
+			// also fallback to {} if there is no manageListQuestion answer
+			delete journeyResponse.answers.manageListQuestion;
+			got = question.answerObjectFromJourneyResponse(journeyResponse, { params, manageListQuestion });
+			assert.deepStrictEqual(got, {});
+		});
+		it('should error if a manage list question is missing required parameters', () => {
+			const question = getTestQuestion();
+			question.isInManageListSection = true;
+			const answers = { myField: 'my-value' };
+			const journeyResponse = { answers };
+			assert.throws(
+				() => question.answerObjectFromJourneyResponse(journeyResponse),
+				/no list item id for manage list question/
+			);
+			const params = { manageListItemId: '1' };
+			assert.throws(
+				() => question.answerObjectFromJourneyResponse(journeyResponse, { params }),
+				/no manageListQuestion for manage list question/
+			);
+		});
+	});
+
 	describe('renderAction', () => {
 		it('should renderAction', () => {
 			const question = getTestQuestion();
