@@ -5,6 +5,7 @@
  */
 
 import RequiredValidator from './validator/required-validator.js';
+import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
 
 /**
  * A value indicating the final question of a section has been reached
@@ -203,11 +204,14 @@ export class Section {
 	 * @returns {Question|Symbol|null}
 	 */
 	getNextQuestion(params) {
-		const { manageListQuestion } = params;
+		const { response, manageListQuestion, routeParams } = params;
 		if (manageListQuestion) {
 			// first check if the next question is within the manage list section
+			// here we get the answers for the manage list item for the question.shouldDisplay logic
+			const answers = answerObjectForManageList(response, manageListQuestion, routeParams.manageListItemId);
 			const next = Section.getNextQuestion({
 				...params,
+				response: { answers },
 				questions: manageListQuestion.section.questions
 			});
 			if (next === END_OF_SECTION) {
