@@ -715,12 +715,14 @@ describe('./src/dynamic-forms/section.js', () => {
 				const section = new Section('s1', 'S').addQuestion(q1).addQuestion(manageListQ, manageListSection);
 				return { section, q1, manageListQ, q3, q4 };
 			};
+			const response = { answers: {} };
 			it(`should get first question within a manage list section`, () => {
 				const { section, manageListQ, q3 } = newSectionWithManageList();
 				const next = section.getNextQuestion({
 					questionFieldName: manageListQ.fieldName,
-					response: {},
+					response,
 					manageListQuestion: manageListQ,
+					routeParams: {},
 					takeNextQuestion: true,
 					reverse: false
 				});
@@ -730,8 +732,9 @@ describe('./src/dynamic-forms/section.js', () => {
 				const { section, manageListQ, q3, q4 } = newSectionWithManageList();
 				const next = section.getNextQuestion({
 					questionFieldName: q3.fieldName,
-					response: {},
+					response,
 					manageListQuestion: manageListQ,
+					routeParams: {},
 					takeNextQuestion: false,
 					reverse: false
 				});
@@ -741,8 +744,9 @@ describe('./src/dynamic-forms/section.js', () => {
 				const { section, manageListQ, q4 } = newSectionWithManageList();
 				const next = section.getNextQuestion({
 					questionFieldName: q4.fieldName,
-					response: {},
+					response,
 					manageListQuestion: manageListQ,
+					routeParams: {},
 					takeNextQuestion: false,
 					reverse: false
 				});

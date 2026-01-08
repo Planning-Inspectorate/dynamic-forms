@@ -4,6 +4,7 @@ import RequiredFileUploadValidator from '../validator/required-file-upload-valid
 import { capitalize, nl2br } from '../lib/utils.js';
 import AddressValidator from '../validator/address-validator.js';
 import MultiFieldInputValidator from '../validator/multi-field-input-validator.js';
+import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
 
 /**
  * @typedef {import('../validator/base-validator.js')} BaseValidator
@@ -284,12 +285,7 @@ export class Question {
 				throw new Error('no manageListQuestion for manage list question');
 			}
 			// if this is a manage list question, the response is within the 'parent' manage list answers array
-			const answers = response.answers[manageListQuestion.fieldName];
-			if (!Array.isArray(answers)) {
-				return {};
-			}
-			const itemId = params.manageListItemId;
-			return answers.find((a) => a.id === itemId) || {};
+			return answerObjectForManageList(response, manageListQuestion, params);
 		}
 		return response.answers;
 	}

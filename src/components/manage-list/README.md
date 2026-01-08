@@ -59,7 +59,7 @@ const questionProps = {
 
 ### 2. Set up the section within the journey
 
-You can use conditional logic as normal in the `ManageListSection`.
+You can use conditional logic in the `ManageListSection` (see [Conditions](#conditions))
 
 ```js
 new Section('New Holiday', 'holiday')
@@ -94,4 +94,23 @@ router.post(
         validationErrorHandler,
         buildSave(saveDataToSession)
 );
+```
+
+### Conditions
+
+The usual conditions can be used in a `ManageListSection`. However, only answers in the `ManageListSection` will be available to check, not answers for main the journey. For example:
+
+```js
+new Section('New Holiday', 'holiday')
+        .addQuestion(questions.holidayDestination)
+        // add a manage list question like any other, but include the `ManageListSection` as well
+        .addQuestion(
+                questions.holidayActivitiesList,
+                new ManageListSection()
+                        .addQuestion(questions.holidayActivityType)
+                        .addQuestion(questions.holidayActivityDate)
+                        .withCondition(whenQuestionHasAnswer(questions.holidayActivityType, 'swimming'))
+        )
+        .addQuestion(questions.departureDate)
+        .addQuestion(questions.holidayPeriod)
 ```

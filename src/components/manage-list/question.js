@@ -73,17 +73,22 @@ export default class ManageListQuestion extends Question {
 		const mockJourney = {
 			getCurrentQuestionUrl() {}
 		};
-		return this.section.questions.map((q) => {
-			const formatted = q
-				.formatAnswerForSummary('', mockJourney, answer[q.fieldName])
-				.map((a) => a.value)
-				.join(', ');
+		return (
+			this.section.questions
+				// only show questions which should be displayed based on any conditional logic
+				.filter((q) => q.shouldDisplay({ answers: answer }))
+				.map((q) => {
+					const formatted = q
+						.formatAnswerForSummary('', mockJourney, answer[q.fieldName])
+						.map((a) => a.value)
+						.join(', ');
 
-			return {
-				question: q.title,
-				answer: formatted
-			};
-		});
+					return {
+						question: q.title,
+						answer: formatted
+					};
+				})
+		);
 	}
 
 	async getDataToSave(req, journeyResponse) {

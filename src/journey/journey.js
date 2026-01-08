@@ -269,6 +269,7 @@ export class Journey {
 					response: this.response,
 					manageListQuestion,
 					takeNextQuestion,
+					routeParams: params,
 					reverse
 				});
 				if (question === END_OF_SECTION) {
