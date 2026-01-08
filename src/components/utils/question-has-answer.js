@@ -13,6 +13,20 @@ export const logicalCombinations = (response) => ({
 });
 
 /**
+ * A wrapper around questionHasAnswer to use as a condition directly
+ *
+ * @example
+ * .withCondition(whenQuestionHasAnswer(question.q1, 'answer-1'))
+ *
+ * @param {import('#question').Question} question
+ * @param {unknown} expectedValue
+ * @returns {import('#src/section.js').QuestionCondition}
+ */
+export const whenQuestionHasAnswer = (question, expectedValue) => {
+	return (response) => questionHasAnswer(response, question, expectedValue);
+};
+
+/**
  * Does the question have the expected answer?
  *
  * @param {import('#src/journey/journey-response.js').JourneyResponse} response
