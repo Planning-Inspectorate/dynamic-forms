@@ -1,7 +1,10 @@
-/** @typedef {import('../../journey/journey-response').JourneyResponse} JourneyResponse */
-/** @typedef {import('../../questions/question').Question} Question */
+/** @typedef {[any, unknown][]} QuestionKeyTuples */
+/** @typedef {(questionKeyTuples: QuestionKeyTuples) => boolean} CombinationFunc */
 
-/** @type {(response: JourneyResponse) => {and: (questionKeyTuples: [any, unknown][]) => boolean, or: (questionKeyTuples: [any, unknown][]) => boolean}} */
+/**
+ * @param {import('#src/journey/journey-response.js').JourneyResponse} response
+ * @returns {{and: CombinationFunc, or: CombinationFunc}}
+ */
 export const logicalCombinations = (response) => ({
 	and: (questionKeyTuples) =>
 		questionKeyTuples.every((questionKeyTuple) => questionHasAnswer(response, ...questionKeyTuple)),
@@ -9,8 +12,14 @@ export const logicalCombinations = (response) => ({
 		questionKeyTuples.some((questionKeyTuple) => questionHasAnswer(response, ...questionKeyTuple))
 });
 
-// TODO Make a type for all the question classes and use it here
-/** @type {(response: JourneyResponse, question: any, expectedValue: unknown) => boolean} */
+/**
+ * Does the question have the expected answer?
+ *
+ * @param {import('#src/journey/journey-response.js').JourneyResponse} response
+ * @param {import('#question').Question|{optionJoinString: string}} question
+ * @param {unknown} expectedValue
+ * @returns {boolean}
+ */
 export const questionHasAnswer = (response, question, expectedValue) => {
 	if (!response.answers) return false;
 	const answerField = response.answers[question.fieldName];
@@ -46,8 +55,13 @@ export const questionArrayMeetsCondition = (response, question, conditionFn = ()
 	return false;
 };
 
-// TODO Make a type for all the question classes and use it here
-/** @type {(response: JourneyResponse, questionKeyTuples: [any, unknown][], options?: {logicalCombinator: 'and' | 'or'}) => boolean} */
+/**
+ * @param {import('#src/journey/journey-response.js').JourneyResponse} response
+ * @param {QuestionKeyTuples} questionKeyTuples
+ * @param {Object} [options]
+ * @param {'and' | 'or'} options.logicalCombinator
+ * @returns {boolean}
+ */
 export const questionsHaveAnswers = (
 	response,
 	questionKeyTuples,
@@ -58,16 +72,22 @@ export const questionsHaveAnswers = (
 	return combinators[logicalCombinator](questionKeyTuples);
 };
 
-// TODO Make a type for all the question classes and use it here
-/** @type {(response: JourneyResponse, question: any) => boolean} */
+/**
+ * @param {import('#src/journey/journey-response.js').JourneyResponse} response
+ * @param {import('#question').Question} question
+ * @returns {boolean}
+ */
 export const questionHasNonEmptyStringAnswer = (response, question) => {
 	if (!response.answers) return false;
 	const answerField = response.answers[question.fieldName];
 	return typeof answerField === 'string' && answerField.trim().length > 0;
 };
 
-// TODO Make a type for all the question classes and use it here
-/** @type {(response: JourneyResponse, question: any) => boolean} */
+/**
+ * @param {import('#src/journey/journey-response.js').JourneyResponse} response
+ * @param {import('#question').Question} question
+ * @returns {boolean}
+ */
 export const questionHasNonEmptyNumberAnswer = (response, question) => {
 	if (!response.answers) return false;
 	const answerField = response.answers[question.fieldName];
