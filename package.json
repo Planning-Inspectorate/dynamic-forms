@@ -10,6 +10,7 @@
   },
   "scripts": {
     "commitlint": "commitlint --from=$(git rev-parse $(git cherry origin/main | head -n 1 | cut -c 3-)^1)",
+    "dev-test-app": "node --watch test-app/run.js",
     "lint": "npx eslint .",
     "format": "prettier --write .",
     "format-check": "prettier --check .",

@@ -9,7 +9,7 @@ export function configureNunjucksTestEnv() {
 	const srcDir = path.resolve(testDir, '..', 'src');
 	const govukFrontendRoot = path.resolve(require.resolve('govuk-frontend'), '../..');
 
-	return nunjucks.configure([testDir, srcDir, govukFrontendRoot], {
+	const env = nunjucks.configure([testDir, srcDir, govukFrontendRoot], {
 		// output with dangerous characters are escaped automatically
 		autoescape: true,
 		// automatically remove trailing newlines from a block/tag
@@ -17,4 +17,6 @@ export function configureNunjucksTestEnv() {
 		// automatically remove leading whitespace from a block/tag
 		lstripBlocks: true
 	});
+	env.addGlobal('govukRebrand', true);
+	return env;
 }

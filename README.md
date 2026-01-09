@@ -308,3 +308,7 @@ When implement a new component, extend the base `Question` class. Common methods
 * `answerForViewModel` - customise the view model answer value
 
 Where possible `addCustomDataToViewModel` and `answerForViewModel` should be overridden instead of `prepQuestionForRendering`.
+
+### Test app
+
+There is a test app in the `test-app` directory useful when developing new features or for testing functionality. It can be run with `npm run dev-test-app`.
