@@ -23,14 +23,13 @@ export default class DateTimeQuestion extends Question {
 	}
 
 	/**
-	 * returns the data to send to the DB
-	 * side effect: modifies journeyResponse with the new answers
+	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
 	 * @returns {Promise.<Object>}
-	 */
+	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
-		let responseToSave = { answers: {} };
+		const answers = {};
 
 		const dayInput = req.body[`${this.fieldName}_day`];
 		const monthInput = req.body[`${this.fieldName}_month`];
@@ -39,7 +38,7 @@ export default class DateTimeQuestion extends Question {
 		const minutesInput = req.body[`${this.fieldName}_minutes`];
 		const periodInput = req.body[`${this.fieldName}_period`];
 
-		responseToSave.answers[this.fieldName] = parseDateInput({
+		answers[this.fieldName] = parseDateInput({
 			day: dayInput,
 			month: monthInput,
 			year: yearInput,
@@ -47,9 +46,7 @@ export default class DateTimeQuestion extends Question {
 			minute: minutesInput
 		});
 
-		journeyResponse.answers[this.fieldName] = responseToSave.answers[this.fieldName];
-
-		return responseToSave;
+		return { answers };
 	}
 
 	answerForViewModel(answers, isPayload) {

@@ -338,38 +338,24 @@ export class Question {
 	}
 
 	/**
-	 * returns the data to send to the DB
-	 * side effect: modifies journeyResponse with the new answers
+	 * Get the data to save from the request, returns an object of answers
+	 *
 	 * @param {import('express').Request} req
-	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
+	 * @param {JourneyResponse} journeyResponse - current journey response
 	 * @returns {Promise<{ answers: Record<string, unknown> }>}
-	 */
+	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
-		/**
-		 * @type {{ answers: Record<string, unknown> }}
-		 */
-		let responseToSave = { answers: {} };
+		const answers = {};
 
-		responseToSave.answers[this.fieldName] = req.body[this.fieldName];
+		answers[this.fieldName] = req.body[this.fieldName];
 
 		for (const propName in req.body) {
 			if (propName.startsWith(this.fieldName + '_')) {
-				responseToSave.answers[propName] = req.body[propName];
-				journeyResponse.answers[propName] = req.body[propName];
+				answers[propName] = req.body[propName];
 			}
-			// todo: sort this
-			// } else if (numericFields.has(propName)) {
-			// 	const numericValue = Number(req.body[propName]);
-			// 	if (!isNaN(numericValue)) {
-			// 		responseToSave.answers[propName] = numericValue;
-			// 		journeyResponse.answers[propName] = numericValue;
-			// 	}
-			// }
 		}
 
-		journeyResponse.answers[this.fieldName] = responseToSave.answers[this.fieldName];
-
-		return responseToSave;
+		return { answers };
 	}
 
 	/**

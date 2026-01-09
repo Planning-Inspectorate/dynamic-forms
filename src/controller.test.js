@@ -379,6 +379,7 @@ describe('dynamic-form/controller', () => {
 			const saveData = mock.fn();
 			await buildSave(saveData)(req, res, journeyId);
 
+			assert.strictEqual(sampleQuestionObj.getDataToSave.mock.callCount(), 1);
 			assert.strictEqual(saveData.mock.callCount(), 1);
 			assert.deepStrictEqual(saveData.mock.calls[0].arguments, [
 				{
@@ -499,6 +500,9 @@ describe('dynamic-form/controller', () => {
 			const sampleQuestionObjWithActions = {
 				...sampleQuestionObj
 			};
+			sampleQuestionObjWithActions.getDataToSave.mock.mockImplementationOnce(() => ({
+				answers: { [sampleQuestionObj.fieldName]: 'my-answer' }
+			}));
 
 			req.params = {
 				referenceId: mockRef,
@@ -522,6 +526,8 @@ describe('dynamic-form/controller', () => {
 			assert.strictEqual(saveData.mock.callCount(), 1);
 			assert.strictEqual(res.redirect.mock.callCount(), 1);
 			assert.strictEqual(res.redirect.mock.calls[0].arguments[0], expectedUrl);
+			// journey response should be edited if redirecting to next question
+			assert.strictEqual(res.locals.journeyResponse.answers?.sampleFieldName, 'my-answer');
 		});
 
 		it('should redirect to task list if configured', async () => {
@@ -531,6 +537,9 @@ describe('dynamic-form/controller', () => {
 			const sampleQuestionObjWithActions = {
 				...sampleQuestionObj
 			};
+			sampleQuestionObjWithActions.getDataToSave.mock.mockImplementationOnce(() => ({
+				answers: { [sampleQuestionObj.fieldName]: 'my-answer' }
+			}));
 
 			req.params = {
 				referenceId: mockRef,
@@ -555,6 +564,8 @@ describe('dynamic-form/controller', () => {
 			assert.strictEqual(res.redirect.mock.callCount(), 1);
 			assert.match(res.redirect.mock.calls[0].arguments[0], /\/task-list$/);
 			assert.strictEqual(mockJourney.getNextQuestionUrl.mock.callCount(), 0);
+			// journey response should not be edited if redirecting to task list
+			assert.strictEqual(Object.keys(res.locals.journeyResponse.answers).length, 0);
 		});
 
 		describe('manageListQuestions', () => {
@@ -585,7 +596,8 @@ describe('dynamic-form/controller', () => {
 				const journey = {
 					getSection: mock.fn(() => ({ segment: 'section-1' })),
 					getQuestionByParams: mock.fn(),
-					redirectToNextQuestion: mock.fn()
+					redirectToNextQuestion: mock.fn(),
+					response: { answers: {} }
 				};
 				const res = {
 					locals: {

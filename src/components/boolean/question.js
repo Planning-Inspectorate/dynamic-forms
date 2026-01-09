@@ -97,28 +97,23 @@ export default class BooleanQuestion extends RadioQuestion {
 	}
 
 	/**
-	 * returns the data to send to the DB
-	 * side effect: modifies journeyResponse with the new answers
+	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
 	 * @returns {Promise.<Object>}
-	 */
+	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
-		// set answer on response
-		let responseToSave = { answers: {} };
+		const answers = {};
 		const fieldValue = req.body[this.fieldName]?.trim();
 
-		responseToSave.answers[this.fieldName] = fieldValue === BOOLEAN_OPTIONS.YES;
+		answers[this.fieldName] = fieldValue === BOOLEAN_OPTIONS.YES;
 
 		for (const propName in req.body) {
 			if (propName.startsWith(this.fieldName + '_')) {
-				responseToSave.answers[propName] = req.body[propName]?.trim();
-				journeyResponse.answers[propName] = req.body[propName]?.trim();
+				answers[propName] = req.body[propName]?.trim();
 			}
 		}
 
-		journeyResponse.answers[this.fieldName] = fieldValue;
-
-		return responseToSave;
+		return { answers };
 	}
 }

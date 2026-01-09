@@ -72,12 +72,11 @@ export default class AddressQuestion extends Question {
 	}
 
 	/**
-	 * returns the data to send to the DB
-	 * side effect: modifies journeyResponse with the new answers
+	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {JourneyResponse} journeyResponse
 	 * @returns {Promise<{answers: Record<string, unknown>}>}
-	 */
+	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
 		const data = {
 			addressLine1: req.body[this.fieldName + '_addressLine1'],
@@ -94,7 +93,6 @@ export default class AddressQuestion extends Question {
 		const answers = {
 			[this.fieldName]: address
 		};
-		journeyResponse.answers[this.fieldName] = address;
 
 		return {
 			answers

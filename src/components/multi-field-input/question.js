@@ -74,28 +74,23 @@ export default class MultiFieldInputQuestion extends Question {
 	}
 
 	/**
-	 * returns the data to send to the DB
-	 * side effect: modifies journeyResponse with the new answers
+	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
 	 * @returns {Promise<{ answers: Record<string, unknown> }>}
-	 */
+	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
-		/**
-		 * @type {{ answers: Record<string, unknown> }}
-		 */
-		let responseToSave = { answers: {} };
+		const answers = {};
 
 		for (const inputField of this.inputFields) {
 			let value = req.body[inputField.fieldName];
 			if (typeof value === 'string') {
 				value = value.trim();
 			}
-			responseToSave.answers[inputField.fieldName] = value;
-			journeyResponse.answers[inputField.fieldName] = responseToSave.answers[inputField.fieldName];
+			answers[inputField.fieldName] = value;
 		}
 
-		return responseToSave;
+		return { answers };
 	}
 
 	/**

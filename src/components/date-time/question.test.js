@@ -131,16 +131,9 @@ describe('./lib/forms/custom-components/date-time/question.js', () => {
 					siteVisitDate_period: 'am'
 				}
 			};
-			const journeyResponse = { answers: {} };
-
-			const responseToSave = await question.getDataToSave(req, journeyResponse);
+			const responseToSave = await question.getDataToSave(req);
 
 			assert.deepStrictEqual(responseToSave, {
-				answers: {
-					siteVisitDate: new Date('2025-02-21T00:12:00.000Z')
-				}
-			});
-			assert.deepStrictEqual(journeyResponse, {
 				answers: {
 					siteVisitDate: new Date('2025-02-21T00:12:00.000Z')
 				}
@@ -157,16 +150,9 @@ describe('./lib/forms/custom-components/date-time/question.js', () => {
 					siteVisitDate_period: 'pm'
 				}
 			};
-			const journeyResponse = { answers: {} };
-
-			const responseToSave = await question.getDataToSave(req, journeyResponse);
+			const responseToSave = await question.getDataToSave(req);
 
 			assert.deepStrictEqual(responseToSave, {
-				answers: {
-					siteVisitDate: new Date('2025-02-21T20:12:00.000Z')
-				}
-			});
-			assert.deepStrictEqual(journeyResponse, {
 				answers: {
 					siteVisitDate: new Date('2025-02-21T20:12:00.000Z')
 				}
@@ -183,16 +169,9 @@ describe('./lib/forms/custom-components/date-time/question.js', () => {
 					siteVisitDate_period: 'am'
 				}
 			};
-			const journeyResponse = { answers: {} };
-
-			const responseToSave = await question.getDataToSave(req, journeyResponse);
+			const responseToSave = await question.getDataToSave(req);
 
 			assert.deepStrictEqual(responseToSave, {
-				answers: {
-					siteVisitDate: new Date('2025-05-20T23:12:00.000Z')
-				}
-			});
-			assert.deepStrictEqual(journeyResponse, {
 				answers: {
 					siteVisitDate: new Date('2025-05-20T23:12:00.000Z')
 				}

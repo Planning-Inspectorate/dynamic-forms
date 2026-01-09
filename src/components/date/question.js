@@ -27,27 +27,21 @@ export default class DateQuestion extends Question {
 	}
 
 	/**
-	 * returns the data to send to the DB
-	 * side effect: modifies journeyResponse with the new answers
+	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
 	 * @returns {Promise.<Object>}
-	 */
+	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
-		// set answer on response
-		let responseToSave = { answers: {} };
+		const answers = {};
 
 		const dayInput = req.body[`${this.fieldName}_day`];
 		const monthInput = req.body[`${this.fieldName}_month`];
 		const yearInput = req.body[`${this.fieldName}_year`];
 
-		const dateToSave = parseDateInput({ day: dayInput, month: monthInput, year: yearInput });
+		answers[this.fieldName] = parseDateInput({ day: dayInput, month: monthInput, year: yearInput });
 
-		responseToSave.answers[this.fieldName] = dateToSave;
-
-		journeyResponse.answers[this.fieldName] = responseToSave.answers[this.fieldName];
-
-		return responseToSave;
+		return { answers };
 	}
 
 	answerForViewModel(answers, isPayload) {

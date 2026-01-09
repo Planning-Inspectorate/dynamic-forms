@@ -91,11 +91,9 @@ export default class ManageListQuestion extends Question {
 		);
 	}
 
-	async getDataToSave(req, journeyResponse) {
-		let responseToSave = { answers: {} };
-		const data = journeyResponse.answers[this.fieldName];
-		responseToSave.answers[this.fieldName] = data || [];
-		return responseToSave;
+	async getDataToSave() {
+		// data is saved on the individual questions, nothing to save here
+		return { answers: {} };
 	}
 
 	formatAnswerForSummary(sectionSegment, journey, answer) {

@@ -325,7 +325,7 @@ describe('./src/dynamic-forms/question.js', () => {
 	});
 
 	describe('getDataToSave', () => {
-		it('should return answer from req.body and modify journeyResponse', async () => {
+		it('should return answer from req.body', async () => {
 			const question = getTestQuestion();
 
 			const req = {
@@ -333,14 +333,8 @@ describe('./src/dynamic-forms/question.js', () => {
 					[question.fieldName]: { a: 1 }
 				}
 			};
-			const journeyResponse = {
-				answers: {
-					[question.fieldName]: { b: 1 },
-					other: 'another-answer'
-				}
-			};
 
-			const result = await question.getDataToSave(req, journeyResponse);
+			const result = await question.getDataToSave(req);
 
 			const expectedResult = {
 				answers: {
@@ -348,8 +342,6 @@ describe('./src/dynamic-forms/question.js', () => {
 				}
 			};
 			assert.deepStrictEqual(result, expectedResult);
-			expectedResult.answers.other = 'another-answer';
-			assert.deepStrictEqual(journeyResponse, expectedResult);
 		});
 
 		it('should handle nested properties', async () => {
@@ -362,14 +354,8 @@ describe('./src/dynamic-forms/question.js', () => {
 					[question.fieldName + '_2']: { a: 3 }
 				}
 			};
-			const journeyResponse = {
-				answers: {
-					[question.fieldName]: { b: 1 },
-					other: 'another-answer'
-				}
-			};
 
-			const result = await question.getDataToSave(req, journeyResponse);
+			const result = await question.getDataToSave(req);
 
 			const expectedResult = {
 				answers: {
@@ -379,8 +365,6 @@ describe('./src/dynamic-forms/question.js', () => {
 				}
 			};
 			assert.deepStrictEqual(result, expectedResult);
-			expectedResult.answers.other = 'another-answer';
-			assert.deepStrictEqual(journeyResponse, expectedResult);
 		});
 	});
 
