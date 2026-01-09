@@ -1,7 +1,7 @@
 import SingleLineInputQuestion from '../single-line-input/question.js';
 
 /**
- * @typedef {import('#question-view-model').QuestionViewModel} QuestionViewModel
+ * @typedef {import('#question').QuestionViewModel} QuestionViewModel
  * @typedef {import('#journey').Journey} Journey
  * @typedef {import('#journey-response').JourneyResponse} JourneyResponse
  * @typedef {import('../../section').Section} Section

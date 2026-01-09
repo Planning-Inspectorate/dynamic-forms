@@ -5,7 +5,6 @@ export const COMPONENT_TYPES = Object.freeze({
 	DATE: 'date',
 	DATE_PERIOD: 'date-period',
 	DATE_TIME: 'date-time',
-	EMAIL: 'email',
 	TEXT_ENTRY: 'text-entry',
 	TEXT_ENTRY_REDACT: 'text-entry-redact',
 	SELECT: 'select',
@@ -13,5 +12,7 @@ export const COMPONENT_TYPES = Object.freeze({
 	MULTI_FIELD_INPUT: 'multi-field-input',
 	NUMBER: 'number',
 	ADDRESS: 'site-address',
-	UNIT_OPTION: 'unit-option'
+	UNIT_OPTION: 'unit-option',
+	EMAIL: 'email',
+	MANAGE_LIST: 'manage-list'
 });

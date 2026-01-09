@@ -22,7 +22,10 @@
 			"#question-types": ["./src/questions/question-types.d.ts"],
 			"#src/*": ["./src/*"],
 			"#test/*": ["./test/*"],
-			"#question": ["./src/questions/question.js"]
+			"#question": ["./src/questions/question.js"],
+			"#journey": ["./src/journey/journey.js"],
+			"#journey-response": ["./src/journey/journey-response.js"],
+			"#section": ["./src/section.js"]
 		}
 	}
 }
