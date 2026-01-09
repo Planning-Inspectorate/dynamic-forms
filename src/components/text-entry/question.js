@@ -1,9 +1,9 @@
 import { Question } from '#question';
 /**
- * @typedef {import('../../questions/question.js').QuestionViewModel} QuestionViewModel
- * @typedef {import('../../journey/journey.js').Journey} Journey
- * @typedef {import('../../journey/journey-response.js').JourneyResponse} JourneyResponse
- * @typedef {import('../../section').Section} Section
+ * @import {QuestionViewModel} from '#question'
+ * @import {Journey} from '#journey'
+ * @import {JourneyResponse} from '#journey-response'
+ * @import {Section} from '#section'
  */
 
 /**

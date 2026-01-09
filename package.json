@@ -4,6 +4,8 @@
   "description": "This package is for building GDS forms using a configuration-based approach.",
   "main": "./src/index.js",
   "type": "module",
+	"types": "./types/src/index.d.ts",
+	"rootDir": ".",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Planning-Inspectorate/dynamic-forms.git"
@@ -26,9 +28,12 @@
   },
   "imports": {
     "#question-types": "./src/questions/question-types.d.ts",
-    "#src/*": "./src/*",
     "#test/*": "./test/*",
-    "#question":  "./src/questions/question.js"
+		"#journey": "./src/journey/journey.js",
+		"#journey-response": "./src/journey/journey-response.js",
+		"#question": "./src/questions/question.js",
+		"#section": "./src/section.js",
+    "#src/*": "./src/*"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.0.0",

@@ -1,14 +1,6 @@
 import { Question } from '#question';
 
 /**
- * @typedef {import('../../questions/question.js').QuestionViewModel} QuestionViewModel
- * @typedef {import('../../journey/journey.js').Journey} Journey
- * @typedef {import('../../journey/journey-response.js').JourneyResponse} JourneyResponse
- * @typedef {import('../../section').Section} Section
- * @typedef {import('../../validator/base-validator')} BaseValidator
- */
-
-/**
  * @class
  */
 export default class SingleLineInputQuestion extends Question {

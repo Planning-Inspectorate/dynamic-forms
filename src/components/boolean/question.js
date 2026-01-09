@@ -44,7 +44,7 @@ export default class BooleanQuestion extends RadioQuestion {
 	 * @param {string} [params.html]
 	 * @param {string} [params.interfaceType]
 	 * @param {Array.<import('../../questions/options-question.js').Option>} [params.options]
-	 * @param {Array.<import('../../questions/question.js').BaseValidator>} [params.validators]
+	 * @param {Array.<import('#base-validator').BaseValidator>} [params.validators]
 	 * @param {boolean} [params.editable]
 	 */
 	constructor({
