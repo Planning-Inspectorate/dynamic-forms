@@ -120,17 +120,13 @@ export default class OptionsQuestion extends Question {
 	}
 
 	/**
-	 * returns the data to send to the DB
-	 * side effect: modifies journeyResponse with the new answers
+	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
 	 * @returns {Promise<{ answers: Record<string, unknown> }>}
-	 */
+	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
-		/**
-		 * @type {{ answers: Record<string, unknown> }}
-		 */
-		let responseToSave = { answers: {} };
+		const answers = {};
 
 		const fields = Array.isArray(req.body[this.fieldName]) ? req.body[this.fieldName] : [req.body[this.fieldName]];
 		const fieldValues = fields.map((x) => x.trim());
@@ -142,8 +138,7 @@ export default class OptionsQuestion extends Question {
 		if (!selectedOptions.length)
 			throw new Error(`User submitted option(s) did not correlate with valid answers to ${this.fieldName} question`);
 
-		responseToSave.answers[this.fieldName] = fieldValues.join(this.optionJoinString);
-		journeyResponse.answers[this.fieldName] = fieldValues;
+		answers[this.fieldName] = fieldValues.join(this.optionJoinString);
 
 		this.options.forEach((option) => {
 			if (!option.conditional) return;
@@ -152,11 +147,9 @@ export default class OptionsQuestion extends Question {
 				(selectedOption) => option.text === selectedOption.text && option.value === selectedOption.value
 			);
 
-			const value = optionIsSelectedOption ? req.body[key]?.trim() : null;
-			responseToSave.answers[key] = value;
-			journeyResponse.answers[key] = value;
+			answers[key] = optionIsSelectedOption ? req.body[key]?.trim() : null;
 		});
 
-		return responseToSave;
+		return { answers };
 	}
 }

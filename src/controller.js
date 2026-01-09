@@ -1,5 +1,6 @@
 import { SECTION_STATUS } from './section.js';
 import questionUtils from './components/utils/question-utils.js';
+import { answerObjectForManageListSaving } from '#src/components/manage-list/utils.js';
 
 /**
  * @typedef {import('./journey/journey.js').Journey} Journey
@@ -248,6 +249,16 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 			}
 			if (redirectToTaskListOnSuccess) {
 				return res.redirect(journey.taskListUrl);
+			}
+			// edit the journey.response which question.shouldDisplay uses
+			// we need to ensure the latest answer just submitted is included
+			// as question.shouldDisplay checks the response and is used to determine the next question
+			let answers = journeyResponse.answers;
+			if (question.isInManageListSection) {
+				answers = answerObjectForManageListSaving(journeyResponse, manageListQuestion, req.params);
+			}
+			for (const [k, v] of Object.entries(data?.answers || {})) {
+				answers[k] = v;
 			}
 			// move to the next question
 			return journey.redirectToNextQuestion(res, req.params, manageListQuestion);

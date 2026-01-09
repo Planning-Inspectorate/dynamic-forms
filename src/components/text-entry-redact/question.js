@@ -60,10 +60,9 @@ export default class TextEntryRedactQuestion extends Question {
 	async getDataToSave(req, journeyResponse) {
 		if (this.useRedactedFieldNameForSave) {
 			const fieldName = this.fieldName + 'Redacted';
-			const responseToSave = { answers: {} };
-			responseToSave.answers[fieldName] = req.body[this.fieldName];
-			journeyResponse.answers[fieldName] = responseToSave.answers[fieldName];
-			return responseToSave;
+			const answers = {};
+			answers[fieldName] = req.body[this.fieldName];
+			return { answers };
 		}
 		return super.getDataToSave(req, journeyResponse);
 	}
