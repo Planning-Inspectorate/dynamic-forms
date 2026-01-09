@@ -1,6 +1,6 @@
 import escape from 'escape-html';
 import RequiredValidator from '../validator/required-validator.js';
-import { capitalize, nl2br } from '../lib/utils.js';
+import { capitalize, nl2br, trimTrailingSlash } from '../lib/utils.js';
 import AddressValidator from '../validator/address-validator.js';
 import MultiFieldInputValidator from '../validator/multi-field-input-validator.js';
 
@@ -32,6 +32,8 @@ import MultiFieldInputValidator from '../validator/multi-field-input-validator.j
  * @property {string} backLink
  * @property {boolean} showBackToListLink
  * @property {string} listLink
+ * @property {Object} util
+ * @property {function(string): string} util.trimTrailingSlash
  */
 
 /**
@@ -237,6 +239,10 @@ export class Question {
 			payload,
 
 			continueButtonText: this.continueButtonText,
+
+			util: {
+				trimTrailingSlash
+			},
 
 			...customViewData,
 			...this.viewData
