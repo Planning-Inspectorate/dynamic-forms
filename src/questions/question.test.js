@@ -179,6 +179,8 @@ describe('./src/dynamic-forms/question.js', () => {
 			assert.deepStrictEqual(result.listLink, journey.taskListUrl);
 			assert.deepStrictEqual(result.journeyTitle, journey.journeyTitle);
 			assert.deepStrictEqual(result.hello, 'hi');
+			assert.ok(result.util);
+			assert.ok(typeof result.util.trimTrailingSlash === 'function');
 		});
 		it('should include viewData in viewModel', () => {
 			const question = getTestQuestion({ viewData: { test: 'data' } });
