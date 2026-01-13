@@ -37,8 +37,6 @@ export * from './lib/utils.js';
 
 // middleware
 export * from './middleware/build-get-journey.js';
-export * from './middleware/check-not-submitted.js';
-export * from './middleware/dynamic-req-files-to-req-body-files.js';
 export * from './middleware/redirect-to-unanswered-question.js';
 
 // Questions
@@ -62,7 +60,6 @@ export { DateValidator };
 export * from './validator/document-upload-validator.js';
 export * from './validator/multi-field-input-validator.js';
 export * from './validator/numeric-validator.js';
-export * from './validator/required-file-upload-validator.js';
 export { default as RequiredValidator } from './validator/required-validator.js';
 export * from './validator/same-answer-validator.js';
 export { StringValidator };
