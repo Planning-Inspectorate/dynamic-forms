@@ -34,6 +34,42 @@ export function buildTestApp() {
 	app.use((req, res, next) => {
 		// log requests for info
 		console.debug(req.method.padEnd(5, ' '), req.url);
+		if (req.session.forms) {
+			next();
+			return;
+		}
+		saveDataToSession({
+			req,
+			journeyId: JOURNEY_ID,
+			data: {
+				answers: {
+					manageListTest: [
+						{
+							id: '00000000-0000-0000-0000-000000000001',
+							travelInsuranceType: 'basic',
+							departureDate: '2025-12-25T12:00:00Z'
+						},
+						{
+							id: '00000000-0000-0000-0000-000000000002',
+							travelInsuranceType: 'comprehensive',
+							activityLocation: {
+								addressLine1: '<strong>Some</strong> Project Place<br>',
+								addressLine2: 'Some Street',
+								townCity: 'Some City',
+								county: 'Some County',
+								postcode: 'BS1 6EB'
+							},
+							departureDate: '2025-01-25T12:00:00Z'
+						},
+						{
+							id: '00000000-0000-0000-0000-000000000003',
+							travelInsuranceType: 'premium',
+							departureDate: '2025-06-25T12:00:00Z'
+						}
+					]
+				}
+			}
+		});
 		next();
 	});
 
@@ -52,7 +88,7 @@ export function buildTestApp() {
 		getJourney,
 		validate,
 		validationErrorHandler,
-		buildSave(saveDataToSession)
+		buildSave(saveDataToSession, true)
 	);
 	router.get('/check-your-answers', getJourneyResponse, getJourney, buildList());
 

@@ -1,0 +1,70 @@
+{% extends "govuk/template.njk" %}
+
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block head %}
+    {# setup the header tags, to link to the styles #}
+    <link rel="stylesheet" href="/govuk-frontend.min.css"/>
+{% endblock %}
+
+{% block pageTitle %}
+    Dynamic forms example
+{% endblock %}
+
+{% block beforeContent %}
+    {% if backLink %} {# used by the dynamic forms #}
+        {{ govukBackLink({ href: backLink }) }}
+    {% endif %}
+    {% if errorSummary %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                {{ govukErrorSummary({
+                    titleText: "There is a problem",
+                    errorList: errorSummary,
+                    attributes: {"data-cy": "error-wrapper"}
+                }) }}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <ul class="govuk-list">
+                {% for section in summaryListData.sections %}
+                    {% if section.list.rows.length %}
+                        <li>
+                            <a href="#{{ section.heading | lower }}"
+                               class="govuk-link govuk-link--no-visited-state">{{ section.heading }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="govuk-grid-column-full">
+            {% for section in summaryListData.sections %}
+                {% if section.list.rows.length %}
+                    {{ govukSummaryList({
+                        card: {
+                            title: {
+                                text: section.heading
+                            },
+                            attributes: {id: section.heading | lower}
+                        },
+                        rows: section.list.rows
+                    }) }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <script type="module" {% if cspNonce %}nonce={{ cspNonce }}{% endif %} src="/govuk-frontend.min.js"></script>
+    <script type="module" {% if cspNonce %}nonce={{ cspNonce }}{% endif %}>
+        import { initAll } from 'govuk-frontend.min.js'
+        initAll()
+    </script>
+{% endblock %}

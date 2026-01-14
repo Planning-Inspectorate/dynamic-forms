@@ -94,6 +94,33 @@ export async function list(req, res, pageCaption, viewData) {
 		completedSectionCount: 0
 	};
 
+	const manageListQuestions = journey.sections
+		.map((section) => section.questions.filter((question) => question.isManageListQuestion))
+		.flat();
+
+	const addQuestionRows = (sectionList, section, answers, question) => {
+		// don't show question on tasklist if set to false
+		if (question.taskList === false) {
+			return;
+		}
+
+		if (!question.shouldDisplay(journeyResponse)) {
+			return;
+		}
+
+		let answer = answers[question.fieldName];
+		const conditionalAnswer = questionUtils.getConditionalAnswer(answers, question, answer);
+		if (conditionalAnswer) {
+			answer = {
+				value: answer,
+				conditional: conditionalAnswer
+			};
+		}
+		const rows = question
+			.formatAnswerForSummary(section.segment, journey, answer)
+			.map((row) => buildSectionRowViewModel(row.key, row.value, row.action));
+		sectionList.push(...rows);
+	};
 	for (const section of journey.sections) {
 		const status = section.getStatus(journeyResponse);
 		const sectionView = buildSectionViewModel(section.name, status);
@@ -105,32 +132,27 @@ export async function list(req, res, pageCaption, viewData) {
 
 		// add questions
 		for (const question of section.questions) {
-			// don't show question on tasklist if set to false
-			if (question.taskList === false) {
-				continue;
-			}
-
-			if (!question.shouldDisplay(journeyResponse)) {
-				continue;
-			}
-
-			const answers = journey.response?.answers;
-			let answer = answers[question.fieldName];
-			const conditionalAnswer = questionUtils.getConditionalAnswer(answers, question, answer);
-			if (conditionalAnswer) {
-				answer = {
-					value: answer,
-					conditional: conditionalAnswer
-				};
-			}
-			const rows = question.formatAnswerForSummary(section.segment, journey, answer);
-			rows.forEach((row) => {
-				let viewModelRow = buildSectionRowViewModel(row.key, row.value, row.action);
-				sectionView.list.rows.push(viewModelRow);
-			});
+			addQuestionRows(sectionView.list.rows, section, journey.response?.answers || {}, question);
 		}
 
 		summaryListData.sections.push(sectionView);
+	}
+
+	for (const manageListQuestion of manageListQuestions) {
+		const section = manageListQuestion.section;
+		const listItems = journeyResponse.answers[manageListQuestion.fieldName] || [];
+
+		for (let i = 0; i < listItems.length; i++) {
+			const answers = listItems[i];
+			const itemJourneyResponse = { answers };
+			const status = section.getStatus(itemJourneyResponse);
+			const sectionView = buildSectionViewModel(manageListQuestion.titleSingular + ' ' + (i + 1), status);
+
+			for (const question of section.questions) {
+				addQuestionRows(sectionView.list.rows, section, answers || {}, question);
+			}
+			summaryListData.sections.push(sectionView);
+		}
 	}
 
 	return res.render('components/task-list/index', {
@@ -247,7 +269,7 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 			if (saveViewModel) {
 				return question.renderAction(res, saveViewModel);
 			}
-			if (redirectToTaskListOnSuccess) {
+			if (redirectToTaskListOnSuccess && !manageListQuestion) {
 				return res.redirect(journey.taskListUrl);
 			}
 			// edit the journey.response which question.shouldDisplay uses

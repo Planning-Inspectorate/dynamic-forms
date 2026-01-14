@@ -154,4 +154,8 @@ export default class ManageListQuestion extends Question {
 	set section(section) {
 		this.#section = section;
 	}
+
+	get titleSingular() {
+		return this.viewData.titleSingular;
+	}
 }

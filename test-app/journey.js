@@ -31,7 +31,7 @@ export function createJourney(questions, response, req) {
 		],
 		taskListUrl: 'check-your-answers',
 		journeyTemplate: 'views/layout-journey-gds.njk',
-		taskListTemplate: 'views/layout-check-your-answers-gds.njk',
+		taskListTemplate: 'views/layout-edit-page-gds.njk',
 		journeyTitle: 'Dynamic forms example',
 		returnToListing: false,
 		makeBaseUrl: () => req.baseUrl,
