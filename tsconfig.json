@@ -15,6 +15,7 @@
 		"module": "NodeNext",
 		"moduleResolution": "nodenext",
 		"outDir": "types",
+		"rootDir": ".",
 		"strict": true,
 		"target": "esnext",
 		"skipLibCheck": true,

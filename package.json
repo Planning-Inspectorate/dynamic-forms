@@ -4,8 +4,7 @@
   "description": "This package is for building GDS forms using a configuration-based approach.",
   "main": "./src/index.js",
   "type": "module",
-	"types": "./types/index.d.ts",
-	"rootDir": ".",
+	"types": "./src/types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Planning-Inspectorate/dynamic-forms.git"
@@ -15,7 +14,7 @@
     "lint": "npx eslint .",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
-		"generate-type-delcarations": "npx -p typescript tsc src/index.js --declaration --allowJs --emitDeclarationOnly --outDir types",
+		"generate-types": "npx tsc --project tsconfig.json",
     "prepare": "node .husky/install.mjs",
     "test": "node --test",
     "test-coverage": "node --test --experimental-test-coverage"
@@ -30,6 +29,7 @@
   "imports": {
     "#question-types": "./src/questions/question-types.d.ts",
     "#test/*": "./test/*",
+		"#base-validator": "./src/validator/base-validator.js",
 		"#journey": "./src/journey/journey.js",
 		"#journey-response": "./src/journey/journey-response.js",
 		"#question": "./src/questions/question.js",

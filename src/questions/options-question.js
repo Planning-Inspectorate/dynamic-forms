@@ -58,8 +58,8 @@ export default class OptionsQuestion extends Question {
 
 	/**
 	 * gets the view model for this question
-	 * @param {import('../section.js').Section} section - the current section
-	 * @param {import('../journey/journey.js').Journey} journey - the journey we are in
+	 * @param {import('#section').Section} section - the current section
+	 * @param {import('#journey').Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {Record<string, unknown>} [payload]
 	 * @param {import('#src/questions/question-types.d.ts').PrepQuestionForRenderingOptions} options

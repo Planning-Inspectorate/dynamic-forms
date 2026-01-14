@@ -57,7 +57,6 @@ export default class TextEntryRedactQuestion extends Question {
 		return super.getDataToSave(req, journeyResponse);
 	}
 
-
 	prepQuestionForRendering(section, journey, customViewData, payload, options) {
 		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload, options);
 		const answers = this.answerObjectFromJourneyResponse(journey.response, options);
