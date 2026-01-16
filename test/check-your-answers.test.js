@@ -3,7 +3,7 @@ import assert from 'assert';
 import { manageListQuestions, questionsInOrder } from './questions.js';
 import path from 'path';
 import { escapeForRegExp, snapshotsDir } from './utils/utils.js';
-import { createAppWithQuestions, mockAnswer, mockAnswerBody } from './questions.test.js';
+import { createAppWithQuestions, mockAnswer, mockAnswerBody } from './utils/question-test-utils.js';
 import { COMPONENT_TYPES } from '#src/index.js';
 
 describe('check-your-answers', () => {

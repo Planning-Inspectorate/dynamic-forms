@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import ManageListQuestion from '#src/components/manage-list/question.js';
 import { ManageListSection } from '#src/components/manage-list/manage-list-section.js';
 import { mockJourney } from '#test/mock/journey.js';
-import { mockRandomUUID } from '#src/lib/uuid.test.js';
+import { mockRandomUUID } from '#test/mock/uuid.js';
 import { configureNunjucksTestEnv } from '#test/utils/nunjucks.js';
 import path from 'path';
 import { snapshotsDir } from '#test/utils/utils.js';
