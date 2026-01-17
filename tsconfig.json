@@ -7,10 +7,15 @@
 		"allowSyntheticDefaultImports": true,
 		"baseUrl": ".",
 		"checkJs": false,
+		"declaration": true,
+		"declarationMap": true,
+		"emitDeclarationOnly": true,
 		"erasableSyntaxOnly": true,
 		"esModuleInterop": true,
 		"module": "NodeNext",
 		"moduleResolution": "nodenext",
+		"outDir": "types",
+		"rootDir": ".",
 		"strict": true,
 		"target": "esnext",
 		"skipLibCheck": true,
@@ -18,7 +23,10 @@
 			"#question-types": ["./src/questions/question-types.d.ts"],
 			"#src/*": ["./src/*"],
 			"#test/*": ["./test/*"],
-			"#question": ["./src/questions/question.js"]
+			"#question": ["./src/questions/question.js"],
+			"#journey": ["./src/journey/journey.js"],
+			"#journey-response": ["./src/journey/journey-response.js"],
+			"#section": ["./src/section.js"]
 		}
 	}
 }

@@ -1,10 +1,6 @@
 import { Question } from '#question';
 import { getPersistedNumberAnswer } from '../utils/persisted-number-answer.js';
 
-/**
- * @typedef {import('../../journey/journey.js').Journey} Journey
- */
-
 export default class NumberEntryQuestion extends Question {
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
@@ -36,7 +32,7 @@ export default class NumberEntryQuestion extends Question {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 * @param {Object} answer
-	 * @param {Journey} journey
+	 * @param {import('#journey').Journey} journey
 	 * @param {String} sectionSegment
 	 * @returns {Array<{
 	 *   key: string;

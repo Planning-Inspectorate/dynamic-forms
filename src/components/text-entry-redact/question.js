@@ -1,21 +1,6 @@
 import { Question } from '#question';
 import { nl2br } from '../../lib/utils.js';
 
-/**
- * @typedef {import('../../questions/question.js').QuestionViewModel} QuestionViewModel
- * @typedef {import('../../journey/journey.js').Journey} Journey
- * @typedef {import('../../journey/journey-response.js').JourneyResponse} JourneyResponse
- * @typedef {import('../../section').Section} Section
- */
-
-/**
- * @typedef {Object} TextEntryCheckbox
- * @property {string} header
- * @property {string} text
- * @property {string} name
- * @property {string} [errorMessage]
- */
-
 export const REDACT_CHARACTER = '█';
 export const TRUNCATED_MAX_LENGTH = 500;
 
@@ -25,7 +10,7 @@ export const TRUNCATED_MAX_LENGTH = 500;
 export default class TextEntryRedactQuestion extends Question {
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
-	 * @param {TextEntryCheckbox} [params.textEntryCheckbox]
+	 * @param {import('../text-entry/question.js').TextEntryCheckbox} [params.textEntryCheckbox]
 	 * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
 	 * @param {boolean} [params.onlyShowRedactedValueForSummary] whether to only show redacted value for summary
 	 * @param {boolean} [params.useRedactedFieldNameForSave] whether to use the redacted field name when saving answers
@@ -57,6 +42,11 @@ export default class TextEntryRedactQuestion extends Question {
 		this.shouldTruncateSummary = shouldTruncateSummary;
 	}
 
+	/**
+	 * @param {import('express').Request} req
+	 * @param {import('#journey-response').JourneyResponse} journeyResponse
+	 * @returns {Promise<{answers: Record<string, unknown>}>}
+	 */
 	async getDataToSave(req, journeyResponse) {
 		if (this.useRedactedFieldNameForSave) {
 			const fieldName = this.fieldName + 'Redacted';

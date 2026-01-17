@@ -1,9 +1,9 @@
 import SingleLineInputQuestion from '../single-line-input/question.js';
 
 /**
- * @typedef {import('../../questions/question.js').QuestionViewModel} QuestionViewModel
- * @typedef {import('../../journey/journey.js').Journey} Journey
- * @typedef {import('../../journey/journey-response.js').JourneyResponse} JourneyResponse
+ * @typedef {import('#question').QuestionViewModel} QuestionViewModel
+ * @typedef {import('#journey').Journey} Journey
+ * @typedef {import('#journey-response').JourneyResponse} JourneyResponse
  * @typedef {import('../../section').Section} Section
  * @typedef {import('../../validator/base-validator')} BaseValidator
  */
@@ -44,7 +44,7 @@ export default class EmailQuestion extends SingleLineInputQuestion {
 	 * Override formatAnswerForSummary to prevent capitalization of email addresses
 	 * Email addresses should remain in their original case (typically lowercase)
 	 * @param {string} sectionSegment
-	 * @param {import('../../journey/journey.js').Journey} journey
+	 * @param {import('#journey').Journey} journey
 	 * @param {string} answer
 	 * @returns {Array}
 	 */

@@ -1,7 +1,7 @@
-import BaseValidator from '../validator/base-validator';
-import { JourneyResponse } from '../journey/journey-response';
 import { RouteParams } from '#src/journey/journey-types.d.ts';
 import ManageListQuestion from '#src/components/manage-list/question.js';
+import BaseValidator from '../validator/base-validator.js';
+import { JourneyResponse } from '../journey/journey-response.js';
 
 export interface QuestionParameters {
 	title: string;
@@ -22,7 +22,7 @@ export interface QuestionParameters {
 	// override the action link for this question
 	actionLink?: ActionLink;
 	// static view data for this question
-	viewData?: Object<string, any>;
+	viewData?: Record<string, any>;
 }
 
 export interface ActionLink {
