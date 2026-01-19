@@ -1,4 +1,4 @@
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 
 import escape from 'escape-html';
 import { Address } from '../../lib/address.js';
@@ -40,38 +40,43 @@ export default class AddressQuestion extends Question {
 	}
 
 	/**
-	 * @param {Section} section
-	 * @param {Journey} journey
-	 * @param {Record<string, unknown>} customViewData
-	 * @returns {QuestionViewModel}
+	 * @param {Record<string, any>} answers
+	 * @returns {*|string}
 	 */
-	prepQuestionForRendering(section, journey, customViewData) {
-		const viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-		const address = journey.response.answers[this.fieldName] || {};
-
-		// will only ever have 1
-		if (address) {
-			viewModel.question.value = {
-				addressLine1: address.addressLine1 || '',
-				addressLine2: address.addressLine2 || '',
-				townCity: address.townCity || '',
-				county: address.county || '',
-				postcode: address.postcode || ''
+	answerForViewModel(answers) {
+		let address = answers[this.fieldName];
+		if (!address) {
+			address = {
+				addressLine1: answers[this.fieldName + '_addressLine1'],
+				addressLine2: answers[this.fieldName + '_addressLine2'],
+				townCity: answers[this.fieldName + '_townCity'],
+				county: answers[this.fieldName + '_county'],
+				postcode: answers[this.fieldName + '_postcode']
 			};
 		}
 
-		viewModel.question.labels = this.addressLabels;
-
-		return viewModel;
+		return {
+			addressLine1: address?.addressLine1 || '',
+			addressLine2: address?.addressLine2 || '',
+			townCity: address?.townCity || '',
+			county: address?.county || '',
+			postcode: address?.postcode || ''
+		};
 	}
 
 	/**
-	 * returns the data to send to the DB
-	 * side effect: modifies journeyResponse with the new answers
+	 * @param {import('#question').QuestionViewModel} viewModel
+	 */
+	addCustomDataToViewModel(viewModel) {
+		viewModel.question.labels = this.addressLabels;
+	}
+
+	/**
+	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {JourneyResponse} journeyResponse
 	 * @returns {Promise<{answers: Record<string, unknown>}>}
-	 */
+	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
 		const data = {
 			addressLine1: req.body[this.fieldName + '_addressLine1'],
@@ -88,7 +93,6 @@ export default class AddressQuestion extends Question {
 		const answers = {
 			[this.fieldName]: address
 		};
-		journeyResponse.answers[this.fieldName] = address;
 
 		return {
 			answers

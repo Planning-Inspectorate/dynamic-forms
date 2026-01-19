@@ -1,4 +1,4 @@
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 /**
  * @typedef {import('../../questions/question.js').QuestionViewModel} QuestionViewModel
  * @typedef {import('../../journey/journey.js').Journey} Journey
@@ -33,11 +33,11 @@ export default class TextEntryQuestion extends Question {
 		this.label = label;
 	}
 
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
+	/**
+	 * @param {import('#question').QuestionViewModel} viewModel
+	 */
+	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.textEntryCheckbox = this.textEntryCheckbox;
-		viewModel.question.value = payload ? payload[viewModel.question.fieldName] : viewModel.question.value;
-		return viewModel;
 	}
 }

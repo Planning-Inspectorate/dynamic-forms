@@ -5,6 +5,14 @@
  */
 
 import RequiredValidator from './validator/required-validator.js';
+import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
+
+/**
+ * A value indicating the final question of a section has been reached
+ *
+ * @type {Symbol}
+ */
+export const END_OF_SECTION = Symbol('END_OF_SECTION');
 
 /**
  * Defines a section for a questionnaire, a set of Questions
@@ -75,12 +83,19 @@ export class Section {
 
 	/**
 	 * Fluent API method for adding questions
-	 * @param {any} question
+	 * @param {import('#src/questions/question.js').Question} question
+	 * @param {import('#src/components/manage-list/manage-list-section.js').ManageListSection} [manageListSection]
 	 * @returns {Section}
 	 */
-	addQuestion(question) {
+	addQuestion(question, manageListSection) {
 		if (!question) {
 			throw new Error('question is required');
+		}
+		if (question.isManageListQuestion) {
+			if (!manageListSection || !manageListSection.isManageListSection) {
+				throw new Error('manage list questions require a ManageListSection');
+			}
+			question.section = manageListSection;
 		}
 		this.questions.push(question);
 		this.#conditionAdded = false; // reset condition flag
@@ -181,6 +196,60 @@ export class Section {
 		}
 		this.#multiQuestionConditions[conditionName].ended = true;
 		return this;
+	}
+
+	/**
+	 * Get the next question in this section given a questionParam (question fieldName)
+	 * @param {import('./section-types.d.ts').GetNextQuestionParams} params
+	 * @returns {Question|Symbol|null}
+	 */
+	getNextQuestion(params) {
+		const { response, manageListQuestion, routeParams } = params;
+		if (manageListQuestion) {
+			// first check if the next question is within the manage list section
+			// here we get the answers for the manage list item for the question.shouldDisplay logic
+			const answers = answerObjectForManageList(response, manageListQuestion, routeParams.manageListItemId);
+			const next = Section.getNextQuestion({
+				...params,
+				response: { answers },
+				questions: manageListQuestion.section.questions
+			});
+			if (next === END_OF_SECTION) {
+				// after the manage list section questions, go back to the manage list question
+				return manageListQuestion;
+			}
+			return next;
+		}
+		return Section.getNextQuestion({
+			...params,
+			questions: this.questions
+		});
+	}
+
+	/**
+	 * Implementation of getNextQuestion given a list of questions
+	 *
+	 * @param {import('./section-types.d.ts').StaticGetNextQuestionParams} params
+	 * @returns {Question|Symbol|null}
+	 */
+	static getNextQuestion({ questions, questionFieldName, response, takeNextQuestion = false, reverse = false }) {
+		const numberOfQuestions = questions.length;
+
+		const questionsStart = reverse ? numberOfQuestions - 1 : 0;
+		for (let i = questionsStart; reverse ? i >= 0 : i < numberOfQuestions; reverse ? i-- : i++) {
+			const question = questions[i];
+			if (takeNextQuestion && question.shouldDisplay(response)) {
+				return question;
+			}
+
+			if (question.fieldName === questionFieldName || question.url === questionFieldName) {
+				takeNextQuestion = true;
+			}
+		}
+		if (takeNextQuestion) {
+			return END_OF_SECTION;
+		}
+		return null;
 	}
 
 	/**

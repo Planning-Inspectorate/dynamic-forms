@@ -1,7 +1,7 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
-import { Question } from './question.js';
-import { mockRes } from '../../test/utils/utils.js';
+import { Question } from '#question';
+import { mockRes } from '#test/utils/utils.js';
 
 const res = mockRes();
 
@@ -63,6 +63,7 @@ describe('./src/dynamic-forms/question.js', () => {
 			assert.strictEqual(question.validators, VALIDATORS);
 			assert.strictEqual(question.html, HTML);
 			assert.strictEqual(question.hint, HINT);
+			assert.strictEqual(question.isManageListQuestion, false);
 		});
 		it('should support viewData field', () => {
 			const question = getTestQuestion({ viewData: { test: 'test' } });
@@ -115,6 +116,30 @@ describe('./src/dynamic-forms/question.js', () => {
 		});
 	});
 
+	describe('isInManageListSection', () => {
+		it('should default to false', () => {
+			const question = getTestQuestion();
+			assert.strictEqual(question.isInManageListSection, false);
+		});
+		it('should support setting isInManageListSection', () => {
+			const question = getTestQuestion();
+			assert.strictEqual(question.isInManageListSection, false);
+			question.isInManageListSection = true;
+			assert.strictEqual(question.isInManageListSection, true);
+		});
+		it('should not support setting isInManageListSection false', () => {
+			const question = getTestQuestion();
+			assert.strictEqual(question.isInManageListSection, false);
+			assert.throws(
+				() => (question.isInManageListSection = false),
+				(error) => {
+					assert.strictEqual(error.message, 'Question isInManageListSection is false by default');
+					return true;
+				}
+			);
+		});
+	});
+
 	describe('prepQuestionForRendering', () => {
 		it('should prepQuestionForRendering', () => {
 			const question = getTestQuestion();
@@ -155,12 +180,12 @@ describe('./src/dynamic-forms/question.js', () => {
 			assert.deepStrictEqual(result.answer, journey.response.answers[question.fieldName]);
 			assert.deepStrictEqual(result.layoutTemplate, journey.journeyTemplate);
 			assert.deepStrictEqual(result.pageCaption, section.name);
-			assert.deepStrictEqual(result.navigation, ['', 'back']);
-			assert.deepStrictEqual(result.backLink, 'back');
 			assert.deepStrictEqual(result.showBackToListLink, question.showBackToListLink);
 			assert.deepStrictEqual(result.listLink, journey.taskListUrl);
 			assert.deepStrictEqual(result.journeyTitle, journey.journeyTitle);
 			assert.deepStrictEqual(result.hello, 'hi');
+			assert.ok(result.util);
+			assert.ok(typeof result.util.trimTrailingSlash === 'function');
 		});
 		it('should include viewData in viewModel', () => {
 			const question = getTestQuestion({ viewData: { test: 'data' } });
@@ -190,6 +215,76 @@ describe('./src/dynamic-forms/question.js', () => {
 		});
 	});
 
+	describe('answerObjectFromJourney', () => {
+		it('should return journey response for regular questions', () => {
+			const question = getTestQuestion();
+			const answers = { myField: 'my-value' };
+			const journeyResponse = {
+				answers
+			};
+			const got = question.answerObjectFromJourneyResponse(journeyResponse);
+			assert.strictEqual(got, answers);
+		});
+		it('should return the manage list item object for manage list questions', () => {
+			const question = getTestQuestion();
+			question.isInManageListSection = true;
+			const manageListQuestion = {
+				fieldName: 'manageListQuestion'
+			};
+			const answers = {
+				id: '1',
+				myField: 'my-value'
+			};
+			const journeyResponse = {
+				answers: {
+					manageListQuestion: [answers]
+				}
+			};
+			const params = { manageListItemId: '1' };
+			const got = question.answerObjectFromJourneyResponse(journeyResponse, { params, manageListQuestion });
+			assert.strictEqual(got, answers);
+		});
+
+		it('should fallback to {} if manage list item id not found', () => {
+			const question = getTestQuestion();
+			question.isInManageListSection = true;
+			const manageListQuestion = {
+				fieldName: 'manageListQuestion'
+			};
+			const answers = {
+				id: '2',
+				myField: 'my-value'
+			};
+			const journeyResponse = {
+				answers: {
+					manageListQuestion: [answers]
+				}
+			};
+			const params = { manageListItemId: '1' };
+			let got = question.answerObjectFromJourneyResponse(journeyResponse, { params, manageListQuestion });
+			assert.deepStrictEqual(got, {});
+			// also fallback to {} if there is no manageListQuestion answer
+			delete journeyResponse.answers.manageListQuestion;
+			got = question.answerObjectFromJourneyResponse(journeyResponse, { params, manageListQuestion });
+			assert.deepStrictEqual(got, {});
+		});
+		it('should error if a manage list question is missing required parameters', () => {
+			const question = getTestQuestion();
+			question.isInManageListSection = true;
+			const answers = { myField: 'my-value' };
+			const journeyResponse = { answers };
+			assert.throws(
+				() => question.answerObjectFromJourneyResponse(journeyResponse),
+				/no list item id for manage list question/
+			);
+			const params = { manageListItemId: '1' };
+			assert.throws(
+				() => question.answerObjectFromJourneyResponse(journeyResponse, { params }),
+				/no manageListQuestion for manage list question/
+			);
+		});
+	});
+
 	describe('renderAction', () => {
 		it('should renderAction', () => {
 			const question = getTestQuestion();
@@ -210,7 +305,7 @@ describe('./src/dynamic-forms/question.js', () => {
 			const expectedResult = { a: 1 };
 			const req = { body: { errors: { error: 'we have an error' } } };
 			const question = getTestQuestion();
-			question.prepQuestionForRendering = mock.fn(() => expectedResult);
+			question.toViewModel = mock.fn(() => expectedResult);
 
 			const result = question.checkForValidationErrors(req);
 
@@ -235,7 +330,7 @@ describe('./src/dynamic-forms/question.js', () => {
 	});
 
 	describe('getDataToSave', () => {
-		it('should return answer from req.body and modify journeyResponse', async () => {
+		it('should return answer from req.body', async () => {
 			const question = getTestQuestion();
 
 			const req = {
@@ -243,14 +338,8 @@ describe('./src/dynamic-forms/question.js', () => {
 					[question.fieldName]: { a: 1 }
 				}
 			};
-			const journeyResponse = {
-				answers: {
-					[question.fieldName]: { b: 1 },
-					other: 'another-answer'
-				}
-			};
 
-			const result = await question.getDataToSave(req, journeyResponse);
+			const result = await question.getDataToSave(req);
 
 			const expectedResult = {
 				answers: {
@@ -258,8 +347,6 @@ describe('./src/dynamic-forms/question.js', () => {
 				}
 			};
 			assert.deepStrictEqual(result, expectedResult);
-			expectedResult.answers.other = 'another-answer';
-			assert.deepStrictEqual(journeyResponse, expectedResult);
 		});
 
 		it('should handle nested properties', async () => {
@@ -272,14 +359,8 @@ describe('./src/dynamic-forms/question.js', () => {
 					[question.fieldName + '_2']: { a: 3 }
 				}
 			};
-			const journeyResponse = {
-				answers: {
-					[question.fieldName]: { b: 1 },
-					other: 'another-answer'
-				}
-			};
 
-			const result = await question.getDataToSave(req, journeyResponse);
+			const result = await question.getDataToSave(req);
 
 			const expectedResult = {
 				answers: {
@@ -289,8 +370,6 @@ describe('./src/dynamic-forms/question.js', () => {
 				}
 			};
 			assert.deepStrictEqual(result, expectedResult);
-			expectedResult.answers.other = 'another-answer';
-			assert.deepStrictEqual(journeyResponse, expectedResult);
 		});
 	});
 

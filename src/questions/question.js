@@ -1,9 +1,9 @@
 import escape from 'escape-html';
 import RequiredValidator from '../validator/required-validator.js';
-import RequiredFileUploadValidator from '../validator/required-file-upload-validator.js';
-import { capitalize, nl2br } from '../lib/utils.js';
+import { capitalize, nl2br, trimTrailingSlash } from '../lib/utils.js';
 import AddressValidator from '../validator/address-validator.js';
 import MultiFieldInputValidator from '../validator/multi-field-input-validator.js';
+import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
 
 /**
  * @typedef {import('../validator/base-validator.js')} BaseValidator
@@ -25,15 +25,16 @@ import MultiFieldInputValidator from '../validator/multi-field-input-validator.j
  */
 
 /**
- * @typedef {Object} QuestionViewModel
+ * @typedef {Record<string, any>} QuestionViewModel
  * @property {PreppedQuestion} question
  * @property {string} layoutTemplate
  * @property {string} pageCaption
  * @property {string} [continueButtonText]
- * @property {Array.<string>} navigation
  * @property {string} backLink
  * @property {boolean} showBackToListLink
  * @property {string} listLink
+ * @property {Object} util
+ * @property {function(string): string} util.trimTrailingSlash
  */
 
 /**
@@ -91,6 +92,7 @@ export class Question {
 		title: '',
 		text: ''
 	};
+	#isInManageListSection = false;
 
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
@@ -151,18 +153,71 @@ export class Question {
 	}
 
 	/**
+	 * Is this question a manage list question?
+	 * Implemented as a getter so manage list question implementations can override it,
+	 * but it cannot be changed at runtime.
+	 *
+	 * @returns {boolean}
+	 */
+	get isManageListQuestion() {
+		return false;
+	}
+
+	/**
+	 * Is this question added to a ManageListSection?
+	 *
+	 * @returns {boolean}
+	 */
+	get isInManageListSection() {
+		return this.#isInManageListSection;
+	}
+
+	set isInManageListSection(value) {
+		if (!value) {
+			throw new Error('Question isInManageListSection is false by default');
+		}
+		this.#isInManageListSection = value;
+	}
+
+	/**
 	 * gets the view model for this question
+	 *
+	 * Wraps prepQuestionForRendering to add the back link - which requires more parameters
+	 * that prepQuestionForRendering doesn't need
+	 *
+	 * @param {Object} options
+	 * @param {import('#src/journey/journey-types.d.ts').RouteParams} options.params
+	 * @param {import('#src/components/manage-list/question.js')} [options.manageListQuestion]
+	 * @param {Section} options.section - the current section
+	 * @param {Journey} options.journey - the journey we are in
+	 * @param {Record<string, unknown>} [options.customViewData] additional data to send to view
+	 * @param {unknown} [options.payload]
+	 * @returns {QuestionViewModel}
+	 */
+	toViewModel({ params, manageListQuestion, section, journey, customViewData, payload }) {
+		const viewModel = this.prepQuestionForRendering(section, journey, customViewData, payload, {
+			params,
+			manageListQuestion
+		});
+		viewModel.backLink = journey.getBackLink({ params, manageListQuestion });
+		return viewModel;
+	}
+
+	/**
+	 * gets the base view model for this question
+	 *
 	 * @param {Section} section - the current section
 	 * @param {Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {unknown} [payload]
+	 * @param {import('./question-types.d.ts').PrepQuestionForRenderingOptions} [options] - required to support manage list question
 	 * @returns {QuestionViewModel}
 	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		const answer = journey.response.answers[this.fieldName] || '';
-		const backLink = journey.getBackLink(section.segment, this.fieldName);
+	prepQuestionForRendering(section, journey, customViewData, payload, options) {
+		const answers = payload || this.answerObjectFromJourneyResponse(journey.response, options);
+		const answer = this.answerForViewModel(answers, Boolean(payload));
 
-		return {
+		const viewModel = {
 			question: {
 				value: answer,
 				question: this.question,
@@ -179,8 +234,6 @@ export class Question {
 			layoutTemplate: journey.journeyTemplate,
 			pageCaption: section?.name,
 
-			navigation: ['', backLink],
-			backLink,
 			showBackToListLink: this.showBackToListLink,
 			listLink: journey.taskListUrl,
 			journeyTitle: journey.journeyTitle,
@@ -188,9 +241,58 @@ export class Question {
 
 			continueButtonText: this.continueButtonText,
 
+			util: {
+				trimTrailingSlash
+			},
+
 			...customViewData,
 			...this.viewData
 		};
+		this.addCustomDataToViewModel(viewModel);
+		return viewModel;
+	}
+
+	/**
+	 * The answer to this question for use in the viewModel
+	 *
+	 * Question implementations can override this for more complex answer types
+	 *
+	 * @param {Record<string, any>} answers - collection of answers to pull the answer from, may be from the response or the request/payload
+	 * @param {Boolean} isPayload - whether the answers object is from the request/payload
+	 * @returns {*|string}
+	 */ // eslint-disable-next-line no-unused-vars
+	answerForViewModel(answers, isPayload) {
+		return answers[this.fieldName] || '';
+	}
+
+	/**
+	 * Question implementations can override this to add configuration or other values to the view model
+	 *
+	 * If possible override this method instead of prepQuestionForRendering for simple changes to the view model
+	 *
+	 * @param {QuestionViewModel} viewModel
+	 */ // eslint-disable-next-line no-unused-vars
+	addCustomDataToViewModel(viewModel) {}
+
+	/**
+	 * Get the answers object from the journey response, which may be nested in an array for manage list questions
+	 *
+	 * @param {JourneyResponse} response
+	 * @param {import('./question-types.d.ts').PrepQuestionForRenderingOptions} [options]
+	 * @returns {Record<string, any>}
+	 */
+	answerObjectFromJourneyResponse(response, { params, manageListQuestion } = {}) {
+		if (this.isInManageListSection) {
+			if (!params?.manageListItemId) {
+				throw new Error('no list item id for manage list question');
+			}
+			if (!manageListQuestion) {
+				throw new Error('no manageListQuestion for manage list question');
+			}
+			// if this is a manage list question, the response is within the 'parent' manage list answers array
+			return answerObjectForManageList(response, manageListQuestion, params.manageListItemId);
+		}
+		return response.answers;
 	}
 
 	/**
@@ -212,59 +314,48 @@ export class Question {
 	 * check for validation errors
 	 * @param {import('express').Request} req
 	 * @param {Journey} journey
-	 * @param {Section} sectionObj
+	 * @param {Section} section
+	 * @param {import('#src/components/manage-list/question.js')} [manageListQuestion]
 	 * @returns {QuestionViewModel|undefined} returns the view model for displaying the error or undefined if there are no errors
 	 */
-	checkForValidationErrors(req, sectionObj, journey) {
+	checkForValidationErrors(req, section, journey, manageListQuestion) {
 		const { body = {} } = req;
 		const { errors = {}, errorSummary = [] } = body;
 
 		if (Object.keys(errors).length > 0) {
-			return this.prepQuestionForRendering(
-				sectionObj,
+			return this.toViewModel({
+				params: req.params,
+				section,
 				journey,
-				{
+				customViewData: {
 					errors,
 					errorSummary
 				},
-				body
-			);
+				payload: body,
+				manageListQuestion
+			});
 		}
 	}
 
 	/**
-	 * returns the data to send to the DB
-	 * side effect: modifies journeyResponse with the new answers
+	 * Get the data to save from the request, returns an object of answers
+	 *
 	 * @param {import('express').Request} req
-	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
+	 * @param {JourneyResponse} journeyResponse - current journey response
 	 * @returns {Promise<{ answers: Record<string, unknown> }>}
-	 */
+	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
-		/**
-		 * @type {{ answers: Record<string, unknown> }}
-		 */
-		let responseToSave = { answers: {} };
+		const answers = {};
 
-		responseToSave.answers[this.fieldName] = req.body[this.fieldName];
+		answers[this.fieldName] = req.body[this.fieldName];
 
 		for (const propName in req.body) {
 			if (propName.startsWith(this.fieldName + '_')) {
-				responseToSave.answers[propName] = req.body[propName];
-				journeyResponse.answers[propName] = req.body[propName];
+				answers[propName] = req.body[propName];
 			}
-			// todo: sort this
-			// } else if (numericFields.has(propName)) {
-			// 	const numericValue = Number(req.body[propName]);
-			// 	if (!isNaN(numericValue)) {
-			// 		responseToSave.answers[propName] = numericValue;
-			// 		journeyResponse.answers[propName] = numericValue;
-			// 	}
-			// }
 		}
 
-		journeyResponse.answers[this.fieldName] = responseToSave.answers[this.fieldName];
-
-		return responseToSave;
+		return { answers };
 	}
 
 	/**
@@ -279,19 +370,20 @@ export class Question {
 	}
 
 	/**
-	 * Handles redirect after saving
+	 * Handles redirect after saving. Kept around for backwards compatibility.
+	 *
 	 * @param {import('express').Response} res
 	 * @param {Journey} journey
 	 * @param {string} sectionSegment
 	 * @param {string} questionSegment
 	 * @returns {void}
+	 * @deprecated - use `journey.redirectToNextQuestion`
 	 */
 	handleNextQuestion(res, journey, sectionSegment, questionSegment) {
-		let next = journey.getNextQuestionUrl(sectionSegment, questionSegment);
-		if (next === null) {
-			next = journey.taskListUrl;
-		}
-		return res.redirect(next);
+		return journey.redirectToNextQuestion(res, {
+			section: sectionSegment,
+			question: questionSegment
+		});
 	}
 
 	/**
@@ -366,7 +458,6 @@ export class Question {
 		return this.validators?.some(
 			(item) =>
 				item instanceof RequiredValidator ||
-				item instanceof RequiredFileUploadValidator ||
 				(item instanceof AddressValidator && item.isRequired()) ||
 				(item instanceof MultiFieldInputValidator && item.isRequired())
 		);

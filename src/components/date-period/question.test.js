@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 import DatePeriodQuestion from './question.js';
 
 describe('DatePeriodQuestion', () => {

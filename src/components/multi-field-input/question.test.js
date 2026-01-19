@@ -73,8 +73,8 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 			const result = question.prepQuestionForRendering({}, journey, customViewData);
 
 			assert.strictEqual(result.question?.fieldName, FIELDNAME);
-			assert.strictEqual(result.question?.inputFields[0].fieldName, INPUTFIELDS[0].fieldName);
-			assert.strictEqual(result.question?.inputFields[1].fieldName, INPUTFIELDS[1].fieldName);
+			assert.strictEqual(result.question?.value[0].fieldName, INPUTFIELDS[0].fieldName);
+			assert.strictEqual(result.question?.value[1].fieldName, INPUTFIELDS[1].fieldName);
 			assert.strictEqual(result.hello, 'hi');
 		});
 		it('should set inputFields with values from payload if provided', () => {
@@ -94,8 +94,8 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 
 			const result = question.prepQuestionForRendering({}, journey, {}, payload);
 
-			assert.strictEqual(result.question?.inputFields[0].value, 'payloadValue1');
-			assert.strictEqual(result.question?.inputFields[1].value, 'payloadValue2');
+			assert.strictEqual(result.question?.value[0].value, 'payloadValue1');
+			assert.strictEqual(result.question?.value[1].value, 'payloadValue2');
 		});
 		it('should set inputFields with values from journey response if payload is not provided', () => {
 			const question = createMultiFieldInputQuestion();
@@ -113,8 +113,8 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 
 			const result = question.prepQuestionForRendering({}, journey, {});
 
-			assert.strictEqual(result.question?.inputFields[0].value, 'responseValue1');
-			assert.strictEqual(result.question?.inputFields[1].value, 'responseValue2');
+			assert.strictEqual(result.question?.value[0].value, 'responseValue1');
+			assert.strictEqual(result.question?.value[1].value, 'responseValue2');
 		});
 		it('should set inputFields with formatted values from journey response if formatTextFunction is provided', () => {
 			const formatTextFunction = (value) => `Formatted: ${value}`;
@@ -136,8 +136,8 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 
 			const result = question.prepQuestionForRendering({}, journey, {});
 
-			assert.strictEqual(result.question?.inputFields[0].value, 'Formatted: responseValue1');
-			assert.strictEqual(result.question?.inputFields[1].value, 'Formatted: responseValue2');
+			assert.strictEqual(result.question?.value[0].value, 'Formatted: responseValue1');
+			assert.strictEqual(result.question?.value[1].value, 'Formatted: responseValue2');
 		});
 	});
 

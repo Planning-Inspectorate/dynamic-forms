@@ -23,14 +23,13 @@ export default class DateTimeQuestion extends Question {
 	}
 
 	/**
-	 * returns the data to send to the DB
-	 * side effect: modifies journeyResponse with the new answers
+	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
 	 * @returns {Promise.<Object>}
-	 */
+	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
-		let responseToSave = { answers: {} };
+		const answers = {};
 
 		const dayInput = req.body[`${this.fieldName}_day`];
 		const monthInput = req.body[`${this.fieldName}_month`];
@@ -39,7 +38,7 @@ export default class DateTimeQuestion extends Question {
 		const minutesInput = req.body[`${this.fieldName}_minutes`];
 		const periodInput = req.body[`${this.fieldName}_period`];
 
-		responseToSave.answers[this.fieldName] = parseDateInput({
+		answers[this.fieldName] = parseDateInput({
 			day: dayInput,
 			month: monthInput,
 			year: yearInput,
@@ -47,23 +46,10 @@ export default class DateTimeQuestion extends Question {
 			minute: minutesInput
 		});
 
-		journeyResponse.answers[this.fieldName] = responseToSave.answers[this.fieldName];
-
-		return responseToSave;
+		return { answers };
 	}
 
-	/**
-	 * gets the view model for this question
-	 * @param {Section} section - the current section
-	 * @param {Journey} journey - the journey we are in
-	 * @param {Object|undefined} [customViewData] additional data to send to view
-	 * @returns {QuestionViewModel & { answer: Record<string, unknown> }}
-	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-
-		/** @type {Record<string, unknown>} */
-		let answer = {};
+	answerForViewModel(answers, isPayload) {
 		let day;
 		let month;
 		let year;
@@ -71,15 +57,15 @@ export default class DateTimeQuestion extends Question {
 		let minutes;
 		let period;
 
-		if (payload) {
-			day = payload[`${this.fieldName}_day`];
-			month = payload[`${this.fieldName}_month`];
-			year = payload[`${this.fieldName}_year`];
-			hour = payload[`${this.fieldName}_hour`];
-			minutes = payload[`${this.fieldName}_minutes`];
-			period = payload[`${this.fieldName}_period`];
+		if (isPayload) {
+			day = answers[`${this.fieldName}_day`];
+			month = answers[`${this.fieldName}_month`];
+			year = answers[`${this.fieldName}_year`];
+			hour = answers[`${this.fieldName}_hour`];
+			minutes = answers[`${this.fieldName}_minutes`];
+			period = answers[`${this.fieldName}_period`];
 		} else {
-			const answerDateString = journey.response.answers[this.fieldName];
+			const answerDateString = answers[this.fieldName];
 
 			if (answerDateString && (typeof answerDateString === 'string' || answerDateString instanceof Date)) {
 				const answerDate = new Date(answerDateString);
@@ -92,7 +78,7 @@ export default class DateTimeQuestion extends Question {
 			}
 		}
 
-		answer = {
+		return {
 			[`${this.fieldName}_day`]: day,
 			[`${this.fieldName}_month`]: month,
 			[`${this.fieldName}_year`]: year,
@@ -100,8 +86,6 @@ export default class DateTimeQuestion extends Question {
 			[`${this.fieldName}_minutes`]: minutes,
 			[`${this.fieldName}_period`]: period
 		};
-
-		return { ...viewModel, answer, question: { ...viewModel.question, value: answer } };
 	}
 
 	/**

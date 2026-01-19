@@ -1,4 +1,4 @@
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 import { nl2br } from '../../lib/utils.js';
 
 /**
@@ -60,26 +60,34 @@ export default class TextEntryRedactQuestion extends Question {
 	async getDataToSave(req, journeyResponse) {
 		if (this.useRedactedFieldNameForSave) {
 			const fieldName = this.fieldName + 'Redacted';
-			const responseToSave = { answers: {} };
-			responseToSave.answers[fieldName] = req.body[this.fieldName];
-			journeyResponse.answers[fieldName] = responseToSave.answers[fieldName];
-			return responseToSave;
+			const answers = {};
+			answers[fieldName] = req.body[this.fieldName];
+			return { answers };
 		}
 		return super.getDataToSave(req, journeyResponse);
 	}
 
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
+	prepQuestionForRendering(section, journey, customViewData, payload, options) {
+		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload, options);
+		const answers = this.answerObjectFromJourneyResponse(journey.response, options);
+		const answer = viewModel.question.value;
+		viewModel.question.valueRedacted = answers[this.fieldName + 'Redacted'] || answer;
+		viewModel.question.valueOriginal = answers[this.fieldName + 'Original'] || answer;
+		return viewModel;
+	}
+
+	answerForViewModel(answers) {
+		return nl2br(answers[this.fieldName]);
+	}
+
+	/**
+	 * @param {import('#question').QuestionViewModel} viewModel
+	 */
+	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.textEntryCheckbox = this.textEntryCheckbox;
-		viewModel.question.value = nl2br(payload ? payload[viewModel.question.fieldName] : viewModel.question.value);
-		viewModel.question.valueRedacted =
-			journey.response.answers[this.fieldName + 'Redacted'] || viewModel.question.value;
-		viewModel.question.valueOriginal =
-			journey.response.answers[this.fieldName + 'Original'] || viewModel.question.value;
 		viewModel.question.summaryText = this.summaryText;
 		viewModel.showSuggestionsUi = this.showSuggestionsUi;
-		return viewModel;
 	}
 
 	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {

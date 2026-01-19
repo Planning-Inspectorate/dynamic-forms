@@ -18,7 +18,7 @@ export class JourneyResponse {
 	journeyId;
 
 	/**
-	 * @type {Record<string, unknown>} - answers to the journey
+	 * @type {import('./journey-types.d.ts').JourneyAnswers} - answers to the journey
 	 */
 	answers;
 
@@ -26,7 +26,7 @@ export class JourneyResponse {
 	 * creates an instance of a JourneyResponse
 	 * @param {JourneyType} journeyId
 	 * @param {string} referenceId
-	 * @param {Record<string, unknown> | null} answers
+	 * @param {import('./journey-types.d.ts').JourneyAnswers | null} answers
 	 * @param {string} [lpaCode]
 	 */
 	constructor(journeyId, referenceId, answers, lpaCode) {

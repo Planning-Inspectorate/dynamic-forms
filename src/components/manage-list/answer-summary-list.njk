@@ -1,0 +1,10 @@
+<ul>
+{% for question in answers %}
+    <li>
+    {% for value in question %}
+        {{ value.answer }}{% if not loop.last %}<br>{% endif %}
+
+    {% endfor %}
+    </li>
+{% endfor %}
+</ul>

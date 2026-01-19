@@ -5,7 +5,7 @@ import { configureNunjucksTestEnv } from '../../../test/utils/nunjucks.js';
 
 describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 	const TITLE = 'Title';
-	const QUESTION = 'Question?';
+	const QUESTION = 'Redaction Question';
 	const FIELDNAME = 'field-name';
 	const VALIDATORS = [1, 2];
 	const HTML = '/path/to/html.njk';
@@ -130,18 +130,15 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 				return 'back';
 			},
 			response: {
-				answers: {}
+				answers: {
+					'field-name': 'value',
+					'field-nameRedacted': 'value-redacted',
+					'field-nameOriginal': 'value'
+				}
 			}
 		};
 		const customViewData = {
 			layoutTemplate: 'views/layout-journey.njk',
-			question: {
-				question: 'Redaction Question',
-				fieldName: 'field-name',
-				value: 'value',
-				valueRedacted: 'value-redacted',
-				valueOriginal: 'value'
-			},
 			redactionSuggestions: [
 				{ category: 'Person', suggestion: 'Test Person' },
 				{ category: 'Address', suggestion: '123 Fake Street' }
@@ -177,17 +174,13 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 				return 'back';
 			},
 			response: {
-				answers: {}
+				answers: {
+					'field-name': 'This is my comment.\nIt has multiple lines.\r\nHere is another line.'
+				}
 			}
 		};
 		const customViewData = {
 			layoutTemplate: 'views/layout-journey.njk',
-			question: {
-				question: 'Redaction Question',
-				fieldName: 'field-name',
-				value: 'This is my comment.\nIt has multiple lines.\r\nHere is another line.',
-				valueRedacted: 'value-redacted'
-			},
 			redactionSuggestions: [
 				{ category: 'Person', suggestion: 'Test Person' },
 				{ category: 'Address', suggestion: '123 Fake Street' }
@@ -235,7 +228,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 				action: {
 					href: '/redacted-comment',
 					text: 'Change',
-					visuallyHiddenText: 'Question?'
+					visuallyHiddenText: 'Redaction Question'
 				}
 			}
 		]);
@@ -271,7 +264,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 				action: {
 					href: '/redacted-comment',
 					text: 'Change',
-					visuallyHiddenText: 'Question?'
+					visuallyHiddenText: 'Redaction Question'
 				}
 			}
 		]);
@@ -308,7 +301,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 				action: {
 					href: '/redacted-comment',
 					text: 'Change',
-					visuallyHiddenText: 'Question?'
+					visuallyHiddenText: 'Redaction Question'
 				}
 			}
 		]);

@@ -1,4 +1,4 @@
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 
 /**
  * @typedef {import('../../questions/question.js').QuestionViewModel} QuestionViewModel
@@ -32,17 +32,16 @@ export default class SingleLineInputQuestion extends Question {
 		this.classes = params.classes || '';
 	}
 
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
+	/**
+	 * @param {import('#question').QuestionViewModel} viewModel
+	 */
+	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;
-		viewModel.question.value = payload ? payload[viewModel.question.fieldName] : viewModel.question.value;
-
 		// Extract type from attributes to pass separately to avoid duplication
 		const { type, ...otherAttributes } = this.inputAttributes;
 		viewModel.question.attributes = otherAttributes;
 		viewModel.question.type = type;
 
 		viewModel.question.classes = this.classes;
-		return viewModel;
 	}
 }

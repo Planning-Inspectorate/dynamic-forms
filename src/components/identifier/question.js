@@ -1,4 +1,4 @@
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 
 export default class IdentifierQuestion extends Question {
 	/** @type {string|undefined} page h1, optional, will default to use question's label */
@@ -22,13 +22,10 @@ export default class IdentifierQuestion extends Question {
 	}
 
 	/**
-	 * adds custom identifier info to view model
+	 * @param {import('#question').QuestionViewModel} viewModel
 	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
+	addCustomDataToViewModel(viewModel) {
 		viewModel.question.inputClasses = this.inputClasses;
 		viewModel.question.label = this.label;
-		viewModel.question.value = payload ? payload[viewModel.question.fieldName] : viewModel.question.value;
-		return viewModel;
 	}
 }

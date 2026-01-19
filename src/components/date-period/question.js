@@ -1,5 +1,5 @@
 import { formatDateForDisplay, parseDateInput } from '../../lib/date-utils.js';
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 import { nl2br } from '../../lib/utils.js';
 import escape from 'escape-html';
 
@@ -36,15 +36,13 @@ export default class DatePeriodQuestion extends Question {
 	}
 
 	/**
-	 * returns the data to send to the DB
-	 * side effect: modifies journeyResponse with the new answers
+	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
 	 * @returns {Promise.<Object>}
-	 */
+	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
-		// set answer on response
-		let responseToSave = { answers: {} };
+		const answers = {};
 
 		const startDayInput = req.body[`${this.fieldName}_start_day`];
 		const startMonthInput = req.body[`${this.fieldName}_start_month`];
@@ -70,27 +68,12 @@ export default class DatePeriodQuestion extends Question {
 			year: endYearInput
 		});
 
-		responseToSave.answers[this.fieldName] = { start: startDate, end: endDate };
+		answers[this.fieldName] = { start: startDate, end: endDate };
 
-		journeyResponse.answers[this.fieldName] = responseToSave.answers[this.fieldName];
-
-		return responseToSave;
+		return { answers };
 	}
 
-	/**
-	 * gets the view model for this question
-	 * @param {Section} section - the current section
-	 * @param {Journey} journey - the journey we are in
-	 * @param {Object|undefined} [customViewData] additional data to send to view
-	 * @param {Object|undefined} [payload] the current payload
-	 * @returns {QuestionViewModel & { answer: Record<string, unknown> }}
-	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData);
-		viewModel.labels = this.labels;
-
-		/** @type {Record<string, unknown>} */
-		let answer;
+	answerForViewModel(answers, isPayload) {
 		let startDay;
 		let startMonth;
 		let startYear;
@@ -98,15 +81,15 @@ export default class DatePeriodQuestion extends Question {
 		let endMonth;
 		let endYear;
 
-		if (payload) {
-			startDay = payload[`${this.fieldName}_start_day`];
-			startMonth = payload[`${this.fieldName}_start_month`];
-			startYear = payload[`${this.fieldName}_start_year`];
-			endDay = payload[`${this.fieldName}_end_day`];
-			endMonth = payload[`${this.fieldName}_end_month`];
-			endYear = payload[`${this.fieldName}_end_year`];
+		if (isPayload) {
+			startDay = answers[`${this.fieldName}_start_day`];
+			startMonth = answers[`${this.fieldName}_start_month`];
+			startYear = answers[`${this.fieldName}_start_year`];
+			endDay = answers[`${this.fieldName}_end_day`];
+			endMonth = answers[`${this.fieldName}_end_month`];
+			endYear = answers[`${this.fieldName}_end_year`];
 		} else {
-			const answerPeriod = journey.response.answers[this.fieldName];
+			const answerPeriod = answers[this.fieldName];
 			if (answerPeriod && answerPeriod.start) {
 				const startDate = new Date(answerPeriod.start);
 				startDay = formatDateForDisplay(startDate, { format: 'd' });
@@ -121,7 +104,7 @@ export default class DatePeriodQuestion extends Question {
 			}
 		}
 
-		answer = {
+		return {
 			[`${this.fieldName}_start_day`]: startDay,
 			[`${this.fieldName}_start_month`]: startMonth,
 			[`${this.fieldName}_start_year`]: startYear,
@@ -129,8 +112,13 @@ export default class DatePeriodQuestion extends Question {
 			[`${this.fieldName}_end_month`]: endMonth,
 			[`${this.fieldName}_end_year`]: endYear
 		};
+	}
 
-		return { ...viewModel, answer, question: { ...viewModel.question, value: answer } };
+	/**
+	 * @param {import('#question').QuestionViewModel} viewModel
+	 */
+	addCustomDataToViewModel(viewModel) {
+		viewModel.labels = this.labels;
 	}
 
 	/**

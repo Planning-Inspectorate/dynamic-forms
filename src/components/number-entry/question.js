@@ -1,4 +1,4 @@
-import { Question } from '../../questions/question.js';
+import { Question } from '#question';
 import { getPersistedNumberAnswer } from '../utils/persisted-number-answer.js';
 
 /**
@@ -21,22 +21,16 @@ export default class NumberEntryQuestion extends Question {
 		this.label = label;
 	}
 
+	answerForViewModel(answers) {
+		return getPersistedNumberAnswer(answers[this.fieldName] || '');
+	}
+
 	/**
-	 * adds label and suffix property to view model
+	 * @param {import('#question').QuestionViewModel} viewModel
 	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		let viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload);
-
-		const answer = journey.response.answers[this.fieldName];
-		const persistedAnswer = getPersistedNumberAnswer(answer);
-
-		viewModel.question.value = persistedAnswer;
-		viewModel.answer = persistedAnswer;
-
+	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.suffix = this.suffix;
-
-		return viewModel;
 	}
 
 	/**

@@ -146,12 +146,12 @@ to add conditions to questions in multiple ways.
 The simplest condition applies to just one question:
 
 ```javascript
-import { questionHasAnswer } from '@pins/dynamic-forms/src/components/utils/question-has-answer';
+import { whenQuestionHasAnswer } from '@pins/dynamic-forms/src/components/utils/question-has-answer';
 
 new Section('section-key', 'Section title')
         .addQuestion(questions.q1)
         .addQuestion(questions.q2)
-        .withCondition((response) => questionHasAnswer(response, questions.q1, 'yes'))
+        .withCondition(whenQuestionHasAnswer(questions.q1, 'yes'))
 ```
 
 In this scenario question two will only be shown if question one has an answer of 'yes'.
@@ -160,10 +160,10 @@ Conditions can also be added to an entire section:
 
 ```javascript
 new Section('section-key', 'Section title')
-        .withSectionCondition((response) => questionHasAnswer(response, questions.q1, 'yes'))
+        .withSectionCondition(whenQuestionHasAnswer(questions.q1, 'yes'))
         .addQuestion(questions.q3)
         .addQuestion(questions.q4)
-        .withCondition((response) => questionHasAnswer(response, questions.q3, 'yes'))
+        .withCondition(whenQuestionHasAnswer(questions.q3, 'yes'))
 ```
 
 In this case q3 and q4 will only be shown if q1 (from a previous section) is answered 'yes'. Q4 will only show if q1 is
@@ -173,16 +173,16 @@ Finally, conditions can be added to multiple questions - these can overlap:
 
 ```javascript
 new Section('section-key', 'Section title')
-        .withSectionCondition((response) => questionHasAnswer(response, questions.q1, 'yes'))
+        .withSectionCondition(whenQuestionHasAnswer(questions.q1, 'yes'))
         .addQuestion(questions.q2)
-        .startMultiQuestionCondition('group-1', (response) => questionHasAnswer(response, questions.q2, 'valid'))
+        .startMultiQuestionCondition('group-1', whenQuestionHasAnswer(questions.q2, 'valid'))
         .addQuestion(questions.q3)
         .addQuestion(questions.q4)
-        .withCondition((response) => questionHasAnswer(response, questions.q3, 'yes'))
+        .withCondition(whenQuestionHasAnswer(questions.q3, 'yes'))
         .endMultiQuestionCondition('group-1')
         .addQuestion(questions.q5)
-        .withCondition((response) => questionHasAnswer(response, questions.q4, 'yes'))
-        .startMultiQuestionCondition('group-2', (response) => questionHasAnswer(response, questions.q5, 90))
+        .withCondition(whenQuestionHasAnswer(questions.q4, 'yes'))
+        .startMultiQuestionCondition('group-2', whenQuestionHasAnswer(questions.q5, 90))
         .addQuestion(questions.q6)
         .addQuestion(questions.q7)
         .endMultiQuestionCondition('group-2')
@@ -297,3 +297,14 @@ There are some lightweight tests in the `test` directory which sets up a basic j
 When adding a new question type, be sure to add an example question into `test/questions.js`, and mock answers into `test/questions.test.js#mockAnswerBody` and `test/questions.test.js#mockAnswer`. Also, the question should be added to the journey in `test/journey.js`.
 
 To update any snapshots with rendering changes (or new questions), run `node --test --test-update-snapshots`.
+
+### Components
+
+When implement a new component, extend the base `Question` class. Common methods to override are:
+
+* `formatAnswerForSummary` - used for check-your-answers display
+* `getDataToSave` - answer data to save
+* `addCustomDataToViewModel` - customise the view model with extra data/configuration
+* `answerForViewModel` - customise the view model answer value
+
+Where possible `addCustomDataToViewModel` and `answerForViewModel` should be overridden instead of `prepQuestionForRendering`.

@@ -71,19 +71,20 @@ export default class UnitOptionEntryQuestion extends Question {
 	 * @param {Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {Record<string, unknown>} [payload]
+	 * @param {import('#src/questions/question-types.d.ts').PrepQuestionForRenderingOptions} options
 	 * @returns {QuestionViewModel & {
 	 *   question: QuestionViewModel['question'] & {
 	 *     options:UnitOption[]
 	 *   }
 	 * }}
 	 */
-	prepQuestionForRendering(section, journey, customViewData, payload) {
-		const answer = payload ? payload[this.fieldName] : journey.response.answers[this.fieldName] || '';
-
-		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload);
+	prepQuestionForRendering(section, journey, customViewData, payload, options) {
+		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload, options);
+		const answer = viewModel.question.value;
+		const answers = this.answerObjectFromJourneyResponse(journey.response, options);
 
 		/** @type {Array<UnitOption>} */
-		const options = [];
+		viewModel.question.options = [];
 
 		for (const option of this.options) {
 			let optionData = { ...option };
@@ -101,7 +102,7 @@ export default class UnitOptionEntryQuestion extends Question {
 				if (conditionalIsJustHTML(conditionalField)) continue;
 
 				const conversionFactor = conditionalField.conversionFactor || 1;
-				const unconvertedAnswer = journey.response.answers[this.conditionalFieldName];
+				const unconvertedAnswer = answers[this.conditionalFieldName];
 
 				const existingValue =
 					answer === optionData.value && typeof unconvertedAnswer === 'number'
@@ -119,24 +120,20 @@ export default class UnitOptionEntryQuestion extends Question {
 				};
 			}
 
-			options.push(optionData);
+			viewModel.question.options.push(optionData);
 		}
 
-		return { ...viewModel, question: { ...viewModel.question, options } };
+		return viewModel;
 	}
 
 	/**
-	 * returns the data to send to the DB
-	 * side effect: modifies journeyResponse with the new answers
+	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
 	 * @returns {Promise<{ answers: Record<string, unknown> }>}
-	 */
+	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
-		/**
-		 * @type {{ answers: Record<string, unknown> }}
-		 */
-		let responseToSave = { answers: {} };
+		const answers = {};
 
 		/** @type {string[]} */
 		const fields = Array.isArray(req.body[this.fieldName]) ? req.body[this.fieldName] : [req.body[this.fieldName]];
@@ -149,8 +146,7 @@ export default class UnitOptionEntryQuestion extends Question {
 		if (!selectedOptions.length)
 			throw new Error(`User submitted option(s) did not correlate with valid answers to ${this.fieldName} question`);
 
-		responseToSave.answers[this.fieldName] = fieldValues.join(this.optionJoinString);
-		journeyResponse.answers[this.fieldName] = fieldValues;
+		answers[this.fieldName] = fieldValues.join(this.optionJoinString);
 
 		this.options.forEach((option) => {
 			if (!option.conditional) return;
@@ -161,13 +157,11 @@ export default class UnitOptionEntryQuestion extends Question {
 			if (optionIsSelectedOption) {
 				if (conditionalIsJustHTML(option.conditional)) return;
 				const conversionFactor = option.conditional.conversionFactor || 1;
-				const value = req.body[option.conditional.fieldName] * conversionFactor;
-				responseToSave.answers[this.conditionalFieldName] = value;
-				journeyResponse.answers[this.conditionalFieldName] = value;
+				answers[this.conditionalFieldName] = req.body[option.conditional.fieldName] * conversionFactor;
 			}
 		});
 
-		return responseToSave;
+		return { answers };
 	}
 
 	/**

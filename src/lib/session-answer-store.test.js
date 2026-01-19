@@ -80,6 +80,48 @@ describe('session-answer-store', () => {
 				}
 			});
 		});
+		it('should add a new managed list item when not present in the session', async () => {
+			const req = mockReq();
+			req.params = { manageListItemId: '12345' };
+			req.session = {};
+			const journeyId = 'j-1';
+			const data = { answers: { q1: 'a1' } };
+			const isManageListItem = true;
+			const manageListQuestionFieldName = 'myManagedList';
+			const saveDataToSession = buildSaveDataToSession();
+			await saveDataToSession({ req, journeyId, data, isManageListItem, manageListQuestionFieldName });
+			assert.deepStrictEqual(req.session, {
+				forms: {
+					'j-1': {
+						myManagedList: [{ id: '12345', q1: 'a1' }]
+					}
+				}
+			});
+		});
+		it('should add to an existing managed list item using the id when present in the session', async () => {
+			const req = mockReq();
+			req.params = { manageListItemId: '12345' };
+			req.session = {
+				forms: {
+					'j-1': {
+						myManagedList: [{ id: '12345', q1: 'old value' }]
+					}
+				}
+			};
+			const journeyId = 'j-1';
+			const data = { answers: { q2: 'a1' } };
+			const isManageListItem = true;
+			const manageListQuestionFieldName = 'myManagedList';
+			const saveDataToSession = buildSaveDataToSession();
+			await saveDataToSession({ req, journeyId, data, isManageListItem, manageListQuestionFieldName });
+			assert.deepStrictEqual(req.session, {
+				forms: {
+					'j-1': {
+						myManagedList: [{ id: '12345', q1: 'old value', q2: 'a1' }]
+					}
+				}
+			});
+		});
 
 		it('should overwrite existing data by reqParam & journeyId', async () => {
 			const req = mockReq();

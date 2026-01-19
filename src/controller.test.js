@@ -178,10 +178,10 @@ const sampleQuestionObj = {
 	getDataToSave: mock.fn(),
 	checkForValidationErrors: mock.fn(),
 	checkForSavingErrors: mock.fn(),
+	toViewModel: mock.fn(),
 	prepQuestionForRendering: mock.fn(),
 	formatAnswerForSummary: mock.fn(() => [mockAnswer]),
-	viewFolder: 'sampleType',
-	handleNextQuestion: mock.fn()
+	viewFolder: 'sampleType'
 };
 
 const mockSection = {
@@ -301,8 +301,8 @@ describe('dynamic-form/controller', () => {
 
 	describe('question', () => {
 		it('should redirect if question is not found', async () => {
-			mockJourney.getQuestionBySectionAndName = mock.fn();
-			mockJourney.getQuestionBySectionAndName.mock.mockImplementationOnce(() => null);
+			mockJourney.getQuestionByParams = mock.fn();
+			mockJourney.getQuestionByParams.mock.mockImplementationOnce(() => null);
 
 			await question(req, res);
 
@@ -314,8 +314,8 @@ describe('dynamic-form/controller', () => {
 			mockJourney.getSection.mock.mockImplementationOnce(() => {
 				return {};
 			});
-			mockJourney.getQuestionBySectionAndName = mock.fn(() => sampleQuestionObj);
-			mockJourney.getQuestionBySectionAndName.mock.mockImplementationOnce(() => sampleQuestionObj);
+			mockJourney.getQuestionByParams = mock.fn(() => sampleQuestionObj);
+			mockJourney.getQuestionByParams.mock.mockImplementationOnce(() => sampleQuestionObj);
 			sampleQuestionObj.renderAction = mock.fn();
 
 			await question(req, res);
@@ -326,15 +326,16 @@ describe('dynamic-form/controller', () => {
 
 		it('should render the question template', async () => {
 			sampleQuestionObj.renderAction.mock.resetCalls();
+			sampleQuestionObj.toViewModel.mock.resetCalls();
 			req.params.referenceId = mockRef;
 			const mockAnswer = 'sampleAnswer';
 			const mockBackLink = 'back';
 			const mockQuestionRendering = 'test';
 
-			sampleQuestionObj.prepQuestionForRendering.mock.mockImplementationOnce(() => mockQuestionRendering);
+			sampleQuestionObj.toViewModel.mock.mockImplementationOnce(() => mockQuestionRendering);
 
-			mockJourney.getQuestionBySectionAndName = mock.fn();
-			mockJourney.getQuestionBySectionAndName.mock.mockImplementationOnce(() => sampleQuestionObj);
+			mockJourney.getQuestionByParams = mock.fn();
+			mockJourney.getQuestionByParams.mock.mockImplementationOnce(() => sampleQuestionObj);
 			mockJourney.response.answers.sampleFieldName = mockAnswer;
 			mockJourney.getNextQuestionUrl = mock.fn(() => mockBackLink);
 			mockJourney.getSection = mock.fn(() => mockSection);
@@ -343,6 +344,11 @@ describe('dynamic-form/controller', () => {
 
 			assert.strictEqual(sampleQuestionObj.renderAction.mock.callCount(), 1);
 			assert.deepStrictEqual(sampleQuestionObj.renderAction.mock.calls[0].arguments, [res, mockQuestionRendering]);
+			assert.strictEqual(sampleQuestionObj.toViewModel.mock.callCount(), 1);
+			const args = sampleQuestionObj.toViewModel.mock.calls[0].arguments[0];
+			assert.ok(args);
+			assert.ok(args?.customViewData?.originalUrl);
+			assert.strictEqual(args?.customViewData?.originalUrl, req.originalUrl);
 		});
 	});
 
@@ -367,12 +373,13 @@ describe('dynamic-form/controller', () => {
 				notSampleFieldName: 'do not send this'
 			};
 
-			mockJourney.getQuestionBySectionAndName = mock.fn();
-			mockJourney.getQuestionBySectionAndName.mock.mockImplementationOnce(() => sampleQuestionObj);
+			mockJourney.getQuestionByParams = mock.fn();
+			mockJourney.getQuestionByParams.mock.mockImplementationOnce(() => sampleQuestionObj);
 
 			const saveData = mock.fn();
 			await buildSave(saveData)(req, res, journeyId);
 
+			assert.strictEqual(sampleQuestionObj.getDataToSave.mock.callCount(), 1);
 			assert.strictEqual(saveData.mock.callCount(), 1);
 			assert.deepStrictEqual(saveData.mock.calls[0].arguments, [
 				{
@@ -380,6 +387,8 @@ describe('dynamic-form/controller', () => {
 					res,
 					journeyId: journeyParams.journeyId,
 					referenceId: journeyParams.referenceId,
+					isManageListItem: undefined,
+					manageListQuestionFieldName: undefined,
 					data: undefined
 				}
 			]);
@@ -387,7 +396,9 @@ describe('dynamic-form/controller', () => {
 			const mocks = [sampleQuestionObj.checkForValidationErrors.mock, sampleQuestionObj.checkForSavingErrors.mock];
 			for (const mockFn of mocks) {
 				assert.strictEqual(mockFn.callCount(), 1);
-				assert.deepStrictEqual(mockFn.calls[0].arguments, [req, sections[0], mockJourney]);
+				assert.deepStrictEqual(mockFn.calls[0].arguments[0], req);
+				assert.deepStrictEqual(mockFn.calls[0].arguments[1], sections[0]);
+				assert.deepStrictEqual(mockFn.calls[0].arguments[2], mockJourney);
 			}
 		});
 
@@ -397,7 +408,7 @@ describe('dynamic-form/controller', () => {
 			const sampleQuestionObjWithActions = {
 				...sampleQuestionObj,
 				saveAction: mock.fn(),
-				prepQuestionForRendering: mock.fn(() => expectedViewModel),
+				toViewModel: mock.fn(() => expectedViewModel),
 				renderAction: mock.fn()
 			};
 
@@ -418,8 +429,8 @@ describe('dynamic-form/controller', () => {
 				notSampleFieldName: 'do not send this'
 			};
 
-			mockJourney.getQuestionBySectionAndName = mock.fn();
-			mockJourney.getQuestionBySectionAndName.mock.mockImplementationOnce(() => sampleQuestionObjWithActions);
+			mockJourney.getQuestionByParams = mock.fn();
+			mockJourney.getQuestionByParams.mock.mockImplementationOnce(() => sampleQuestionObjWithActions);
 
 			const saveData = mock.fn(() => {
 				throw new Error('Expected error message');
@@ -427,20 +438,27 @@ describe('dynamic-form/controller', () => {
 			await buildSave(saveData)(req, res, journeyId);
 
 			assert.strictEqual(saveData.mock.callCount(), 1);
-			assert.deepStrictEqual(saveData.mock.calls[0].arguments, [
-				{
-					req,
-					res,
-					journeyId: journeyParams.journeyId,
-					referenceId: journeyParams.referenceId,
-					data: undefined
-				}
-			]);
+			assert.deepStrictEqual(
+				saveData.mock.calls[0].arguments,
+				[
+					{
+						req,
+						res,
+						journeyId: journeyParams.journeyId,
+						referenceId: journeyParams.referenceId,
+						data: undefined,
+						isManageListItem: undefined,
+						manageListQuestionFieldName: undefined
+					}
+				],
+				'save data args'
+			);
 
-			assert.deepStrictEqual(sampleQuestionObjWithActions.renderAction.mock.calls[0].arguments, [
-				res,
-				expectedViewModel
-			]);
+			assert.deepStrictEqual(
+				sampleQuestionObjWithActions.renderAction.mock.calls[0].arguments,
+				[res, expectedViewModel],
+				'render args'
+			);
 		});
 
 		it('should handle validation errors', async () => {
@@ -465,8 +483,8 @@ describe('dynamic-form/controller', () => {
 				answers: {}
 			};
 
-			mockJourney.getQuestionBySectionAndName = mock.fn();
-			mockJourney.getQuestionBySectionAndName.mock.mockImplementationOnce(() => sampleQuestionObjWithActions);
+			mockJourney.getQuestionByParams = mock.fn();
+			mockJourney.getQuestionByParams.mock.mockImplementationOnce(() => sampleQuestionObjWithActions);
 
 			const saveData = mock.fn();
 			await buildSave(saveData)(req, res, journeyId);
@@ -480,11 +498,11 @@ describe('dynamic-form/controller', () => {
 			const journeyId = 'has-questionnaire';
 			const expectedUrl = 'redirect-url';
 			const sampleQuestionObjWithActions = {
-				...sampleQuestionObj,
-				handleNextQuestion: mock.fn((res, journey) => {
-					res.redirect(journey.getNextQuestionUrl());
-				})
+				...sampleQuestionObj
 			};
+			sampleQuestionObjWithActions.getDataToSave.mock.mockImplementationOnce(() => ({
+				answers: { [sampleQuestionObj.fieldName]: 'my-answer' }
+			}));
 
 			req.params = {
 				referenceId: mockRef,
@@ -498,8 +516,8 @@ describe('dynamic-form/controller', () => {
 			};
 
 			mockJourney.getSection = mock.fn(() => ({}));
-			mockJourney.getQuestionBySectionAndName = mock.fn();
-			mockJourney.getQuestionBySectionAndName.mock.mockImplementationOnce(() => sampleQuestionObjWithActions);
+			mockJourney.getQuestionByParams = mock.fn();
+			mockJourney.getQuestionByParams.mock.mockImplementationOnce(() => sampleQuestionObjWithActions);
 			mockJourney.getNextQuestionUrl = mock.fn(() => expectedUrl);
 
 			const saveData = mock.fn();
@@ -508,6 +526,8 @@ describe('dynamic-form/controller', () => {
 			assert.strictEqual(saveData.mock.callCount(), 1);
 			assert.strictEqual(res.redirect.mock.callCount(), 1);
 			assert.strictEqual(res.redirect.mock.calls[0].arguments[0], expectedUrl);
+			// journey response should be edited if redirecting to next question
+			assert.strictEqual(res.locals.journeyResponse.answers?.sampleFieldName, 'my-answer');
 		});
 
 		it('should redirect to task list if configured', async () => {
@@ -515,11 +535,11 @@ describe('dynamic-form/controller', () => {
 			const journeyId = 'has-questionnaire';
 			const expectedUrl = 'redirect-url';
 			const sampleQuestionObjWithActions = {
-				...sampleQuestionObj,
-				handleNextQuestion: mock.fn((res, journey) => {
-					res.redirect(journey.getNextQuestionUrl());
-				})
+				...sampleQuestionObj
 			};
+			sampleQuestionObjWithActions.getDataToSave.mock.mockImplementationOnce(() => ({
+				answers: { [sampleQuestionObj.fieldName]: 'my-answer' }
+			}));
 
 			req.params = {
 				referenceId: mockRef,
@@ -533,8 +553,8 @@ describe('dynamic-form/controller', () => {
 			};
 
 			mockJourney.getSection = mock.fn(() => ({}));
-			mockJourney.getQuestionBySectionAndName = mock.fn();
-			mockJourney.getQuestionBySectionAndName.mock.mockImplementationOnce(() => sampleQuestionObjWithActions);
+			mockJourney.getQuestionByParams = mock.fn();
+			mockJourney.getQuestionByParams.mock.mockImplementationOnce(() => sampleQuestionObjWithActions);
 			mockJourney.getNextQuestionUrl = mock.fn(() => expectedUrl);
 
 			const saveData = mock.fn();
@@ -544,6 +564,69 @@ describe('dynamic-form/controller', () => {
 			assert.strictEqual(res.redirect.mock.callCount(), 1);
 			assert.match(res.redirect.mock.calls[0].arguments[0], /\/task-list$/);
 			assert.strictEqual(mockJourney.getNextQuestionUrl.mock.callCount(), 0);
+			// journey response should not be edited if redirecting to task list
+			assert.strictEqual(Object.keys(res.locals.journeyResponse.answers).length, 0);
+		});
+
+		describe('manageListQuestions', () => {
+			const setupJourney = () => {
+				const q = {
+					fieldName: 'question-2',
+					get isInManageListSection() {
+						return true;
+					},
+					checkForValidationErrors: mock.fn(),
+					getDataToSave: mock.fn(),
+					checkForSavingErrors: mock.fn()
+				};
+				const manageListQ = {
+					get isManageListQuestion() {
+						return true;
+					}
+				};
+				const req = {
+					params: {
+						section: 'section-1',
+						question: 'question-1',
+						manageListAction: 'add',
+						manageListItemId: 'item-id-1',
+						manageListQuestion: 'question-6'
+					}
+				};
+				const journey = {
+					getSection: mock.fn(() => ({ segment: 'section-1' })),
+					getQuestionByParams: mock.fn(),
+					redirectToNextQuestion: mock.fn(),
+					response: { answers: {} }
+				};
+				const res = {
+					locals: {
+						journey,
+						journeyResponse: { answers: {} }
+					},
+					redirect: mock.fn()
+				};
+				journey.getQuestionByParams.mock.mockImplementationOnce(() => q, 0);
+				journey.getQuestionByParams.mock.mockImplementationOnce(() => manageListQ, 1);
+				return { journey, manageListQ, req, res, q };
+			};
+			it('should find the parent manage list question', async () => {
+				const { journey, manageListQ, req, res } = setupJourney();
+				const saveData = mock.fn();
+				await buildSave(saveData)(req, res, 'journey-1');
+				assert.strictEqual(journey.getSection.mock.callCount(), 1);
+				assert.strictEqual(journey.getQuestionByParams.mock.callCount(), 2);
+				assert.strictEqual(journey.redirectToNextQuestion.mock.callCount(), 1);
+				assert.strictEqual(journey.redirectToNextQuestion.mock.calls[0].arguments[2], manageListQ);
+			});
+			it('should preserve request route params', async () => {
+				const { journey, req, res } = setupJourney();
+				const saveData = mock.fn();
+				await buildSave(saveData)(req, res, 'journey-1');
+				assert.strictEqual(journey.redirectToNextQuestion.mock.callCount(), 1);
+				const params = journey.redirectToNextQuestion.mock.calls[0].arguments[1];
+				assert.deepStrictEqual(params, req.params);
+			});
 		});
 	});
 });
