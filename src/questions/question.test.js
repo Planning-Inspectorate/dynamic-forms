@@ -108,6 +108,11 @@ describe('./src/dynamic-forms/question.js', () => {
 				new Error('viewFolder parameter is mandatory')
 			);
 		});
+		it('should capitalise title first letter', () => {
+			const question = getTestQuestion({ title: 'lowercase title' });
+
+			assert.strictEqual(question.title, 'Lowercase title');
+		});
 	});
 
 	describe('prepQuestionForRendering', () => {

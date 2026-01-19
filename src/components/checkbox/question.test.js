@@ -4,7 +4,7 @@ import CheckboxQuestion from './question.js';
 import ValidOptionValidator from '../../validator/valid-option-validator.js';
 
 describe('./src/dynamic-forms/components/checkbox/question.js', () => {
-	const TITLE = 'title';
+	const TITLE = 'Title';
 	const QUESTION = 'Question?';
 	const DESCRIPTION = 'Describe';
 	const FIELDNAME = 'field-name';

@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import MultiFieldInputQuestion from './question.js';
 import { Journey } from '../../journey/journey.js';
 
-const TITLE = 'title';
+const TITLE = 'Title';
 const QUESTION = 'Question?';
 const FIELDNAME = 'field-name';
 const VALIDATORS = [1, 2];
@@ -243,7 +243,7 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 						text: 'Change',
 						visuallyHiddenText: 'Question?'
 					},
-					key: 'title',
+					key: 'Title',
 					value: 'planning-permission<br>Test User<br>'
 				}
 			];
@@ -277,7 +277,7 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 						text: 'Answer',
 						visuallyHiddenText: 'Question?'
 					},
-					key: 'title',
+					key: 'Title',
 					value: ''
 				}
 			];
@@ -311,7 +311,7 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 						text: 'Answer',
 						visuallyHiddenText: 'Question?'
 					},
-					key: 'title',
+					key: 'Title',
 					value: 'Not started'
 				}
 			];

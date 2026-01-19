@@ -121,7 +121,7 @@ export class Question {
 		if (!question || question === '') throw new Error('question parameter is mandatory');
 		if (!viewFolder || viewFolder === '') throw new Error('viewFolder parameter is mandatory');
 		if (!fieldName || fieldName === '') throw new Error('fieldName parameter is mandatory');
-		this.title = title;
+		this.title = capitalize(title);
 		this.question = question;
 		this.viewFolder = viewFolder;
 		this.fieldName = fieldName;
@@ -299,6 +299,7 @@ export class Question {
 	 * @param {String} sectionSegment
 	 * @param {Journey} journey
 	 * @param {Object} answer
+	 * @param {boolean} [capitals=true] whether to capitalise the answer or not
 	 * @returns {Array<{
 	 *   key: string;
 	 *   value: string | Object;

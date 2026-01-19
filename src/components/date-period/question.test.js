@@ -5,7 +5,7 @@ import { Question } from '../../questions/question.js';
 import DatePeriodQuestion from './question.js';
 
 describe('DatePeriodQuestion', () => {
-	const TITLE = 'title';
+	const TITLE = 'Title';
 	const QUESTION = 'question';
 	const FIELDNAME = 'fieldName';
 	const HINT = 'hint hint';

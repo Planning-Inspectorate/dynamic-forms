@@ -4,7 +4,7 @@ import SingleLineInputQuestion from './question.js';
 
 describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 	it('should create', () => {
-		const TITLE = 'title';
+		const TITLE = 'Title';
 		const QUESTION = 'Question?';
 		const FIELDNAME = 'field-name';
 		const VALIDATORS = [1, 2];

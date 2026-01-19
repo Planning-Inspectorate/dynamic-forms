@@ -4,7 +4,7 @@ import TextEntryRedactQuestion from './question.js';
 import { configureNunjucksTestEnv } from '../../../test/utils/nunjucks.js';
 
 describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
-	const TITLE = 'title';
+	const TITLE = 'Title';
 	const QUESTION = 'Question?';
 	const FIELDNAME = 'field-name';
 	const VALIDATORS = [1, 2];
@@ -229,7 +229,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 
 		assert.deepStrictEqual(viewModel, [
 			{
-				key: 'title',
+				key: 'Title',
 				value:
 					'It began with an ordinary morning. The air smelled faintly of dew, the street empty but for leaves drifting lazily. ████████ ██████ adjusted his collar, noting his watch was three minutes late—a stubborn old thing, loyal only to its own time. Across the street, a bakery opened, the scent of bread spilling into the cool air. A woman in a green scarf carried loaves in quiet balance. The square stirred slowly; ████████ wrote in his notebook, letting the day delay his errands, wholly unhurried and serene.',
 				action: {
@@ -266,7 +266,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 
 		assert.deepStrictEqual(viewModel, [
 			{
-				key: 'title',
+				key: 'Title',
 				value: `It began with an ordinary morning. The air smelled faintly of dew, the street empty but for leaves drifting lazily. ████████ ██████ adjusted his collar, noting his watch was three minutes late—a stubborn old thing, loyal only to its own time. Across the street, a bakery opened, the scent of bread spilling into the cool air. A woman in a green scarf carried loaves in quiet balance. The square stirred slowly; ████████ wrote in his notebook, letting the day delay his errands, wholly unhurried and s... <a class="govuk-link govuk-link--no-visited-state" href="/redacted-comment">Read more</a>`,
 				action: {
 					href: '/redacted-comment',
@@ -302,7 +302,7 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 
 		assert.deepStrictEqual(viewModel, [
 			{
-				key: 'title',
+				key: 'Title',
 				value:
 					'It began, as many stories do, with an ordinary morning. The air carried the faint smell of dew, and the street was empty save for a few scattered leaves drifting lazily o████████ze too shy to commit to being wind. Jonathan Price adjusted his collar and glanced at his watch, noting with mild irritation tha███████████████████████████ree minutes late.',
 				action: {
