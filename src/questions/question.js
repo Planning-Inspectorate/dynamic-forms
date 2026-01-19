@@ -310,6 +310,15 @@ export class Question {
 		res.render(view, viewModel);
 	}
 
+	renderConfirmationAction(res, viewModel) {
+		let view = `components/${this.viewFolder}/confirm`;
+		if (this.viewFolder.includes('/')) {
+			// custom view folder
+			view = `${this.viewFolder}/confirm`;
+		}
+		res.render(view, viewModel);
+	}
+
 	/**
 	 * check for validation errors
 	 * @param {import('express').Request} req

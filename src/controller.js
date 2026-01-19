@@ -176,6 +176,17 @@ export async function question(req, res) {
 			originalUrl: req.originalUrl
 		}
 	});
+	if (req.params?.manageListAction && req.params.manageListAction === 'remove') {
+		const item = journey.response.answers[question.fieldName].find((i) => i.id === req.params.manageListItemId);
+		if (!item) {
+			return res.redirect(journey.taskListUrl);
+		}
+		// Extract all properties except 'id', to avoid exposing it in the view model
+		/* eslint-disable no-unused-vars */
+		const { id, ...rest } = item;
+		viewModel.itemToRemove = rest;
+		return question.renderConfirmationAction(res, viewModel);
+	}
 	return question.renderAction(res, viewModel);
 }
 
@@ -213,6 +224,10 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 			return res.redirect(journey.taskListUrl);
 		}
 
+		// // If delete then save to session delete item
+		// if(req.params?.manageListAction && req.params.manageListAction === 'delete') {
+		//
+		// }
 		let manageListQuestion;
 		if (question.isInManageListSection) {
 			// find parent question for the manage list
@@ -228,9 +243,16 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 			if (errorViewModel) {
 				return question.renderAction(res, errorViewModel);
 			}
+			let data;
 
-			// save
-			const data = await question.getDataToSave(req, journeyResponse);
+			// TODO: define 'remove' as constant
+			if (req.params?.manageListAction && req.params.manageListAction === 'remove') {
+				// perform removal from session data
+				data = await question.getDataToRemove(req, journeyResponse);
+			} else {
+				// perform normal save to session data
+				data = await question.getDataToSave(req, journeyResponse);
+			}
 
 			await saveData({
 				req,

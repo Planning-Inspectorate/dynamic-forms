@@ -102,6 +102,16 @@ export default class ManageListQuestion extends Question {
 		};
 	}
 
+	async getDataToRemove(req, journeyResponse) {
+		const answers = {};
+		const itemId = req.params.manageListItemId;
+		const currentAnswers = journeyResponse.answers[this.fieldName] || [];
+		if (Array.isArray(currentAnswers)) {
+			answers[this.fieldName] = currentAnswers.filter((item) => item.id !== itemId);
+		}
+		return { answers };
+	}
+
 	formatAnswerForSummary(sectionSegment, journey, answer) {
 		let formattedAnswer = this.notStartedText;
 		if (answer && Array.isArray(answer)) {
