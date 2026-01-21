@@ -136,4 +136,41 @@ describe('components/manage-list/question', () => {
 			}
 		);
 	});
+
+	describe('getDataToSave', () => {
+		it('should return existing journey answers if present', async () => {
+			const q = newQuestion();
+			const existingData = [{ id: '1', name: 'Test' }];
+			const req = { body: {} };
+			const journeyResponse = {
+				answers: {
+					[FIELDNAME]: existingData
+				}
+			};
+
+			const result = await q.getDataToSave(req, journeyResponse);
+
+			assert.deepStrictEqual(result, {
+				answers: {
+					[FIELDNAME]: existingData
+				}
+			});
+		});
+
+		it('should return an empty array if no journey answers are present', async () => {
+			const q = newQuestion();
+			const req = { body: {} };
+			const journeyResponse = {
+				answers: {}
+			};
+
+			const result = await q.getDataToSave(req, journeyResponse);
+
+			assert.deepStrictEqual(result, {
+				answers: {
+					[FIELDNAME]: []
+				}
+			});
+		});
+	});
 });
