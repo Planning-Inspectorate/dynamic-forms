@@ -71,7 +71,10 @@ export default class ManageListQuestion extends Question {
 			return [];
 		}
 		const mockJourney = {
-			getCurrentQuestionUrl() {}
+			getCurrentQuestionUrl() {},
+			response: {
+				answers: answer
+			}
 		};
 		return (
 			this.section.questions
@@ -91,9 +94,12 @@ export default class ManageListQuestion extends Question {
 		);
 	}
 
-	async getDataToSave() {
-		// data is saved on the individual questions, nothing to save here
-		return { answers: {} };
+	async getDataToSave(req, journeyResponse) {
+		return {
+			answers: {
+				[this.fieldName]: journeyResponse.answers[this.fieldName] || []
+			}
+		};
 	}
 
 	formatAnswerForSummary(sectionSegment, journey, answer) {
