@@ -118,7 +118,8 @@ export default class MultiFieldInputQuestion extends Question {
 		return [
 			{
 				key: `${this.title}`,
-				value: nl2br(escape(formattedAnswer)),
+				// Do not convert new lines to breaks in ManageListSection, as this causes a "doubled up" <br>
+				value: this.isInManageListSection ? escape(formattedAnswer) : nl2br(escape(formattedAnswer)),
 				action: this.getAction(sectionSegment, journey, summaryDetails)
 			}
 		];

@@ -34,7 +34,7 @@ function createMultiFieldInputQuestion(
 	});
 }
 
-describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
+describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 	it('should create', () => {
 		const testQuestion = createMultiFieldInputQuestion();
 
@@ -319,6 +319,34 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 			const result = question.formatAnswerForSummary('questions', journey);
 
 			assert.deepStrictEqual(result, expectedResult);
+		});
+		it('should return escaped text with newlines (no <br>) when isInManageListSection is true', () => {
+			const question = createMultiFieldInputQuestion();
+
+			question.isInManageListSection = true;
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: 'Line 1',
+						testField2: 'Line & 2'
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			const expectedValue = 'Line 1\nLine &amp; 2\n';
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			assert.strictEqual(result[0].value, expectedValue);
+			assert.strictEqual(result[0].value.includes('<br>'), false);
 		});
 	});
 });
