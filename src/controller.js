@@ -1,6 +1,7 @@
 import { SECTION_STATUS } from './section.js';
 import questionUtils from './components/utils/question-utils.js';
 import { answerObjectForManageListSaving } from '#src/components/manage-list/utils.js';
+import { booleanToYesNoValue } from '#src/components/boolean/question.js';
 
 /**
  * @typedef {import('./journey/journey.js').Journey} Journey
@@ -258,6 +259,12 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				answers = answerObjectForManageListSaving(journeyResponse, manageListQuestion, req.params);
 			}
 			for (const [k, v] of Object.entries(data?.answers || {})) {
+				if (typeof v === 'boolean') {
+					// boolean answers are saved at booleans, but stored in session and
+					// checked by display logic as yes/no
+					answers[k] = booleanToYesNoValue(v);
+					continue;
+				}
 				answers[k] = v;
 			}
 			// move to the next question

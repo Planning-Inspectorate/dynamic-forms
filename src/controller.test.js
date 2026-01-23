@@ -6,6 +6,7 @@ import { Journey } from './journey/journey.js';
 import { SECTION_STATUS } from './section.js';
 
 import { mockReq, mockRes } from '#test/utils/utils.js';
+import { BOOLEAN_OPTIONS } from '#src/components/boolean/question.js';
 
 const res = mockRes();
 const mockBaseUrl = '/manage-appeals/questionnaire';
@@ -501,7 +502,10 @@ describe('dynamic-form/controller', () => {
 				...sampleQuestionObj
 			};
 			sampleQuestionObjWithActions.getDataToSave.mock.mockImplementationOnce(() => ({
-				answers: { [sampleQuestionObj.fieldName]: 'my-answer' }
+				answers: {
+					[sampleQuestionObj.fieldName]: 'my-answer',
+					aBooleanToTest: true
+				}
 			}));
 
 			req.params = {
@@ -528,6 +532,8 @@ describe('dynamic-form/controller', () => {
 			assert.strictEqual(res.redirect.mock.calls[0].arguments[0], expectedUrl);
 			// journey response should be edited if redirecting to next question
 			assert.strictEqual(res.locals.journeyResponse.answers?.sampleFieldName, 'my-answer');
+			// booleans must be strings in journey response
+			assert.strictEqual(res.locals.journeyResponse.answers?.aBooleanToTest, BOOLEAN_OPTIONS.YES);
 		});
 
 		it('should redirect to task list if configured', async () => {
