@@ -1,0 +1,26 @@
+{% extends layoutTemplate %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block dynQuestionContent %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form action="" method="post" novalidate>
+                {% if _csrf %}<input type="hidden" name="_csrf" value="{{ _csrf }}">{% endif %}
+
+                <h1> You are removing</h1>
+                {% for key, value in itemToRemove %}
+                    <div>
+                        <p class="govuk-body-m">{{ value | safe }}</p>
+                    </div>
+                {% endfor %}
+
+                {{ govukButton({
+                    text: continueButtonText,
+                    type: "submit",
+                    attributes: { "data-cy":"button-save-and-continue"}
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -174,6 +174,11 @@ export class Journey {
 			return undefined;
 		}
 		if (manageListParams && question.isManageListQuestion) {
+			// TODO: define as 'confirm' as constant
+			if (manageListParams.question === 'confirm') {
+				// special case for the delete confirmation page
+				return question;
+			}
 			return question.section.questions.find((q) => matchQuestion(q, manageListParams.question));
 		}
 		return question;
@@ -295,6 +300,14 @@ export class Journey {
 							question: manageListQuestion.url,
 							// the manageListQuestion param is for the next question
 							manageListQuestion: question.url || question.fieldName
+						};
+					}
+					//TODO: define 'remove' as constant
+					if (params.manageListAction === 'remove') {
+						// If you have just confirmed removal of an item, go back to the parent manage list question
+						newParams = {
+							section: params.section,
+							question: params.question
 						};
 					}
 					return this.#buildQuestionUrl(newParams);
