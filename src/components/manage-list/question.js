@@ -1,6 +1,6 @@
 import { Question } from '#question';
 import { Uuid } from '#src/lib/uuid.js';
-import { nunjucksEnv } from '#src/components/utils/nunjucks.js';
+import nunjucks from 'nunjucks';
 
 /**
  * @typedef {Object} ManageListQuestionParameters
@@ -107,7 +107,10 @@ export default class ManageListQuestion extends Question {
 		if (answer && Array.isArray(answer)) {
 			if (this.#showAnswersInSummary) {
 				const answers = answer.map((a) => this.#formatItemAnswers(a));
-				formattedAnswer = nunjucksEnv().render('components/manage-list/answer-summary-list.njk', { answers });
+				// note: nunjucks.render uses the last configured environment
+				// so we assume here that it is the one used by the main application and
+				// is configured for dynamic-forms and govuk components
+				formattedAnswer = nunjucks.render('components/manage-list/answer-summary-list.njk', { answers });
 			} else if (answer.length > 0) {
 				formattedAnswer = `${answer.length} ${this.title}`;
 			}
