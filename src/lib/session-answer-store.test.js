@@ -123,6 +123,34 @@ describe('session-answer-store', () => {
 			});
 		});
 
+		it('should remove a managed list item using the id when present in the session', async () => {
+			const req = mockReq();
+			req.params = { manageListItemId: '56789' };
+			req.session = {
+				forms: {
+					'j-1': {
+						myManagedList: [
+							{ id: '12345', q1: 'keep value' },
+							{ id: '56789', q1: 'remove value' }
+						]
+					}
+				}
+			};
+			const data = {};
+			const journeyId = 'j-1';
+			const manageListQuestionFieldName = 'myManagedList';
+			const manageListItemRemove = true;
+			const saveDataToSession = buildSaveDataToSession();
+			await saveDataToSession({ req, journeyId, data, manageListQuestionFieldName, manageListItemRemove });
+			assert.deepStrictEqual(req.session, {
+				forms: {
+					'j-1': {
+						myManagedList: [{ id: '12345', q1: 'keep value' }]
+					}
+				}
+			});
+		});
+
 		it('should overwrite existing data by reqParam & journeyId', async () => {
 			const req = mockReq();
 			req.params = { myParam: 'req-1' };
