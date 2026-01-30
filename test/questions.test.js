@@ -1,9 +1,8 @@
 import { describe, it } from 'node:test';
 import assert from 'assert';
 import { manageListQuestions, questionsInOrder } from './questions.js';
-import path from 'path';
 import { COMPONENT_TYPES } from '../src/index.js';
-import { escapeForRegExp, snapshotsDir } from './utils/utils.js';
+import { assertSnapshot, escapeForRegExp } from './utils/utils.js';
 import { createAppWithQuestions, mockAnswerBody } from '#test/utils/question-test-utils.js';
 import { mockRandomUUID } from '#test/mock/uuid.js';
 
@@ -56,9 +55,8 @@ describe('question pages', () => {
 				}
 			}
 		}
-		ctx.assert.fileSnapshot(text, path.join(snapshotsDir(), snapshotName + '.html'), {
-			serializers: [(v) => v]
-		});
+
+		assertSnapshot(ctx, text, snapshotName + '.html');
 	}
 
 	/**

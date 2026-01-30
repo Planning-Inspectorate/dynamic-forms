@@ -5,8 +5,7 @@ import { ManageListSection } from '#src/components/manage-list/manage-list-secti
 import { mockJourney } from '#test/mock/journey.js';
 import { mockRandomUUID } from '#test/mock/uuid.js';
 import { configureNunjucksTestEnv } from '#test/utils/nunjucks.js';
-import path from 'path';
-import { snapshotsDir } from '#test/utils/utils.js';
+import { assertSnapshot } from '#test/utils/utils.js';
 
 describe('components/manage-list/question', () => {
 	const TITLE = 'Things';
@@ -96,13 +95,7 @@ describe('components/manage-list/question', () => {
 		const { q } = questionWithManageQuestions(ctx, { showAnswersInSummary: true });
 		const answerForSummary = q.formatAnswerForSummary('section-1', mockJourney(), [{}, {}, {}]);
 		assert.strictEqual(answerForSummary.length, 1);
-		ctx.assert.fileSnapshot(
-			answerForSummary[0].value.replaceAll('\r\n', '\n'),
-			path.join(snapshotsDir(), 'manage-list-answer-summary.html'),
-			{
-				serializers: [(v) => v]
-			}
-		);
+		assertSnapshot(ctx, answerForSummary[0].value, 'manage-list-answer-summary.html');
 	});
 
 	it('should render with answers', (ctx) => {
@@ -114,9 +107,7 @@ describe('components/manage-list/question', () => {
 		};
 		q.renderAction(res, viewModel);
 		assert.strictEqual(res.render.mock.callCount(), 1);
-		ctx.assert.fileSnapshot(res.render.mock.calls[0].result, path.join(snapshotsDir(), 'manage-list-render.html'), {
-			serializers: [(v) => v]
-		});
+		assertSnapshot(ctx, res.render.mock.calls[0].result, 'manage-list-render.html');
 	});
 
 	it('should render with answers & questions', (ctx) => {
@@ -130,13 +121,7 @@ describe('components/manage-list/question', () => {
 		};
 		q.renderAction(res, viewModel);
 		assert.strictEqual(res.render.mock.callCount(), 1);
-		ctx.assert.fileSnapshot(
-			res.render.mock.calls[0].result,
-			path.join(snapshotsDir(), 'manage-list-render-questions.html'),
-			{
-				serializers: [(v) => v]
-			}
-		);
+		assertSnapshot(ctx, res.render.mock.calls[0].result, 'manage-list-render-questions.html');
 	});
 
 	describe('getDataToSave', () => {

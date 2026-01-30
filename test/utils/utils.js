@@ -10,6 +10,21 @@ export function snapshotsDir() {
 }
 
 /**
+ * @param {import('node:test').TestContext} ctx
+ * @param {string} content
+ * @param {string} name
+ */
+export function assertSnapshot(ctx, content, name) {
+	ctx.assert.fileSnapshot(
+		content.replaceAll('\r\n', '\n'), // OS agnostic line endings
+		path.join(snapshotsDir(), name),
+		{
+			serializers: [(v) => v]
+		}
+	);
+}
+
+/**
  * @returns {import('pino').BaseLogger}
  */
 export function mockLogger() {

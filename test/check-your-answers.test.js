@@ -1,8 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'assert';
 import { manageListQuestions, questionsInOrder } from './questions.js';
-import path from 'path';
-import { escapeForRegExp, snapshotsDir } from './utils/utils.js';
+import { assertSnapshot, escapeForRegExp } from './utils/utils.js';
 import { createAppWithQuestions, mockAnswer, mockAnswerBody } from './utils/question-test-utils.js';
 import { COMPONENT_TYPES } from '#src/index.js';
 
@@ -30,9 +29,7 @@ describe('check-your-answers', () => {
 				new RegExp(`<a[^>]* href="questions/${q.url}">\\s*Answer\\s*<span[^>]*>\\s*${escapedQ}\\s*</span></a>`, 'i')
 			);
 		}
-		ctx.assert.fileSnapshot(text, path.join(snapshotsDir(), 'check-your-answers-not-started.html'), {
-			serializers: [(v) => v]
-		});
+		assertSnapshot(ctx, text, 'check-your-answers-not-started.html');
 	});
 
 	it(`should render all question answers`, async (ctx) => {
@@ -80,8 +77,6 @@ describe('check-your-answers', () => {
 				new RegExp(`<a[^>]* href="questions/${q.url}">\\s*Change\\s*<span[^>]*>\\s*${escapedQ}\\s*</span></a>`, 'i')
 			);
 		}
-		ctx.assert.fileSnapshot(text, path.join(snapshotsDir(), 'check-your-answers-with-answers.html'), {
-			serializers: [(v) => v]
-		});
+		assertSnapshot(ctx, text, 'check-your-answers-with-answers.html');
 	});
 });
