@@ -91,6 +91,8 @@ describe('components/manage-list/question', () => {
 	});
 
 	it('should support showing all answers in the format list answer for summary', (ctx) => {
+		// nunjucks.render uses the last environment configured, so make sure one is configured
+		configureNunjucksTestEnv();
 		const { q } = questionWithManageQuestions(ctx, { showAnswersInSummary: true });
 		const answerForSummary = q.formatAnswerForSummary('section-1', mockJourney(), [{}, {}, {}]);
 		assert.strictEqual(answerForSummary.length, 1);

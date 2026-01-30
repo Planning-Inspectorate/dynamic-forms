@@ -112,6 +112,9 @@ export default class UnitOptionEntryQuestion extends Question {
 				conditionalField.value = payload ? payload[conditionalField.fieldName] : existingValue;
 
 				optionData.conditional = {
+					// note: nunjucks.render uses the last configured environment
+					// so we assume here that it is the one used by the main application and
+					// is configured for dynamic-forms and govuk components
 					html: nunjucks.render(`./components/conditional/unit.njk`, {
 						payload,
 						...conditionalField,

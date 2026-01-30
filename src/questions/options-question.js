@@ -100,6 +100,9 @@ export default class OptionsQuestion extends Question {
 				conditionalField.value = answers[conditionalField.fieldName] || '';
 
 				optionData.conditional = {
+					// note: nunjucks.render uses the last configured environment
+					// so we assume here that it is the one used by the main application and
+					// is configured for dynamic-forms and govuk components
 					html: nunjucks.render(`./components/conditional/${conditionalField.type}.njk`, {
 						payload,
 						...conditionalField,
