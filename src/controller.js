@@ -177,6 +177,13 @@ export async function question(req, res) {
 			originalUrl: req.originalUrl
 		}
 	});
+	if (question.isManageListQuestion && req.params.manageListAction === question.removeActionParam) {
+		const item = journey.response.answers[question.fieldName].find((i) => i.id === req.params.manageListItemId);
+		if (!item) {
+			return res.redirect(journey.taskListUrl);
+		}
+		return question.renderConfirmationAction(res, item, viewModel);
+	}
 	return question.renderAction(res, viewModel);
 }
 
@@ -215,7 +222,10 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 		}
 
 		let manageListQuestion;
-		if (question.isInManageListSection) {
+		if (
+			question.isInManageListSection ||
+			(question.isManageListQuestion && req.params.manageListAction === question.removeActionParam)
+		) {
 			// find parent question for the manage list
 			manageListQuestion = journey.getQuestionByParams({ section: req.params.section, question: req.params.question });
 			if (!manageListQuestion) {
@@ -240,6 +250,8 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				referenceId: journeyResponse.referenceId,
 				isManageListItem: question.isInManageListSection,
 				manageListQuestionFieldName: manageListQuestion?.fieldName,
+				manageListItemRemove:
+					req.params?.manageListAction && req.params?.manageListAction === question.removeActionParam,
 				data
 			});
 

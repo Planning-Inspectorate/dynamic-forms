@@ -40,7 +40,14 @@ import { booleanToYesNoValue } from '../components/boolean/question.js';
  * @returns {import('../controller').SaveDataFn}
  */
 export function buildSaveDataToSession({ reqParam } = {}) {
-	return async ({ req, journeyId, data, isManageListItem, manageListQuestionFieldName }) => {
+	return async ({
+		req,
+		journeyId,
+		data,
+		isManageListItem,
+		manageListQuestionFieldName,
+		manageListItemRemove = false
+	}) => {
 		if (!req.session) {
 			throw new Error('request session required');
 		}
@@ -55,10 +62,18 @@ export function buildSaveDataToSession({ reqParam } = {}) {
 		if (isManageListItem) {
 			const answersList = answers[manageListQuestionFieldName] || (answers[manageListQuestionFieldName] = []);
 			answers = answersList.find((item) => item.id === req.params.manageListItemId);
-
 			if (!answers) {
 				answers = { id: req.params.manageListItemId };
 				answersList.push(answers);
+			}
+		}
+
+		if (manageListItemRemove) {
+			const answersList = answers[manageListQuestionFieldName] || (answers[manageListQuestionFieldName] = []);
+			const index = answersList.findIndex((item) => item.id === req.params.manageListItemId);
+			if (index > -1) {
+				answersList.splice(index, 1);
+				return;
 			}
 		}
 		for (const [k, v] of Object.entries(data?.answers || {})) {

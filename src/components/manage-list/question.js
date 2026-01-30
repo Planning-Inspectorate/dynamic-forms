@@ -14,6 +14,9 @@ export default class ManageListQuestion extends Question {
 	#section;
 	/** @type {boolean} */
 	#showAnswersInSummary;
+	#editActionParam;
+	#removeActionParam;
+	#confirmationQuestionParam;
 
 	/**
 	 * @param {import('#question-types').QuestionParameters & ManageListQuestionParameters} params
@@ -30,6 +33,9 @@ export default class ManageListQuestion extends Question {
 			}
 		});
 		this.#showAnswersInSummary = params.showAnswersInSummary || false;
+		this.#editActionParam = 'edit';
+		this.#removeActionParam = 'remove';
+		this.#confirmationQuestionParam = 'confirm';
 	}
 
 	/**
@@ -44,6 +50,14 @@ export default class ManageListQuestion extends Question {
 		return true;
 	}
 
+	get removeActionParam() {
+		return this.#removeActionParam;
+	}
+
+	get confirmationQuestionParam() {
+		return this.#confirmationQuestionParam;
+	}
+
 	/**
 	 * @param {import('#question').QuestionViewModel} viewModel
 	 */
@@ -51,6 +65,10 @@ export default class ManageListQuestion extends Question {
 		viewModel.question.addAnotherLink = this.#addAnotherLink;
 		viewModel.question.firstQuestionUrl = this.#firstQuestionUrl;
 		viewModel.question.valueSummary = [];
+		viewModel.actionParams = {
+			edit: this.#editActionParam,
+			remove: this.#removeActionParam
+		};
 		if (viewModel.question.value && Array.isArray(viewModel.question.value)) {
 			viewModel.question.valueSummary = viewModel.question.value.map((v) => {
 				return {
@@ -124,6 +142,16 @@ export default class ManageListQuestion extends Question {
 				action: action
 			}
 		];
+	}
+
+	renderConfirmationAction(res, itemToRemove, viewModel) {
+		viewModel.questionSummary = this.#formatItemAnswers(itemToRemove);
+		let view = `components/${this.viewFolder}/confirm`;
+		if (this.viewFolder.includes('/')) {
+			// custom view folder
+			view = `${this.viewFolder}/confirm`;
+		}
+		res.render(view, viewModel);
 	}
 
 	/**

@@ -174,6 +174,10 @@ export class Journey {
 			return undefined;
 		}
 		if (manageListParams && question.isManageListQuestion) {
+			if (manageListParams.question === question.confirmationQuestionParam) {
+				// special case for the delete confirmation page
+				return question;
+			}
 			return question.section.questions.find((q) => matchQuestion(q, manageListParams.question));
 		}
 		return question;
@@ -247,6 +251,14 @@ export class Journey {
 		const numberOfSections = this.sections.length;
 		const sectionsStart = reverse ? numberOfSections - 1 : 0;
 		const questionFieldName = manageListQuestion ? params.manageListQuestion : params.question;
+
+		if (params.manageListAction === 'remove') {
+			// If you have just confirmed removal of an item, go back to the parent manage list question
+			return this.#buildQuestionUrl({
+				section: params.section,
+				question: params.question
+			});
+		}
 
 		let currentSectionIndex;
 		let foundSection = false;

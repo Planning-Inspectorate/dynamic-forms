@@ -291,6 +291,19 @@ describe('Journey class', () => {
 	});
 
 	describe('getNextQuestionUrl', () => {
+		it('should return to parent manageList question if removing an answer', () => {
+			const section = mockSections[2];
+			const name = section.questions[0].fieldName;
+			const journey = new Journey(constructorArgs);
+			journey.sections = mockSections;
+			journey.returnToListing = false;
+			const nextQuestionUrl = journey.getNextQuestionUrl({
+				section: section.segment,
+				question: name,
+				manageListAction: 'remove'
+			});
+			assert.strictEqual(nextQuestionUrl, `${constructorArgs.makeBaseUrl()}/${section.segment}/question5`);
+		});
 		for (const returnToListing of [true, false]) {
 			it(`should return null if section is not found [${returnToListing}]`, () => {
 				const section = 'section3'; // Non-existent section
