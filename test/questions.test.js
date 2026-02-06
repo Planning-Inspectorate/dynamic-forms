@@ -2,9 +2,13 @@ import { describe, it } from 'node:test';
 import assert from 'assert';
 import { manageListQuestions, questionsInOrder } from './questions.js';
 import { COMPONENT_TYPES } from '../src/index.js';
-import { assertSnapshot, escapeForRegExp } from './utils/utils.js';
-import { createAppWithQuestions, mockAnswerBody } from '#test/utils/question-test-utils.js';
-import { mockRandomUUID } from '#test/mock/uuid.js';
+import { assertSnapshot } from './utils/utils.js';
+import {
+	createAppWithQuestions,
+	mockAnswerBody,
+	renderQuestionCheck,
+	postAnswer
+} from '#test/utils/question-test-utils.js';
 
 describe('question pages', () => {
 	it('should have a test for each question type', () => {
@@ -30,18 +34,11 @@ describe('question pages', () => {
 	 * @param {import('#src/questions/question.js')} q
 	 * @returns {Promise<void>}
 	 */
-	async function renderQuestionCheck(ctx, url, snapshotName, q) {
-		mockRandomUUID(ctx);
+	async function renderQuestionAndSnapshot(ctx, url, snapshotName, q) {
 		const testServer = await createAppWithQuestions(ctx);
+		const text = await renderQuestionCheck(ctx, testServer, url, q.question);
 
-		const response = await testServer.get(url, {
-			redirect: 'manual'
-		});
-		assert.strictEqual(response.status, 200);
-		const text = await response.text();
-		// be sure to escape parentheses in the question text for the regex
-		assert.match(text, new RegExp(escapeForRegExp(q.question), 'i'));
-		assert.match(text, /<form action="" method="post"/i);
+		// Check options if present
 		if (q.options) {
 			for (const option of q.options) {
 				if (q.type === COMPONENT_TYPES.SELECT) {
@@ -68,22 +65,14 @@ describe('question pages', () => {
 	async function postQuestionCheck(ctx, url, q) {
 		const testServer = await createAppWithQuestions(ctx);
 		const payload = mockAnswerBody(q);
-		const response = await testServer.post(url, payload, { redirect: 'manual' });
-		if (![302, 303].includes(response.status)) {
-			const text = await response.text();
-			console.log(`Response for ${q.url}:\n`, text);
-		}
-		// Should redirect (302 or 303)
-		assert.ok([302, 303].includes(response.status), `Expected redirect, got ${response.status}`);
-		// Should redirect to the next question (if there is one)
-		return response.headers.get('location');
+		return postAnswer(testServer, url, payload);
 	}
 
 	for (let i = 0; i < questionsInOrder.length; i++) {
 		const q = questionsInOrder[i];
 
 		it(`should render question: ${q.url}`, async (ctx) => {
-			await renderQuestionCheck(ctx, '/questions/' + q.url, q.url, q);
+			await renderQuestionAndSnapshot(ctx, '/questions/' + q.url, q.url, q);
 		});
 
 		it(`should POST valid data for question: ${q.url} and redirect to next`, async (ctx) => {
@@ -103,7 +92,7 @@ describe('question pages', () => {
 			for (let i = 0; i < questions.length; i++) {
 				const q = questions[i];
 				it(`should render question: ${q.url}`, async (ctx) => {
-					await renderQuestionCheck(ctx, '/' + qUrl(q), manageListQuestion.url + '_' + q.url, q);
+					await renderQuestionAndSnapshot(ctx, '/' + qUrl(q), manageListQuestion.url + '_' + q.url, q);
 				});
 
 				it(`should POST valid data for question: ${q.url} and redirect to next`, async (ctx) => {

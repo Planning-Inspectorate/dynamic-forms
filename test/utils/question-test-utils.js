@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { getQuestions } from '#test/questions.js';
 import { COMPONENT_TYPES } from '#src/index.js';
 import { createApp } from '#test/utils/app.js';
@@ -9,16 +10,28 @@ import validate from '#src/validator/validator.js';
 import { validationErrorHandler } from '#src/validator/validation-error-handler.js';
 import { TestServer } from '#test/utils/test-server.js';
 import { BOOLEAN_OPTIONS } from '#src/components/boolean/question.js';
+import { escapeForRegExp } from '#test/utils/utils.js';
+import { mockRandomUUID } from '#test/mock/uuid.js';
+
+/**
+ * @typedef {Object} CreateAppOptions
+ * @property {string} journeyId - The journey ID for session storage
+ * @property {(questions: Object, response: import('#src/journey/journey-response.js').JourneyResponse) => import('#src/journey/journey.js').Journey} createJourneyFn - Function to create the journey
+ * @property {Object} questions - The questions object
+ */
 
 /**
  * @param {import('node:test').TestContext} ctx
+ * @param {CreateAppOptions} [options]
  * @returns {Promise<TestServer>}
  */
-export async function createAppWithQuestions(ctx) {
+export async function createAppWithQuestions(ctx, options) {
 	const app = createApp();
-	const questions = getQuestions();
-	const getJourney = buildGetJourney((req, journeyResponse) => createJourney(questions, journeyResponse));
-	const getJourneyResponse = buildGetJourneyResponseFromSession(JOURNEY_ID);
+	const questions = options?.questions ?? getQuestions();
+	const journeyId = options?.journeyId ?? JOURNEY_ID;
+	const createJourneyFn = options?.createJourneyFn ?? createJourney;
+	const getJourney = buildGetJourney((req, journeyResponse) => createJourneyFn(questions, journeyResponse));
+	const getJourneyResponse = buildGetJourneyResponseFromSession(journeyId);
 
 	// app.use((req, res, next) => {
 	//   console.log(req.method, req.url, req.session);
@@ -197,4 +210,39 @@ export function mockAnswer(q) {
 		default:
 			return 'test';
 	}
+}
+
+/**
+ * Helper to render a question and check it's displayed correctly
+ * @param {import('node:test').TestContext} ctx
+ * @param {import('./test-server.js').TestServer} testServer
+ * @param {string} url
+ * @param {string} questionText
+ * @returns {Promise<string>}
+ */
+export async function renderQuestionCheck(ctx, testServer, url, questionText) {
+	mockRandomUUID(ctx);
+	const response = await testServer.get(url, { redirect: 'manual' });
+	assert.strictEqual(response.status, 200, `Expected 200 for ${url}, got ${response.status}`);
+	const text = await response.text();
+	assert.match(text, new RegExp(escapeForRegExp(questionText), 'i'));
+	assert.match(text, /<form action="" method="post"/i);
+	return text;
+}
+
+/**
+ * Helper to POST an answer and check the redirect
+ * @param {import('./test-server.js').TestServer} testServer
+ * @param {string} url
+ * @param {Record<string, unknown>} payload
+ * @returns {Promise<string|null>}
+ */
+export async function postAnswer(testServer, url, payload) {
+	const response = await testServer.post(url, payload, { redirect: 'manual' });
+	if (![302, 303].includes(response.status)) {
+		const text = await response.text();
+		console.log(`Response for ${url}:\n`, text);
+	}
+	assert.ok([302, 303].includes(response.status), `Expected redirect, got ${response.status}`);
+	return response.headers.get('location');
 }
