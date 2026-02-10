@@ -5,13 +5,6 @@ import { conditionalIsJustHTML } from '../utils/question-utils.js';
 const defaultOptionJoinString = ',';
 
 /**
- * @typedef {import('../../questions/question.js').QuestionViewModel} QuestionViewModel
- * @typedef {import('../../journey/journey.js').Journey} Journey
- * @typedef {import('../../journey/journey-response.js').JourneyResponse} JourneyResponse
- * @typedef {import('../../section').Section} Section
- */
-
-/**
  * UnitOptions are the options displayed in the radio format - in this case the value
  * represents the unit.
  * Conditionals must be used to capture the relevant quantity.
@@ -67,13 +60,13 @@ export default class UnitOptionEntryQuestion extends Question {
 
 	/**
 	 * gets the view model for this question
-	 * @param {Section} section - the current section
-	 * @param {Journey} journey - the journey we are in
+	 * @param {import('../../section').Section} section - the current section
+	 * @param {import('#journey').Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {Record<string, unknown>} [payload]
 	 * @param {import('#src/questions/question-types.d.ts').PrepQuestionForRenderingOptions} options
-	 * @returns {QuestionViewModel & {
-	 *   question: QuestionViewModel['question'] & {
+	 * @returns {import('#question').QuestionViewModel & {
+	 *   question: import('#question').QuestionViewModel['question'] & {
 	 *     options:UnitOption[]
 	 *   }
 	 * }}

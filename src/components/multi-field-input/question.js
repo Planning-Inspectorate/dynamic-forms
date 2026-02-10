@@ -3,9 +3,9 @@ import escape from 'escape-html';
 import { nl2br } from '../../lib/utils.js';
 
 /**
- * @typedef {import('../../questions/question.js').QuestionViewModel} QuestionViewModel
- * @typedef {import('../../journey/journey.js').Journey} Journey
- * @typedef {import('../../journey/journey-response.js').JourneyResponse} JourneyResponse
+ * @typedef {import('#question').QuestionViewModel} QuestionViewModel
+ * @typedef {import('#journey').Journey} Journey
+ * @typedef {import('#journey-response').JourneyResponse} JourneyResponse
  * @typedef {import('../../section').Section} Section
  * @typedef {import('../../validator/base-validator')} BaseValidator
  */

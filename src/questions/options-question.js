@@ -6,13 +6,6 @@ import { getConditionalFieldName } from '../components/utils/question-utils.js';
 const defaultOptionJoinString = ',';
 
 /**
- * @typedef {import('./question').QuestionViewModel} QuestionViewModel
- * @typedef {import('../journey/journey.js').Journey} Journey
- * @typedef {import('../journey/journey-response.js').JourneyResponse} JourneyResponse
- * @typedef {import('../section.js').Section} Section
- */
-
-/**
  * @typedef {{
  *   text: string;
  *   value: string;
@@ -37,7 +30,7 @@ const defaultOptionJoinString = ',';
  */
 
 /**
- * @typedef {QuestionViewModel & { question: { options: Option[] } }} OptionsViewModel
+ * @typedef {import('./question').QuestionViewModel & { question: { options: Option[] } }} OptionsViewModel
  */
 
 export default class OptionsQuestion extends Question {
@@ -65,12 +58,12 @@ export default class OptionsQuestion extends Question {
 
 	/**
 	 * gets the view model for this question
-	 * @param {Section} section - the current section
-	 * @param {Journey} journey - the journey we are in
+	 * @param {import('#section').Section} section - the current section
+	 * @param {import('#journey').Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {Record<string, unknown>} [payload]
 	 * @param {import('#src/questions/question-types.d.ts').PrepQuestionForRenderingOptions} options
-	 * @returns {QuestionViewModel}
+	 * @returns {import('./question').QuestionViewModel} QuestionViewModel
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload, options) {
 		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload, options);
@@ -125,7 +118,7 @@ export default class OptionsQuestion extends Question {
 	/**
 	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
-	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
+	 * @param {import('../journey/journey-response.js').JourneyResponse} journeyResponse - current journey response, modified with the new answers
 	 * @returns {Promise<{ answers: Record<string, unknown> }>}
 	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {

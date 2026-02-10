@@ -5,15 +5,6 @@ import { Address } from '../../lib/address.js';
 import { nl2br } from '../../lib/utils.js';
 import AddressValidator from '../../validator/address-validator.js';
 
-/**
- * @typedef {import('../../journey/journey-response.js').JourneyResponse} JourneyResponse
- * @typedef {import('../../journey/journey.js').Journey} Journey
- * @typedef {import('../../section.js').Section} Section
- * @typedef {import('../../questions/question.js').QuestionViewModel} QuestionViewModel
- * @typedef {import('appeals-service-api').Api.SubmissionAddress} SubmissionAddress
-
- */
-
 export default class AddressQuestion extends Question {
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
@@ -74,7 +65,7 @@ export default class AddressQuestion extends Question {
 	/**
 	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
-	 * @param {JourneyResponse} journeyResponse
+	 * @param {import('#journey-response').JourneyResponse} journeyResponse
 	 * @returns {Promise<{answers: Record<string, unknown>}>}
 	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {

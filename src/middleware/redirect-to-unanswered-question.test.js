@@ -5,7 +5,7 @@ import { redirectToUnansweredQuestion } from './redirect-to-unanswered-question.
 import { JourneyResponse } from '../journey/journey-response.js';
 import { Journey } from '../journey/journey.js';
 import { Section } from '../section.js';
-import { COMPONENT_TYPES } from '../index.js';
+import { COMPONENT_TYPES } from '../components/utils/component-types.js';
 import { questionHasAnswer } from '../components/utils/question-has-answer.js';
 
 describe('redirectToUnansweredQuestion Middleware', () => {

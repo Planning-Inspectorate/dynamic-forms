@@ -12,7 +12,7 @@ import NumberEntryQuestion from '../components/number-entry/question.js';
 import UnitOptionEntryQuestion from '../components/unit-option-entry/question.js';
 import EmailQuestion from '../components/email/question.js';
 
-import { COMPONENT_TYPES } from '../index.js';
+import { COMPONENT_TYPES } from '../components/utils/component-types.js';
 import TextEntryRedactQuestion from '../components/text-entry-redact/question.js';
 import DateTimeQuestion from '../components/date-time/question.js';
 import ManageListQuestion from '../components/manage-list/question.js';

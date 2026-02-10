@@ -6,12 +6,12 @@ import MultiFieldInputValidator from '../validator/multi-field-input-validator.j
 import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
 
 /**
- * @typedef {import('../validator/base-validator.js')} BaseValidator
- * @typedef {import('../journey/journey.js').Journey} Journey
- * @typedef {import('../journey/journey-response.js').JourneyResponse} JourneyResponse
- * @typedef {import('../section.js').Section} Section
- * @typedef {import('../controller.js').ActionView} ActionView
- * @typedef {import('./question-types.js').ActionLink} ActionLink
+ * @import {BaseValidator} from "#base-validator"
+ * @import {Journey} from "#journey"
+ * @import {JourneyResponse} from "#journey-response"
+ * @import {Section} from "#section"
+ * @import {ActionView} from "../controller.js"
+ * @import {ActionLink} from "./question-types.js"
  */
 
 /**
