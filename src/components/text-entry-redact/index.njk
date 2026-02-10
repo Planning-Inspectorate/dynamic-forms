@@ -123,7 +123,7 @@
                     }) }}
 
                     {{ govukButton({
-                        text: "Undo all changes",
+                        text: "Remove all redactions",
                         classes: "govuk-button--secondary",
                         id: "redact-undo-all",
                         type: "button"
@@ -192,16 +192,20 @@
                 showError('No changes to undo');
               }
             });
-            redactUndoAll.addEventListener('click', () => {
-              const unredated = unredactedText.dataset.original;
-              if (history.length === 0 && textArea.value === unredated) {
-                showError('No changes to undo');
-                return;
-              }
-              hideError();
-              textArea.value = unredated || '';
-              history.length = 0;
-            });
+         redactUndoAll.addEventListener('click', () => {
+           const unredated = unredactedText.dataset.original;
+           if (history.length === 0 && textArea.value === unredated) {
+             showError('No changes to undo');
+             return;
+           }
+           hideError();
+           textArea.value = unredated || '';
+           history.length = 0;
+
+           for (const rejectLink of rejectLinks) {
+             rejectLink.text = 'Accept';
+           }
+         });
             for (const rejectLink of rejectLinks) {
               rejectLink.addEventListener('click', () => {
                 const index = parseInt(rejectLink.getAttribute('data-redact').replace('suggestion-reject-', ''));
