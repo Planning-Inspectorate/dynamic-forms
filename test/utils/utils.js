@@ -2,7 +2,7 @@ import path from 'path';
 import { mock } from 'node:test';
 
 export function testDir() {
-	return path.join(path.dirname(new URL(import.meta.url).pathname), '..');
+	return path.join(import.meta.dirname, '..');
 }
 
 export function snapshotsDir() {
