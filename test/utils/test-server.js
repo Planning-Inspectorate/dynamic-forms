@@ -152,6 +152,7 @@ export class TestServer {
 			return response;
 		} catch (error) {
 			if (error instanceof Error && error.name === 'AbortError') {
+				// eslint-disable-next-line preserve-caught-error
 				throw new Error(`Request to ${path} timed out after ${this.#timeoutMs}ms`);
 			}
 			throw error;
