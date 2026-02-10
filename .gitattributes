@@ -1,0 +1,2 @@
+# snapshots always use \n
+test/snapshots/** text eol=lf
