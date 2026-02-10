@@ -15,7 +15,7 @@ export default class RadioQuestion extends OptionsQuestion {
 	 * @param {string} [params.html]
 	 * @param {string} [params.legend] - optional legend, used instead of h1
 	 * @param {Array.<import('../../questions/options-question.js').Option>} params.options
-	 * @param {Array.<import('../../questions/question.js').BaseValidator>} [params.validators]
+	 * @param {Array.<import('#base-validator').BaseValidator>} [params.validators]
 	 * @param {boolean} [params.editable]
 	 * @param {Object<string, any>} [params.viewData]
 	 * @param {import('../../questions/question-types.js').ActionLink} [params.actionLink]

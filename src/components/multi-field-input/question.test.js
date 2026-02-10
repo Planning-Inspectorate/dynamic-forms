@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import MultiFieldInputQuestion from './question.js';
-import { Journey } from '../../journey/journey.js';
+import { Journey } from '#journey';
 
 const TITLE = 'title';
 const QUESTION = 'Question?';

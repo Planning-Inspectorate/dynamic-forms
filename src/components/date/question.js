@@ -1,13 +1,6 @@
 import { formatDateForDisplay, parseDateInput } from '../../lib/date-utils.js';
 import { Question } from '../../questions/question.js';
 
-/**
- * @typedef {import('../../questions/question.js').QuestionViewModel} QuestionViewModel
- * @typedef {import('../../journey/journey.js').Journey} Journey
- * @typedef {import('../../journey/journey-response.js').JourneyResponse} JourneyResponse
- * @typedef {import('../../section').Section} Section
- */
-
 const DEFAULT_DATE_FORMAT = 'd MMMM yyyy';
 
 /**
@@ -29,7 +22,7 @@ export default class DateQuestion extends Question {
 	/**
 	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
-	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
+	 * @param {import('#journey-response').JourneyResponse} journeyResponse - current journey response, modified with the new answers
 	 * @returns {Promise.<Object>}
 	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
