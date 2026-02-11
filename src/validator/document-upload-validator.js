@@ -4,10 +4,12 @@ import { body } from 'express-validator';
 export default class DocumentUploadValidator extends BaseValidator {
 	/**
 	 * @param {string} fieldName
+	 * @param {string} errorMessage
 	 */
-	constructor(fieldName) {
+	constructor(fieldName, errorMessage = 'Upload an attachment') {
 		super();
 		this.fieldName = fieldName;
+		this.errorMessage = errorMessage;
 	}
 
 	validate() {
@@ -17,7 +19,7 @@ export default class DocumentUploadValidator extends BaseValidator {
 				const parsed = JSON.parse(decodedJson);
 
 				if (parsed.length === 0) {
-					throw new Error('Upload an attachment');
+					throw new Error(this.errorMessage);
 				}
 				return true;
 			})

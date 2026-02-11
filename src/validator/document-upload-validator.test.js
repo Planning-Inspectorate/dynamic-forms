@@ -20,7 +20,7 @@ describe('./src/dynamic-forms/validator/document-upload-validator.js', () => {
 		assert.strictEqual(Object.keys(errors).length, 0);
 	});
 
-	it('should return an error message if documents have not been uploaded', async () => {
+	it('should return default error message if documents have not been uploaded', async () => {
 		const req = {
 			body: {
 				myselfAttachments: 'W10='
@@ -32,6 +32,20 @@ describe('./src/dynamic-forms/validator/document-upload-validator.js', () => {
 
 		assert.strictEqual(Object.keys(errors).length, 1);
 		assert.strictEqual(errors[FIELD_NAME].msg, 'Upload an attachment');
+	});
+
+	it('should return custom error message if documents have not been uploaded', async () => {
+		const req = {
+			body: {
+				myselfAttachments: 'W10='
+			}
+		};
+		const documentUploadValidator = new DocumentUploadValidator(FIELD_NAME, 'Please ensure you upload your documents');
+
+		const errors = await _validationMappedErrors(req, documentUploadValidator);
+
+		assert.strictEqual(Object.keys(errors).length, 1);
+		assert.strictEqual(errors[FIELD_NAME].msg, 'Please ensure you upload your documents');
 	});
 });
 
