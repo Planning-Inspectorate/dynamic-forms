@@ -33,6 +33,10 @@ import { booleanToYesNoValue } from '../components/boolean/question.js';
  * 	}
  * }
  *
+ * Delete behavior for manage-list items:
+ * - When `manageListItemRemove === true`, and both `manageListQuestionFieldName` and `req.params.manageListItemId`
+ *   are present, the item with a matching `id` is removed from the array stored at `answers[manageListQuestionFieldName]`.
+ * - If the list does not exist or is not an array, no action is taken.
  *
  * @param {Object} opts
  * @param {string} [opts.reqParam]
@@ -40,7 +44,14 @@ import { booleanToYesNoValue } from '../components/boolean/question.js';
  * @returns {import('../controller').SaveDataFn}
  */
 export function buildSaveDataToSession({ reqParam } = {}) {
-	return async ({ req, journeyId, data, isManageListItem, manageListQuestionFieldName }) => {
+	return async ({
+		req,
+		journeyId,
+		data,
+		isManageListItem,
+		manageListQuestionFieldName,
+		manageListItemRemove = false
+	}) => {
 		if (!req.session) {
 			throw new Error('request session required');
 		}
@@ -52,14 +63,25 @@ export function buildSaveDataToSession({ reqParam } = {}) {
 			forms = forms[reqParamValue] || (forms[reqParamValue] = {});
 		}
 		let answers = forms[journeyId] || (forms[journeyId] = {});
+
 		if (isManageListItem) {
 			const answersList = answers[manageListQuestionFieldName] || (answers[manageListQuestionFieldName] = []);
 			answers = answersList.find((item) => item.id === req.params.manageListItemId);
-
 			if (!answers) {
 				answers = { id: req.params.manageListItemId };
 				answersList.push(answers);
 			}
+		} else if (manageListItemRemove && manageListQuestionFieldName && req.params.manageListItemId) {
+			const answersList = answers[manageListQuestionFieldName];
+
+			if (!answersList || !Array.isArray(answersList)) return; // nothing to remove
+
+			const index = answersList.findIndex((item) => item.id === req.params.manageListItemId);
+			if (index > -1) {
+				answersList.splice(index, 1);
+				return;
+			}
+			return; // item not found, nothing to remove
 		}
 		for (const [k, v] of Object.entries(data?.answers || {})) {
 			answers[k] = v;

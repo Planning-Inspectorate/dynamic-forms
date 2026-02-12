@@ -31,12 +31,12 @@
                             <dd class="govuk-summary-list__actions">
                                 <ul class="govuk-summary-list__actions-list">
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="{{ util.trimTrailingSlash(originalUrl) }}/edit/{{ item.id }}/{{ question.firstQuestionUrl }}">
+                                        <a class="govuk-link" href="{{ util.trimTrailingSlash(originalUrl) }}/{{ actionParams.edit }}/{{ item.id }}/{{ question.firstQuestionUrl }}">
                                             Change <span class="govuk-visually-hidden">{{ titleSingular }} {{ loop.index }}</span>
                                         </a>
                                     </li>
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="{{ util.trimTrailingSlash(originalUrl) }}/remove/{{ item.id }}/confirm">
+                                        <a class="govuk-link" href="{{ util.trimTrailingSlash(originalUrl) }}/{{ actionParams.remove }}/{{ item.id }}/{{ actionParams.confirmRemove }}">
                                             Remove <span class="govuk-visually-hidden">{{ titleSingular }} {{ loop.index }}</span>
                                         </a>
                                     </li>

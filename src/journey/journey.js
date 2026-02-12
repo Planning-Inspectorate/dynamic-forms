@@ -4,6 +4,7 @@
  * instances of this class                                 *
  ***********************************************************/
 import { END_OF_SECTION } from '#src/section.js';
+import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.js';
 
 /**
  * @typedef {import('./journey-response').JourneyResponse} JourneyResponse
@@ -174,6 +175,13 @@ export class Journey {
 			return undefined;
 		}
 		if (manageListParams && question.isManageListQuestion) {
+			if (
+				manageListParams.question === question.confirmationQuestionParam &&
+				manageListParams.action === MANAGE_LIST_ACTIONS.REMOVE
+			) {
+				// special case for the delete confirmation page
+				return question;
+			}
 			return question.section.questions.find((q) => matchQuestion(q, manageListParams.question));
 		}
 		return question;
@@ -247,6 +255,17 @@ export class Journey {
 		const numberOfSections = this.sections.length;
 		const sectionsStart = reverse ? numberOfSections - 1 : 0;
 		const questionFieldName = manageListQuestion ? params.manageListQuestion : params.question;
+		if (
+			params.manageListAction === MANAGE_LIST_ACTIONS.REMOVE &&
+			Object.hasOwn(params, 'manageListItemId') &&
+			Object.hasOwn(params, 'manageListQuestion')
+		) {
+			// If you have just confirmed removal of an item, go back to the parent manage list question
+			return this.#buildQuestionUrl({
+				section: params.section,
+				question: params.question
+			});
+		}
 
 		let currentSectionIndex;
 		let foundSection = false;
