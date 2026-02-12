@@ -79,6 +79,10 @@ new Section('New Holiday', 'holiday')
 
 `{/:manageListAction/:manageListItemId/:manageListQuestion}` optional route parameters are added to the get and post routes for questions
 
+* manageListAction should be either `add`, `edit` or `remove` to indicate the action being taken in the manage list. These can be imported from `manage-list-actions.js`.
+* manageListItemId should be a unique identifier for the item being edited or removed, for example an id or a timestamp. This is not needed for adding an item, as it will not exist yet.
+* manageListQuestion should be the fieldName of the question being added, edited or removed, this is needed to know which question in the manage list journey to show when adding or editing an item.
+
 ```js
 router.get('/:section/:question{/:manageListAction/:manageListItemId/:manageListQuestion}',
         getJourneyResponse,
@@ -114,3 +118,4 @@ new Section('New Holiday', 'holiday')
         .addQuestion(questions.departureDate)
         .addQuestion(questions.holidayPeriod)
 ```
+
