@@ -124,6 +124,21 @@ describe('components/manage-list/question', () => {
 		assertSnapshot(ctx, res.render.mock.calls[0].result, 'manage-list-render-questions.html');
 	});
 
+	it('should render the confirmation view model', (ctx) => {
+		const { q, journey } = questionWithManageQuestions(ctx, {
+			showManageListQuestions: true
+		});
+		const itemToRemove = { id: 'id-1', name: 'Test' };
+		const viewModel = q.prepQuestionForRendering({}, journey);
+		const nunjucks = configureNunjucksTestEnv();
+		const res = {
+			render: mock.fn((view, data) => nunjucks.render(view + '.njk', data))
+		};
+		q.renderConfirmationAction(res, itemToRemove, viewModel);
+		assert.strictEqual(res.render.mock.callCount(), 1);
+		assertSnapshot(ctx, res.render.mock.calls[0].result, 'manage-list-confirmation-render.html');
+	});
+
 	describe('getDataToSave', () => {
 		it('should return existing journey answers if present', async () => {
 			const q = newQuestion();

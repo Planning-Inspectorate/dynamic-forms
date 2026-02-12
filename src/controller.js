@@ -2,6 +2,7 @@ import { SECTION_STATUS } from './section.js';
 import questionUtils from './components/utils/question-utils.js';
 import { answerObjectForManageListSaving } from '#src/components/manage-list/utils.js';
 import { booleanToYesNoValue } from '#src/components/boolean/question.js';
+import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.js';
 
 /**
  * @typedef {import('./journey/journey.js').Journey} Journey
@@ -177,6 +178,19 @@ export async function question(req, res) {
 			originalUrl: req.originalUrl
 		}
 	});
+	if (
+		question.isManageListQuestion &&
+		typeof question.renderConfirmationAction === 'function' &&
+		req.params.manageListAction === MANAGE_LIST_ACTIONS.REMOVE
+	) {
+		const answers = journey.response.answers;
+		if (answers && Object.hasOwn(answers, question.fieldName) && Array.isArray(answers[question.fieldName])) {
+			const item = answers[question.fieldName].find((i) => i.id === req.params.manageListItemId);
+			if (item) return question.renderConfirmationAction(res, item, viewModel);
+		}
+		// if we can't find the item to remove, redirect to task list rather than erroring out as the session may have expired or been tampered with
+		return res.redirect(journey.taskListUrl);
+	}
 	return question.renderAction(res, viewModel);
 }
 
@@ -188,6 +202,7 @@ export async function question(req, res) {
  * @property {string} referenceId
  * @property {boolean} isManageListItem
  * @property {string} [manageListQuestionFieldName]
+ * @property {boolean} [manageListItemRemove]
  * @property {Object<string, any>} data
  */
 
@@ -215,7 +230,7 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 		}
 
 		let manageListQuestion;
-		if (question.isInManageListSection) {
+		if (question.isInManageListSection || req.params.manageListAction === MANAGE_LIST_ACTIONS.REMOVE) {
 			// find parent question for the manage list
 			manageListQuestion = journey.getQuestionByParams({ section: req.params.section, question: req.params.question });
 			if (!manageListQuestion) {
@@ -240,6 +255,7 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				referenceId: journeyResponse.referenceId,
 				isManageListItem: question.isInManageListSection,
 				manageListQuestionFieldName: manageListQuestion?.fieldName,
+				manageListItemRemove: req.params?.manageListAction === MANAGE_LIST_ACTIONS.REMOVE,
 				data
 			});
 

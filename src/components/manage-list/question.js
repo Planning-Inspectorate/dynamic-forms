@@ -1,12 +1,14 @@
 import { Question } from '#question';
 import { Uuid } from '#src/lib/uuid.js';
 import nunjucks from 'nunjucks';
+import { MANAGE_LIST_ACTIONS } from './manage-list-actions.js';
 
 /**
  * @typedef {Object} ManageListQuestionParameters
  * @property {string} titleSingular - the single name of the list item, e.g. "Holiday activity"
  * @property {boolean} [showManageListQuestions] - whether to show the question titles as well as answers on the manage list summary page
  * @property {boolean} [showAnswersInSummary] - whether to show the answers on the main check-your-answers page (or just a count)
+ * @property {string} [confirmationQuestion] - the name of the confirmation question to use when removing an item, default 'confirm'
  */
 
 export default class ManageListQuestion extends Question {
@@ -14,6 +16,7 @@ export default class ManageListQuestion extends Question {
 	#section;
 	/** @type {boolean} */
 	#showAnswersInSummary;
+	#confirmationQuestionParam;
 
 	/**
 	 * @param {import('#question-types').QuestionParameters & ManageListQuestionParameters} params
@@ -30,6 +33,7 @@ export default class ManageListQuestion extends Question {
 			}
 		});
 		this.#showAnswersInSummary = params.showAnswersInSummary || false;
+		this.#confirmationQuestionParam = params.confirmationQuestion || 'confirm';
 	}
 
 	/**
@@ -44,6 +48,10 @@ export default class ManageListQuestion extends Question {
 		return true;
 	}
 
+	get confirmationQuestionParam() {
+		return this.#confirmationQuestionParam;
+	}
+
 	/**
 	 * @param {import('#question').QuestionViewModel} viewModel
 	 */
@@ -51,6 +59,11 @@ export default class ManageListQuestion extends Question {
 		viewModel.question.addAnotherLink = this.#addAnotherLink;
 		viewModel.question.firstQuestionUrl = this.#firstQuestionUrl;
 		viewModel.question.valueSummary = [];
+		viewModel.actionParams = {
+			edit: MANAGE_LIST_ACTIONS.EDIT,
+			remove: MANAGE_LIST_ACTIONS.REMOVE,
+			confirmRemove: this.#confirmationQuestionParam
+		};
 		if (viewModel.question.value && Array.isArray(viewModel.question.value)) {
 			viewModel.question.valueSummary = viewModel.question.value.map((v) => {
 				return {
@@ -124,6 +137,16 @@ export default class ManageListQuestion extends Question {
 				action: action
 			}
 		];
+	}
+
+	renderConfirmationAction(res, itemToRemove, viewModel) {
+		viewModel.questionSummary = this.#formatItemAnswers(itemToRemove);
+		let view = `components/${this.viewFolder}/${this.confirmationQuestionParam}`;
+		if (this.viewFolder.includes('/')) {
+			// custom view folder
+			view = `${this.viewFolder}/${this.confirmationQuestionParam}`;
+		}
+		res.render(view, viewModel);
 	}
 
 	/**

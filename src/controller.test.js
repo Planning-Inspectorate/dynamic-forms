@@ -7,6 +7,7 @@ import { SECTION_STATUS } from './section.js';
 
 import { mockReq, mockRes } from '#test/utils/utils.js';
 import { BOOLEAN_OPTIONS } from '#src/components/boolean/question.js';
+import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.js';
 
 const res = mockRes();
 const mockBaseUrl = '/manage-appeals/questionnaire';
@@ -351,6 +352,129 @@ describe('dynamic-form/controller', () => {
 			assert.ok(args?.customViewData?.originalUrl);
 			assert.strictEqual(args?.customViewData?.originalUrl, req.originalUrl);
 		});
+
+		it('should redirect to tasklist when manage list action is remove and journey response has no answers', async () => {
+			res.redirect.mock.resetCalls();
+
+			sampleQuestionObj.isManageListQuestion = true;
+			sampleQuestionObj.renderConfirmationAction = mock.fn();
+
+			req.params = {
+				referenceId: mockRef,
+				section: mockSection.name,
+				question: sampleQuestionObj.fieldName,
+				manageListAction: MANAGE_LIST_ACTIONS.REMOVE
+			};
+			const mockAnswer = undefined;
+			const mockBackLink = 'back';
+			const mockQuestionRendering = 'test';
+
+			sampleQuestionObj.toViewModel.mock.mockImplementationOnce(() => mockQuestionRendering);
+			mockJourney.getQuestionByParams = mock.fn();
+			mockJourney.getQuestionByParams.mock.mockImplementation(() => sampleQuestionObj);
+			mockJourney.response.answers = mockAnswer;
+			mockJourney.getNextQuestionUrl = mock.fn(() => mockBackLink);
+			mockJourney.getSection = mock.fn(() => mockSection);
+
+			await question(req, res);
+
+			assert.strictEqual(res.redirect.mock.callCount(), 1);
+			assert.deepStrictEqual(res.redirect.mock.calls[0].arguments, [mockJourney.taskListUrl]);
+		});
+
+		it('should redirect to tasklist when manage list action is remove and the manage list answer is undefined', async () => {
+			res.redirect.mock.resetCalls();
+
+			sampleQuestionObj.isManageListQuestion = true;
+			sampleQuestionObj.renderConfirmationAction = mock.fn();
+
+			req.params = {
+				referenceId: mockRef,
+				section: mockSection.name,
+				question: sampleQuestionObj.fieldName,
+				manageListAction: MANAGE_LIST_ACTIONS.REMOVE
+			};
+			const mockAnswer = {
+				wrongFieldName: 'Some value'
+			};
+			const mockBackLink = 'back';
+			const mockQuestionRendering = 'test';
+
+			sampleQuestionObj.toViewModel.mock.mockImplementationOnce(() => mockQuestionRendering);
+			mockJourney.getQuestionByParams = mock.fn();
+			mockJourney.getQuestionByParams.mock.mockImplementation(() => sampleQuestionObj);
+			mockJourney.response.answers = mockAnswer;
+			mockJourney.getNextQuestionUrl = mock.fn(() => mockBackLink);
+			mockJourney.getSection = mock.fn(() => mockSection);
+
+			await question(req, res);
+
+			assert.strictEqual(res.redirect.mock.callCount(), 1);
+			assert.deepStrictEqual(res.redirect.mock.calls[0].arguments, [mockJourney.taskListUrl]);
+		});
+
+		it('should redirect to tasklist when manage list action is remove and the manage list answer is not an array', async () => {
+			res.redirect.mock.resetCalls();
+
+			sampleQuestionObj.isManageListQuestion = true;
+			sampleQuestionObj.renderConfirmationAction = mock.fn();
+
+			req.params = {
+				referenceId: mockRef,
+				section: mockSection.name,
+				question: sampleQuestionObj.fieldName,
+				manageListAction: MANAGE_LIST_ACTIONS.REMOVE
+			};
+			const mockAnswer = {
+				sampleFieldName: 'not-an-array'
+			};
+			const mockBackLink = 'back';
+			const mockQuestionRendering = 'test';
+
+			sampleQuestionObj.toViewModel.mock.mockImplementationOnce(() => mockQuestionRendering);
+			mockJourney.getQuestionByParams = mock.fn();
+			mockJourney.getQuestionByParams.mock.mockImplementation(() => sampleQuestionObj);
+			mockJourney.response.answers = mockAnswer;
+			mockJourney.getNextQuestionUrl = mock.fn(() => mockBackLink);
+			mockJourney.getSection = mock.fn(() => mockSection);
+
+			await question(req, res);
+
+			assert.strictEqual(res.redirect.mock.callCount(), 1);
+			assert.deepStrictEqual(res.redirect.mock.calls[0].arguments, [mockJourney.taskListUrl]);
+		});
+
+		it('should render the confirmation page when manage list action is remove and the question has a renderConfirmationAction function', async () => {
+			res.redirect.mock.resetCalls();
+
+			sampleQuestionObj.isManageListQuestion = true;
+
+			req.params = {
+				referenceId: mockRef,
+				section: mockSection.name,
+				question: sampleQuestionObj.fieldName,
+				manageListAction: MANAGE_LIST_ACTIONS.REMOVE,
+				manageListItemId: 'item-id-1'
+			};
+			const mockAnswer = {
+				sampleFieldName: [{ id: 'item-id-1', name: 'Item 1' }]
+			};
+			const mockBackLink = 'back';
+			const mockQuestionRendering = 'test';
+
+			sampleQuestionObj.toViewModel.mock.mockImplementationOnce(() => mockQuestionRendering);
+			sampleQuestionObj.renderConfirmationAction = mock.fn();
+			mockJourney.getQuestionByParams = mock.fn();
+			mockJourney.getQuestionByParams.mock.mockImplementation(() => sampleQuestionObj);
+			mockJourney.response.answers = mockAnswer;
+			mockJourney.getNextQuestionUrl = mock.fn(() => mockBackLink);
+			mockJourney.getSection = mock.fn(() => mockSection);
+
+			await question(req, res);
+
+			assert.strictEqual(res.redirect.mock.callCount(), 0);
+			assert.strictEqual(sampleQuestionObj.renderConfirmationAction.mock.callCount(), 1);
+		});
 	});
 
 	describe('save', () => {
@@ -389,6 +513,7 @@ describe('dynamic-form/controller', () => {
 					journeyId: journeyParams.journeyId,
 					referenceId: journeyParams.referenceId,
 					isManageListItem: undefined,
+					manageListItemRemove: false,
 					manageListQuestionFieldName: undefined,
 					data: undefined
 				}
@@ -449,6 +574,7 @@ describe('dynamic-form/controller', () => {
 						referenceId: journeyParams.referenceId,
 						data: undefined,
 						isManageListItem: undefined,
+						manageListItemRemove: false,
 						manageListQuestionFieldName: undefined
 					}
 				],
@@ -632,6 +758,14 @@ describe('dynamic-form/controller', () => {
 				assert.strictEqual(journey.redirectToNextQuestion.mock.callCount(), 1);
 				const params = journey.redirectToNextQuestion.mock.calls[0].arguments[1];
 				assert.deepStrictEqual(params, req.params);
+			});
+			it('should set manageListItemRemove is true when manageListAction is remove', async () => {
+				const { journey, req, res } = setupJourney();
+				req.params.manageListAction = MANAGE_LIST_ACTIONS.REMOVE;
+				const saveData = mock.fn();
+				await buildSave(saveData)(req, res, 'journey-1');
+				assert.strictEqual(journey.redirectToNextQuestion.mock.callCount(), 1);
+				assert.strictEqual(saveData.mock.calls[0].arguments[0].manageListItemRemove, true);
 			});
 		});
 	});

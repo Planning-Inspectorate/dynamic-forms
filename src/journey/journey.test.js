@@ -2,6 +2,7 @@ import { describe, it, mock, beforeEach } from 'node:test';
 import assert from 'node:assert';
 import { Journey } from './journey.js';
 import { Section } from '#src/section.js';
+import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.js';
 
 const mockSectionDetails = [
 	{
@@ -229,6 +230,19 @@ describe('Journey class', () => {
 
 			assert.strictEqual(question, undefined);
 		});
+
+		it('should return the parent question if the question is a remove manage list item confirmation', () => {
+			const journey = new Journey(constructorArgs);
+			journey.sections = mockSections;
+			const question = journey.getQuestionByParams({
+				section: mockSections[0].segment,
+				question: mockSections[0].questions[0].fieldName,
+				manageListAction: MANAGE_LIST_ACTIONS.REMOVE,
+				manageListQuestion: 'confirm',
+				manageListItemId: '123'
+			});
+			assert.strictEqual(question, mockSections[0].questions[0]);
+		});
 	});
 
 	describe('getBackLink', () => {
@@ -291,6 +305,25 @@ describe('Journey class', () => {
 	});
 
 	describe('getNextQuestionUrl', () => {
+		it('should return to parent manageList question if removing an answer', () => {
+			const section = mockSections[2];
+			const name = section.questions[0].fieldName;
+			const journey = new Journey(constructorArgs);
+			journey.sections = mockSections;
+			journey.returnToListing = false;
+			const nextQuestionUrl = journey.getNextQuestionUrl({
+				section: section.segment,
+				question: name,
+				manageListAction: MANAGE_LIST_ACTIONS.REMOVE,
+				manageListQuestion: 'confirm',
+				manageListItemId: '123'
+			});
+			assert.strictEqual(
+				nextQuestionUrl,
+				`${constructorArgs.makeBaseUrl()}/${section.segment}/${section.questions[0].fieldName}`
+			);
+		});
+
 		for (const returnToListing of [true, false]) {
 			it(`should return null if section is not found [${returnToListing}]`, () => {
 				const section = 'section3'; // Non-existent section
