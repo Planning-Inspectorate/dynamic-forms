@@ -10,6 +10,8 @@ describe('DatePeriodQuestion', () => {
 	const FIELDNAME = 'fieldName';
 	const HINT = 'hint hint';
 	const VALIDATORS = [];
+	const HINTSTART = 'Start date hint';
+	const HINTEND = 'End date hint';
 
 	describe('constructor', () => {
 		it('should instantiate and inherit from Question', () => {
@@ -18,6 +20,8 @@ describe('DatePeriodQuestion', () => {
 				question: QUESTION,
 				fieldName: FIELDNAME,
 				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
 				validators: VALIDATORS
 			});
 			assert.strictEqual(dateQuestion instanceof DatePeriodQuestion, true);
@@ -33,6 +37,8 @@ describe('DatePeriodQuestion', () => {
 				question: QUESTION,
 				fieldName: FIELDNAME,
 				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
 				validators: VALIDATORS
 			});
 
@@ -63,6 +69,8 @@ describe('DatePeriodQuestion', () => {
 				question: QUESTION,
 				fieldName: FIELDNAME,
 				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
 				validators: VALIDATORS,
 				startTime: { hour: 3, minute: 24, second: 0 },
 				endTime: { hour: 23, minute: 59, second: 0 }
@@ -98,6 +106,8 @@ describe('DatePeriodQuestion', () => {
 				question: QUESTION,
 				fieldName: FIELDNAME,
 				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
 				validators: VALIDATORS
 			});
 
@@ -142,6 +152,8 @@ describe('DatePeriodQuestion', () => {
 				question: QUESTION,
 				fieldName: FIELDNAME,
 				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
 				validators: VALIDATORS
 			});
 
@@ -189,6 +201,8 @@ describe('DatePeriodQuestion', () => {
 				question: QUESTION,
 				fieldName: FIELDNAME,
 				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
 				validators: VALIDATORS
 			});
 
@@ -231,6 +245,8 @@ describe('DatePeriodQuestion', () => {
 				question: QUESTION,
 				fieldName: FIELDNAME,
 				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
 				validators: VALIDATORS
 			});
 
@@ -260,6 +276,8 @@ describe('DatePeriodQuestion', () => {
 				question: QUESTION,
 				fieldName: FIELDNAME,
 				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
 				validators: VALIDATORS
 			});
 
@@ -289,6 +307,8 @@ describe('DatePeriodQuestion', () => {
 				question: QUESTION,
 				fieldName: FIELDNAME,
 				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
 				validators: VALIDATORS,
 				labels: { start: 'Open', end: 'Close' }
 			});
@@ -320,6 +340,8 @@ describe('DatePeriodQuestion', () => {
 				question: QUESTION,
 				fieldName: FIELDNAME,
 				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
 				validators: VALIDATORS
 			});
 
