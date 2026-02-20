@@ -14,16 +14,22 @@ export default class DatePeriodQuestion extends Question {
 	 * @param {import('#question-types').QuestionParameters} params
 	 * @param {string} [params.dateFormat]
 	 * @param {{start: string, end: string}} [params.labels]
+	 * @param {string} [params.hint]
+	 * @param {string} [params.hintStart]
+	 * @param {string} [params.hintEnd]
 	 * @param {{hour: number, minute: number, second: number}} [params.startTime]
 	 * @param {{hour: number, minute: number, second: number}} [params.endTime]
 	 */
-	constructor({ dateFormat = DEFAULT_DATE_FORMAT, labels, startTime, endTime, ...params }) {
+	constructor({ dateFormat = DEFAULT_DATE_FORMAT, hint, labels, hintStart, startTime, hintEnd, endTime, ...params }) {
 		super({
 			...params,
 			viewFolder: 'date-period'
 		});
 		this.dateFormat = dateFormat;
 		this.labels = labels || { start: 'Start', end: 'End' };
+		this.hint = hint;
+		this.hintStart = hintStart;
+		this.hintEnd = hintEnd;
 		this.startTime = startTime || { hour: 0, minute: 0, second: 0 };
 		this.endTime = endTime || { hour: 0, minute: 0, second: 0 };
 	}

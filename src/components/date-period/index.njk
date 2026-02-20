@@ -33,6 +33,14 @@
                     }
                 }) }}
 
+                    {% if question.hint %}
+                        <div class="govuk-hint">{{ question.hint }}</div>
+                    {% endif %}
+
+                    {% if question.html %}
+                        {% include question.html ignore missing %}
+                    {% endif %}
+
                 {{ govukDateInput({
                     id: startFieldName,
                     fieldset: {
@@ -40,8 +48,8 @@
                             text: labels.start
                         }
                     },
-                    hint: question.hint and {
-                        text: question.hint
+                    hint: question.hintStart and {
+                        text: question.hintStart
                     },
                     errorMessage: errorSummary and {
                         text: errors[question.fieldName].msg or errors[startFieldName].msg or errors[startDayFieldName].msg or errors[startMonthFieldName].msg or errors[startYearFieldName].msg
@@ -78,8 +86,8 @@
                             text: labels.end
                         }
                     },
-                    hint: question.hint and {
-                        text: question.hint
+                    hint: question.hintEnd and {
+                       text: question.hintEnd
                     },
                     errorMessage: errorSummary and {
                         text: errors[question.fieldName].msg or errors[endFieldName].msg or errors[endDayFieldName].msg or errors[endMonthFieldName].msg or errors[endYearFieldName].msg
