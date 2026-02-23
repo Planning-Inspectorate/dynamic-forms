@@ -118,6 +118,8 @@ export default class DatePeriodQuestion extends Question {
 	 */
 	addCustomDataToViewModel(viewModel) {
 		viewModel.labels = this.labels;
+		viewModel.hintStart = this.hintStart;
+		viewModel.hintEnd = this.hintEnd;
 	}
 
 	/**
