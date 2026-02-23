@@ -48,8 +48,8 @@
                             text: labels.start
                         }
                     },
-                    hint: question.hintStart and {
-                        text: question.hintStart
+                    hint: hintStart and {
+                        text: hintStart
                     },
                     errorMessage: errorSummary and {
                         text: errors[question.fieldName].msg or errors[startFieldName].msg or errors[startDayFieldName].msg or errors[startMonthFieldName].msg or errors[startYearFieldName].msg
@@ -86,8 +86,8 @@
                             text: labels.end
                         }
                     },
-                    hint: question.hintEnd and {
-                       text: question.hintEnd
+                    hint: hintEnd and {
+                       text: hintEnd
                     },
                     errorMessage: errorSummary and {
                         text: errors[question.fieldName].msg or errors[endFieldName].msg or errors[endDayFieldName].msg or errors[endMonthFieldName].msg or errors[endYearFieldName].msg
