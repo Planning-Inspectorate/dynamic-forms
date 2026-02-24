@@ -1,6 +1,6 @@
 import { DocType } from '@pins/common/src/document-types';
-import { JourneyResponse } from '../journey/journey-response';
-import BaseValidator from '../validator/base-validator';
+import { JourneyResponse } from '#journey-response';
+import BaseValidator from '../validator/base-validator.js';
 
 type QuestionTypes =
 	| 'boolean'
@@ -92,40 +92,19 @@ interface UnitOption {
 	};
 }
 
-type CheckboxQuestionProps = CommonQuestionProps & {
-	type: 'checkbox';
-	options: Option[];
-};
-
-type MultiFileUploadQuestionProps = CommonQuestionProps & {
-	type: 'multi-file-upload';
-	documentType: DocType;
-};
-
 type BooleanQuestionProps = CommonQuestionProps & {
 	type: 'boolean';
 	options?: Option[];
 	interfaceType?: 'checkbox' | 'radio';
 };
 
-type RadioQuestionProps = CommonQuestionProps & {
-	type: 'radio';
+type CheckboxQuestionProps = CommonQuestionProps & {
+	type: 'checkbox';
 	options: Option[];
 };
 
 type DateQuestionProps = CommonQuestionProps & {
 	type: 'date';
-};
-
-type TextEntryQuestionProps = CommonQuestionProps & {
-	type: 'text-entry';
-	label?: string;
-};
-
-type SingleLineInputQuestionProps = CommonQuestionProps & {
-	type: 'single-line-input';
-	label?: string;
-	inputAttributes?: Record<string, string>;
 };
 
 type MultiFieldInputQuestionProps = CommonQuestionProps & {
@@ -136,14 +115,35 @@ type MultiFieldInputQuestionProps = CommonQuestionProps & {
 	formatType?: 'contactDetails' | 'standard';
 };
 
+type MultiFileUploadQuestionProps = CommonQuestionProps & {
+	type: 'multi-file-upload';
+	documentType: DocType;
+};
+
 type NumberEntryQuestionProps = CommonQuestionProps & {
 	type: 'number';
 	label?: string;
 	suffix?: string;
 };
 
+type RadioQuestionProps = CommonQuestionProps & {
+	type: 'radio';
+	options: Option[];
+};
+
+type SingleLineInputQuestionProps = CommonQuestionProps & {
+	type: 'single-line-input';
+	label?: string;
+	inputAttributes?: Record<string, string>;
+};
+
 type SiteAddressQuestionProps = CommonQuestionProps & {
 	type: 'site-address';
+};
+
+type TextEntryQuestionProps = CommonQuestionProps & {
+	type: 'text-entry';
+	label?: string;
 };
 
 type UnitOptionEntryQuestionProps = CommonQuestionProps & {
@@ -154,14 +154,14 @@ type UnitOptionEntryQuestionProps = CommonQuestionProps & {
 };
 
 export type QuestionProps =
-	| CheckboxQuestionProps
-	| MultiFileUploadQuestionProps
 	| BooleanQuestionProps
-	| RadioQuestionProps
+	| CheckboxQuestionProps
 	| DateQuestionProps
-	| TextEntryQuestionProps
-	| SingleLineInputQuestionProps
 	| MultiFieldInputQuestionProps
+	| MultiFileUploadQuestionProps
 	| NumberEntryQuestionProps
+	| RadioQuestionProps
+	| SingleLineInputQuestionProps
 	| SiteAddressQuestionProps
+	| TextEntryQuestionProps
 	| UnitOptionEntryQuestionProps;
