@@ -7,9 +7,10 @@ type QuestionTypes =
 	| 'checkbox'
 	| 'date'
 	| 'date-period'
+	| 'date-time'
+	| 'email'
 	| 'manage-list'
 	| 'multi-field-input'
-	| 'multi-file-upload'
 	| 'number'
 	| 'radio'
 	| 'select'
@@ -107,9 +108,24 @@ type DateQuestionProps = CommonQuestionProps & {
 	type: 'date';
 };
 
+type DatePeriodQuestionProps = CommonQuestionProps & {
+	type: 'date-period';
+};
+
+type DateTimeQuestionProps = CommonQuestionProps & {
+	type: 'date-time';
+};
+
+type ManageListQuestionProps = CommonQuestionProps & {
+	type: 'manage-list';
+};
+
+type EmailQuestionProps = CommonQuestionProps & {
+	type: 'email';
+};
+
 type MultiFieldInputQuestionProps = CommonQuestionProps & {
 	type: 'multi-field-input';
-	label?: string;
 	inputAttributes?: Record<string, string>;
 	inputFields: InputField[];
 	formatType?: 'contactDetails' | 'standard';
@@ -122,7 +138,6 @@ type MultiFileUploadQuestionProps = CommonQuestionProps & {
 
 type NumberEntryQuestionProps = CommonQuestionProps & {
 	type: 'number';
-	label?: string;
 	suffix?: string;
 };
 
@@ -131,9 +146,13 @@ type RadioQuestionProps = CommonQuestionProps & {
 	options: Option[];
 };
 
+type SelectQuestionProps = CommonQuestionProps & {
+	type: 'select';
+	options: Option[];
+};
+
 type SingleLineInputQuestionProps = CommonQuestionProps & {
 	type: 'single-line-input';
-	label?: string;
 	inputAttributes?: Record<string, string>;
 };
 
@@ -143,25 +162,32 @@ type SiteAddressQuestionProps = CommonQuestionProps & {
 
 type TextEntryQuestionProps = CommonQuestionProps & {
 	type: 'text-entry';
-	label?: string;
+};
+
+type TextEntryRedactQuestionProps = CommonQuestionProps & {
+	type: 'text-entry-redact';
 };
 
 type UnitOptionEntryQuestionProps = CommonQuestionProps & {
 	type: 'unit-option';
 	conditionalFieldName: string;
 	options: UnitOption[];
-	label?: string;
 };
 
 export type QuestionProps =
 	| BooleanQuestionProps
 	| CheckboxQuestionProps
 	| DateQuestionProps
+	| DatePeriodQuestionProps
+	| DateTimeQuestionProps
+	| ManageListQuestionProps
+	| EmailQuestionProps
 	| MultiFieldInputQuestionProps
-	| MultiFileUploadQuestionProps
 	| NumberEntryQuestionProps
 	| RadioQuestionProps
+	| SelectQuestionProps
 	| SingleLineInputQuestionProps
 	| SiteAddressQuestionProps
 	| TextEntryQuestionProps
+	| TextEntryRedactQuestionProps
 	| UnitOptionEntryQuestionProps;
