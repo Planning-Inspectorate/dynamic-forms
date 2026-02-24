@@ -3,21 +3,21 @@ import { JourneyResponse } from '../journey/journey-response';
 import BaseValidator from '../validator/base-validator';
 
 type QuestionTypes =
-	| 'checkbox'
-	| 'multi-file-upload'
 	| 'boolean'
-	| 'radio'
+	| 'checkbox'
 	| 'date'
 	| 'date-period'
-	| 'text-entry'
-	| 'text-entry-redact'
+	| 'manage-list'
+	| 'multi-field-input'
+	| 'multi-file-upload'
+	| 'number'
+	| 'radio'
 	| 'select'
 	| 'single-line-input'
-	| 'multi-field-input'
-	| 'number'
 	| 'site-address'
-	| 'unit-option'
-	| 'manage-list';
+	| 'text-entry'
+	| 'text-entry-redact'
+	| 'unit-option';
 
 interface CommonQuestionProps {
 	type: QuestionTypes;
