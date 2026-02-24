@@ -1,6 +1,5 @@
 import { DocType } from '@pins/common/src/document-types';
-import { JourneyResponse } from '#journey-response';
-import BaseValidator from '../validator/base-validator.js';
+import { QuestionParameters } from '#question-types';
 
 type QuestionTypes =
 	| 'boolean'
@@ -20,22 +19,9 @@ type QuestionTypes =
 	| 'text-entry-redact'
 	| 'unit-option';
 
-interface CommonQuestionProps {
+type CommonQuestionProps = QuestionParameters & {
 	type: QuestionTypes;
-	title: string;
-	question: string;
-	viewFolder?: string;
-	fieldName: string;
-	url?: string;
-	pageTitle?: string;
-	description?: string;
-	label?: string;
-	validators?: BaseValidator[];
-	html?: string;
-	hint?: string;
-	shouldDisplay?: (response: JourneyResponse) => boolean;
-	autocomplete?: string;
-}
+};
 
 type Option =
 	| {
