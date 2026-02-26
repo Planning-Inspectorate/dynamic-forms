@@ -3,7 +3,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
-{% macro singleTaskList(section, journeyComplete, beforeSubmitButton) %}
+{% macro singleTaskList(section, journeyComplete, beforeSubmitButton, submitButtonText) %}
     {% if section.list.rows.length %}
         {{ govukSummaryList(section.list) }}
     {% endif %}
@@ -15,7 +15,7 @@
         <form action method="post">
             <input type="hidden" name="_csrf" value="{{_csrf}}">
             {{ govukButton({
-                text: "Accept & Submit",
+                text: submitButtonText | default("Accept & Submit", true),
                 type: "submit"
             }) }}
         </form>
