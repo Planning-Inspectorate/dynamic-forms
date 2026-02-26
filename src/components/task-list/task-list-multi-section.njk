@@ -2,7 +2,7 @@
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% macro multiTaskList(sections, journeyComplete, beforeSubmitButton) %}
+{% macro multiTaskList(sections, journeyComplete, beforeSubmitButton, submitButtonText) %}
     <ol class="app-task-list">
         {% for section in sections %}
             <li class="govuk-body govuk-!-margin-bottom-9">
@@ -46,7 +46,7 @@
                         <form action method="post">
                             <input type="hidden" name="_csrf" value="{{_csrf}}">
                             {{ govukButton({
-                                text: "Accept & Submit",
+                                text: submitButtonText | default("Accept & Submit", true),
                                 type: "submit"
                             }) }}
                         </form>

@@ -29,9 +29,9 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             {% if summaryListData.sections | length > 1 %}
-                {{ multiTaskList(summaryListData.sections, journeyComplete, beforeSubmitButton) }}
+                {{ multiTaskList(summaryListData.sections, journeyComplete, beforeSubmitButton, submitButtonText) }}
             {% elif summaryListData.sections | length == 1 %}
-                {{ singleTaskList(summaryListData.sections | first, journeyComplete, beforeSubmitButton) }}
+                {{ singleTaskList(summaryListData.sections | first, journeyComplete, beforeSubmitButton, submitButtonText) }}
             {% endif %}
         </div>
     </div>
