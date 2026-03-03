@@ -220,4 +220,87 @@ describe('./src/dynamic-forms/question.js', () => {
 			assert.strictEqual(result.hello, 'hi');
 		});
 	});
+	describe('getDataToSave', () => {
+		it('should return selected options in object format', async () => {
+			const mockReq = {
+				body: {
+					[FIELDNAME]: 'blue'
+				}
+			};
+			const options = [
+				{
+					text: 'Blue',
+					value: 'blue'
+				},
+				{
+					text: 'Red',
+					value: 'red'
+				}
+			];
+			const expectedAnswer = {
+				answers: {
+					[FIELDNAME]: 'blue'
+				}
+			};
+
+			const question = getTestQuestion({ options });
+			const result = await question.getDataToSave(mockReq, {});
+			assert.deepStrictEqual(result, expectedAnswer);
+		});
+		it('if req.body field name is undefined then pass through with an empty answer', async () => {
+			const mockReq = {
+				body: {
+					[FIELDNAME]: undefined
+				}
+			};
+			const options = [
+				{
+					text: 'Blue',
+					value: 'blue'
+				},
+				{
+					text: 'Red',
+					value: 'red'
+				}
+			];
+			const expectedAnswer = {
+				answers: {
+					[FIELDNAME]: ''
+				}
+			};
+
+			const question = getTestQuestion({ options });
+			const result = await question.getDataToSave(mockReq, {});
+			assert.deepStrictEqual(result, expectedAnswer);
+		});
+		it('if submitted options contains invalid answers then throw error', async () => {
+			const mockReq = {
+				body: {
+					[FIELDNAME]: ['blue', 'green']
+				}
+			};
+			const options = [
+				{
+					text: 'Blue',
+					value: 'blue'
+				},
+				{
+					text: 'Red',
+					value: 'red'
+				}
+			];
+
+			const question = getTestQuestion({ options });
+			assert.rejects(
+				async () => question.getDataToSave(mockReq, {}),
+				(thrown) => {
+					assert.strictEqual(
+						thrown.message,
+						`User submitted option(s) did not correlate with valid answers to ${FIELDNAME} question`
+					);
+					return true;
+				}
+			);
+		});
+	});
 });
