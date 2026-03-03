@@ -230,18 +230,13 @@ class OptionsQuestion extends Question {
 		const fields = Array.isArray(req.body[this.fieldName])
 			? req.body[this.fieldName]
 			: [req.body[this.fieldName]];
-		const fieldValues = fields.map((x) => x.trim());
+		const fieldValues = fields.map((x) => x?.trim());
 
 		/** @type {OptionWithoutDivider[]} */
 		// @ts-ignore
 		const selectedOptions = this.options.filter((option) => {
 			return !optionIsDivider(option) && fieldValues.includes(option.value);
 		});
-
-		if (!selectedOptions.length)
-			throw new Error(
-				`User submitted option(s) did not correlate with valid answers to ${this.fieldName} question`
-			);
 
 		responseToSave.answers[this.fieldName] = fieldValues.join(this.optionJoinString);
 		journeyResponse.answers[this.fieldName] = fieldValues;
