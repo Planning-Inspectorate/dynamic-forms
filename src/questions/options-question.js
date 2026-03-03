@@ -125,14 +125,14 @@ export default class OptionsQuestion extends Question {
 	async getDataToSave(req, journeyResponse) {
 		const answers = {};
 
-		const fields = toArray(req.body[this.fieldName]);
+		const fields = req.body[this.fieldName] !== undefined ? toArray(req.body[this.fieldName]) : [];
 		const fieldValues = fields.map((x) => x.trim());
 
 		const selectedOptions = this.options.filter(({ value }) => {
 			return fieldValues.includes(value);
 		});
 
-		if (!selectedOptions.length)
+		if (selectedOptions.length !== fieldValues.length)
 			throw new Error(`User submitted option(s) did not correlate with valid answers to ${this.fieldName} question`);
 
 		answers[this.fieldName] = fieldValues.join(this.optionJoinString);
