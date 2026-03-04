@@ -28,3 +28,13 @@ export function trimTrailingSlash(str) {
 	if (typeof str !== 'string') return str;
 	return str.replace(/\/$/, '');
 }
+
+/**
+ * Convert a value to an array, unless it is already
+ *
+ * @param {T|T[]} value
+ * @template T
+ */
+export function toArray(value) {
+	return Array.isArray(value) ? value : [value];
+}
