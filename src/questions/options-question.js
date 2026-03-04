@@ -2,6 +2,7 @@ import nunjucks from 'nunjucks';
 import { Question } from './question.js';
 import ValidOptionValidator from '../validator/valid-option-validator.js';
 import { getConditionalFieldName } from '../components/utils/question-utils.js';
+import { toArray } from '#src/lib/utils.js';
 
 const defaultOptionJoinString = ',';
 
@@ -124,7 +125,7 @@ export default class OptionsQuestion extends Question {
 	async getDataToSave(req, journeyResponse) {
 		const answers = {};
 
-		const fields = Array.isArray(req.body[this.fieldName]) ? req.body[this.fieldName] : [req.body[this.fieldName]];
+		const fields = toArray(req.body[this.fieldName]);
 		const fieldValues = fields.map((x) => x.trim());
 
 		const selectedOptions = this.options.filter(({ value }) => {

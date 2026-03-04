@@ -3,6 +3,7 @@ import questionUtils from './components/utils/question-utils.js';
 import { answerObjectForManageListSaving } from '#src/components/manage-list/utils.js';
 import { booleanToYesNoValue } from '#src/components/boolean/question.js';
 import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.js';
+import { toArray } from '#src/lib/utils.js';
 
 /**
  * @typedef {import('./journey/journey.js').Journey} Journey
@@ -64,7 +65,7 @@ function buildSectionRowViewModel(key, value, action) {
 			html: value
 		},
 		actions: {
-			items: Array.isArray(action) ? action : [action]
+			items: toArray(action)
 		}
 	};
 }

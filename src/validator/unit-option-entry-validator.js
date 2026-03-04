@@ -1,6 +1,7 @@
 import { body } from 'express-validator';
 
 import BaseValidator from './base-validator.js';
+import { toArray } from '#src/lib/utils.js';
 
 /**
  * @typedef {import('../questions/question.js')} Question
@@ -81,7 +82,7 @@ export default class UnitOptionEntryValidator extends BaseValidator {
 
 	isValueIncluded(questionObj, value) {
 		return body(questionObj.fieldName).custom((existingValues) => {
-			existingValues = Array.isArray(existingValues) ? existingValues : [existingValues];
+			existingValues = toArray(existingValues);
 			return existingValues.includes(value);
 		});
 	}

@@ -1,6 +1,7 @@
 import nunjucks from 'nunjucks';
 import { Question } from '../../questions/question.js';
 import { conditionalIsJustHTML } from '../utils/question-utils.js';
+import { toArray } from '#src/lib/utils.js';
 
 const defaultOptionJoinString = ',';
 
@@ -132,7 +133,7 @@ export default class UnitOptionEntryQuestion extends Question {
 		const answers = {};
 
 		/** @type {string[]} */
-		const fields = Array.isArray(req.body[this.fieldName]) ? req.body[this.fieldName] : [req.body[this.fieldName]];
+		const fields = toArray(req.body[this.fieldName]);
 		const fieldValues = fields.map((x) => x.trim());
 
 		const selectedOptions = this.options.filter(({ value }) => {

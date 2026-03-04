@@ -1,6 +1,7 @@
 import { body } from 'express-validator';
 
 import BaseValidator from './base-validator.js';
+import { toArray } from '#src/lib/utils.js';
 
 /**
  * @typedef {import('../questions/options-question.js')} OptionsQuestion
@@ -33,7 +34,7 @@ export default class ValidOptionValidator extends BaseValidator {
 		return body(questionObj.fieldName)
 			.custom((value) => {
 				if (!value) return true;
-				value = Array.isArray(value) ? value : [value];
+				value = toArray(value);
 				return value.every((element) => questionObj.options.map((option) => option.value).includes(element));
 			})
 			.withMessage(this.errorMessage);
