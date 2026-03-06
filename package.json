@@ -27,7 +27,7 @@
     "nunjucks": "^3.2.4"
   },
   "imports": {
-    "#question-types": "./src/questions/question-types.d.ts",
+    "#question-types": "./src/questions/question-types.js",
     "#test/*": "./test/*",
     "#base-validator": "./src/validator/base-validator.js",
     "#journey": "./src/journey/journey.js",

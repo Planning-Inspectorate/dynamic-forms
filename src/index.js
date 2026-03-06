@@ -45,6 +45,8 @@ export { Question } from './questions/question.js';
 export { createQuestions } from './questions/create-questions.js';
 export * from './questions/options-question.js';
 export { questionClasses } from './questions/questions.js';
+export * from './questions/question-props.js';
+export * from './questions/question-types.js';
 
 // Section
 export { Section } from './section.js';
