@@ -31,9 +31,8 @@ export const postcodeMinLength = 5;
 export default class AddressValidator extends BaseValidator {
 	/**
 	 * creates an instance of an AddressValidator
-	 * @param {Object} opts
-	 * @param {boolean} [opts.required]
-	 * @param {{[key: string]: boolean}} [opts.requiredFields]
+	 * @param {Object} [opts]
+	 * @param {{addressLine1: boolean, addressLine2: boolean, townCity: boolean, county: boolean, postcode: boolean}} [opts.requiredFields]
 	 */
 	constructor(opts) {
 		super();
