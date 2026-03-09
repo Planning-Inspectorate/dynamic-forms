@@ -1,5 +1,4 @@
-import { DocType } from '@pins/common/src/document-types';
-import { QuestionParameters } from '#question-types';
+import type { QuestionParameters } from '#question-types';
 
 type QuestionTypes =
 	| 'boolean'
@@ -19,7 +18,7 @@ type QuestionTypes =
 	| 'text-entry-redact'
 	| 'unit-option';
 
-type CommonQuestionProps = QuestionParameters & {
+type CommonQuestionProps = Omit<QuestionParameters, 'viewFolder'> & {
 	type: QuestionTypes;
 };
 
@@ -115,11 +114,6 @@ type MultiFieldInputQuestionProps = CommonQuestionProps & {
 	inputAttributes?: Record<string, string>;
 	inputFields: InputField[];
 	formatType?: 'contactDetails' | 'standard';
-};
-
-type MultiFileUploadQuestionProps = CommonQuestionProps & {
-	type: 'multi-file-upload';
-	documentType: DocType;
 };
 
 type NumberEntryQuestionProps = CommonQuestionProps & {

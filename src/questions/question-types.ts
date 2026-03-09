@@ -1,7 +1,7 @@
-import { RouteParams } from '#src/journey/journey-types.d.ts';
-import ManageListQuestion from '#src/components/manage-list/question.js';
-import BaseValidator from '../validator/base-validator.js';
-import { JourneyResponse } from '../journey/journey-response.js';
+import type { RouteParams } from '#src/journey/journey-types.d.ts';
+import type ManageListQuestion from '#src/components/manage-list/question.js';
+import type BaseValidator from '../validator/base-validator.js';
+import type { JourneyResponse } from '../journey/journey-response.js';
 
 export interface QuestionParameters {
 	title: string;
