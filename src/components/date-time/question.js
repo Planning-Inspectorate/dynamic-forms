@@ -9,7 +9,7 @@ export default class DateTimeQuestion extends Question {
 	static PM = 'pm';
 
 	/**
-	 * @param {import('@planning-inspectorate/dynamic-forms/src/questions/question-types.js').QuestionParameters} params
+	 * @param {import('#question-types').QuestionParameters} params
 	 * @param {string} [params.dateFormat]
 	 * @param {string} [params.timeFormat]
 	 */
