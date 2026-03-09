@@ -9,6 +9,9 @@
     "type": "git",
     "url": "git+https://github.com/Planning-Inspectorate/dynamic-forms.git"
   },
+  "engines": {
+    "node": ">=22.18.0"
+  },
   "scripts": {
     "commitlint": "commitlint --from=$(git rev-parse $(git cherry origin/main | head -n 1 | cut -c 3-)^1)",
     "lint": "npx eslint .",
@@ -27,7 +30,7 @@
     "nunjucks": "^3.2.4"
   },
   "imports": {
-    "#question-types": "./src/questions/question-types.d.ts",
+    "#question-types": "./src/questions/question-types.ts",
     "#test/*": "./test/*",
     "#base-validator": "./src/validator/base-validator.js",
     "#journey": "./src/journey/journey.js",
