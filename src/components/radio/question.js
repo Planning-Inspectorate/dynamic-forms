@@ -18,7 +18,7 @@ export default class RadioQuestion extends OptionsQuestion {
 	 * @param {Array.<import('#base-validator').BaseValidator>} [params.validators]
 	 * @param {boolean} [params.editable]
 	 * @param {Object<string, any>} [params.viewData]
-	 * @param {import('../../questions/question-types.js').ActionLink} [params.actionLink]
+	 * @param {import('#question-types').ActionLink} [params.actionLink]
 	 */
 	constructor({
 		title,
