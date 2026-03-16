@@ -246,9 +246,16 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				return question.renderAction(res, errorViewModel);
 			}
 
-			// save
-			const data = await question.getDataToSave(req, journeyResponse);
+			let data;
 
+			if (req.path.endsWith('/remove')) {
+				// For remove operations, we just need the field names - skip question-specific validation
+				data = { answers: { [question.fieldName]: null } };
+			} else {
+				data = await question.getDataToSave(req, journeyResponse);
+			}
+
+			// save
 			await saveData({
 				req,
 				res,
