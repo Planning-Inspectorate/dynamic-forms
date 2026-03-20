@@ -53,7 +53,7 @@ function buildSectionViewModel(name, status = '') {
  * build a view model for a row in the journey overview
  * @param {string} key
  * @param {string} value
- * @param {ActionView|ActionView[]} action
+ * @param {ActionView|ActionView[]} [action]
  * @returns {RowView} a representation of a row
  */
 function buildSectionRowViewModel(key, value, action) {
@@ -64,9 +64,7 @@ function buildSectionRowViewModel(key, value, action) {
 		value: {
 			html: value
 		},
-		actions: {
-			items: toArray(action)
-		}
+		actions: action ? { items: toArray(action) } : undefined
 	};
 }
 
