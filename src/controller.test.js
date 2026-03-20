@@ -299,6 +299,56 @@ describe('dynamic-form/controller', () => {
 			assert.strictEqual(args[0], mockJourney.sections[0].segment);
 			assert.strictEqual(args[2], expectedAnswer.value);
 		});
+		it('should format an undefined action as undefined', async () => {
+			const mockFn = res.render.mock;
+			mockFn.resetCalls();
+			mockJourney.sections[0].questions[0].formatAnswerForSummary.mock.mockImplementation(() => [
+				{
+					key: 'Title 1a',
+					value: mockAnswer,
+					action: undefined
+				}
+			]);
+			res.locals.journeyResponse.referenceId = mockRef;
+			const appeal = { a: 1, caseReference: 2 };
+
+			const pageCaption = `Appeal ${appeal.caseReference}`;
+			await list(req, res, pageCaption, { appeal });
+
+			const renderCall = mockFn.calls[0].arguments[1];
+			const firstRowActions = renderCall.summaryListData.sections[0].list.rows[0].actions;
+			assert.strictEqual(firstRowActions, undefined);
+		});
+
+		it('should format a single action object as an array in the actions property', async () => {
+			const mockFn = res.render.mock;
+			mockFn.resetCalls();
+			mockJourney.sections[0].questions[0].formatAnswerForSummary.mock.mockImplementation(() => [
+				{
+					key: 'Title 1a',
+					value: mockAnswer,
+					action: {
+						href: '/manage-appeals/questionnaire/123456/segment-1/title-1a',
+						text: 'Answer',
+						visuallyHiddenText: 'Answer'
+					}
+				}
+			]);
+			res.locals.journeyResponse.referenceId = mockRef;
+
+			await list(req, res);
+
+			const renderCall = mockFn.calls[0].arguments[1];
+			const rowActions = renderCall.summaryListData.sections[0].list.rows[0].actions;
+			assert.ok(rowActions);
+			assert.ok(Array.isArray(rowActions.items));
+			assert.strictEqual(rowActions.items.length, 1);
+			assert.deepStrictEqual(rowActions.items[0], {
+				href: '/manage-appeals/questionnaire/123456/segment-1/title-1a',
+				text: 'Answer',
+				visuallyHiddenText: 'Answer'
+			});
+		});
 	});
 
 	describe('question', () => {
