@@ -20,7 +20,7 @@
 		"target": "esnext",
 		"skipLibCheck": true,
 		"paths": {
-			"#question-types": ["./src/questions/question-types.ts"],
+			"#question-types": ["./src/questions/question-types.d.ts"],
 			"#src/*": ["./src/*"],
 			"#test/*": ["./test/*"],
 			"#question": ["./src/questions/question.js"],

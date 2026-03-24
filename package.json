@@ -17,7 +17,7 @@
     "lint": "npx eslint .",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
-    "generate-types": "npx tsc --project tsconfig.json",
+    "generate-types": "npx tsc --project tsconfig.json && node move-types.js",
     "prepare": "node .husky/install.mjs",
     "test": "node --test",
     "test-coverage": "node --test --experimental-test-coverage"
@@ -30,7 +30,7 @@
     "nunjucks": "^3.2.4"
   },
   "imports": {
-    "#question-types": "./src/questions/question-types.ts",
+    "#question-types": "./src/questions/question-types.d.ts",
     "#test/*": "./test/*",
     "#base-validator": "./src/validator/base-validator.js",
     "#journey": "./src/journey/journey.js",

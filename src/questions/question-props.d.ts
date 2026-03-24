@@ -1,4 +1,4 @@
-import type { QuestionParameters } from '#question-types';
+import type { QuestionParameters } from '#src/questions/question-types.d.ts';
 
 type QuestionTypes =
 	| 'boolean'
