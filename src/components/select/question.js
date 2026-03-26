@@ -1,6 +1,7 @@
 import OptionsQuestion from '../../questions/options-question.js';
 
 export default class SelectQuestion extends OptionsQuestion {
+	#disableAccessibleAutocomplete;
 	/**
 	 * @param {Object} params
 	 * @param {string} params.title
@@ -14,6 +15,7 @@ export default class SelectQuestion extends OptionsQuestion {
 	 * @param {string} [params.label]
 	 * @param {string} [params.html]
 	 * @param {string} [params.legend] - optional legend, used instead of h1
+	 * @param {string} [params.disableAccessibleAutocomplete]
 	 * @param {Array.<import('../../questions/options-question.js').Option>} params.options
 	 * @param {Object<string, any>} [params.viewData]
 	 * @param {Array.<import('#base-validator').BaseValidator>} [params.validators]
@@ -30,6 +32,7 @@ export default class SelectQuestion extends OptionsQuestion {
 		label,
 		html,
 		legend,
+		disableAccessibleAutocomplete,
 		options,
 		validators,
 		viewData
@@ -51,6 +54,7 @@ export default class SelectQuestion extends OptionsQuestion {
 		this.html = html;
 		this.label = label;
 		this.legend = legend;
+		this.#disableAccessibleAutocomplete = disableAccessibleAutocomplete;
 	}
 
 	/**
@@ -59,6 +63,7 @@ export default class SelectQuestion extends OptionsQuestion {
 	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.legend = this.legend;
+		viewModel.question.disableAccessibleAutocomplete = this.#disableAccessibleAutocomplete;
 	}
 
 	/**

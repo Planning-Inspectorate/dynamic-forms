@@ -129,6 +129,7 @@ type RadioQuestionProps = CommonQuestionProps & {
 type SelectQuestionProps = CommonQuestionProps & {
 	type: 'select';
 	options: Option[];
+	disableAccessibleAutocomplete?: boolean;
 };
 
 type SingleLineInputQuestionProps = CommonQuestionProps & {
