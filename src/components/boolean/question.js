@@ -59,7 +59,8 @@ export default class BooleanQuestion extends RadioQuestion {
 		validators,
 		interfaceType = 'radio',
 		options,
-		editable
+		editable,
+		viewData
 	}) {
 		let defaultOptions = options || [
 			{
@@ -90,7 +91,8 @@ export default class BooleanQuestion extends RadioQuestion {
 			options: defaultOptions,
 			validators,
 			html,
-			editable
+			editable,
+			viewData
 		});
 
 		this.interfaceType = interfaceType;
