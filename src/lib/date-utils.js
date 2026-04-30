@@ -82,7 +82,7 @@ function pad(num, length = 2) {
 }
 
 /**
- * @param {Date} date
+ * @param {unknown} date
  * @returns {boolean}
  */
 export const dateIsAfterToday = (date) => {
@@ -90,7 +90,7 @@ export const dateIsAfterToday = (date) => {
 };
 
 /**
- * @param {Date} date
+ * @param {unknown} date
  * @returns {boolean}
  */
 export const dateIsBeforeToday = (date) => {
@@ -98,17 +98,17 @@ export const dateIsBeforeToday = (date) => {
 };
 
 /**
- * @param {Date} date
+ * @param {unknown} date
  * @returns {boolean}
  */
 export const dateIsToday = (date) => {
-	return isValid(date) && !isBefore(date, startOfDay()) && !isAfter(date, endOfDay()) && isValid(date);
+	return isValid(date) && !isBefore(date, startOfDay()) && !isAfter(date, endOfDay());
 };
 
 /**
  * Check if today is within the date range inclusive (start <= now <= end)
- * @param {Date} startDate
- * @param {Date} endDate
+ * @param {unknown} startDate
+ * @param {unknown} endDate
  * @returns {boolean}
  */
 export function nowIsWithinRange(startDate, endDate) {
@@ -122,7 +122,7 @@ export function nowIsWithinRange(startDate, endDate) {
 
 /**
  * Check if today is on or after the start date
- * @param {Date} startDate
+ * @param {unknown} startDate
  * @returns {boolean}
  */
 export function isNowAfterStartDate(startDate) {
