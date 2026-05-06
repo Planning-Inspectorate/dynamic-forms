@@ -2,7 +2,6 @@
 
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/label/macro.njk" import govukLabel %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block dynQuestionContent %}
     <div class="govuk-grid-row">
@@ -56,11 +55,7 @@
 
                 {% endif %}
 
-                {{ govukButton({
-                    text: continueButtonText,
-                    type: "submit",
-                    attributes: { "data-cy":"button-save-and-continue"}
-                }) }}
+                {% include "components/utils/actions.njk" %}
             </form>
         </div>
     </div>

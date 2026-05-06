@@ -1,7 +1,6 @@
 {% extends layoutTemplate %}
 
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block dynQuestionContent %}
     <div class="govuk-grid-row">
@@ -27,11 +26,7 @@
                     },
                     items: question.options
                 }) }}
-                {{ govukButton({
-                    text: continueButtonText,
-                    type: "submit",
-                    attributes: { "data-cy":"button-save-and-continue"}
-                }) }}
+                {% include "components/utils/actions.njk" %}
             </form>
         </div>
     </div>

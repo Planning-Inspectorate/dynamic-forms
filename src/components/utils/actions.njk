@@ -3,6 +3,12 @@
 {# for backwards compatibility #}
 {%- set secondaryActions = secondaryActions or extraActionButtons -%}
 
+{{ govukButton({
+    text: continueButtonText,
+    type: "submit",
+    attributes: { "data-cy":"button-save-and-continue"}
+}) }}
+
 {% if secondaryActions|length %}
 {% for secondaryAction in secondaryActions %}
     {{ govukButton({

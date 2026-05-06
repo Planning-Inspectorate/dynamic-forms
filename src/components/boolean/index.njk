@@ -2,7 +2,6 @@
 
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% if question.html %}
     {% set htmlHint %}
@@ -55,11 +54,7 @@
                         items: question.options
                     }) }}
                 {% endif %}
-                {{ govukButton({
-                    text: continueButtonText,
-                    type: "submit",
-                    attributes: { "data-cy":"button-save-and-continue"}
-                }) }}
+                {% include "components/utils/actions.njk" %}
             </form>
         </div>
     </div>

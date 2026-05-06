@@ -1,7 +1,6 @@
 {% extends layoutTemplate %}
 
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% block dynQuestionContent %}
@@ -37,11 +36,7 @@
 
                 {% endcall %}
 
-                {{ govukButton({
-                    text: continueButtonText,
-                    type: "submit",
-                    attributes: { "data-cy":"button-save-and-continue"}
-                }) }}
+                {% include "components/utils/actions.njk" %}
             </form>
         </div>
     </div>

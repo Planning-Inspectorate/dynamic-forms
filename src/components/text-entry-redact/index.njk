@@ -130,11 +130,7 @@
                     }) }}
                 </div>
 
-                {{ govukButton({
-                    text: continueButtonText,
-                    type: "submit",
-                    attributes: { "data-cy":"button-save-and-continue" }
-                }) }}
+                {% include "components/utils/actions.njk" %}
             </form>
         </div>
 
