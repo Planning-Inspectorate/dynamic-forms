@@ -1,6 +1,5 @@
 {% extends layoutTemplate %}
 
-{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block dynQuestionContent %}
     <div class="govuk-grid-row">
@@ -50,11 +49,7 @@
                     <a href="{{ util.trimTrailingSlash(originalUrl) }}/{{ question.addAnotherLink }}" class="govuk-link">Add another</a>
                 </p>
 
-                {{ govukButton({
-                    text: continueButtonText,
-                    type: "submit",
-                    attributes: { "data-cy":"button-save-and-continue"}
-                }) }}
+                {% include "components/utils/actions.njk" %}
             </form>
         </div>
     </div>

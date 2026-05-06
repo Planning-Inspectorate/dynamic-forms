@@ -2,7 +2,6 @@
 
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set addressLine1= question.fieldName + "_addressLine1" %}
 {% set addressLine2= question.fieldName + "_addressLine2" %}
@@ -97,11 +96,7 @@
                             text: errors[postcode].msg
                         }
                     }) }}
-                    {{ govukButton({
-                        text: continueButtonText,
-                        type: "submit",
-                        attributes: { "data-cy":"button-save-and-continue"}
-                    }) }}
+                    {% include "components/utils/actions.njk" %}
                 {% endcall %}
             </form>
         </div>

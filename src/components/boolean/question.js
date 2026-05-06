@@ -46,6 +46,7 @@ export default class BooleanQuestion extends RadioQuestion {
 	 * @param {Array.<import('../../questions/options-question.js').Option>} [params.options]
 	 * @param {Array.<import('#base-validator').BaseValidator>} [params.validators]
 	 * @param {boolean} [params.editable]
+	 * @param {import('#question-types').QuestionParameters['viewData']} [params.viewData]
 	 */
 	constructor({
 		title,
@@ -59,7 +60,8 @@ export default class BooleanQuestion extends RadioQuestion {
 		validators,
 		interfaceType = 'radio',
 		options,
-		editable
+		editable,
+		viewData
 	}) {
 		let defaultOptions = options || [
 			{
@@ -90,7 +92,8 @@ export default class BooleanQuestion extends RadioQuestion {
 			options: defaultOptions,
 			validators,
 			html,
-			editable
+			editable,
+			viewData
 		});
 
 		this.interfaceType = interfaceType;

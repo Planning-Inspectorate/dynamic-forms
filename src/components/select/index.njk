@@ -1,7 +1,6 @@
 {% extends layoutTemplate %}
 
 {% from "govuk/components/select/macro.njk" import govukSelect %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block head %}
     {% if not question.disableAccessibleAutocomplete %}
@@ -38,14 +37,8 @@
                     items: question.options
                 }) }}
 
-                {{ govukButton({
-                    text: continueButtonText,
-                    type: "submit",
-                    attributes: { "data-cy":"button-save-and-continue"}
-                }) }}
 
-                {% include "components/utils/secondary-actions.njk" %}
-
+                {% include "components/utils/actions.njk" %}
             </form>
         </div>
     </div>

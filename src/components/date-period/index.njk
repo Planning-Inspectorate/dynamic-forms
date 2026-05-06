@@ -1,7 +1,6 @@
 {% extends layoutTemplate %}
 
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% set startFieldName = question.fieldName + "_start" %}
@@ -117,11 +116,7 @@
                     ]
                 }) }}
 
-                {{ govukButton({
-                    text: continueButtonText,
-                    type: "submit",
-                    attributes: { "data-cy":"button-save-and-continue"}
-                }) }}
+                {% include "components/utils/actions.njk" %}
             </form>
         </div>
     </div>

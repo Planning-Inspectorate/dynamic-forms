@@ -21,8 +21,9 @@ export default class CheckboxQuestion extends OptionsQuestion {
 	 * @param {string} [params.description]
 	 * @param {Array.<import('../../questions/options-question.js').Option>} params.options
 	 * @param {Array.<import('#base-validator').BaseValidator>} [params.validators]
+	 * @param {import('#question-types').QuestionParameters['viewData']} [params.viewData]
 	 */
-	constructor({ title, question, fieldName, url, pageTitle, description, options, validators }) {
+	constructor({ title, question, fieldName, url, pageTitle, description, options, validators, viewData }) {
 		super({
 			title,
 			question,
@@ -32,7 +33,8 @@ export default class CheckboxQuestion extends OptionsQuestion {
 			pageTitle,
 			description,
 			options,
-			validators
+			validators,
+			viewData
 		});
 
 		this.optionJoinString = defaultOptionJoinString;

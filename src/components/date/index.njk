@@ -1,7 +1,6 @@
 {% extends layoutTemplate %}
 
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set day= question.fieldName + "_day" %}
 {% set month= question.fieldName + "_month" %}
@@ -62,13 +61,7 @@
                     {{ beforeSubmitButton }}
                 {% endif %}
 
-                {{ govukButton({
-                    text: continueButtonText,
-                    type: "submit",
-                    attributes: { "data-cy":"button-save-and-continue"}
-                }) }}
-                {%- include "components/utils/secondary-actions.njk" %}
-
+                {%- include "components/utils/actions.njk" %}
             </form>
         </div>
     </div>

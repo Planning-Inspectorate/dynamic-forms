@@ -3,7 +3,6 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/label/macro.njk" import govukLabel %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set inputFields = question.value %}
 
@@ -63,12 +62,7 @@
 
                 {% endcall %}
 
-                {{ govukButton({
-                    text: continueButtonText,
-                    type: "submit",
-                    attributes: { "data-cy":"button-save-and-continue"}
-                }) }}
-
+                {% include "components/utils/actions.njk" %}
             </form>
         </div>
     </div>
