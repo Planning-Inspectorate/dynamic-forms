@@ -14,6 +14,7 @@
 {% endif %}
 
 {% block dynQuestionContent %}
+    {% set secondaryActions = secondaryActions or extraActionButtons %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form action="" method="post" novalidate>
@@ -67,18 +68,18 @@
                     type: "submit",
                     attributes: { "data-cy":"button-save-and-continue"}
                 }) }}
-                {% if extraActionButtons|length %}
-                    {% for extraActionButton in extraActionButtons %}
+                {% if secondaryActions|length %}
+                    {% for secondaryAction in secondaryActions %}
                         {{ govukButton({
-                            text: extraActionButton.text,
-                            type: extraActionButton.type,
-                            href: extraActionButton.href,
+                            text: secondaryAction.text,
+                            type: secondaryAction.type,
+                            href: secondaryAction.href,
                             attributes: {
-                                "formaction": extraActionButton.formaction or "",
-                                "data-cy": "button-" + extraActionButton.text|lower|replace(" ", "-"),
-                                "name": extraActionButton.text|lower|replace(" ", "-")
+                                "formaction": secondaryAction.formaction or "",
+                                "data-cy": "button-" + secondaryAction.text|lower|replace(" ", "-"),
+                                "name": secondaryAction.text|lower|replace(" ", "-")
                             },
-                            classes: extraActionButton.classes or "govuk-button--secondary"
+                            classes: secondaryAction.classes or "govuk-button--secondary"
                         }) }}
                     {% endfor %}
                 {% endif %}
