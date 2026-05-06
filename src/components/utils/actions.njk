@@ -2,14 +2,17 @@
 
 {# for backwards compatibility #}
 {%- set secondaryActions = secondaryActions or extraActionButtons -%}
+{%- set hasSecondaryActions = secondaryActions|length > 0 -%}
 
+{% if hasSecondaryActions %}<div class="govuk-button-group">
+{% endif %}
 {{ govukButton({
     text: continueButtonText,
     type: "submit",
     attributes: { "data-cy":"button-save-and-continue"}
 }) }}
 
-{% if secondaryActions|length %}
+{% if hasSecondaryActions %}
 {% for secondaryAction in secondaryActions %}
     {{ govukButton({
         text: secondaryAction.text,
@@ -23,4 +26,5 @@
         classes: secondaryAction.classes or "govuk-button--secondary"
     }) }}
 {% endfor %}
-{% endif %}
+</div>
+{%- endif %}
