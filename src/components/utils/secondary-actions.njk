@@ -1,0 +1,20 @@
+{% from "govuk/components/button/macro.njk" import govukButton -%}
+
+{# for backwards compatibility #}
+{%- set secondaryActions = secondaryActions or extraActionButtons -%}
+
+{% if secondaryActions|length %}
+{% for secondaryAction in secondaryActions %}
+    {{ govukButton({
+        text: secondaryAction.text,
+        type: secondaryAction.type,
+        href: secondaryAction.href,
+        attributes: {
+            "formaction": secondaryAction.formaction or "",
+            "data-cy": "button-" + secondaryAction.text|lower|replace(" ", "-"),
+            "name": secondaryAction.text|lower|replace(" ", "-")
+        },
+        classes: secondaryAction.classes or "govuk-button--secondary"
+    }) }}
+{% endfor %}
+{% endif %}
