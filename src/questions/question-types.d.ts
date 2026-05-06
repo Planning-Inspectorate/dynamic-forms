@@ -22,12 +22,37 @@ export interface QuestionParameters {
 	// override the action link for this question
 	actionLink?: ActionLink;
 	// static view data for this question
-	viewData?: Record<string, any>;
+	viewData?: {
+		/**
+		 * @deprecated replaced by secondaryActions
+		 */
+		extraActionButtons?: SecondaryAction[];
+		/**
+		 * Secondary action buttons
+		 */
+		secondaryActions?: SecondaryAction[];
+		[key: string]: any;
+	};
 }
 
 export interface ActionLink {
 	text: string;
 	href: string;
+}
+
+export type SecondaryAction = SecondaryActionButton | SecondaryActionLink;
+
+export interface SecondaryActionButton {
+	text: string;
+	type?: string;
+	formaction?: string;
+	classes?: string;
+}
+
+export interface SecondaryActionLink {
+	text: string;
+	href: string;
+	classes?: string;
 }
 
 export interface QuestionViewModel {
