@@ -12,7 +12,6 @@
 {% endblock %}
 
 {% block dynQuestionContent %}
-    {% set secondaryActions = secondaryActions or extraActionButtons %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form action="" method="POST" novalidate>
@@ -45,21 +44,7 @@
                     attributes: { "data-cy":"button-save-and-continue"}
                 }) }}
 
-                {% if secondaryActions|length %}
-                    {% for secondaryAction in secondaryActions %}
-                        {{ govukButton({
-                            text: secondaryAction.text,
-                            type: secondaryAction.type,
-                            href: secondaryAction.href,
-                            attributes: {
-                                "formaction": secondaryAction.formaction or "",
-                                "data-cy": "button-" + secondaryAction.text|lower|replace(" ", "-"),
-                                "name": secondaryAction.text|lower|replace(" ", "-")
-                            },
-                            classes: secondaryAction.classes or "govuk-button--secondary"
-                        }) }}
-                    {% endfor %}
-                {% endif %}
+                {% include "components/utils/secondary-actions.njk" %}
 
             </form>
         </div>
