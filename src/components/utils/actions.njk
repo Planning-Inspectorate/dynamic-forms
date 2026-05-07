@@ -14,15 +14,20 @@
 
 {% if hasSecondaryActions %}
 {% for secondaryAction in secondaryActions %}
+    {%- set name = secondaryAction.text|lower|replace(" ", "-") -%}
+    {%- if secondaryAction.href -%}
+        {# name and formaction aren't valid for <a> tags #}
+        {%- set attributes = {"data-cy": "button-" + name} -%}
+    {%- elseif secondaryAction.formaction and (not secondaryAction.type or secondaryAction.type == "submit") -%}
+        {%- set attributes = {"data-cy": "button-" + name, "name": name, "formaction": secondaryAction.formaction} -%}
+    {%- else -%}
+        {%- set attributes = {"data-cy": "button-" + name, "name": name} -%}
+    {%- endif %}
     {{ govukButton({
         text: secondaryAction.text,
         type: secondaryAction.type,
         href: secondaryAction.href,
-        attributes: {
-            "formaction": secondaryAction.formaction or "",
-            "data-cy": "button-" + secondaryAction.text|lower|replace(" ", "-"),
-            "name": secondaryAction.text|lower|replace(" ", "-")
-        },
+        attributes: attributes,
         classes: secondaryAction.classes or "govuk-button--secondary"
     }) }}
 {% endfor %}
