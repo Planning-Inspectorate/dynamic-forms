@@ -28,5 +28,18 @@ describe('JourneyResponse class', () => {
 			const response = new JourneyResponse('', '', answers);
 			assert.strictEqual(response.answers, answers);
 		});
+
+		it('should not set LPACode when lpaCode is omitted', () => {
+			const response = new JourneyResponse('journey-1', 'ref-1', { q1: 'yes' });
+			assert.strictEqual(response.LPACode, undefined);
+			assert.strictEqual(Object.hasOwn(response, 'LPACode'), false);
+		});
+
+		it('should set LPACode when lpaCode is provided', () => {
+			const lpaCode = 'LPA-001';
+			const response = new JourneyResponse('journey-1', 'ref-1', { q1: 'yes' }, lpaCode);
+			assert.strictEqual(response.LPACode, lpaCode);
+			assert.strictEqual(Object.hasOwn(response, 'LPACode'), true);
+		});
 	});
 });

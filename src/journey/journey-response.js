@@ -37,6 +37,8 @@ export class JourneyResponse {
 		} else {
 			this.answers = {};
 		}
-		this.LPACode = lpaCode;
+		if (lpaCode !== undefined) {
+			this.LPACode = lpaCode;
+		}
 	}
 }
