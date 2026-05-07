@@ -92,7 +92,14 @@ export class Question {
 		title: '',
 		text: ''
 	};
-	#isInManageListSection = false;
+	/**
+	 * Private, but not marked as such because it breaks types, either using #variable:
+	 * - Property '#isInManageListSection' is missing in type
+	 * or with @private
+	 * - Types have separate declarations of a private property '_isInManageListSection'.
+	 * @type {boolean}
+	 */
+	_isInManageListSection = false;
 
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
@@ -169,14 +176,14 @@ export class Question {
 	 * @returns {boolean}
 	 */
 	get isInManageListSection() {
-		return this.#isInManageListSection;
+		return this._isInManageListSection;
 	}
 
 	set isInManageListSection(value) {
 		if (!value) {
 			throw new Error('Question isInManageListSection is false by default');
 		}
-		this.#isInManageListSection = value;
+		this._isInManageListSection = value;
 	}
 
 	/**
