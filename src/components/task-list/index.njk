@@ -2,8 +2,8 @@
 
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
-{% from "./task-list-multi-section.njk" import multiTaskList %}
-{% from "./task-list-single-section.njk" import singleTaskList %}
+{% from "./task-list-multi-section.njk" import multiTaskList with context %}
+{% from "./task-list-single-section.njk" import singleTaskList with context %}
 
 {% block dynTaskList %}
     <style {% if cspNonce %}nonce={{ cspNonce }}{% endif %}>
