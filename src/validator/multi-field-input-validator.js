@@ -20,13 +20,29 @@ import BaseValidator from './base-validator.js';
  */
 
 /**
- * @typedef {Object} Field
+ * @typedef {Object} FieldBase
  * @property {string} fieldName
- * @property {boolean} required
- * @property {string} errorMessage
  * @property {MinLength} [minLength]
  * @property {MaxLength} [maxLength]
  * @property {Regex} [regex]
+ */
+
+/**
+ * @typedef {FieldBase & {
+ *   required: true,
+ *   errorMessage: string
+ * }} RequiredField
+ */
+
+/**
+ * @typedef {FieldBase & {
+ *   required?: false,
+ *   errorMessage?: string
+ * }} OptionalField
+ */
+
+/**
+ * @typedef {RequiredField | OptionalField} Field
  */
 
 export class MultiFieldInputValidator extends BaseValidator {
