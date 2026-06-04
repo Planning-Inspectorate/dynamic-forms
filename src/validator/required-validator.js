@@ -10,7 +10,7 @@ import BaseValidator from './base-validator.js';
  * enforces a field is not empty
  * @class
  */
-export default class RequiredValidator extends BaseValidator {
+export class RequiredValidator extends BaseValidator {
 	/**
 	 * @type {string} error message to display to user
 	 */
@@ -36,3 +36,5 @@ export default class RequiredValidator extends BaseValidator {
 		return body(questionObj.fieldName).notEmpty().withMessage(this.errorMessage);
 	}
 }
+
+export default RequiredValidator;

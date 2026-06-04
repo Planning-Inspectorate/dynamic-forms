@@ -8,7 +8,7 @@ export const requiredCoordinateLength = 6;
  * @property {string} title
  * @property {string} fieldName
  */
-export default class CoordinatesValidator extends BaseValidator {
+export class CoordinatesValidator extends BaseValidator {
 	/**
 	 * @param {CoordinateField} northing
 	 * @param {CoordinateField} easting
@@ -55,3 +55,5 @@ export default class CoordinatesValidator extends BaseValidator {
 		];
 	}
 }
+
+export default CoordinatesValidator;

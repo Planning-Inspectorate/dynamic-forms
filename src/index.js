@@ -1,8 +1,5 @@
 // Components
 import AddressQuestion from './components/address/question.js';
-import DateValidator from './validator/date-validator.js';
-import EmailValidator from './validator/email-validator.js';
-import StringValidator from './validator/string-validator.js';
 
 export { AddressQuestion };
 export * from './components/boolean/question.js';
@@ -52,7 +49,7 @@ export * from './questions/question-types.js';
 // Section
 export { Section } from './section.js';
 
-// validators
+// Validators
 export * from './validator/address-validator.js';
 export * from './validator/base-validator.js';
 export * from './validator/conditional-required-validator.js';
@@ -60,16 +57,17 @@ export * from './validator/confirmation-checkbox-validator.js';
 export * from './validator/coordinates-validator.js';
 export * from './validator/date-period-validator.js';
 export * from './validator/date-time-validator.js';
-export { DateValidator };
-export { EmailValidator };
+export * from './validator/date-validator.js';
 export * from './validator/document-upload-validator.js';
+export * from './validator/email-validator.js';
 export * from './validator/multi-field-input-validator.js';
 export * from './validator/numeric-validator.js';
-export { default as RequiredValidator } from './validator/required-validator.js';
+export * from './validator/required-validator.js';
 export * from './validator/same-answer-validator.js';
-export { StringValidator };
+export * from './validator/string-validator.js';
 export * from './validator/unit-option-entry-validator.js';
 export * from './validator/valid-option-validator.js';
+// Other validation tools
 export * from './validator/validation-error-handler.js';
 export { default as validate } from './validator/validator.js';
 export * from './validator/validator.js';

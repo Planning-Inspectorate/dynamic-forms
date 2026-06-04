@@ -11,9 +11,9 @@ import { toArray } from '#src/lib/utils.js';
  * enforces a field is within the question's predefined list of options
  * @class
  */
-export default class ValidOptionValidator extends BaseValidator {
+export class ValidOptionValidator extends BaseValidator {
 	/**
-	 * creates an instance of a RequiredValidator
+	 * creates an instance of a ValidOptionValidator
 	 * @param {string} [errorMessage] - custom error message to show on validation failure
 	 */
 	constructor(errorMessage) {
@@ -40,3 +40,5 @@ export default class ValidOptionValidator extends BaseValidator {
 			.withMessage(this.errorMessage);
 	}
 }
+
+export default ValidOptionValidator;

@@ -1,7 +1,7 @@
 import BaseValidator from './base-validator.js';
 import { body } from 'express-validator';
 
-export default class DocumentUploadValidator extends BaseValidator {
+export class DocumentUploadValidator extends BaseValidator {
 	/**
 	 * @param {string} fieldName
 	 * @param {string} errorMessage
@@ -26,3 +26,5 @@ export default class DocumentUploadValidator extends BaseValidator {
 		];
 	}
 }
+
+export default DocumentUploadValidator;

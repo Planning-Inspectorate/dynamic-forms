@@ -11,7 +11,7 @@ import BaseValidator from './base-validator.js';
  * @property {string} [errorMessage] - Custom error message
  */
 
-export default class EmailValidator extends BaseValidator {
+export class EmailValidator extends BaseValidator {
 	/**
 	 * @param {Object} params
 	 * @param {EmailValidationOptions} [params.options] - Email validation options
@@ -39,3 +39,5 @@ export default class EmailValidator extends BaseValidator {
 		return body(fieldName).isEmail(this.options).withMessage(this.errorMessage);
 	}
 }
+
+export default EmailValidator;

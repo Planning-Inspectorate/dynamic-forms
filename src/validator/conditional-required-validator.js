@@ -11,7 +11,7 @@ import { toArray } from '#src/lib/utils.js';
  * enforces a field is not empty when condition is satisfied
  * @class
  */
-export default class ConditionalRequiredValidator extends BaseValidator {
+export class ConditionalRequiredValidator extends BaseValidator {
 	/**
 	 * @type {string} error message to display to user
 	 */
@@ -58,3 +58,5 @@ export default class ConditionalRequiredValidator extends BaseValidator {
 		});
 	}
 }
+
+export default ConditionalRequiredValidator;

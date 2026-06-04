@@ -29,7 +29,7 @@ import BaseValidator from './base-validator.js';
  * @property {Regex} [regex]
  */
 
-export default class MultiFieldInputValidator extends BaseValidator {
+export class MultiFieldInputValidator extends BaseValidator {
 	/**
 	 * @param {Object} params
 	 * @param {Field[]} [params.fields]
@@ -95,3 +95,5 @@ export default class MultiFieldInputValidator extends BaseValidator {
 		return field.required;
 	}
 }
+
+export default MultiFieldInputValidator;

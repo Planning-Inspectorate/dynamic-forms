@@ -19,7 +19,7 @@ import BaseValidator from './base-validator.js';
  * @property {String} [regexMessage]
  */
 
-export default class StringValidator extends BaseValidator {
+export class StringValidator extends BaseValidator {
 	minLength = {
 		minLength: 0,
 		minLengthMessage: ''
@@ -79,3 +79,5 @@ export default class StringValidator extends BaseValidator {
 		return chain;
 	}
 }
+
+export default StringValidator;
