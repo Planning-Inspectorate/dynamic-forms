@@ -14,7 +14,7 @@ import BaseValidator from './base-validator.js';
  * @property {String} maxMessage
  */
 
-export default class NumericValidator extends BaseValidator {
+export class NumericValidator extends BaseValidator {
 	/**
 	 * @param {Object} params
 	 * @param {number} [params.min]
@@ -54,3 +54,5 @@ export default class NumericValidator extends BaseValidator {
 		return chain;
 	}
 }
+
+export default NumericValidator;

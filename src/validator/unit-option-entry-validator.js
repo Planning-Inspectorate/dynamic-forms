@@ -11,7 +11,7 @@ import { toArray } from '#src/lib/utils.js';
  * enforces a field is not empty when condition is satisfied
  * @class
  */
-export default class UnitOptionEntryValidator extends BaseValidator {
+export class UnitOptionEntryValidator extends BaseValidator {
 	/**
 	 * @param {Object} params
 	 * @param {string} [params.errorMessage]
@@ -87,3 +87,5 @@ export default class UnitOptionEntryValidator extends BaseValidator {
 		});
 	}
 }
+
+export default UnitOptionEntryValidator;

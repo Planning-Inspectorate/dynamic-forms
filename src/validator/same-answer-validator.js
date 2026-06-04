@@ -4,7 +4,7 @@ import BaseValidator from './base-validator.js';
 /**
  * Universal validator to ensure the answer to the current question is not the same as another question's answer
  */
-export default class SameAnswerValidator extends BaseValidator {
+export class SameAnswerValidator extends BaseValidator {
 	/**
 	 * @param {string[]} fieldNamesToCompare - field name to compare against
 	 * @param {string} [errorMessage]
@@ -30,3 +30,5 @@ export default class SameAnswerValidator extends BaseValidator {
 		});
 	}
 }
+
+export default SameAnswerValidator;

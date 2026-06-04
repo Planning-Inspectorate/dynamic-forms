@@ -20,7 +20,7 @@ import { parseDateInput, startOfDay } from '../lib/date-utils.js';
  * enforces a user has entered a valid date period
  * @class
  */
-export default class DatePeriodValidator extends BaseValidator {
+export class DatePeriodValidator extends BaseValidator {
 	/** @type {DateValidationSettings} */
 	dateValidationSettings;
 
@@ -208,3 +208,5 @@ export default class DatePeriodValidator extends BaseValidator {
 		return isValid(parsedDate);
 	}
 }
+
+export default DatePeriodValidator;

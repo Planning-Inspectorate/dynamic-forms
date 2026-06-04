@@ -28,7 +28,7 @@ export const postcodeMinLength = 5;
  * enforces address fields are within allowed parameters
  * @class
  */
-export default class AddressValidator extends BaseValidator {
+export class AddressValidator extends BaseValidator {
 	/**
 	 * creates an instance of an AddressValidator
 	 * @param {Object} [opts]
@@ -155,3 +155,5 @@ export default class AddressValidator extends BaseValidator {
 		return false;
 	}
 }
+
+export default AddressValidator;

@@ -9,7 +9,7 @@ import DateValidator from './date-validator.js';
  * enforces a user has entered a valid date
  * @class
  */
-export default class DateTimeValidator extends DateValidator {
+export class DateTimeValidator extends DateValidator {
 	/**
 	 * creates an instance of a DateTimeValidator
 	 * @param {string} timeInputLabel - string representing the time fields as displayed on the UI as part of an error message
@@ -72,3 +72,5 @@ export default class DateTimeValidator extends DateValidator {
 		];
 	}
 }
+
+export default DateTimeValidator;

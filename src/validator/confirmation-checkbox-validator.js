@@ -10,14 +10,14 @@ import BaseValidator from './base-validator.js';
  * enforces a confirmation checkbox is checked before proceeding
  * @class
  */
-export default class ConfirmationCheckboxValidator extends BaseValidator {
+export class ConfirmationCheckboxValidator extends BaseValidator {
 	/**
 	 * @type {string} error message to display to user
 	 */
 	errorMessage = 'Please check the checkbox';
 
 	/**
-	 * creates an instance of a ConditionalRequiredValidator
+	 * creates an instance of a ConfirmationCheckboxValidator
 	 * @param {Object} params
 	 * @param {string} params.checkboxName
 	 * @param {string} params.errorMessage - custom error message to show on validation failure
@@ -36,3 +36,5 @@ export default class ConfirmationCheckboxValidator extends BaseValidator {
 		return body(this.checkboxName).notEmpty().withMessage(this.errorMessage);
 	}
 }
+
+export default ConfirmationCheckboxValidator;

@@ -2,7 +2,7 @@
  * @abstract
  * @class BaseValidator
  */
-export default class BaseValidator {
+export class BaseValidator {
 	/**
 	 * @type {string} error message to display to user
 	 */
@@ -14,3 +14,5 @@ export default class BaseValidator {
 		}
 	}
 }
+
+export default BaseValidator;
