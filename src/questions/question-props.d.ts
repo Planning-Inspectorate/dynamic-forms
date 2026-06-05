@@ -111,9 +111,7 @@ type EmailQuestionProps = CommonQuestionProps & {
 
 type MultiFieldInputQuestionProps = CommonQuestionProps & {
 	type: 'multi-field-input';
-	inputAttributes?: Record<string, string>;
 	inputFields: InputField[];
-	formatType?: 'contactDetails' | 'standard';
 };
 
 type NumberEntryQuestionProps = CommonQuestionProps & {
