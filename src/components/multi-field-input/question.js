@@ -11,32 +11,11 @@ import { nl2br } from '../../lib/utils.js';
  */
 
 /**
- * @typedef {Object} Suffix
- * @property {string} text
- * @property {string} [classes] optional property, used to add classes to the suffix/prefix
- */
-
-/**
- * @typedef {Object} InputField
- * @property {string} fieldName
- * @property {string} label
- * @property {string} [formatJoinString] optional property, used by formatAnswerForSummary (eg task list display), effective default to line break
- * @property {string} [formatPrefix] optional property, used by formatAnswerForSummary (eg task list display), to prefix answer
- * @property {function} [formatTextFunction] optional property, used to format the answer for display and value in question
- * @property {Record<string, string>} [attributes] optional property, used to add html attributes to the field
- * @property {Suffix} [suffix] optional property, used to add a suffix to the field
- * @property {Suffix} [prefix] optional property, used to add a prefix to the field
- */
-
-/**
  * @class
  */
 export default class MultiFieldInputQuestion extends Question {
 	/**
-	 * @param {import('#question-types').QuestionParameters} params
-	 * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
-	 * @param {Record<string, string>} [params.inputAttributes] html attributes to add to the input
-	 * @param {InputField[]} params.inputFields input fields
+	 * @param {import('#src/questions/question-props.d.ts').MultiFieldInputQuestionProps} params
 	 */
 	constructor({ inputFields, ...params }) {
 		super({
