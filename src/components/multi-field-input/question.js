@@ -32,22 +32,17 @@ import { nl2br } from '../../lib/utils.js';
  * @class
  */
 export default class MultiFieldInputQuestion extends Question {
-	/** @type {Record<string, string>} */
-	inputAttributes;
-
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
 	 * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
 	 * @param {Record<string, string>} [params.inputAttributes] html attributes to add to the input
 	 * @param {InputField[]} params.inputFields input fields
 	 */
-	constructor({ label, inputAttributes = {}, inputFields, ...params }) {
+	constructor({ inputFields, ...params }) {
 		super({
 			...params,
 			viewFolder: 'multi-field-input'
 		});
-		this.label = label;
-		this.inputAttributes = inputAttributes;
 
 		if (inputFields) {
 			this.inputFields = inputFields;
@@ -63,14 +58,6 @@ export default class MultiFieldInputQuestion extends Question {
 				value: this.#formatValue(answers[inputField.fieldName], inputField.formatTextFunction)
 			};
 		});
-	}
-
-	/**
-	 * @param {import('#question').QuestionViewModel} viewModel
-	 */
-	addCustomDataToViewModel(viewModel) {
-		viewModel.question.label = this.label;
-		viewModel.question.attributes = this.inputAttributes;
 	}
 
 	/**
