@@ -401,11 +401,7 @@ export class Question {
 	 * @returns {Array<{
 	 *   key: string;
 	 *   value: string | Object;
-	 *   action: {
-	 *     href: string;
-	 *     text: string;
-	 *     visuallyHiddenText: string;
-	 *   };
+	 *   action?: ActionView | ActionView[];
 	 * }>}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
