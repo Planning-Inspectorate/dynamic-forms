@@ -9,7 +9,6 @@ const FIELDNAME = 'field-name';
 const VALIDATORS = [1, 2];
 const HTML = '/path/to/html.njk';
 const HINT = 'hint';
-const LABEL = 'A label';
 const INPUTFIELDS = [{ fieldName: 'testField1' }, { fieldName: 'testField2' }];
 
 function createMultiFieldInputQuestion(
@@ -19,7 +18,6 @@ function createMultiFieldInputQuestion(
 	validators = VALIDATORS,
 	html = HTML,
 	hint = HINT,
-	label = LABEL,
 	inputFields = INPUTFIELDS
 ) {
 	return new MultiFieldInputQuestion({
@@ -29,7 +27,6 @@ function createMultiFieldInputQuestion(
 		validators: validators,
 		html: html,
 		hint: hint,
-		label: label,
 		inputFields: inputFields
 	});
 }
@@ -45,13 +42,12 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 		assert.strictEqual(testQuestion.validators, VALIDATORS);
 		assert.strictEqual(testQuestion.html, HTML);
 		assert.strictEqual(testQuestion.hint, HINT);
-		assert.strictEqual(testQuestion.label, LABEL);
 		assert.strictEqual(testQuestion.inputFields, INPUTFIELDS);
 	});
 
 	it('should throw error if no inputFields parameter is passed to the constructor', () => {
 		assert.throws(() => {
-			createMultiFieldInputQuestion(TITLE, QUESTION, FIELDNAME, VALIDATORS, HTML, HINT, LABEL, null);
+			createMultiFieldInputQuestion(TITLE, QUESTION, FIELDNAME, VALIDATORS, HTML, HINT, null);
 		}, new Error('inputFields are mandatory'));
 	});
 
@@ -118,7 +114,7 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 		});
 		it('should set inputFields with formatted values from journey response if formatTextFunction is provided', () => {
 			const formatTextFunction = (value) => `Formatted: ${value}`;
-			const question = createMultiFieldInputQuestion(TITLE, QUESTION, FIELDNAME, VALIDATORS, HTML, HINT, LABEL, [
+			const question = createMultiFieldInputQuestion(TITLE, QUESTION, FIELDNAME, VALIDATORS, HTML, HINT, [
 				{ fieldName: 'testField1', formatTextFunction },
 				{ fieldName: 'testField2', formatTextFunction }
 			]);
