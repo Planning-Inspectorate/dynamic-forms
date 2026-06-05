@@ -46,10 +46,20 @@ type Option =
 	  }
 	| { divider?: string };
 
+type Affix = {
+	text: string;
+	classes?: string;
+};
+
 interface InputField {
 	fieldName: string;
 	label: string;
-	formatJoinString?: string; // optional property, used by formatAnswerForSummary (eg task list display), effective default to line break
+	formatJoinString?: string; // used by formatAnswerForSummary (e.g. task list display), effective default to line break
+	formatPrefix?: string; // used by formatAnswerForSummary (e.g. task list display), to prefix answer
+	formatTextFunction?: (text: string) => string; // used to format the answer for display and value in question
+	attributes?: Record<string, string>; // used to add HTML attributes to the field
+	suffix?: Affix; // used to add a suffix to the field
+	prefix?: Affix; // used to add a prefix to the field
 	hint?: string;
 }
 
@@ -109,7 +119,7 @@ type EmailQuestionProps = CommonQuestionProps & {
 	type: 'email';
 };
 
-type MultiFieldInputQuestionProps = CommonQuestionProps & {
+export type MultiFieldInputQuestionProps = CommonQuestionProps & {
 	type: 'multi-field-input';
 	inputFields: InputField[];
 };
