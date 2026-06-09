@@ -1,6 +1,6 @@
 import { Question } from '#question';
 
-export default class IdentifierQuestion extends Question {
+export class IdentifierQuestion extends Question {
 	/** @type {string|undefined} page h1, optional, will default to use question's label */
 	pageHeading;
 	/** @type {string} css classes to apply to input element */
@@ -29,3 +29,5 @@ export default class IdentifierQuestion extends Question {
 		viewModel.question.label = this.label;
 	}
 }
+
+export default IdentifierQuestion;

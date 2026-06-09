@@ -13,7 +13,7 @@ import SingleLineInputQuestion from '../single-line-input/question.js';
  * Automatically sets the input type to "email" and adds appropriate attributes
  * @class
  */
-export default class EmailQuestion extends SingleLineInputQuestion {
+export class EmailQuestion extends SingleLineInputQuestion {
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
 	 * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
@@ -53,3 +53,5 @@ export default class EmailQuestion extends SingleLineInputQuestion {
 		return super.formatAnswerForSummary(sectionSegment, journey, answer, false);
 	}
 }
+
+export default EmailQuestion;

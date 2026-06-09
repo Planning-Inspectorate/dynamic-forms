@@ -1,7 +1,7 @@
 import { Question } from '#question';
 import { getPersistedNumberAnswer } from '../utils/persisted-number-answer.js';
 
-export default class NumberEntryQuestion extends Question {
+export class NumberEntryQuestion extends Question {
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
 	 * @param {string} [params.suffix]
@@ -48,3 +48,5 @@ export default class NumberEntryQuestion extends Question {
 		return super.formatAnswerForSummary(sectionSegment, journey, answer, false);
 	}
 }
+
+export default NumberEntryQuestion;

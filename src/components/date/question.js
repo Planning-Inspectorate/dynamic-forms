@@ -6,7 +6,7 @@ const DEFAULT_DATE_FORMAT = 'd MMMM yyyy';
 /**
  * @class
  */
-export default class DateQuestion extends Question {
+export class DateQuestion extends Question {
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
 	 * @param {string} [params.dateFormat]
@@ -82,3 +82,5 @@ export default class DateQuestion extends Question {
 		return [{ key: key, value: formattedAnswer, action: action }];
 	}
 }
+
+export default DateQuestion;

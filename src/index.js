@@ -1,11 +1,12 @@
 // Components
-import AddressQuestion from './components/address/question.js';
-
-export { AddressQuestion };
+export * from './components/address/question.js';
 export * from './components/boolean/question.js';
 export * from './components/checkbox/question.js';
 export * from './components/date/question.js';
 export * from './components/date-period/question.js';
+export * from './components/date-time/question.js';
+export * from './components/email/question.js';
+export * from './components/manage-list/question.js';
 export * from './components/multi-field-input/question.js';
 export * from './components/number-entry/question.js';
 export * from './components/radio/question.js';
@@ -14,6 +15,8 @@ export * from './components/single-line-input/question.js';
 export * from './components/text-entry/question.js';
 export * from './components/text-entry-redact/question.js';
 export * from './components/unit-option-entry/question.js';
+
+// Utils
 export * from './components/utils/persisted-number-answer.js';
 export * from './components/utils/question-has-answer.js';
 export * from './components/utils/question-utils.js';

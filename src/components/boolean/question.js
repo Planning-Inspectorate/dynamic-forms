@@ -31,7 +31,7 @@ export const booleanToYesNoOrNull = (value) => {
 	return null;
 };
 
-export default class BooleanQuestion extends RadioQuestion {
+export class BooleanQuestion extends RadioQuestion {
 	/**
 	 * @param {Object} params
 	 * @param {string} params.title
@@ -120,3 +120,5 @@ export default class BooleanQuestion extends RadioQuestion {
 		return { answers };
 	}
 }
+
+export default BooleanQuestion;

@@ -17,7 +17,7 @@ import { Question } from '#question';
 /**
  * @class
  */
-export default class TextEntryQuestion extends Question {
+export class TextEntryQuestion extends Question {
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
 	 * @param {TextEntryCheckbox} [params.textEntryCheckbox]
@@ -41,3 +41,5 @@ export default class TextEntryQuestion extends Question {
 		viewModel.question.textEntryCheckbox = this.textEntryCheckbox;
 	}
 }
+
+export default TextEntryQuestion;
