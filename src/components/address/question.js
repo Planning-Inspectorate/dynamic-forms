@@ -5,7 +5,7 @@ import { Address } from '../../lib/address.js';
 import { nl2br } from '../../lib/utils.js';
 import AddressValidator from '../../validator/address-validator.js';
 
-export default class AddressQuestion extends Question {
+export class AddressQuestion extends Question {
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
 	 */
@@ -135,3 +135,5 @@ export default class AddressQuestion extends Question {
 		}
 	}
 }
+
+export default AddressQuestion;

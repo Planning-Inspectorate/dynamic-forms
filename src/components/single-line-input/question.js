@@ -3,7 +3,7 @@ import { Question } from '#question';
 /**
  * @class
  */
-export default class SingleLineInputQuestion extends Question {
+export class SingleLineInputQuestion extends Question {
 	/** @type {Record<string, string>} */
 	inputAttributes;
 
@@ -37,3 +37,5 @@ export default class SingleLineInputQuestion extends Question {
 		viewModel.question.classes = this.classes;
 	}
 }
+
+export default SingleLineInputQuestion;

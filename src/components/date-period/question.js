@@ -9,7 +9,7 @@ const DEFAULT_DATE_FORMAT = 'HH:mm d MMMM yyyy';
  * Represents a date period, two dates which make up a period or range
  * @class
  */
-export default class DatePeriodQuestion extends Question {
+export class DatePeriodQuestion extends Question {
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
 	 * @param {string} [params.dateFormat]
@@ -153,3 +153,5 @@ export default class DatePeriodQuestion extends Question {
 		return [{ key: key, value: formattedAnswer, action: action }];
 	}
 }
+
+export default DatePeriodQuestion;

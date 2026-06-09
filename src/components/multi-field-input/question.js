@@ -13,7 +13,7 @@ import { nl2br } from '../../lib/utils.js';
 /**
  * @class
  */
-export default class MultiFieldInputQuestion extends Question {
+export class MultiFieldInputQuestion extends Question {
 	/**
 	 * @param {import('#src/questions/question-props.d.ts').MultiFieldInputQuestionProps} params
 	 */
@@ -115,3 +115,5 @@ export default class MultiFieldInputQuestion extends Question {
 		return valueToFormat;
 	}
 }
+
+export default MultiFieldInputQuestion;

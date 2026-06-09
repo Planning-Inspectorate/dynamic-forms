@@ -1,6 +1,6 @@
 import OptionsQuestion from '../../questions/options-question.js';
 
-export default class RadioQuestion extends OptionsQuestion {
+export class RadioQuestion extends OptionsQuestion {
 	/**
 	 * @param {Object} params
 	 * @param {string} params.title
@@ -90,3 +90,5 @@ export default class RadioQuestion extends OptionsQuestion {
 		return super.formatAnswerForSummary(sectionSegment, journey, answer);
 	}
 }
+
+export default RadioQuestion;

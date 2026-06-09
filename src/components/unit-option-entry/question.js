@@ -30,7 +30,7 @@ const defaultOptionJoinString = ',';
  *}} UnitOption
  */
 
-export default class UnitOptionEntryQuestion extends Question {
+export class UnitOptionEntryQuestion extends Question {
 	/** @type {Array<UnitOption>} */
 	options;
 
@@ -180,3 +180,5 @@ export default class UnitOptionEntryQuestion extends Question {
 		return super.formatAnswerForSummary(sectionSegment, journey, formattedAnswer, false);
 	}
 }
+
+export default UnitOptionEntryQuestion;

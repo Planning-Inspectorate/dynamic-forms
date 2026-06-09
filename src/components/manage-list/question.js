@@ -11,7 +11,7 @@ import { MANAGE_LIST_ACTIONS } from './manage-list-actions.js';
  * @property {string} [confirmationQuestion] - the name of the confirmation question to use when removing an item, default 'confirm'
  */
 
-export default class ManageListQuestion extends Question {
+export class ManageListQuestion extends Question {
 	/** @type {import('../../section.js').Section} */
 	#section;
 	/** @type {boolean} */
@@ -187,3 +187,5 @@ export default class ManageListQuestion extends Question {
 		this.#section = section;
 	}
 }
+
+export default ManageListQuestion;

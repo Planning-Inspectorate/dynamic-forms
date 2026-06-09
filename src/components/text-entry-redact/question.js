@@ -7,7 +7,7 @@ export const TRUNCATED_MAX_LENGTH = 500;
 /**
  * @class
  */
-export default class TextEntryRedactQuestion extends Question {
+export class TextEntryRedactQuestion extends Question {
 	/**
 	 * @param {import('#question-types').QuestionParameters} params
 	 * @param {import('../text-entry/question.js').TextEntryCheckbox} [params.textEntryCheckbox]
@@ -105,3 +105,5 @@ export default class TextEntryRedactQuestion extends Question {
 		return super.formatAnswerForSummary(sectionSegment, journey, toShow, capitals);
 	}
 }
+
+export default TextEntryRedactQuestion;

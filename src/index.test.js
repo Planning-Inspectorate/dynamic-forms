@@ -49,12 +49,37 @@ describe('public API', () => {
 	});
 
 	it('should re-export key top-level classes and factories', () => {
-		assert.equal(typeof api.AddressQuestion, 'function');
 		assert.equal(typeof api.Question, 'function');
 		assert.equal(typeof api.createQuestions, 'function');
 		assert.equal(typeof api.questionClasses, 'object');
 		assert.equal(typeof api.Section, 'function');
 		assert.equal(typeof api.Journey, 'function');
 		assert.equal(typeof api.JourneyResponse, 'function');
+	});
+
+	it('should re-export component questions and helpers', () => {
+		assert.equal(typeof api.AddressQuestion, 'function');
+		assert.equal(typeof api.BooleanQuestion, 'function');
+		assert.equal(typeof api.CheckboxQuestion, 'function');
+		assert.equal(typeof api.DateQuestion, 'function');
+		assert.equal(typeof api.DatePeriodQuestion, 'function');
+		assert.equal(typeof api.DateTimeQuestion, 'function');
+		assert.equal(typeof api.EmailQuestion, 'function');
+		assert.equal(typeof api.ManageListQuestion, 'function');
+		assert.equal(typeof api.MultiFieldInputQuestion, 'function');
+		assert.equal(typeof api.NumberEntryQuestion, 'function');
+		assert.equal(typeof api.RadioQuestion, 'function');
+		assert.equal(typeof api.SelectQuestion, 'function');
+		assert.equal(typeof api.SingleLineInputQuestion, 'function');
+		assert.equal(typeof api.TextEntryQuestion, 'function');
+		assert.equal(typeof api.TextEntryRedactQuestion, 'function');
+		assert.equal(typeof api.UnitOptionEntryQuestion, 'function');
+
+		assert.equal(typeof api.BOOLEAN_OPTIONS, 'object');
+		assert.equal(typeof api.yesNoToBoolean, 'function');
+		assert.equal(typeof api.booleanToYesNoValue, 'function');
+		assert.equal(typeof api.booleanToYesNoOrNull, 'function');
+		assert.equal(typeof api.REDACT_CHARACTER, 'string');
+		assert.equal(typeof api.TRUNCATED_MAX_LENGTH, 'number');
 	});
 });

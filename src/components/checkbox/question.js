@@ -10,7 +10,7 @@ const defaultOptionJoinString = ',';
  * @property {string} conditional the conditional text input
  */
 
-export default class CheckboxQuestion extends OptionsQuestion {
+export class CheckboxQuestion extends OptionsQuestion {
 	/**
 	 * @param {Object} params
 	 * @param {string} params.title
@@ -86,3 +86,5 @@ export default class CheckboxQuestion extends OptionsQuestion {
 		return super.formatAnswerForSummary(sectionSegment, journey, formattedAnswer, false);
 	}
 }
+
+export default CheckboxQuestion;

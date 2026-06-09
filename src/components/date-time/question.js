@@ -4,7 +4,7 @@ import { formatDateForDisplay, parseDateInput } from '../../lib/date-utils.js';
 const DEFAULT_DATE_FORMAT = 'd MMMM yyyy';
 const DEFAULT_TIME_FORMAT = 'HH:mma';
 
-export default class DateTimeQuestion extends Question {
+export class DateTimeQuestion extends Question {
 	static AM = 'am';
 	static PM = 'pm';
 
@@ -123,3 +123,5 @@ export default class DateTimeQuestion extends Question {
 		}
 	}
 }
+
+export default DateTimeQuestion;

@@ -1,6 +1,6 @@
 import OptionsQuestion from '../../questions/options-question.js';
 
-export default class SelectQuestion extends OptionsQuestion {
+export class SelectQuestion extends OptionsQuestion {
 	#disableAccessibleAutocomplete;
 	/**
 	 * @param {Object} params
@@ -84,3 +84,5 @@ export default class SelectQuestion extends OptionsQuestion {
 		return super.formatAnswerForSummary(sectionSegment, journey, answer);
 	}
 }
+
+export default SelectQuestion;
