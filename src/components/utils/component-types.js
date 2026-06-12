@@ -14,5 +14,6 @@ export const COMPONENT_TYPES = Object.freeze({
 	SINGLE_LINE_INPUT: 'single-line-input',
 	TEXT_ENTRY: 'text-entry',
 	TEXT_ENTRY_REDACT: 'text-entry-redact',
-	UNIT_OPTION: 'unit-option'
+	UNIT_OPTION: 'unit-option',
+	UPLOAD: 'upload'
 });

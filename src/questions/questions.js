@@ -11,6 +11,7 @@ import MultiFieldInputQuestion from '../components/multi-field-input/question.js
 import NumberEntryQuestion from '../components/number-entry/question.js';
 import UnitOptionEntryQuestion from '../components/unit-option-entry/question.js';
 import EmailQuestion from '../components/email/question.js';
+import UploadQuestion from '../components/upload/question.js';
 
 import { COMPONENT_TYPES } from '../components/utils/component-types.js';
 import TextEntryRedactQuestion from '../components/text-entry-redact/question.js';
@@ -37,5 +38,6 @@ export const questionClasses = Object.freeze({
 	[COMPONENT_TYPES.NUMBER]: NumberEntryQuestion,
 	[COMPONENT_TYPES.UNIT_OPTION]: UnitOptionEntryQuestion,
 	[COMPONENT_TYPES.EMAIL]: EmailQuestion,
-	[COMPONENT_TYPES.MANAGE_LIST]: ManageListQuestion
+	[COMPONENT_TYPES.MANAGE_LIST]: ManageListQuestion,
+	[COMPONENT_TYPES.UPLOAD]: UploadQuestion
 });

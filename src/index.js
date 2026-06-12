@@ -15,6 +15,7 @@ export * from './components/single-line-input/question.js';
 export * from './components/text-entry/question.js';
 export * from './components/text-entry-redact/question.js';
 export * from './components/unit-option-entry/question.js';
+export * from './components/upload/question.js';
 
 // Utils
 export * from './components/utils/persisted-number-answer.js';
