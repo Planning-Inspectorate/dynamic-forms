@@ -95,7 +95,7 @@ export class Question {
 	/**
 	 * Private, but not marked as such because it breaks types, either using #variable:
 	 * - Property '#isInManageListSection' is missing in type
-	 * or with @private
+	 * or with the @ private tag
 	 * - Types have separate declarations of a private property '_isInManageListSection'.
 	 * @type {boolean}
 	 */
