@@ -41,7 +41,7 @@ import { booleanToYesNoValue } from '../components/boolean/question.js';
  * @param {Object} opts
  * @param {string} [opts.reqParam]
  * - optional request parameter to use as a key
- * @returns {import('../controller').SaveDataFn}
+ * @returns {import('../controller.js').SaveDataFn}
  */
 export function buildSaveDataToSession({ reqParam } = {}) {
 	return async ({
@@ -92,7 +92,7 @@ export function buildSaveDataToSession({ reqParam } = {}) {
 /**
  * Default save-to-session function with no request parameter
  *
- * @type {import('../controller').SaveDataFn}
+ * @type {import('../controller.js').SaveDataFn}
  */
 export const saveDataToSession = buildSaveDataToSession();
 
