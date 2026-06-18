@@ -43,6 +43,7 @@
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
     "@eslint/js": "^10.0.1",
+    "@types/express": "^5.0.6",
     "body-parser": "^2.2.0",
     "conventional-changelog-conventionalcommits": "^9.1.0",
     "cookie-parser": "^1.4.7",
