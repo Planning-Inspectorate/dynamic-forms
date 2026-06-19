@@ -66,8 +66,8 @@ export class UnitOptionEntryQuestion extends Question {
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {Record<string, unknown>} [payload]
 	 * @param {import('#question-types').PrepQuestionForRenderingOptions} options
-	 * @returns {import('#question').QuestionViewModel & {
-	 *   question: import('#question').QuestionViewModel['question'] & {
+	 * @returns {import('../../questions/question.js').QuestionViewModel & {
+	 *   question: import('../../questions/question.js').QuestionViewModel['question'] & {
 	 *     options:UnitOption[]
 	 *   }
 	 * }}
