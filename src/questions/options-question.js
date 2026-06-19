@@ -33,14 +33,16 @@ const defaultOptionJoinString = ',';
 /**
  * @typedef {import('./question').QuestionViewModel & { question: { options: Option[] } }} OptionsViewModel
  */
+/**
+ * @typedef {import('#question-types').QuestionParameters & { options: Array<Option> }} OptionsQuestionParameters
+ */
 
 export class OptionsQuestion extends Question {
 	/** @type {Array<Option>} */
 	options;
 
 	/**
-	 * @param {import('#question-types').QuestionParameters} params
-	 * @param {Array<Option>} params.options
+	 * @param {OptionsQuestionParameters} params
 	 */
 	constructor(params) {
 		// add default valid options validator to all options questions
