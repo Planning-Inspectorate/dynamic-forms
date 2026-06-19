@@ -20,7 +20,7 @@ export const logicalCombinations = (response) => ({
  *
  * @param {import('#question').Question} question
  * @param {unknown} expectedValue
- * @returns {import('#src/section.js').QuestionCondition}
+ * @returns {import('../../section.js').QuestionCondition}
  */
 export const whenQuestionHasAnswer = (question, expectedValue) => {
 	return (response) => questionHasAnswer(response, question, expectedValue);
