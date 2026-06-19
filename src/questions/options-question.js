@@ -34,7 +34,7 @@ const defaultOptionJoinString = ',';
  * @typedef {import('./question').QuestionViewModel & { question: { options: Option[] } }} OptionsViewModel
  */
 
-export default class OptionsQuestion extends Question {
+export class OptionsQuestion extends Question {
 	/** @type {Array<Option>} */
 	options;
 
@@ -150,3 +150,5 @@ export default class OptionsQuestion extends Question {
 		return { answers };
 	}
 }
+
+export default OptionsQuestion;
