@@ -4,10 +4,6 @@ import BaseValidator from './base-validator.js';
 import { toArray } from '#src/lib/utils.js';
 
 /**
- * @typedef {import('../questions/options-question.js')} OptionsQuestion
- */
-
-/**
  * enforces a field is within the question's predefined list of options
  * @class
  */
@@ -28,7 +24,7 @@ export class ValidOptionValidator extends BaseValidator {
 
 	/**
 	 * validates the response body, checking the value sent for the questionObj's fieldname is within the predefined list of options
-	 * @param {OptionsQuestion} questionObj
+	 * @param {import('../questions/options-question.js').default} questionObj
 	 */
 	validate(questionObj) {
 		return body(questionObj.fieldName)
