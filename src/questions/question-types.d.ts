@@ -78,3 +78,9 @@ export interface PrepQuestionForRenderingOptions {
 	params: RouteParams;
 	manageListQuestion?: ManageListQuestion;
 }
+
+/**
+ * Define a question class type so that projects downstream can extend the
+ * Question class and still pass them to the createQuestions function.
+ */
+export type QuestionClass<TQuestion extends Question = Question> = new (...args: never[]) => TQuestion;
