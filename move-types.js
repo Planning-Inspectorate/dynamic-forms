@@ -1,14 +1,12 @@
 import { copyFile } from 'node:fs/promises';
 import path from 'path';
 
-async function copyAndOverwrite(src, dest) {
+const filesToCopy = ['questions/question-props.d.ts', 'questions/question-types.d.ts', 'journey/journey-types.d.ts'];
+
+// copy some of the type definition files to the types output that are not automatically included
+for (const file of filesToCopy) {
+	const src = path.join(import.meta.dirname, 'src', file);
+	const dest = path.join(import.meta.dirname, 'types', 'src', file);
 	await copyFile(src, dest);
 	console.log(`Copied ${src} to ${dest}`);
 }
-
-const srcDir = path.join(import.meta.dirname, 'src', 'questions');
-const typesDir = path.join(import.meta.dirname, 'types', 'src', 'questions');
-
-// copy some of the type definition files to the types output that are not automatically included
-copyAndOverwrite(path.join(srcDir, 'question-props.d.ts'), path.join(typesDir, 'question-props.d.ts'));
-copyAndOverwrite(path.join(srcDir, 'question-types.d.ts'), path.join(typesDir, 'question-types.d.ts'));
