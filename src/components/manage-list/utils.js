@@ -1,6 +1,6 @@
 /**
  *
- * @param {import('#src/journey/journey-response.js').JourneyResponse} response
+ * @param {import('../../journey/journey-response.js').JourneyResponse} response
  * @param {import('./question.js')} manageListQuestion
  * @param {string} manageListItemId
  * @returns {Record<string, unknown>}
@@ -16,10 +16,10 @@ export function answerObjectForManageList(response, manageListQuestion, manageLi
 /**
  * Similar to answerObjectForManageList but will edit response and add a new array entry if not found
  *
- * @param {import('#src/journey/journey-response.js').JourneyResponse} response
+ * @param {import('../../journey/journey-response.js').JourneyResponse} response
  * @param {import('./question.js')} manageListQuestion
- * @param {import('#src/journey/journey-types.d.ts').RouteParams} params
- * @returns {import('#src/journey/journey-types.d.ts').ManageListAnswers}
+ * @param {import('../../journey/journey-types.js').RouteParams} params
+ * @returns {import('../../journey/journey-types.js').ManageListAnswers}
  */
 export function answerObjectForManageListSaving(response, manageListQuestion, params) {
 	const answersList =

@@ -28,6 +28,7 @@ export * from './controller.js';
 // Journey
 export { Journey } from './journey/journey.js';
 export { JourneyResponse } from './journey/journey-response.js';
+export * from './journey/journey-types.js';
 
 // lib
 export * from './lib/address.js';

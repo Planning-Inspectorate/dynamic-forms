@@ -7,9 +7,6 @@ import { answerObjectForManageList } from '#src/components/manage-list/utils.js'
 
 /**
  * @import {BaseValidator} from "#base-validator"
- * @import {Journey} from "#journey"
- * @import {JourneyResponse} from "#journey-response"
- * @import {Section} from "#section"
  * @import {ActionView} from "../controller.js"
  * @import {ActionLink} from "./question-types.js"
  */
@@ -83,7 +80,7 @@ export class Question {
 	addActionText = 'Add';
 
 	/**
-	 * @param {JourneyResponse} [response]
+	 * @param {import('../journey/journey-response.js').JourneyResponse} [response]
 	 * @returns {boolean}
 	 */
 	shouldDisplay = () => true;
@@ -193,10 +190,10 @@ export class Question {
 	 * that prepQuestionForRendering doesn't need
 	 *
 	 * @param {Object} options
-	 * @param {import('#src/journey/journey-types.d.ts').RouteParams} options.params
-	 * @param {import('#src/components/manage-list/question.js')} [options.manageListQuestion]
-	 * @param {Section} options.section - the current section
-	 * @param {Journey} options.journey - the journey we are in
+	 * @param {import('../journey/journey-types.js').RouteParams} options.params
+	 * @param {import('../components/manage-list/question.js')} [options.manageListQuestion]
+	 * @param {import('../section.js').Section} options.section - the current section
+	 * @param {import('../journey/journey.js').Journey} options.journey - the journey we are in
 	 * @param {Record<string, unknown>} [options.customViewData] additional data to send to view
 	 * @param {unknown} [options.payload]
 	 * @returns {QuestionViewModel}
@@ -213,8 +210,8 @@ export class Question {
 	/**
 	 * gets the base view model for this question
 	 *
-	 * @param {Section} section - the current section
-	 * @param {Journey} journey - the journey we are in
+	 * @param {import('../section.js').Section} section - the current section
+	 * @param {import('../journey/journey.js').Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {unknown} [payload]
 	 * @param {import('#question-types').PrepQuestionForRenderingOptions} [options] - required to support manage list question
@@ -284,7 +281,7 @@ export class Question {
 	/**
 	 * Get the answers object from the journey response, which may be nested in an array for manage list questions
 	 *
-	 * @param {JourneyResponse} response
+	 * @param {import('../journey/journey-response.js').JourneyResponse} response
 	 * @param {import('#question-types').PrepQuestionForRenderingOptions} [options]
 	 * @returns {Record<string, any>}
 	 */
@@ -320,9 +317,9 @@ export class Question {
 	/**
 	 * check for validation errors
 	 * @param {import('express').Request} req
-	 * @param {Journey} journey
-	 * @param {Section} section
-	 * @param {import('#src/components/manage-list/question.js')} [manageListQuestion]
+	 * @param {import('../journey/journey.js').Journey} journey
+	 * @param {import('../section.js').Section} section
+	 * @param {import('../components/manage-list/question.js')} [manageListQuestion]
 	 * @returns {QuestionViewModel|undefined} returns the view model for displaying the error or undefined if there are no errors
 	 */
 	checkForValidationErrors(req, section, journey, manageListQuestion) {
@@ -348,7 +345,7 @@ export class Question {
 	 * Get the data to save from the request, returns an object of answers
 	 *
 	 * @param {import('express').Request} req
-	 * @param {JourneyResponse} journeyResponse - current journey response
+	 * @param {import('../journey/journey-response.js').JourneyResponse} journeyResponse - current journey response
 	 * @returns {Promise<{ answers: Record<string, unknown> }>}
 	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
@@ -368,8 +365,8 @@ export class Question {
 	/**
 	 * check for errors after saving, by default this does nothing
 	 * @param {import('express').Request} req
-	 * @param {Journey} journey
-	 * @param {Section} sectionObj
+	 * @param {import('../journey/journey.js').Journey} journey
+	 * @param {import('../section.js').Section} sectionObj
 	 * @returns {QuestionViewModel | undefined} returns the view model for displaying the error or undefined if there are no errors
 	 */ //eslint-disable-next-line no-unused-vars
 	checkForSavingErrors(req, sectionObj, journey) {
@@ -380,7 +377,7 @@ export class Question {
 	 * Handles redirect after saving. Kept around for backwards compatibility.
 	 *
 	 * @param {import('express').Response} res
-	 * @param {Journey} journey
+	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {string} sectionSegment
 	 * @param {string} questionSegment
 	 * @returns {void}
@@ -396,7 +393,7 @@ export class Question {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 * @param {String} sectionSegment
-	 * @param {Journey} journey
+	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {Object} answer
 	 * @returns {Array<{
 	 *   key: string;
@@ -420,7 +417,7 @@ export class Question {
 	/**
 	 * Returns the action link for the question
 	 * @param {Object} answer
-	 * @param {Journey} journey
+	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {String} sectionSegment
 	 * @returns {ActionView|ActionView[]|undefined}
 	 */
@@ -475,7 +472,7 @@ export class Question {
 	}
 
 	/**
-	 * @param {JourneyResponse} journeyResponse
+	 * @param {import('../journey/journey-response.js').JourneyResponse} journeyResponse
 	 * @param {string} [fieldName] optional fieldname for multi field input questions
 	 * @returns {boolean}
 	 */
