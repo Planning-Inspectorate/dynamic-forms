@@ -103,7 +103,7 @@ export class BooleanQuestion extends RadioQuestion {
 	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
-	 * @returns {Promise.<Object>}
+	 * @returns {Promise<{ answers: Record<string, unknown> }>}
 	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
 		const answers = {};

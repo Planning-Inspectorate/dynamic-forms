@@ -72,7 +72,7 @@ export class RadioQuestion extends OptionsQuestion {
 	 * @param {Object} answer
 	 * @param {Journey} journey
 	 * @param {String} sectionSegment
-	 * @returns {Array.<Object>}
+	 * @returns {Array<{ key: string; value: string | Object; action?: ActionView | ActionView[] | undefined; }>}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer) {
 		if (answer?.conditional) {
