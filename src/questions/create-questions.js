@@ -2,7 +2,7 @@
 
 /**
  * @param {{[questionName: string]: QuestionProps}} questionPropsRecord
- * @param {Record<string, typeof import('./question').Question>} questionClasses
+ * @param {Record<string, import('./question-types.js').QuestionClass>} questionClasses
  * @param {{[questionType: string]: Record<string, Function>}} questionMethodOverrides
  * @param {{notStartedText?: string, continueButtonText?: string, changeActionText?: string, answerActionText?: string}} [textOverrides] - customise question text
  */
