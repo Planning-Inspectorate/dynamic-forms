@@ -5,6 +5,7 @@ npm-debug.log
 # Build, cache
 dist
 build-tmp
+types
 .cache
 .esm-cache
 .sass-cache
