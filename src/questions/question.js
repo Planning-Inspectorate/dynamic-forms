@@ -99,7 +99,7 @@ export class Question {
 	_isInManageListSection = false;
 
 	/**
-	 * @param {import('#question-types').QuestionParameters} params
+	 * @param {import('./question-types.js').QuestionParameters} params
 	 * @param {Record<string, Function>} [methodOverrides]
 	 */
 	constructor(
@@ -214,7 +214,7 @@ export class Question {
 	 * @param {import('../journey/journey.js').Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {unknown} [payload]
-	 * @param {import('#question-types').PrepQuestionForRenderingOptions} [options] - required to support manage list question
+	 * @param {import('./question-types.js').PrepQuestionForRenderingOptions} [options] - required to support manage list question
 	 * @returns {QuestionViewModel}
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload, options) {
@@ -282,7 +282,7 @@ export class Question {
 	 * Get the answers object from the journey response, which may be nested in an array for manage list questions
 	 *
 	 * @param {import('../journey/journey-response.js').JourneyResponse} response
-	 * @param {import('#question-types').PrepQuestionForRenderingOptions} [options]
+	 * @param {import('./question-types.js').PrepQuestionForRenderingOptions} [options]
 	 * @returns {Record<string, any>}
 	 */
 	answerObjectFromJourneyResponse(response, { params, manageListQuestion } = {}) {
