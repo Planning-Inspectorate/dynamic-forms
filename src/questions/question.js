@@ -394,7 +394,7 @@ export class Question {
 	 * returns the formatted answers values to be used to build task list elements
 	 * @param {String} sectionSegment
 	 * @param {import('../journey/journey.js').Journey} journey
-	 * @param {Object} answer
+	 * @param {unknown} answer
 	 * @returns {Array<{
 	 *   key: string;
 	 *   value: string | Object;
@@ -416,7 +416,7 @@ export class Question {
 
 	/**
 	 * Returns the action link for the question
-	 * @param {Object} answer
+	 * @param {unknown} answer
 	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {String} sectionSegment
 	 * @returns {ActionView|ActionView[]|undefined}

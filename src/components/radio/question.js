@@ -69,7 +69,7 @@ export class RadioQuestion extends OptionsQuestion {
 
 	/**
 	 * returns the formatted answers values to be used to build task list elements
-	 * @param {Object} answer
+	 * @param {unknown} answer
 	 * @param {Journey} journey
 	 * @param {String} sectionSegment
 	 * @returns {Array<{ key: string; value: string | Object; action?: ActionView | ActionView[] | undefined; }>}
