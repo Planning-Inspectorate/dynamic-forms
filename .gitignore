@@ -3,9 +3,9 @@ node_modules
 npm-debug.log
 
 # Build, cache
+# Do not exclude /types as it is needed for the release
 dist
 build-tmp
-types
 .cache
 .esm-cache
 .sass-cache
