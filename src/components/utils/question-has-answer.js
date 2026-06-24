@@ -2,7 +2,7 @@
 /** @typedef {(questionKeyTuples: QuestionKeyTuples) => boolean} CombinationFunc */
 
 /**
- * @param {import('#src/journey/journey-response.js').JourneyResponse} response
+ * @param {import('../../journey/journey-response.js').JourneyResponse} response
  * @returns {{and: CombinationFunc, or: CombinationFunc}}
  */
 export const logicalCombinations = (response) => ({
@@ -18,7 +18,7 @@ export const logicalCombinations = (response) => ({
  * @example
  * .withCondition(whenQuestionHasAnswer(question.q1, 'answer-1'))
  *
- * @param {import('#question').Question} question
+ * @param {import('../../questions/question.js').Question} question
  * @param {unknown} expectedValue
  * @returns {import('../../section.js').QuestionCondition}
  */
@@ -29,8 +29,8 @@ export const whenQuestionHasAnswer = (question, expectedValue) => {
 /**
  * Does the question have the expected answer?
  *
- * @param {import('#src/journey/journey-response.js').JourneyResponse} response
- * @param {import('#question').Question|{optionJoinString: string}} question
+ * @param {import('../../journey/journey-response.js').JourneyResponse} response
+ * @param {import('../../questions/question.js').Question|{optionJoinString: string}} question
  * @param {unknown} expectedValue
  * @returns {boolean}
  */
@@ -53,7 +53,7 @@ export const questionHasAnswer = (response, question, expectedValue) => {
 /**
  * Checks if any item in the specified answer field matches a condition.
  *
- * @param {JourneyResponse} response - The response object containing answers.
+ * @param {import('../../journey/journey-response.js').JourneyResponse} response - The response object containing answers.
  * @param {any} question - The question containing the fieldName.
  * @param {(item: any) => boolean} [conditionFn] - A function to test each item. Returns true to indicate a match.
  * @returns {boolean} True if at least one item matches the condition.
@@ -70,7 +70,7 @@ export const questionArrayMeetsCondition = (response, question, conditionFn = ()
 };
 
 /**
- * @param {import('#src/journey/journey-response.js').JourneyResponse} response
+ * @param {import('../../journey/journey-response.js').JourneyResponse} response
  * @param {QuestionKeyTuples} questionKeyTuples
  * @param {Object} [options]
  * @param {'and' | 'or'} options.logicalCombinator
@@ -87,8 +87,8 @@ export const questionsHaveAnswers = (
 };
 
 /**
- * @param {import('#src/journey/journey-response.js').JourneyResponse} response
- * @param {import('#question').Question} question
+ * @param {import('../../journey/journey-response.js').JourneyResponse} response
+ * @param {import('../../questions/question.js').Question} question
  * @returns {boolean}
  */
 export const questionHasNonEmptyStringAnswer = (response, question) => {
@@ -98,8 +98,8 @@ export const questionHasNonEmptyStringAnswer = (response, question) => {
 };
 
 /**
- * @param {import('#src/journey/journey-response.js').JourneyResponse} response
- * @param {import('#question').Question} question
+ * @param {import('../../journey/journey-response.js').JourneyResponse} response
+ * @param {import('../../questions/question.js').Question} question
  * @returns {boolean}
  */
 export const questionHasNonEmptyNumberAnswer = (response, question) => {
