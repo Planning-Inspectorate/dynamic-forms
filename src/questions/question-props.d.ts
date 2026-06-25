@@ -22,6 +22,13 @@ type CommonQuestionProps = Omit<QuestionParameters, 'viewFolder'> & {
 	type: QuestionTypes;
 };
 
+/**
+ * Generic question props type so that custom components can be used without having to define a new type for each one.
+ */
+export type BaseQuestionProps = Omit<CommonQuestionProps, 'type'> & {
+	type: string;
+};
+
 type Option =
 	| {
 			text: string;
