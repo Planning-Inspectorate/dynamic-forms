@@ -23,7 +23,7 @@ export class ManageListSection extends Section {
 	 * Fluent API method for adding questions
 	 * @param {import('../../questions/question.js').Question} question
 	 * @param {import('./manage-list-section.js').ManageListSection} [manageListSection]
-	 * @returns {import('../../section.js').Section}
+	 * @returns {this}
 	 */
 	addQuestion(question, manageListSection) {
 		if (!question) {
