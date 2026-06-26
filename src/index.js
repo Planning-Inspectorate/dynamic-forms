@@ -6,6 +6,7 @@ export * from './components/date/question.js';
 export * from './components/date-period/question.js';
 export * from './components/date-time/question.js';
 export * from './components/email/question.js';
+export { ManageListSection } from './components/manage-list/manage-list-section.js';
 export * from './components/manage-list/question.js';
 export * from './components/multi-field-input/question.js';
 export * from './components/number-entry/question.js';
