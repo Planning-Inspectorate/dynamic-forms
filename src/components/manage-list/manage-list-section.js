@@ -21,9 +21,9 @@ export class ManageListSection extends Section {
 
 	/**
 	 * Fluent API method for adding questions
-	 * @param {import('#src/questions/question.js').Question} question
-	 * @param {import('#src/components/manage-list/manage-list-section.js').ManageListSection} [manageListSection]
-	 * @returns {Section}
+	 * @param {import('../../questions/question.js').Question} question
+	 * @param {import('./manage-list-section.js').ManageListSection} [manageListSection]
+	 * @returns {import('../../section.js').Section}
 	 */
 	addQuestion(question, manageListSection) {
 		if (!question) {
