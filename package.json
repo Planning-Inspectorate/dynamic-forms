@@ -45,7 +45,7 @@
     "@eslint/js": "^10.0.1",
     "@types/express": "^5.0.6",
     "body-parser": "^2.2.0",
-    "conventional-changelog-conventionalcommits": "^9.1.0",
+    "conventional-changelog-conventionalcommits": "^10.2.0",
     "cookie-parser": "^1.4.7",
     "eslint": "^10.0.0",
     "eslint-config-prettier": "^10.1.5",
