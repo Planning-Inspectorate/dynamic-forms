@@ -389,6 +389,109 @@ describe('./src/dynamic-forms/validator/date-validator.js', () => {
 			assert.strictEqual(errors[`${question.fieldName}_month`].msg, errorMessages.invalidMonthErrorMessage);
 			assert.strictEqual(errors[`${question.fieldName}_year`].msg, errorMessages.invalidYearErrorMessage);
 		});
+
+		it('passes validation if optional is true and no fields are provided (undefined)', async () => {
+			const req = {
+				body: {
+					['date-question_day']: undefined,
+					['date-question_month']: undefined,
+					['date-question_year']: undefined
+				}
+			};
+
+			const question = {
+				fieldName: 'date-question'
+			};
+
+			const errors = await _validationMappedErrors(req, question, 'the required date', undefined, {
+				optional: true
+			});
+
+			assert.strictEqual(Object.keys(errors).length, 0);
+		});
+
+		it('passes validation if optional is true and fields are empty strings', async () => {
+			const req = {
+				body: {
+					['date-question_day']: '',
+					['date-question_month']: '',
+					['date-question_year']: ''
+				}
+			};
+
+			const question = {
+				fieldName: 'date-question'
+			};
+
+			const errors = await _validationMappedErrors(req, question, 'the required date', undefined, {
+				optional: true
+			});
+
+			assert.strictEqual(Object.keys(errors).length, 0);
+		});
+
+		it('throws error if optional is true but date is partially filled (missing day)', async () => {
+			const req = {
+				body: {
+					['date-question_day']: '',
+					['date-question_month']: '10',
+					['date-question_year']: '2023'
+				}
+			};
+
+			const question = {
+				fieldName: 'date-question'
+			};
+
+			const errors = await _validationMappedErrors(req, question, 'the required date', undefined, {
+				optional: true
+			});
+
+			assert.strictEqual(Object.keys(errors).length, 1);
+			assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'The required date must include a day');
+		});
+
+		it('throws error if optional is true but invalid values are provided', async () => {
+			const req = {
+				body: {
+					['date-question_day']: '35',
+					['date-question_month']: '10',
+					['date-question_year']: '2023'
+				}
+			};
+
+			const question = {
+				fieldName: 'date-question'
+			};
+
+			const errors = await _validationMappedErrors(req, question, 'the required date', undefined, {
+				optional: true
+			});
+
+			assert.strictEqual(Object.keys(errors).length, 1);
+			assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'The required date day must be a real day');
+		});
+
+		it('throws error if an object is passed without the optional key (undefined) and nothing is entered', async () => {
+			const req = {
+				body: {
+					['date-question_day']: undefined,
+					['date-question_month']: undefined,
+					['date-question_year']: undefined
+				}
+			};
+
+			const question = {
+				fieldName: 'date-question'
+			};
+
+			const errors = await _validationMappedErrors(req, question, 'the required date', undefined, {
+				randomKey: true
+			});
+
+			assert.strictEqual(Object.keys(errors).length, 3);
+			assert.strictEqual(errors[`${question.fieldName}_day`].msg, 'Enter the required date');
+		});
 	});
 });
 

@@ -1,5 +1,4 @@
 import { body } from 'express-validator';
-
 import { isAfter, isBefore, isValid, parse } from 'date-fns';
 import { enGB } from 'date-fns/locale';
 
@@ -12,8 +11,9 @@ import { endOfDay, parseDateInput, startOfDay } from '../lib/date-utils.js';
 
 /**
  * @typedef {Object} DateValidationSettings
- * @property {Boolean} ensureFuture
- * @property {Boolean} ensurePast
+ * @property {Boolean} [ensureFuture]
+ * @property {Boolean} [ensurePast]
+ * @property {Boolean} [optional]
  */
 
 /**
@@ -34,7 +34,8 @@ export class DateValidator extends BaseValidator {
 		inputLabel,
 		dateValidationSettings = {
 			ensureFuture: false,
-			ensurePast: false
+			ensurePast: false,
+			optional: false
 		},
 		errorMessages
 	) {
@@ -63,7 +64,7 @@ export class DateValidator extends BaseValidator {
 	}
 
 	isRequired() {
-		return true;
+		return !this.dateValidationSettings.optional;
 	}
 
 	/**
@@ -76,9 +77,21 @@ export class DateValidator extends BaseValidator {
 		const monthInput = `${fieldName}_month`;
 		const yearInput = `${fieldName}_year`;
 
+		/**
+		 * Run before every check, if the correct param set then skip the validation
+		 * when there is no data entered.
+		 */
+		const shouldValidate = (value, { req }) => {
+			if (this.dateValidationSettings.optional === true) {
+				return !!(req.body[dayInput] || req.body[monthInput] || req.body[yearInput]);
+			}
+			return true;
+		};
+
 		const rules = [
 			// check all or some date inputs are not empty
 			body(dayInput)
+				.if(shouldValidate)
 				.notEmpty()
 				.withMessage((_, { req }) => {
 					if (!req.body[monthInput] && !req.body[yearInput]) {
@@ -96,6 +109,7 @@ export class DateValidator extends BaseValidator {
 					return this.noDayErrorMessage;
 				}),
 			body(monthInput)
+				.if(shouldValidate)
 				.notEmpty()
 				.withMessage((_, { req }) => {
 					if (req.body[dayInput] && !req.body[yearInput]) {
@@ -108,6 +122,7 @@ export class DateValidator extends BaseValidator {
 					// empty error message returned
 				}),
 			body(yearInput)
+				.if(shouldValidate)
 				.notEmpty()
 				.withMessage((_, { req }) => {
 					if (req.body[dayInput] && req.body[monthInput]) return this.noYearErrorMessage;
@@ -117,6 +132,7 @@ export class DateValidator extends BaseValidator {
 
 			// check date values entered are within valid ranges
 			body(dayInput)
+				.if(shouldValidate)
 				.isInt({ min: 1, max: 31 })
 				.withMessage(this.invalidDateErrorMessage)
 				.bail()
@@ -135,38 +151,42 @@ export class DateValidator extends BaseValidator {
 
 					return true;
 				}),
-			body(monthInput).isInt({ min: 1, max: 12 }).withMessage(this.invalidMonthErrorMessage),
-			body(yearInput).isInt({ min: 1000, max: 9999 }).withMessage(this.invalidYearErrorMessage)
+			body(monthInput).if(shouldValidate).isInt({ min: 1, max: 12 }).withMessage(this.invalidMonthErrorMessage),
+			body(yearInput).if(shouldValidate).isInt({ min: 1000, max: 9999 }).withMessage(this.invalidYearErrorMessage)
 		];
 
 		if (this.dateValidationSettings.ensurePast === true) {
 			rules.push(
-				body(dayInput).custom((value, { req }) => {
-					const inputDate = parseDateInput({ day: value, month: req.body[monthInput], year: req.body[yearInput] });
+				body(dayInput)
+					.if(shouldValidate)
+					.custom((value, { req }) => {
+						const inputDate = parseDateInput({ day: value, month: req.body[monthInput], year: req.body[yearInput] });
 
-					const today = endOfDay();
+						const today = endOfDay();
 
-					if (isAfter(inputDate, today)) {
-						throw new Error(this.futureDateErrorMessage);
-					}
+						if (isAfter(inputDate, today)) {
+							throw new Error(this.futureDateErrorMessage);
+						}
 
-					return true;
-				})
+						return true;
+					})
 			);
 		}
 
 		if (this.dateValidationSettings.ensureFuture === true) {
 			rules.push(
-				body(dayInput).custom((value, { req }) => {
-					const inputDate = parseDateInput({ day: value, month: req.body[monthInput], year: req.body[yearInput] });
-					const today = startOfDay();
+				body(dayInput)
+					.if(shouldValidate)
+					.custom((value, { req }) => {
+						const inputDate = parseDateInput({ day: value, month: req.body[monthInput], year: req.body[yearInput] });
+						const today = startOfDay();
 
-					if (isBefore(inputDate, today)) {
-						throw new Error(this.pastDateErrorMessage);
-					}
+						if (isBefore(inputDate, today)) {
+							throw new Error(this.pastDateErrorMessage);
+						}
 
-					return true;
-				})
+						return true;
+					})
 			);
 		}
 
