@@ -102,7 +102,7 @@
                     },
                     classes: question.inputClasses,
                     attributes: {
-                        readonly: true
+                        readonly: "readonly"
                     },
                     rows: textAreaRows or 8
                 }) }}
@@ -152,14 +152,59 @@
 
             const history = [];
             function showError(message) {
+              // Show inline error
               formGroup.classList.add('govuk-form-group--error');
-              errorMessage.textContent = message;
+              errorMessage.innerHTML = `<span class="govuk-visually-hidden">Error:</span> ${message}`;
               formGroup.prepend(errorMessage);
-            }
-            function hideError() {
-              textArea.parentElement.classList.remove('govuk-form-group--error');
-              errorMessage.remove();
-            }
+
+							// show error summary
+							let errorSummary = document.querySelector('.govuk-error-summary');
+							if (!errorSummary) {
+								const summaryContainer = document.createElement('div');
+								summaryContainer.className = 'govuk-grid-row';
+								summaryContainer.innerHTML =`
+                                  <div class="govuk-grid-column-two-thirds">
+                                    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                                      <h2 class="govuk-error-summary__title" id="error-summary-title">
+                                      There is a problem
+                                      </h2>
+                                      <div class="govuk-error-summary__body">
+                                        <ul class="govuk-list govuk-error-summary__list"></ul>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  `;
+
+								const mainContainer = document.querySelector('.govuk-grid-row');
+								if (mainContainer && mainContainer.parentNode) {
+									mainContainer.parentNode.insertBefore(summaryContainer, mainContainer);
+								}
+								errorSummary = summaryContainer.querySelector('.govuk-error-summary');
+							}
+
+							// Update error list
+							const errorList = errorSummary.querySelector('.govuk-error-summary__list');
+							errorList.innerHTML = `<li><a href="#{{ question.fieldName }}">${message}</a></li>`;
+							errorSummary.focus();
+						}
+
+						function hideError() {
+							// Remove inline error
+							formGroup.classList.remove('govuk-form-group--error');
+							if (errorMessage.parentNode) {
+								errorMessage.remove();
+							}
+
+							// Remove error summary
+							const errorSummary = document.querySelector('.govuk-error-summary');
+							if (errorSummary) {
+								const summaryContainer = errorSummary.closest('.govuk-grid-row');
+								if (summaryContainer) {
+									summaryContainer.remove();
+								}
+							}
+						}
+
             redactSelectedText.addEventListener('click', () => {
               const { selectionStart, selectionEnd } = textArea;
               if (selectionStart === selectionEnd) {
