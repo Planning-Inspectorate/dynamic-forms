@@ -1,0 +1,6 @@
+{
+	"meta": {
+		"description": "Planning Inspectorate Dynamic Forms package, for building dynamic user journeys with GDS components"
+	},
+	"nunjucksPaths": ["/src"]
+}
