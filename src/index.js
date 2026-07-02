@@ -60,6 +60,7 @@ export * from './validator/base-validator.js';
 export * from './validator/conditional-required-validator.js';
 export * from './validator/confirmation-checkbox-validator.js';
 export * from './validator/coordinates-validator.js';
+export * from './validator/cross-question-validator.js';
 export * from './validator/date-period-validator.js';
 export * from './validator/date-time-validator.js';
 export * from './validator/date-validator.js';
