@@ -1,7 +1,5 @@
 import escape from 'escape-html';
-import RequiredValidator from '../validator/required-validator.js';
 import { capitalize, nl2br, trimTrailingSlash } from '../lib/utils.js';
-import AddressValidator from '../validator/address-validator.js';
 import MultiFieldInputValidator from '../validator/multi-field-input-validator.js';
 import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
 
@@ -454,12 +452,7 @@ export class Question {
 	 * @returns {boolean}
 	 */
 	isRequired() {
-		return this.validators?.some(
-			(item) =>
-				item instanceof RequiredValidator ||
-				(item instanceof AddressValidator && item.isRequired()) ||
-				(item instanceof MultiFieldInputValidator && item.isRequired())
-		);
+		return this.validators?.some((validator) => validator.isRequired());
 	}
 	/**
 	 * @param {string} inputField
