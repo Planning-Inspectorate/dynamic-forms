@@ -37,7 +37,7 @@ export class CrossQuestionValidator extends BaseValidator {
 
 	/**
 	 * Validates response body against individual field validators.
-	 * @param {import('../questions/question-props.js').QuestionProps} questionObj - The question object containing the fieldName to validate.
+	 * @param {import('../questions/question.js').Question} questionObj - The question object containing the fieldName to validate.
 	 * @param {import('../journey/journey-response.js').JourneyResponse} [journeyResponse={}] - The current journey response, used to access saved answers for validation.
 	 * @returns {import('express-validator').ValidationChain[]}
 	 */

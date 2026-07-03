@@ -4,10 +4,6 @@ import BaseValidator from './base-validator.js';
 import { toArray } from '#src/lib/utils.js';
 
 /**
- * @typedef {import('../questions/question.js')} Question
- */
-
-/**
  * enforces a field is not empty when condition is satisfied
  * @class
  */
@@ -34,7 +30,7 @@ export class UnitOptionEntryValidator extends BaseValidator {
 
 	/**
 	 * validates the response body, checking the questionObj's fieldname
-	 * @param {Question} questionObj
+	 * @param {import('../components/unit-option-entry/question.js').UnitOptionEntryQuestion} questionObj
 	 */
 	validate(questionObj) {
 		return questionObj.options.reduce((schema, option) => {
