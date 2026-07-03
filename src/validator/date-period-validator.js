@@ -7,10 +7,6 @@ import BaseValidator from './base-validator.js';
 import { parseDateInput, startOfDay } from '../lib/date-utils.js';
 
 /**
- * @typedef {import('../components/date/question.js')} DateQuestion
- */
-
-/**
  * @typedef {Object} DateValidationSettings
  * @property {Boolean} ensureFuture
  * @property {Boolean} ensurePast
@@ -64,7 +60,7 @@ export class DatePeriodValidator extends BaseValidator {
 
 	/**
 	 * validates the response body, checking the values sent for the date are valid
-	 * @param {DateQuestion} questionObj
+	 * @param {import('../components/date/question.js').DateQuestion} questionObj
 	 */
 	validate(questionObj) {
 		const fieldName = questionObj.fieldName;

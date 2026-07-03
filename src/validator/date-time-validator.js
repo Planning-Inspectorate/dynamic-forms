@@ -2,10 +2,6 @@ import { body } from 'express-validator';
 import DateValidator from './date-validator.js';
 
 /**
- * @typedef {import('./question.js')} DateTimeQuestion
- */
-
-/**
  * enforces a user has entered a valid date
  * @class
  */
@@ -32,7 +28,7 @@ export class DateTimeValidator extends DateValidator {
 
 	/**
 	 * validates the response body, checking the values sent for the date are valid
-	 * @param {DateTimeQuestion} questionObj
+	 * @param {import('../components/date-time/question.js').DateTimeQuestion} questionObj
 	 */
 	validate(questionObj) {
 		const fieldName = questionObj.fieldName;

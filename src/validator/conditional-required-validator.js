@@ -31,7 +31,7 @@ export class ConditionalRequiredValidator extends BaseValidator {
 
 	/**
 	 * validates the response body, checking the questionObj's fieldname
-	 * @param {Question} questionObj
+	 * @param {import('../questions/options-question.js').OptionsQuestion} questionObj
 	 */
 	validate(questionObj) {
 		return questionObj.options.reduce((schema, option) => {

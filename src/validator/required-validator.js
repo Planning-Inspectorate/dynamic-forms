@@ -3,10 +3,6 @@ import { body } from 'express-validator';
 import BaseValidator from './base-validator.js';
 
 /**
- * @typedef {import('../questions/question.js')} Question
- */
-
-/**
  * enforces a field is not empty
  * @class
  */
@@ -30,7 +26,7 @@ export class RequiredValidator extends BaseValidator {
 
 	/**
 	 * validates the response body, checking the questionObj's fieldname
-	 * @param {Question} questionObj
+	 * @param {import('../questions/question.js').Question} questionObj
 	 */
 	validate(questionObj) {
 		return body(questionObj.fieldName).notEmpty().withMessage(this.errorMessage);

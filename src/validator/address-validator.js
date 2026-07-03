@@ -41,7 +41,7 @@ export class AddressValidator extends BaseValidator {
 
 	/**
 	 * validates response body using questionObj fieldname
-	 * @param {Question} questionObj
+	 * @param {import('../questions/question.js').Question} questionObj
 	 */
 	validate(questionObj) {
 		const fieldName = questionObj.fieldName;
