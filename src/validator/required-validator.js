@@ -35,6 +35,10 @@ export class RequiredValidator extends BaseValidator {
 	validate(questionObj) {
 		return body(questionObj.fieldName).notEmpty().withMessage(this.errorMessage);
 	}
+
+	isRequired() {
+		return true;
+	}
 }
 
 export default RequiredValidator;

@@ -62,6 +62,10 @@ export class DateValidator extends BaseValidator {
 		this.dateValidationSettings = dateValidationSettings;
 	}
 
+	isRequired() {
+		return true;
+	}
+
 	/**
 	 * validates the response body, checking the values sent for the date are valid
 	 * @param {DateQuestion} questionObj

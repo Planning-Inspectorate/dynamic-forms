@@ -437,4 +437,17 @@ describe('./src/dynamic-forms/question.js', () => {
 			});
 		});
 	});
+
+	describe('isRequired', () => {
+		it('should not be required if no validators', () => {
+			const q = getTestQuestion({ validators: [] });
+			assert.strictEqual(q.isRequired(), false);
+		});
+		it('should be required if any validator is required', () => {
+			const q = getTestQuestion({
+				validators: [{ isRequired: () => false }, { isRequired: () => true }]
+			});
+			assert.strictEqual(q.isRequired(), true);
+		});
+	});
 });

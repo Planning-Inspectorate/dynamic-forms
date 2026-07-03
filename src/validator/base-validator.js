@@ -26,6 +26,16 @@ export class BaseValidator {
 	validate(questionObj, journeyResponse) {
 		throw new Error('validate method must be implemented by subclass');
 	}
+
+	/**
+	 * Should the question that this validator is configured with be treated as a required question?
+	 *
+	 * Validators should override this method as appropriate, implementing any custom required logic.
+	 * For example, the AddressValidator is configurable and is required if any one field is required.
+	 */
+	isRequired() {
+		return false;
+	}
 }
 
 export default BaseValidator;
