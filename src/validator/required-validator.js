@@ -30,7 +30,7 @@ export class RequiredValidator extends BaseValidator {
 
 	/**
 	 * validates the response body, checking the questionObj's fieldname
-	 * @param {Question} questionObj
+	 * @param {import('../questions/question-props.js').QuestionProps} questionObj
 	 */
 	validate(questionObj) {
 		return body(questionObj.fieldName).notEmpty().withMessage(this.errorMessage);

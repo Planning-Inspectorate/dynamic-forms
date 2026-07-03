@@ -69,7 +69,7 @@ export class DateValidator extends BaseValidator {
 
 	/**
 	 * validates the response body, checking the values sent for the date are valid
-	 * @param {DateQuestion} questionObj
+	 * @param {import('../questions/question-props.js').QuestionProps} questionObj
 	 */
 	validate(questionObj) {
 		const fieldName = questionObj.fieldName;
