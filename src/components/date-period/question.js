@@ -35,6 +35,21 @@ export class DatePeriodQuestion extends Question {
 	}
 
 	/**
+	 * Gets the body field names used by this question in form submissions.
+	 * @returns {string[]}
+	 */
+	get bodyFieldNames() {
+		return [
+			`${this.fieldName}_start_day`,
+			`${this.fieldName}_start_month`,
+			`${this.fieldName}_start_year`,
+			`${this.fieldName}_end_day`,
+			`${this.fieldName}_end_month`,
+			`${this.fieldName}_end_year`
+		];
+	}
+
+	/**
 	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {import('#journey-response').JourneyResponse} journeyResponse - current journey response, modified with the new answers

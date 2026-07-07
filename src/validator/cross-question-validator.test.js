@@ -17,13 +17,12 @@ function createMockRequest(answers) {
 /**
  * Creates a mock question object with a simple getDataToSave that returns the body field value.
  * @param {string} fieldName
- * @param {string} [viewFolder]
- * @returns {{fieldName: string, viewFolder: string, getDataToSave: Function}}
+ * @returns {{fieldName: string, bodyFieldNames: string[], getDataToSave: Function}}
  */
-function createMockQuestion(fieldName, viewFolder = 'default') {
+function createMockQuestion(fieldName) {
 	return {
 		fieldName,
-		viewFolder,
+		bodyFieldNames: [fieldName],
 		getDataToSave: async (req) => ({
 			answers: {
 				[fieldName]: req.body[fieldName]
@@ -35,12 +34,12 @@ function createMockQuestion(fieldName, viewFolder = 'default') {
 /**
  * Creates a mock date question that extracts date from day/month/year fields.
  * @param {string} fieldName
- * @returns {{fieldName: string, viewFolder: string, getDataToSave: Function}}
+ * @returns {{fieldName: string, bodyFieldNames: string[], getDataToSave: Function}}
  */
 function createMockDateQuestion(fieldName) {
 	return {
 		fieldName,
-		viewFolder: 'date',
+		bodyFieldNames: [`${fieldName}_day`, `${fieldName}_month`, `${fieldName}_year`],
 		getDataToSave: async (req) => {
 			const day = req.body[`${fieldName}_day`];
 			const month = req.body[`${fieldName}_month`];
@@ -60,12 +59,19 @@ function createMockDateQuestion(fieldName) {
 /**
  * Creates a mock date-period question that extracts start/end dates.
  * @param {string} fieldName
- * @returns {{fieldName: string, viewFolder: string, getDataToSave: Function}}
+ * @returns {{fieldName: string, bodyFieldNames: string[], getDataToSave: Function}}
  */
 function createMockDatePeriodQuestion(fieldName) {
 	return {
 		fieldName,
-		viewFolder: 'date-period',
+		bodyFieldNames: [
+			`${fieldName}_start_day`,
+			`${fieldName}_start_month`,
+			`${fieldName}_start_year`,
+			`${fieldName}_end_day`,
+			`${fieldName}_end_month`,
+			`${fieldName}_end_year`
+		],
 		getDataToSave: async (req) => {
 			const startDay = req.body[`${fieldName}_start_day`];
 			const startMonth = req.body[`${fieldName}_start_month`];
@@ -210,7 +216,7 @@ describe('CrossQuestionValidator', () => {
 		assert.deepEqual(validationFn.mock.calls[0].arguments, [undefined, undefined]);
 	});
 
-	describe('date question with viewFolder', () => {
+	describe('date question integration', () => {
 		it('should extract date using getDataToSave when useBodyValues is true', async () => {
 			const validationFn = mock.fn(() => true);
 			const validator = new CrossQuestionValidator({
@@ -276,7 +282,7 @@ describe('CrossQuestionValidator', () => {
 		});
 	});
 
-	describe('date-period question with viewFolder', () => {
+	describe('date-period question integration', () => {
 		it('should extract date period using getDataToSave when useBodyValues is true', async () => {
 			const validationFn = mock.fn(() => true);
 			const validator = new CrossQuestionValidator({
@@ -458,8 +464,7 @@ describe('CrossQuestionValidator', () => {
 			});
 			// Question without getDataToSave method
 			const questionObj = {
-				fieldName: 'field',
-				viewFolder: 'default'
+				fieldName: 'field'
 			};
 			const req = createMockRequest({ field: 'from-journey-response', other: 'from-journey-response-dependency' });
 			req.body = { field: 'from-body', other: 'from-body-dependency' };
@@ -482,7 +487,7 @@ describe('CrossQuestionValidator', () => {
 			// field names, not the question's fieldName
 			const questionObj = {
 				fieldName: 'contactDetails', // This won't be in formattedAnswers
-				viewFolder: 'multi-field-input',
+				bodyFieldNames: ['email', 'phone'],
 				getDataToSave: async (req) => ({
 					answers: {
 						// Returns individual input fields, not 'contactDetails'
@@ -508,6 +513,57 @@ describe('CrossQuestionValidator', () => {
 				phone: '123456789'
 			});
 			assert.strictEqual(dependencyAnswer, 'dependency-value');
+		});
+	});
+
+	describe('bodyFieldNames getter support', () => {
+		it('should use bodyFieldNames[0] when question provides it', async () => {
+			const validationFn = mock.fn(() => true);
+			const validator = new CrossQuestionValidator({
+				dependencyFieldName: 'other',
+				validationFunction: validationFn
+			});
+			// Mock question with custom bodyFieldNames getter
+			const questionObj = {
+				fieldName: 'customField',
+				bodyFieldNames: ['customField_first', 'customField_second'],
+				getDataToSave: async (req) => ({
+					answers: {
+						customField: req.body.customField_first + '-' + req.body.customField_second
+					}
+				})
+			};
+			const req = createMockRequest({ customField: 'stored-value', other: 'dep-value' });
+			req.body = {
+				customField_first: 'a',
+				customField_second: 'b',
+				other: 'body-dep'
+			};
+			const chain = validator.validate(questionObj, req.res.locals.journeyResponse);
+			await chain[0].run(req);
+
+			// Should have called validation function with stored answer since useBodyValuesForCurrent is false
+			assert.deepEqual(validationFn.mock.calls[0].arguments, ['stored-value', 'dep-value']);
+		});
+
+		it('should fallback to fieldName when bodyFieldNames is not available', async () => {
+			const validationFn = mock.fn(() => true);
+			const validator = new CrossQuestionValidator({
+				dependencyFieldName: 'other',
+				validationFunction: validationFn
+			});
+			// Question without bodyFieldNames getter
+			const questionObj = {
+				fieldName: 'simpleField'
+			};
+			const req = createMockRequest({ simpleField: 'stored-value', other: 'dep-value' });
+			req.body = {
+				simpleField: 'body-value'
+			};
+			const chain = validator.validate(questionObj, req.res.locals.journeyResponse);
+			await chain[0].run(req);
+
+			assert.deepEqual(validationFn.mock.calls[0].arguments, ['stored-value', 'dep-value']);
 		});
 	});
 });

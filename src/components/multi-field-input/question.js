@@ -30,6 +30,14 @@ export class MultiFieldInputQuestion extends Question {
 		}
 	}
 
+	/**
+	 * Gets the body field names used by this question in form submissions.
+	 * @returns {string[]}
+	 */
+	get bodyFieldNames() {
+		return this.inputFields.map((inputField) => inputField.fieldName);
+	}
+
 	answerForViewModel(answers) {
 		return this.inputFields.map((inputField) => {
 			return {

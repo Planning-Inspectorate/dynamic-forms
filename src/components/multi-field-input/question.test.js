@@ -51,6 +51,13 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 		}, new Error('inputFields are mandatory'));
 	});
 
+	describe('bodyFieldNames', () => {
+		it('should return field names from all inputFields', () => {
+			const testQuestion = createMultiFieldInputQuestion();
+			assert.deepStrictEqual(testQuestion.bodyFieldNames, ['testField1', 'testField2']);
+		});
+	});
+
 	describe('prepQuestionForRendering', () => {
 		it('should call super and set inputFields', () => {
 			const question = createMultiFieldInputQuestion();

@@ -56,6 +56,19 @@ describe('AddressQuestion', () => {
 		return { question, mockApi, req, journeyResponse };
 	};
 
+	describe('bodyFieldNames', () => {
+		it('should return all address sub-field names', () => {
+			const { question } = setup();
+			assert.deepStrictEqual(question.bodyFieldNames, [
+				`${FIELDNAME}_addressLine1`,
+				`${FIELDNAME}_addressLine2`,
+				`${FIELDNAME}_townCity`,
+				`${FIELDNAME}_county`,
+				`${FIELDNAME}_postcode`
+			]);
+		});
+	});
+
 	describe('getDataToSave', () => {
 		it('should format the data correctly to be saved', async () => {
 			const { question, req } = setup();

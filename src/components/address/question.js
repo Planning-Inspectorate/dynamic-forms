@@ -31,6 +31,20 @@ export class AddressQuestion extends Question {
 	}
 
 	/**
+	 * Gets the body field names used by this question in form submissions.
+	 * @returns {string[]}
+	 */
+	get bodyFieldNames() {
+		return [
+			`${this.fieldName}_addressLine1`,
+			`${this.fieldName}_addressLine2`,
+			`${this.fieldName}_townCity`,
+			`${this.fieldName}_county`,
+			`${this.fieldName}_postcode`
+		];
+	}
+
+	/**
 	 * @param {Record<string, any>} answers
 	 * @returns {*|string}
 	 */

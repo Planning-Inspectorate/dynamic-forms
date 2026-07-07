@@ -15,6 +15,17 @@ describe('./lib/forms/custom-components/date-time/question.js', () => {
 		it('should create', () => {
 			assert.strictEqual(question.viewFolder, 'date-time');
 		});
+
+		it('should return all date and time field names from bodyFieldNames', () => {
+			assert.deepStrictEqual(question.bodyFieldNames, [
+				'siteVisitDate_day',
+				'siteVisitDate_month',
+				'siteVisitDate_year',
+				'siteVisitDate_hour',
+				'siteVisitDate_minutes',
+				'siteVisitDate_period'
+			]);
+		});
 	});
 	describe('prepQuestionForRendering', () => {
 		it('should prep question for rendering when value not in payload', () => {

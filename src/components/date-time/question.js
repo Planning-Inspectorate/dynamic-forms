@@ -23,6 +23,21 @@ export class DateTimeQuestion extends Question {
 	}
 
 	/**
+	 * Gets the body field names used by this question in form submissions.
+	 * @returns {string[]}
+	 */
+	get bodyFieldNames() {
+		return [
+			`${this.fieldName}_day`,
+			`${this.fieldName}_month`,
+			`${this.fieldName}_year`,
+			`${this.fieldName}_hour`,
+			`${this.fieldName}_minutes`,
+			`${this.fieldName}_period`
+		];
+	}
+
+	/**
 	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers

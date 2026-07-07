@@ -182,6 +182,17 @@ export class Question {
 	}
 
 	/**
+	 * Gets the body field names used by this question in form submissions.
+	 * Returns the field names that should be present in req.body when this question is submitted.
+	 * Subclasses should override this for questions with multiple or differently-named body fields.
+	 *
+	 * @returns {string[]}
+	 */
+	get bodyFieldNames() {
+		return [this.fieldName];
+	}
+
+	/**
 	 * gets the view model for this question
 	 *
 	 * Wraps prepQuestionForRendering to add the back link - which requires more parameters
