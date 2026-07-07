@@ -45,23 +45,17 @@ export class CrossQuestionValidator extends BaseValidator {
 	}
 
 	/**
-	 * Gets the body field name to bind validation to based on the question's view folder.
-	 * This determines which body field express-validator binds to for triggering validation.
+	 * Gets the body field name to bind validation to.
+	 * Uses the question's bodyFieldNames getter to determine which body field
+	 * express-validator binds to for triggering validation.
 	 * @param {import('../questions/question.js').Question} questionObj
 	 * @returns {string}
 	 */
 	#getBodyFieldName(questionObj) {
-		const fieldName = questionObj.fieldName;
-		const viewFolder = questionObj.viewFolder;
-
-		switch (viewFolder) {
-			case 'date':
-				return `${fieldName}_day`;
-			case 'date-period':
-				return `${fieldName}_start_day`;
-			default:
-				return fieldName;
-		}
+		// Use the first body field name from the question's bodyFieldNames getter
+		// This allows questions to define their own body field names, supporting
+		// custom components and complex field structures (e.g. date, date-time, address)
+		return questionObj.bodyFieldNames?.[0] ?? questionObj.fieldName;
 	}
 
 	/**

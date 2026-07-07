@@ -30,6 +30,26 @@ describe('DatePeriodQuestion', () => {
 		});
 	});
 
+	describe('bodyFieldNames', () => {
+		it('should return all start and end date field names', () => {
+			const dateQuestion = new DatePeriodQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				hint: HINT,
+				validators: VALIDATORS
+			});
+			assert.deepStrictEqual(dateQuestion.bodyFieldNames, [
+				`${FIELDNAME}_start_day`,
+				`${FIELDNAME}_start_month`,
+				`${FIELDNAME}_start_year`,
+				`${FIELDNAME}_end_day`,
+				`${FIELDNAME}_end_month`,
+				`${FIELDNAME}_end_year`
+			]);
+		});
+	});
+
 	describe('getDataToSave', () => {
 		it('should return data correctly', async () => {
 			const dateQuestion = new DatePeriodQuestion({

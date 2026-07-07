@@ -26,6 +26,23 @@ describe('DateQuestion', () => {
 		});
 	});
 
+	describe('bodyFieldNames', () => {
+		it('should return day, month, and year field names', () => {
+			const dateQuestion = new DateQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				hint: HINT,
+				validators: VALIDATORS
+			});
+			assert.deepStrictEqual(dateQuestion.bodyFieldNames, [
+				`${FIELDNAME}_day`,
+				`${FIELDNAME}_month`,
+				`${FIELDNAME}_year`
+			]);
+		});
+	});
+
 	describe('getDataToSave', () => {
 		it('should return data correctly', async () => {
 			const dateQuestion = new DateQuestion({

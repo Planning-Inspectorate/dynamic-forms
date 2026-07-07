@@ -121,11 +121,11 @@ const siteAreaQuestion = {
 
 | `useBodyValues` | `useBodyValuesForCurrent` | Current Answer Source        | Dependency Answer Source |
 | --------------- | ------------------------- | ---------------------------- | ------------------------ |
-| `false`         | `false`                   | Session                      | Session                  |
-| `false`         | `true`                    | Body (via `getDataToSave()`) | Session                  |
+| `false`         | `false`                   | JourneyResponse              | JourneyResponse          |
+| `false`         | `true`                    | Body (via `getDataToSave()`) | JourneyResponse          |
 | `true`          | (ignored)                 | Body (via `getDataToSave()`) | Body (raw)               |
 
 ## Notes
 
 - When `useBodyValuesForCurrent` is `true`, the validator uses the question's `getDataToSave()` method to format body data. This automatically handles complex field types like dates (`fieldName_day`, `fieldName_month`, `fieldName_year`).
-- The validator binds to the appropriate body field based on the question's `viewFolder` (e.g., `fieldName_day` for date questions).
+- The validator binds to the appropriate body field using the question's `bodyFieldNames` getter. For simple questions this returns `[fieldName]`, but complex question types override it (e.g., `DateQuestion` returns `[fieldName_day, fieldName_month, fieldName_year]`). Custom question components can define their own `bodyFieldNames` getter to ensure proper validation binding.

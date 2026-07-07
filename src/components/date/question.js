@@ -20,6 +20,14 @@ export class DateQuestion extends Question {
 	}
 
 	/**
+	 * Gets the body field names used by this question in form submissions.
+	 * @returns {string[]}
+	 */
+	get bodyFieldNames() {
+		return [`${this.fieldName}_day`, `${this.fieldName}_month`, `${this.fieldName}_year`];
+	}
+
+	/**
 	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {import('#journey-response').JourneyResponse} journeyResponse - current journey response, modified with the new answers

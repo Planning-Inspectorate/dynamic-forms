@@ -135,6 +135,13 @@ describe('./src/dynamic-forms/question.js', () => {
 		});
 	});
 
+	describe('bodyFieldNames', () => {
+		it('should return an array containing the fieldName by default', () => {
+			const question = getTestQuestion();
+			assert.deepStrictEqual(question.bodyFieldNames, [FIELDNAME]);
+		});
+	});
+
 	describe('prepQuestionForRendering', () => {
 		it('should prepQuestionForRendering', () => {
 			const question = getTestQuestion();
