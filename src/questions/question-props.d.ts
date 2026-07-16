@@ -68,6 +68,7 @@ interface InputField {
 	suffix?: Affix; // used to add a suffix to the field
 	prefix?: Affix; // used to add a prefix to the field
 	hint?: string;
+	classes?: string;
 }
 
 /*
