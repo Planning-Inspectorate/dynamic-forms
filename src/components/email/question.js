@@ -15,11 +15,7 @@ import SingleLineInputQuestion from '../single-line-input/question.js';
  */
 export class EmailQuestion extends SingleLineInputQuestion {
 	/**
-	 * @param {import('#question-types').QuestionParameters} params
-	 * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
-	 * @param {Record<string, string>} [params.inputAttributes] html attributes to add to the input (will be merged with email defaults)
-	 * @param {string} [params.classes] html classes to add to the input
-	 * @param {string} [params.autocomplete] autocomplete attribute value (defaults to 'email')
+	 * @param {import('../../questions/question-props.d.ts').EmailQuestionParams} params
 	 */
 	constructor(params) {
 		// Set default input attributes for email

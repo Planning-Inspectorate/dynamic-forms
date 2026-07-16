@@ -19,13 +19,11 @@ import { Question } from '#question';
  */
 export class TextEntryQuestion extends Question {
 	/**
-	 * @param {import('#question-types').QuestionParameters} params
-	 * @param {TextEntryCheckbox} [params.textEntryCheckbox]
-	 * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
+	 * @param {import('../../questions/question-props.d.ts').TextEntryQuestionParams} params
 	 */
-	constructor({ textEntryCheckbox, label, ...params }) {
+	constructor({ textEntryCheckbox, label, ...parentParams }) {
 		super({
-			...params,
+			...parentParams,
 			viewFolder: 'text-entry'
 		});
 

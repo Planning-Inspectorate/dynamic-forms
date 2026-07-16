@@ -15,11 +15,11 @@ import { nl2br } from '../../lib/utils.js';
  */
 export class MultiFieldInputQuestion extends Question {
 	/**
-	 * @param {import('#src/questions/question-props.d.ts').MultiFieldInputQuestionProps} params
+	 * @param {import('../../questions/question-props.d.ts').MultiFieldInputQuestionParams} params
 	 */
-	constructor({ inputFields, ...params }) {
+	constructor({ inputFields, ...parentParams }) {
 		super({
-			...params,
+			...parentParams,
 			viewFolder: 'multi-field-input'
 		});
 

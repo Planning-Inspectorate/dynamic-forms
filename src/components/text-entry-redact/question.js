@@ -9,14 +9,7 @@ export const TRUNCATED_MAX_LENGTH = 500;
  */
 export class TextEntryRedactQuestion extends Question {
 	/**
-	 * @param {import('#question-types').QuestionParameters} params
-	 * @param {import('../text-entry/question.js').TextEntryCheckbox} [params.textEntryCheckbox]
-	 * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
-	 * @param {boolean} [params.onlyShowRedactedValueForSummary] whether to only show redacted value for summary
-	 * @param {boolean} [params.useRedactedFieldNameForSave] whether to use the redacted field name when saving answers
-	 * @param {boolean} [params.showSuggestionsUi] use the suggestions UI for this question
-	 * @param {string} [params.summaryText] summaryText to use with the details component
-	 * @param {boolean} [params.shouldTruncateSummary] determines whether redacted comment is truncated in summary view
+	 * @param {import('../../questions/question-props.d.ts').TextEntryRedactQuestionParams} params
 	 */
 	constructor({
 		textEntryCheckbox,
@@ -26,10 +19,10 @@ export class TextEntryRedactQuestion extends Question {
 		showSuggestionsUi,
 		summaryText,
 		shouldTruncateSummary,
-		...params
+		...parentParams
 	}) {
 		super({
-			...params,
+			...parentParams,
 			viewFolder: 'text-entry-redact'
 		});
 
