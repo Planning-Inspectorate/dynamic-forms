@@ -3,22 +3,7 @@ import OptionsQuestion from '../../questions/options-question.js';
 export class SelectQuestion extends OptionsQuestion {
 	#disableAccessibleAutocomplete;
 	/**
-	 * @param {Object} params
-	 * @param {string} params.title
-	 * @param {string} params.question
-	 * @param {string} params.fieldName
-	 * @param {string} [params.viewFolder]
-	 * @param {string} [params.url]
-	 * @param {string} [params.hint]
-	 * @param {string} [params.pageTitle]
-	 * @param {string} [params.description]
-	 * @param {string} [params.label]
-	 * @param {string} [params.html]
-	 * @param {string} [params.legend] - optional legend, used instead of h1
-	 * @param {string} [params.disableAccessibleAutocomplete]
-	 * @param {Array.<import('../../questions/options-question.js').Option>} params.options
-	 * @param {Object<string, any>} [params.viewData]
-	 * @param {Array.<import('#base-validator').BaseValidator>} [params.validators]
+	 * @param {import('../../questions/question-props.d.ts').SelectQuestionParams} params
 	 */
 	constructor({
 		title,

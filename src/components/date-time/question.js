@@ -9,13 +9,11 @@ export class DateTimeQuestion extends Question {
 	static PM = 'pm';
 
 	/**
-	 * @param {import('#question-types').QuestionParameters} params
-	 * @param {string} [params.dateFormat]
-	 * @param {string} [params.timeFormat]
+	 * @param {import('../../questions/question-props.d.ts').DateTimeQuestionParams} params
 	 */
-	constructor({ dateFormat = DEFAULT_DATE_FORMAT, timeFormat = DEFAULT_TIME_FORMAT, ...params }) {
+	constructor({ dateFormat = DEFAULT_DATE_FORMAT, timeFormat = DEFAULT_TIME_FORMAT, ...parentParams }) {
 		super({
-			...params,
+			...parentParams,
 			viewFolder: 'date-time'
 		});
 		this.dateFormat = dateFormat;

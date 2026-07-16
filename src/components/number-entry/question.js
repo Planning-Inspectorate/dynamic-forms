@@ -3,13 +3,11 @@ import { getPersistedNumberAnswer } from '../utils/persisted-number-answer.js';
 
 export class NumberEntryQuestion extends Question {
 	/**
-	 * @param {import('#question-types').QuestionParameters} params
-	 * @param {string} [params.suffix]
-	 * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
+	 * @param {import('../../questions/question-props.d.ts').NumberEntryQuestionParams} params
 	 */
-	constructor({ label, suffix, ...params }) {
+	constructor({ label, suffix, ...parentParams }) {
 		super({
-			...params,
+			...parentParams,
 			viewFolder: 'number-entry'
 		});
 

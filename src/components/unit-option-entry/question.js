@@ -35,16 +35,13 @@ export class UnitOptionEntryQuestion extends Question {
 	options;
 
 	/**
-	 * @param {import('#question-types').QuestionParameters} params
-	 * @param {string} [params.conditionalFieldName] // will be the quantity and is captured by the conditional in the options
-	 * @param {string} [params.label]
-	 * @param {Array.<UnitOption>} [params.options]
+	 * @param {import('../../questions/question-props.d.ts').UnitOptionEntryQuestionParams} params
 	 * @param {Record<string, Function>} [methodOverrides]
 	 */
-	constructor({ conditionalFieldName, options, label, ...params }, methodOverrides) {
+	constructor({ conditionalFieldName, options, label, ...parentParams }, methodOverrides) {
 		super(
 			{
-				...params,
+				...parentParams,
 				viewFolder: 'unit-option-entry'
 			},
 			methodOverrides

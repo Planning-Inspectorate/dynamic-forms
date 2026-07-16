@@ -11,18 +11,20 @@ const DEFAULT_DATE_FORMAT = 'HH:mm d MMMM yyyy';
  */
 export class DatePeriodQuestion extends Question {
 	/**
-	 * @param {import('#question-types').QuestionParameters} params
-	 * @param {string} [params.dateFormat]
-	 * @param {{start: string, end: string}} [params.labels]
-	 * @param {string} [params.hint]
-	 * @param {string} [params.hintStart]
-	 * @param {string} [params.hintEnd]
-	 * @param {{hour: number, minute: number, second: number}} [params.startTime]
-	 * @param {{hour: number, minute: number, second: number}} [params.endTime]
+	 * @param {import('../../questions/question-props.d.ts').DatePeriodQuestionParams} params
 	 */
-	constructor({ dateFormat = DEFAULT_DATE_FORMAT, hint, labels, hintStart, startTime, hintEnd, endTime, ...params }) {
+	constructor({
+		dateFormat = DEFAULT_DATE_FORMAT,
+		hint,
+		labels,
+		hintStart,
+		startTime,
+		hintEnd,
+		endTime,
+		...parentParams
+	}) {
 		super({
-			...params,
+			...parentParams,
 			viewFolder: 'date-period'
 		});
 		this.dateFormat = dateFormat;

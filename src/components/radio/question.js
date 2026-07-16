@@ -2,23 +2,7 @@ import OptionsQuestion from '../../questions/options-question.js';
 
 export class RadioQuestion extends OptionsQuestion {
 	/**
-	 * @param {Object} params
-	 * @param {string} params.title
-	 * @param {string} params.question
-	 * @param {string} params.fieldName
-	 * @param {string} [params.viewFolder]
-	 * @param {string} [params.url]
-	 * @param {string} [params.hint]
-	 * @param {string} [params.pageTitle]
-	 * @param {string} [params.description]
-	 * @param {string} [params.label]
-	 * @param {string} [params.html]
-	 * @param {string} [params.legend] - optional legend, used instead of h1
-	 * @param {Array.<import('../../questions/options-question.js').Option>} params.options
-	 * @param {Array.<import('#base-validator').BaseValidator>} [params.validators]
-	 * @param {boolean} [params.editable]
-	 * @param {Object<string, any>} [params.viewData]
-	 * @param {import('#question-types').ActionLink} [params.actionLink]
+	 * @param {import('../../questions/question-props.d.ts').RadioQuestionParams} params
 	 */
 	constructor({
 		title,

@@ -33,20 +33,7 @@ export const booleanToYesNoOrNull = (value) => {
 
 export class BooleanQuestion extends RadioQuestion {
 	/**
-	 * @param {Object} params
-	 * @param {string} params.title
-	 * @param {string} params.question
-	 * @param {string} params.fieldName
-	 * @param {string} [params.url]
-	 * @param {string} [params.hint]
-	 * @param {string} [params.pageTitle]
-	 * @param {string} [params.description]
-	 * @param {string} [params.html]
-	 * @param {string} [params.interfaceType]
-	 * @param {Array.<import('../../questions/options-question.js').Option>} [params.options]
-	 * @param {Array.<import('#base-validator').BaseValidator>} [params.validators]
-	 * @param {boolean} [params.editable]
-	 * @param {import('#question-types').QuestionParameters['viewData']} [params.viewData]
+	 * @param {import('../../questions/question-props.d.ts').BooleanQuestionParams} params
 	 */
 	constructor({
 		title,

@@ -18,14 +18,22 @@ type QuestionTypes =
 	| 'text-entry-redact'
 	| 'unit-option';
 
-type CommonQuestionProps = Omit<QuestionParameters, 'viewFolder'> & {
+/**
+ * Base params that question classes need to function (NO type - that's routing metadata)
+ */
+export type CommonQuestionParams = Omit<QuestionParameters, 'viewFolder'>;
+
+/**
+ * Full props including type for routing/factory layer
+ */
+type CommonQuestionProps = CommonQuestionParams & {
 	type: QuestionTypes;
 };
 
 /**
  * Generic question props type so that custom components can be used without having to define a new type for each one.
  */
-export type BaseQuestionProps = Omit<CommonQuestionProps, 'type'> & {
+export type BaseQuestionProps = CommonQuestionParams & {
 	type: string;
 };
 
@@ -96,79 +104,174 @@ interface UnitOption {
 	};
 }
 
-type BooleanQuestionProps = CommonQuestionProps & {
-	type: 'boolean';
+/**
+ * Internal base params for questions with options - not exported
+ */
+type OptionsQuestionParams = CommonQuestionParams & {
+	options: Option[];
+};
+
+export type BooleanQuestionParams = Omit<RadioQuestionParams, 'options'> & {
 	options?: Option[];
 	interfaceType?: 'checkbox' | 'radio';
 };
 
-type CheckboxQuestionProps = CommonQuestionProps & {
-	type: 'checkbox';
-	options: Option[];
+type BooleanQuestionProps = BooleanQuestionParams & {
+	type: 'boolean';
 };
 
-type DateQuestionProps = CommonQuestionProps & {
+export type CheckboxQuestionParams = OptionsQuestionParams;
+
+type CheckboxQuestionProps = CheckboxQuestionParams & {
+	type: 'checkbox';
+};
+
+export type DateQuestionParams = CommonQuestionParams & {
+	dateFormat?: string;
+};
+
+type DateQuestionProps = DateQuestionParams & {
 	type: 'date';
 };
 
-type DatePeriodQuestionProps = CommonQuestionProps & {
+// Minute and second will default to 0 if not provided
+interface TimeComponents {
+	hour: number;
+	minute?: number;
+	second?: number;
+}
+
+export type DatePeriodQuestionParams = CommonQuestionParams & {
+	dateFormat?: string;
+	labels?: { start: string; end: string };
+	hintStart?: string;
+	hintEnd?: string;
+	startTime?: TimeComponents;
+	endTime?: TimeComponents;
+};
+
+type DatePeriodQuestionProps = DatePeriodQuestionParams & {
 	type: 'date-period';
 };
 
-type DateTimeQuestionProps = CommonQuestionProps & {
+export type DateTimeQuestionParams = CommonQuestionParams & {
+	dateFormat?: string;
+	timeFormat?: string;
+};
+
+type DateTimeQuestionProps = DateTimeQuestionParams & {
 	type: 'date-time';
 };
 
-type ManageListQuestionProps = CommonQuestionProps & {
+export type ManageListQuestionParams = CommonQuestionParams & {
+	titleSingular?: string;
+	showManageListQuestions?: boolean;
+	showAnswersInSummary?: boolean;
+	confirmationQuestion?: string;
+};
+
+type ManageListQuestionProps = ManageListQuestionParams & {
 	type: 'manage-list';
 };
 
-type EmailQuestionProps = CommonQuestionProps & {
+export type EmailQuestionParams = SingleLineInputQuestionParams & {
+	autocomplete?: string; // autocomplete attribute value (defaults to 'email')
+};
+
+type EmailQuestionProps = EmailQuestionParams & {
 	type: 'email';
 };
 
-export type MultiFieldInputQuestionProps = CommonQuestionProps & {
-	type: 'multi-field-input';
+export type MultiFieldInputQuestionParams = CommonQuestionParams & {
 	inputFields: InputField[];
 };
 
-type NumberEntryQuestionProps = CommonQuestionProps & {
-	type: 'number';
+export type MultiFieldInputQuestionProps = MultiFieldInputQuestionParams & {
+	type: 'multi-field-input';
+};
+
+export type NumberEntryQuestionParams = CommonQuestionParams & {
 	suffix?: string;
+	label?: string;
 };
 
-type RadioQuestionProps = CommonQuestionProps & {
+type NumberEntryQuestionProps = NumberEntryQuestionParams & {
+	type: 'number';
+};
+
+export type RadioQuestionParams = OptionsQuestionParams & {
+	label?: string;
+	legend?: string;
+};
+
+type RadioQuestionProps = RadioQuestionParams & {
 	type: 'radio';
-	options: Option[];
 };
 
-type SelectQuestionProps = CommonQuestionProps & {
-	type: 'select';
-	options: Option[];
+export type SelectQuestionParams = OptionsQuestionParams & {
 	disableAccessibleAutocomplete?: boolean;
+	label?: string;
+	legend?: string;
 };
 
-type SingleLineInputQuestionProps = CommonQuestionProps & {
+type SelectQuestionProps = SelectQuestionParams & {
+	type: 'select';
+};
+
+export type SingleLineInputQuestionParams = CommonQuestionParams & {
+	inputAttributes?: Record<string, string>; // HTML attributes to add to the input
+	label?: string; // if defined this will show as a label for the input and the question will just be a standard h1
+	classes?: string; // HTML classes to add to the input
+};
+
+type SingleLineInputQuestionProps = SingleLineInputQuestionParams & {
 	type: 'single-line-input';
-	inputAttributes?: Record<string, string>;
 };
 
-type SiteAddressQuestionProps = CommonQuestionProps & {
+export type SiteAddressQuestionParams = CommonQuestionParams;
+
+type SiteAddressQuestionProps = SiteAddressQuestionParams & {
 	type: 'site-address';
 };
 
-type TextEntryQuestionProps = CommonQuestionProps & {
+type TextEntryCheckbox = {
+	header: string;
+	text: string;
+	name: string;
+	errorMessage?: string;
+};
+
+export type TextEntryQuestionParams = CommonQuestionParams & {
+	textEntryCheckbox?: TextEntryCheckbox;
+	label?: string; // if defined this will show as a label for the input and the question will just be a standard h1
+};
+
+type TextEntryQuestionProps = TextEntryQuestionParams & {
 	type: 'text-entry';
 };
 
-type TextEntryRedactQuestionProps = CommonQuestionProps & {
+export type TextEntryRedactQuestionParams = CommonQuestionParams & {
+	textEntryCheckbox?: TextEntryCheckbox;
+	label?: string; // if defined this will show as a label for the input and the question will just be a standard h1
+	onlyShowRedactedValueForSummary?: boolean;
+	useRedactedFieldNameForSave?: boolean;
+	showSuggestionsUi?: boolean;
+	summaryText?: string; // summaryText to use with the details component
+	shouldTruncateSummary?: boolean; // determines whether redacted comment is truncated in summary view
+};
+
+type TextEntryRedactQuestionProps = TextEntryRedactQuestionParams & {
 	type: 'text-entry-redact';
 };
 
-type UnitOptionEntryQuestionProps = CommonQuestionProps & {
-	type: 'unit-option';
-	conditionalFieldName: string;
+export type UnitOptionEntryQuestionParams = CommonQuestionParams & {
+	conditionalFieldName: string; // will be the quantity and is captured by the conditional in the options
 	options: UnitOption[];
+	label?: string;
+};
+
+type UnitOptionEntryQuestionProps = UnitOptionEntryQuestionParams & {
+	type: 'unit-option';
 };
 
 export type QuestionProps =

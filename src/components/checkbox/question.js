@@ -12,16 +12,7 @@ const defaultOptionJoinString = ',';
 
 export class CheckboxQuestion extends OptionsQuestion {
 	/**
-	 * @param {Object} params
-	 * @param {string} params.title
-	 * @param {string} params.question
-	 * @param {string} params.fieldName
-	 * @param {string} [params.url]
-	 * @param {string} [params.pageTitle]
-	 * @param {string} [params.description]
-	 * @param {Array.<import('../../questions/options-question.js').Option>} params.options
-	 * @param {Array.<import('#base-validator').BaseValidator>} [params.validators]
-	 * @param {import('#question-types').QuestionParameters['viewData']} [params.viewData]
+	 * @param {import('../../questions/question-props.d.ts').CheckboxQuestionParams} params
 	 */
 	constructor({ title, question, fieldName, url, pageTitle, description, options, validators, viewData }) {
 		super({
