@@ -40,7 +40,11 @@ async function validateQuestion(questionObj, req, journeyResponse = {}) {
 		const validationRules = validation.validate(questionObj, journeyResponse);
 
 		if (validationRules instanceof Array) {
-			await Promise.all(validationRules.map((validator) => validator.run(req)));
+			// Intentionally run validators sequentially to ensure
+			// errors are collected in the same order as the rules array
+			for (const validator of validationRules) {
+				await validator.run(req);
+			}
 
 			const errors = validationResult(req);
 			const mappedErrors = errors.mapped();

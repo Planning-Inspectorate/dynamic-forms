@@ -4,6 +4,7 @@ import validate from './validator.js';
 import RequiredValidator from './required-validator.js';
 import ValidOptionValidator from './valid-option-validator.js';
 import AddressValidator from './address-validator.js';
+import DateValidator from '#src/validator/date-validator.js';
 
 describe('./src/dynamic-forms/validator/validator.js', () => {
 	let mockRes;
@@ -240,6 +241,53 @@ describe('./src/dynamic-forms/validator/validator.js', () => {
 		assert.strictEqual(addressLine2._errors.length, 0);
 		assert.strictEqual(townCity._errors.length, 0);
 		assert.strictEqual(postcode._errors.length, 0);
+		assert.strictEqual(next.mock.callCount(), 1);
+	});
+
+	it('should display errors from a multi-field array validator in correct order (e.g., day, month, year)', async () => {
+		const req = {
+			params: {
+				section: 1,
+				question: 1,
+				referenceId: 'abc'
+			},
+			body: {
+				field1_day: '32',
+				field1_month: '13',
+				field1_year: '99'
+			}
+		};
+
+		mockRes.locals.journey = {
+			getQuestionByParams: function () {
+				return {
+					validators: [new DateValidator('the date')],
+					fieldName: 'field1'
+				};
+			}
+		};
+
+		const next = mock.fn();
+		await validate(req, mockRes, next);
+
+		const { validationResult } = await import('express-validator');
+		const errors = validationResult(req);
+		const mappedErrors = errors.mapped();
+		const errorKeys = Object.keys(mappedErrors);
+
+		// Verify all three errors exist
+		assert.strictEqual(errorKeys.includes('field1_day'), true, 'Missing day error');
+		assert.strictEqual(errorKeys.includes('field1_month'), true, 'Missing month error');
+		assert.strictEqual(errorKeys.includes('field1_year'), true, 'Missing year error');
+
+		// Verify errors are in the correct order: day, month, year
+		const dayIndex = errorKeys.indexOf('field1_day');
+		const monthIndex = errorKeys.indexOf('field1_month');
+		const yearIndex = errorKeys.indexOf('field1_year');
+
+		assert.strictEqual(dayIndex < monthIndex, true, 'Day error should come before month error');
+		assert.strictEqual(monthIndex < yearIndex, true, 'Month error should come before year error');
+
 		assert.strictEqual(next.mock.callCount(), 1);
 	});
 });
