@@ -77,6 +77,8 @@ interface InputField {
 	prefix?: Affix; // used to add a prefix to the field
 	hint?: string;
 	classes?: string;
+	inputmode?: 'decimal' | 'numeric';
+	pattern?: string; // Used for backwards-compatibility for older iOS devices in numeric input fields
 }
 
 /*
