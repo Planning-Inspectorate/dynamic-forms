@@ -56,6 +56,8 @@
                                 text: inputField.hint
                             },
                             classes: inputField.classes or "govuk-input-!-width-three-quarters",
+                            inputmode: inputField.inputmode,
+                            pattern: inputField.pattern,
                             attributes: inputField.attributes
                         }) }}
                     {% endfor %}

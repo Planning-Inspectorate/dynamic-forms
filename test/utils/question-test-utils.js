@@ -81,6 +81,18 @@ export async function createAppWithQuestions(ctx, options) {
 }
 
 /**
+ * Returns a mock value for an input field based on its properties.
+ * @param {Object} field - An input field descriptor (not a full question)
+ * @returns {string|number}
+ */
+function mockInputFieldValue(field) {
+	if (field.inputmode === 'numeric' || field.pattern === '[0-9]*') {
+		return 1;
+	}
+	return 'test';
+}
+
+/**
  * Build a valid payload for a question.
  * @param {import('../src/questions/question-props.js').QuestionProps} q
  * @returns {Object}
@@ -128,7 +140,7 @@ export function mockAnswerBody(q) {
 		case COMPONENT_TYPES.MULTI_FIELD_INPUT: {
 			const res = {};
 			for (const field of q.inputFields) {
-				res[field.fieldName] = mockAnswer(field);
+				res[field.fieldName] = mockInputFieldValue(field);
 			}
 			return res;
 		}
@@ -191,7 +203,7 @@ export function mockAnswer(q) {
 			if (q.inputFields) {
 				let res = '';
 				for (const field of q.inputFields) {
-					res += mockAnswer(field) + '<br>';
+					res += mockInputFieldValue(field) + '<br>';
 				}
 				return res;
 			}
