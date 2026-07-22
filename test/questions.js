@@ -125,8 +125,8 @@ export const questionProps = {
 		url: 'companions',
 		label: 'Companions',
 		inputFields: [
-			{ fieldName: 'name', label: 'Name', type: COMPONENT_TYPES.TEXT_ENTRY },
-			{ fieldName: 'age', label: 'Age', type: COMPONENT_TYPES.NUMBER }
+			{ fieldName: 'name', label: 'Name' },
+			{ fieldName: 'age', label: 'Age', inputmode: 'numeric', pattern: '[0-9]*' }
 		]
 	},
 	nights: {
