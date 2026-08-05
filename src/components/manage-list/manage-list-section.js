@@ -1,4 +1,4 @@
-import { Section } from '#src/section.js';
+import { Section } from '../../section.js';
 
 /**
  * Extends the Section class for extra logic around managing lists.
@@ -21,9 +21,9 @@ export class ManageListSection extends Section {
 
 	/**
 	 * Fluent API method for adding questions
-	 * @param {import('#src/questions/question.js').Question} question
-	 * @param {import('#src/components/manage-list/manage-list-section.js').ManageListSection} [manageListSection]
-	 * @returns {Section}
+	 * @param {import('../../questions/question.js').Question} question
+	 * @param {import('./manage-list-section.js').ManageListSection} [manageListSection]
+	 * @returns {this}
 	 */
 	addQuestion(question, manageListSection) {
 		if (!question) {

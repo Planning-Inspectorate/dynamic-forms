@@ -65,7 +65,7 @@ export class Section {
 	 * Add a condition to all questions in this section
 	 *
 	 * @param {QuestionCondition} shouldIncludeSection
-	 * @returns {Section}
+	 * @returns {this}
 	 */
 	withSectionCondition(shouldIncludeSection) {
 		if (this.questions.length > 0) {
@@ -83,9 +83,9 @@ export class Section {
 
 	/**
 	 * Fluent API method for adding questions
-	 * @param {import('#src/questions/question.js').Question} question
-	 * @param {import('#src/components/manage-list/manage-list-section.js').ManageListSection} [manageListSection]
-	 * @returns {Section}
+	 * @param {import('./questions/question.js').Question} question
+	 * @param {import('./components/manage-list/manage-list-section.js').ManageListSection} [manageListSection]
+	 * @returns {this}
 	 */
 	addQuestion(question, manageListSection) {
 		if (!question) {
@@ -134,7 +134,7 @@ export class Section {
 	/**
 	 * Fluent API method for attaching conditions to the previously added question
 	 * @param {QuestionCondition} shouldIncludeQuestion
-	 * @returns {Section}
+	 * @returns {this}
 	 */
 	withCondition(shouldIncludeQuestion) {
 		if (this.#conditionAdded) {
@@ -175,7 +175,7 @@ export class Section {
 	 * Fluent API method for starting a multi question condition
 	 * @param {string} conditionName
 	 * @param {QuestionCondition} shouldIncludeQuestion
-	 * @returns {Section}
+	 * @returns {this}
 	 */
 	startMultiQuestionCondition(conditionName, shouldIncludeQuestion) {
 		if (this.#multiQuestionConditions[conditionName]) {
@@ -188,7 +188,7 @@ export class Section {
 	/**
 	 * Fluent API method for ending a multi question condition
 	 * @param {string} conditionName
-	 * @returns {Section}
+	 * @returns {this}
 	 */
 	endMultiQuestionCondition(conditionName) {
 		if (!this.#multiQuestionConditions[conditionName]) {
