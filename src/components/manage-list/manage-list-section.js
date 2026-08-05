@@ -1,4 +1,4 @@
-import { Section } from '#src/section.js';
+import { Section } from '../../section.js';
 
 /**
  * Extends the Section class for extra logic around managing lists.
