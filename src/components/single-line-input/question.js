@@ -22,7 +22,7 @@ export class SingleLineInputQuestion extends Question {
 	}
 
 	/**
-	 * @param {import('#question').QuestionViewModel} viewModel
+	 * @param {import('../../questions/question.js').QuestionViewModel} viewModel
 	 */
 	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;

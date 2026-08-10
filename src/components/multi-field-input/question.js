@@ -3,14 +3,6 @@ import escape from 'escape-html';
 import { nl2br } from '../../lib/utils.js';
 
 /**
- * @typedef {import('#question').QuestionViewModel} QuestionViewModel
- * @typedef {import('#journey').Journey} Journey
- * @typedef {import('#journey-response').JourneyResponse} JourneyResponse
- * @typedef {import('../../section').Section} Section
- * @typedef {import('../../validator/base-validator')} BaseValidator
- */
-
-/**
  * @class
  */
 export class MultiFieldInputQuestion extends Question {
@@ -50,7 +42,7 @@ export class MultiFieldInputQuestion extends Question {
 	/**
 	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
-	 * @param {JourneyResponse} journeyResponse - current journey response, modified with the new answers
+	 * @param {import('../../journey/journey-response.js').JourneyResponse} journeyResponse - current journey response, modified with the new answers
 	 * @returns {Promise<{ answers: Record<string, unknown> }>}
 	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
@@ -69,7 +61,7 @@ export class MultiFieldInputQuestion extends Question {
 
 	/**
 	 * returns the formatted answers values to be used to build task list elements
-	 * @param {Journey} journey
+	 * @param {import('../../journey/journey.js').Journey} journey
 	 * @param {String} sectionSegment
 	 * @returns {Array<{
 	 *   key: string;
@@ -101,7 +93,7 @@ export class MultiFieldInputQuestion extends Question {
 
 	/**
 	 * checks whether any answers have been provided for input field questions
-	 * @param {Journey} journey
+	 * @param {import('../../journey/journey.js').Journey} journey
 	 * @returns {boolean}
 	 */
 	#allQuestionsUnanswered(journey) {

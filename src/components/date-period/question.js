@@ -131,7 +131,7 @@ export class DatePeriodQuestion extends Question {
 	}
 
 	/**
-	 * @param {import('#question').QuestionViewModel} viewModel
+	 * @param {import('../../questions/question.js').QuestionViewModel} viewModel
 	 */
 	addCustomDataToViewModel(viewModel) {
 		viewModel.labels = this.labels;

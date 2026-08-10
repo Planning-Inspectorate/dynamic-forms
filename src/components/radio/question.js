@@ -47,7 +47,7 @@ export class RadioQuestion extends OptionsQuestion {
 	}
 
 	/**
-	 * @param {import('#question').QuestionViewModel} viewModel
+	 * @param {import('../../questions/question.js').QuestionViewModel} viewModel
 	 */
 	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;
@@ -57,9 +57,9 @@ export class RadioQuestion extends OptionsQuestion {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 * @param {unknown} answer
-	 * @param {Journey} journey
+	 * @param {import('../../journey/journey.js').Journey} journey
 	 * @param {String} sectionSegment
-	 * @returns {Array<{ key: string; value: string | Object; action?: ActionView | ActionView[] | undefined; }>}
+	 * @returns {Array<{ key: string; value: string | Object; action?: import('../../questions/question.js').ActionView | import('../../questions/question.js').ActionView[] | undefined; }>}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer) {
 		let defaultValue;

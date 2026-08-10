@@ -43,7 +43,7 @@ export class SelectQuestion extends OptionsQuestion {
 	}
 
 	/**
-	 * @param {import('#question').QuestionViewModel} viewModel
+	 * @param {import('../../questions/question.js').QuestionViewModel} viewModel
 	 */
 	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;
@@ -56,7 +56,7 @@ export class SelectQuestion extends OptionsQuestion {
 	 * note: only supports a single answer
 	 *
 	 * @param {unknown} answer
-	 * @param {Journey} journey
+	 * @param {import('../../journey/journey.js').Journey} journey
 	 * @param {String} sectionSegment
 	 * @returns {Array.<Object>}
 	 */

@@ -7,7 +7,7 @@ export class IdentifierQuestion extends Question {
 	inputClasses;
 
 	/**
-	 * @param {import('#question-types').QuestionParameters} params
+	 * @param {import('../../questions/question-types.d.ts').QuestionParameters} params
 	 * @param {string} [params.inputClasses] css class string to be added to the input
 	 * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
 	 */
@@ -22,7 +22,7 @@ export class IdentifierQuestion extends Question {
 	}
 
 	/**
-	 * @param {import('#question').QuestionViewModel} viewModel
+	 * @param {import('../../questions/question.js').QuestionViewModel} viewModel
 	 */
 	addCustomDataToViewModel(viewModel) {
 		viewModel.question.inputClasses = this.inputClasses;

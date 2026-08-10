@@ -53,7 +53,7 @@ export class ManageListQuestion extends Question {
 	}
 
 	/**
-	 * @param {import('#question').QuestionViewModel} viewModel
+	 * @param {import('../../questions/question.js').QuestionViewModel} viewModel
 	 */
 	addCustomDataToViewModel(viewModel) {
 		viewModel.question.addAnotherLink = this.#addAnotherLink;
