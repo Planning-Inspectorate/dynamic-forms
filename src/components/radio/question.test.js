@@ -170,4 +170,98 @@ describe('./src/dynamic-forms/components/radio/question.js', () => {
 		const rowParams = radioQuestion.formatAnswerForSummary(SECTION, JOURNEY, 'no');
 		assert.strictEqual(rowParams[0].value, 'No');
 	});
+
+	describe('formatSummaryValue with selectedOption', () => {
+		it('should pass selectedOption to formatSummaryValue', () => {
+			let receivedContext;
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				options: [
+					{ text: 'Option A', value: 'a' },
+					{ text: 'Option B', value: 'b' }
+				],
+				formatSummaryValue: (ctx) => {
+					receivedContext = ctx;
+					return ctx.defaultValue;
+				}
+			});
+
+			radioQuestion.formatAnswerForSummary(SECTION, JOURNEY, 'a');
+
+			assert.ok(receivedContext.selectedOption, 'selectedOption should be defined');
+			assert.strictEqual(receivedContext.selectedOption.value, 'a');
+			assert.strictEqual(receivedContext.selectedOption.text, 'Option A');
+		});
+
+		it('should allow formatter to use selectedOption for custom formatting', () => {
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				options: [
+					{ text: 'Approved', value: 'approved' },
+					{ text: 'Rejected', value: 'rejected' }
+				],
+				formatSummaryValue: ({ selectedOption }) => {
+					const className = selectedOption?.value === 'approved' ? 'approved' : 'rejected';
+					return `<span class="${className}">${selectedOption?.text}</span>`;
+				}
+			});
+
+			const approvedResult = radioQuestion.formatAnswerForSummary(SECTION, JOURNEY, 'approved');
+			assert.strictEqual(approvedResult[0].value, '<span class="approved">Approved</span>');
+
+			const rejectedResult = radioQuestion.formatAnswerForSummary(SECTION, JOURNEY, 'rejected');
+			assert.strictEqual(rejectedResult[0].value, '<span class="rejected">Rejected</span>');
+		});
+
+		it('should pass selectedOption with conditional answer', () => {
+			let receivedContext;
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				options: [
+					{
+						text: 'Yes',
+						value: 'yes',
+						conditional: { question: 'Details', type: 'text' }
+					},
+					{ text: 'No', value: 'no' }
+				],
+				formatSummaryValue: (ctx) => {
+					receivedContext = ctx;
+					return ctx.defaultValue;
+				}
+			});
+
+			radioQuestion.formatAnswerForSummary(SECTION, JOURNEY, { value: 'yes', conditional: 'some details' });
+
+			assert.ok(receivedContext.selectedOption, 'selectedOption should be defined');
+			assert.strictEqual(receivedContext.selectedOption.value, 'yes');
+			assert.strictEqual(receivedContext.selectedOption.text, 'Yes');
+			assert.ok(receivedContext.selectedOption.conditional, 'conditional should be defined on selectedOption');
+		});
+
+		it('should have undefined selectedOption when answer is not provided', () => {
+			let receivedContext;
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				options: [{ text: 'Option A', value: 'a' }],
+				formatSummaryValue: (ctx) => {
+					receivedContext = ctx;
+					return ctx.defaultValue;
+				}
+			});
+
+			radioQuestion.formatAnswerForSummary(SECTION, JOURNEY, null);
+
+			assert.strictEqual(receivedContext.selectedOption, undefined);
+			assert.strictEqual(receivedContext.defaultValue, radioQuestion.notStartedText);
+		});
+	});
 });

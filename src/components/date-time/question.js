@@ -106,10 +106,19 @@ export class DateTimeQuestion extends Question {
 	 * @type {Question['formatAnswerForSummary']}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer) {
+		const defaultValue = this.#formatDateTimeValue(answer);
+		const displayValue = this.applyCustomSummaryFormatter({
+			answer,
+			defaultValue,
+			question: this,
+			journey,
+			sectionSegment
+		});
+
 		return [
 			{
 				key: this.title,
-				value: this.#formatDateTimeValue(answer),
+				value: displayValue,
 				action: this.getAction(sectionSegment, journey, answer)
 			}
 		];

@@ -86,7 +86,15 @@ export class DateQuestion extends Question {
 		const action = this.getAction(sectionSegment, journey, answer);
 		const key = this.title ?? this.question;
 
-		return [{ key: key, value: formattedAnswer, action: action }];
+		const displayValue = this.applyCustomSummaryFormatter({
+			answer,
+			defaultValue: formattedAnswer,
+			question: this,
+			journey,
+			sectionSegment
+		});
+
+		return [{ key: key, value: displayValue, action: action }];
 	}
 }
 

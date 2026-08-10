@@ -125,18 +125,26 @@ export class AddressQuestion extends Question {
 	 * @type {Question['formatAnswerForSummary']}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer) {
-		let formattedAnswer = this.notStartedText;
+		let defaultValue = this.notStartedText;
 
 		if (answer) {
-			formattedAnswer = nl2br(escape(this.format(answer)));
+			defaultValue = nl2br(escape(this.format(answer)));
 		} else if (answer === null) {
-			formattedAnswer = '';
+			defaultValue = '';
 		}
+
+		const displayValue = this.applyCustomSummaryFormatter({
+			answer,
+			defaultValue,
+			question: this,
+			journey,
+			sectionSegment
+		});
 
 		return [
 			{
 				key: `${this.title}`,
-				value: formattedAnswer,
+				value: displayValue,
 				action: this.getAction(sectionSegment, journey, answer)
 			}
 		];

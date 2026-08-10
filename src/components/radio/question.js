@@ -1,4 +1,5 @@
 import OptionsQuestion from '../../questions/options-question.js';
+import { nl2br } from '../../lib/utils.js';
 
 export class RadioQuestion extends OptionsQuestion {
 	/**
@@ -20,7 +21,8 @@ export class RadioQuestion extends OptionsQuestion {
 		validators,
 		actionLink,
 		editable,
-		viewData
+		viewData,
+		formatSummaryValue
 	}) {
 		super({
 			title,
@@ -35,7 +37,8 @@ export class RadioQuestion extends OptionsQuestion {
 			validators,
 			actionLink,
 			editable,
-			viewData
+			viewData,
+			formatSummaryValue
 		});
 
 		this.html = html;
@@ -59,19 +62,38 @@ export class RadioQuestion extends OptionsQuestion {
 	 * @returns {Array<{ key: string; value: string | Object; action?: ActionView | ActionView[] | undefined; }>}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer) {
+		let defaultValue;
+		let selectedOption;
+
 		if (answer?.conditional) {
-			const selectedOption = this.options.find((option) => option.value === answer.value);
-			const conditionalAnswerText = selectedOption.conditional?.label
+			selectedOption = this.options.find((option) => option.value === answer.value);
+			const conditionalAnswerText = selectedOption?.conditional?.label
 				? `${selectedOption.conditional.label} ${answer.conditional}`
 				: answer.conditional;
-			const formattedAnswer = [selectedOption.text, conditionalAnswerText].join('\n');
-			return super.formatAnswerForSummary(sectionSegment, journey, formattedAnswer, false);
+			defaultValue = nl2br([selectedOption?.text, conditionalAnswerText].filter(Boolean).join('\n'));
 		} else if (answer) {
-			const selectedOption = this.options.find((option) => option.value === answer);
-			const selectedText = selectedOption?.text || '';
-			return super.formatAnswerForSummary(sectionSegment, journey, selectedText, false);
+			selectedOption = this.options.find((option) => option.value === answer);
+			defaultValue = selectedOption?.text || '';
+		} else {
+			defaultValue = this.notStartedText;
 		}
-		return super.formatAnswerForSummary(sectionSegment, journey, answer);
+
+		const displayValue = this.applyCustomSummaryFormatter({
+			answer,
+			defaultValue,
+			question: this,
+			journey,
+			sectionSegment,
+			selectedOption
+		});
+
+		return [
+			{
+				key: this.title,
+				value: displayValue,
+				action: this.getAction(sectionSegment, journey, answer)
+			}
+		];
 	}
 }
 

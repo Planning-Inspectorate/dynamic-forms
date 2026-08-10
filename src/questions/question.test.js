@@ -457,4 +457,126 @@ describe('./src/dynamic-forms/question.js', () => {
 			assert.strictEqual(q.isRequired(), true);
 		});
 	});
+
+	describe('applyCustomSummaryFormatter', () => {
+		it('should return defaultValue when no formatSummaryValue is provided', () => {
+			const question = getTestQuestion();
+			const context = {
+				answer: 'test',
+				defaultValue: 'Test Value',
+				question,
+				journey: {},
+				sectionSegment: 'segment'
+			};
+			assert.strictEqual(question.applyCustomSummaryFormatter(context), 'Test Value');
+		});
+
+		it('should call formatSummaryValue when provided', () => {
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue: ({ defaultValue }) => `<strong>${defaultValue}</strong>`
+			});
+			const context = {
+				answer: 'test',
+				defaultValue: 'Test Value',
+				question,
+				journey: {},
+				sectionSegment: 'segment'
+			};
+			assert.strictEqual(question.applyCustomSummaryFormatter(context), '<strong>Test Value</strong>');
+		});
+
+		it('should pass all context properties to formatSummaryValue', () => {
+			let receivedContext;
+			const journey = { id: 'test-journey' };
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue: (ctx) => {
+					receivedContext = ctx;
+					return ctx.defaultValue;
+				}
+			});
+			const context = {
+				answer: 'my-answer',
+				defaultValue: 'My Answer',
+				question,
+				journey,
+				sectionSegment: 'my-segment'
+			};
+			question.applyCustomSummaryFormatter(context);
+			assert.strictEqual(receivedContext.answer, 'my-answer');
+			assert.strictEqual(receivedContext.defaultValue, 'My Answer');
+			assert.strictEqual(receivedContext.question, question);
+			assert.strictEqual(receivedContext.journey, journey);
+			assert.strictEqual(receivedContext.sectionSegment, 'my-segment');
+		});
+	});
+
+	describe('formatSummaryValue', () => {
+		it('should default to undefined', () => {
+			const question = getTestQuestion();
+			assert.strictEqual(question.formatSummaryValue, undefined);
+		});
+
+		it('should accept formatSummaryValue in constructor', () => {
+			const formatter = ({ defaultValue }) => `<em>${defaultValue}</em>`;
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue: formatter
+			});
+			assert.strictEqual(question.formatSummaryValue, formatter);
+		});
+
+		it('should apply custom formatting in formatAnswerForSummary when provided', () => {
+			const journey = {
+				getCurrentQuestionUrl: () => 'current'
+			};
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue: ({ defaultValue }) => `<strong>${defaultValue}</strong>`
+			});
+			const result = question.formatAnswerForSummary('segment', journey, 'test answer');
+			assert.strictEqual(result[0].value, '<strong>Test answer</strong>');
+		});
+
+		it('should use default formatting when formatSummaryValue is not provided', () => {
+			const journey = {
+				getCurrentQuestionUrl: () => 'current'
+			};
+			const question = getTestQuestion();
+			const result = question.formatAnswerForSummary('segment', journey, 'test answer');
+			assert.strictEqual(result[0].value, 'Test answer');
+		});
+
+		it('should allow access to journey in formatter', () => {
+			const journey = {
+				getCurrentQuestionUrl: () => 'current',
+				response: { answers: { otherField: 'other value' } }
+			};
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue: ({ defaultValue, journey }) => {
+					const extra = journey.response.answers.otherField;
+					return `${defaultValue} (${extra})`;
+				}
+			});
+			const result = question.formatAnswerForSummary('segment', journey, 'test');
+			assert.strictEqual(result[0].value, 'Test (other value)');
+		});
+	});
 });

@@ -286,6 +286,92 @@ const questionProps = {
 const questions = createQuestions(questionProps, questionClasses, {});
 ```
 
+### Custom Summary Formatting
+
+The `formatSummaryValue` option allows you to customise how answers are displayed on check-your-answers pages without needing to create a custom question class.
+
+#### Basic Usage
+
+Pass a `formatSummaryValue` function when creating a question:
+
+```javascript
+import { RadioQuestion } from '@planning-inspectorate/dynamic-forms';
+import escapeHtml from 'escape-html';
+
+new RadioQuestion({
+    fieldName: 'status',
+    title: 'Application status',
+    question: 'What is the application status?',
+    options: [
+        { text: 'Approved', value: 'approved' },
+        { text: 'Rejected', value: 'rejected' }
+    ],
+    formatSummaryValue: ({ defaultValue }) => `<strong>${escapeHtml(defaultValue)}</strong>`
+});
+```
+
+#### Formatter Context
+
+The formatter function receives a context object with the following properties:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `answer` | `unknown` | The raw answer value |
+| `defaultValue` | `string` | The default formatted display value |
+| `question` | `Question` | The question instance |
+| `journey` | `Journey` | The journey instance |
+| `sectionSegment` | `string` | The current section segment |
+| `selectedOption` | `Option \| undefined` | For options-based questions (Radio, Checkbox, Select), the matched option object |
+
+#### Examples
+
+**Bold formatting:**
+
+```javascript
+formatSummaryValue: ({ defaultValue }) => `<strong>${escapeHtml(defaultValue)}</strong>`
+```
+
+**Conditional styling based on answer:**
+
+```javascript
+formatSummaryValue: ({ selectedOption }) => {
+    const color = selectedOption?.value === 'approved' ? 'green' : 'red';
+    return `<span style="color: ${color}">${escapeHtml(selectedOption?.text ?? '-')}</span>`;
+}
+```
+
+**Adding a suffix from another answer:**
+
+```javascript
+const suffixes = { solid: ' (tonnes)', liquid: ' (litres)' };
+
+formatSummaryValue: ({ answer, defaultValue }) => {
+    const suffix = suffixes[answer] ?? '';
+    return `${defaultValue}${suffix}`;
+}
+```
+
+**Accessing other journey answers:**
+
+```javascript
+formatSummaryValue: ({ defaultValue, journey }) => {
+    const capacity = journey.response.answers.wasteCapacity;
+    return capacity ? `${defaultValue}: ${capacity}` : defaultValue;
+}
+```
+
+**Using selectedOption for radio/checkbox questions:**
+
+```javascript
+formatSummaryValue: ({ answer, selectedOption, journey }) => {
+    // Access the full option object including any custom properties
+    const warning = selectedOption?.warning;
+    return warning ? `${selectedOption.text} ⚠️` : selectedOption?.text ?? '-';
+}
+```
+
+> **Note:** When using `formatSummaryValue`, you are responsible for HTML escaping. Use `escape-html` or similar to prevent XSS vulnerabilities when including user input in the output.
+
 ## Contributing
 
 When contributing to this package, ensure changes are generic and not service-specific. Speak to the R&D devs if you are not sure. Prefer configuration over hardcoding values, and ensure the code is well documented. 
@@ -319,3 +405,4 @@ When implement a new component, extend the base `Question` class. Common methods
 * `answerForViewModel` - customise the view model answer value
 
 Where possible `addCustomDataToViewModel` and `answerForViewModel` should be overridden instead of `prepQuestionForRendering`.
+

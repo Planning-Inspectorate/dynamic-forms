@@ -4,12 +4,6 @@ import MultiFieldInputValidator from '../validator/multi-field-input-validator.j
 import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
 
 /**
- * @import {BaseValidator} from "#base-validator"
- * @import {ActionView} from "../controller.js"
- * @import {ActionLink} from "./question-types.js"
- */
-
-/**
  * @typedef {Object} PreppedQuestion
  * @property {Object} value
  * @property {string} question
@@ -51,7 +45,7 @@ export class Question {
 	fieldName;
 	/** @type {boolean} if the question should appear in the journey overview task list or not */
 	taskList = true;
-	/** @type {Array.<BaseValidator>} array of validators that a question uses to validate answers */
+	/** @type {Array.<import('../validator/base-validator.js').BaseValidator>} array of validators that a question uses to validate answers */
 	validators = [];
 	/** @type {string|undefined} hint text displayed to user */
 	hint;
@@ -63,7 +57,7 @@ export class Question {
 	html;
 	/** @type {string|undefined} optional question type */
 	interfaceType;
-	/** @type {ActionLink|undefined} override action link */
+	/** @type {import('./question-types.js').ActionLink|undefined} override action link */
 	actionLink;
 
 	/** @type {string} 'not started' text to display (if a question has no answer) */
@@ -76,6 +70,8 @@ export class Question {
 	answerActionText = 'Answer';
 	/** @type {string} text to display for 'add' link */
 	addActionText = 'Add';
+	/** @type {import('./question-types.js').SummaryValueFormatter|undefined} custom function to format the summary display value */
+	formatSummaryValue;
 
 	/**
 	 * @param {import('../journey/journey-response.js').JourneyResponse} [response]
@@ -117,7 +113,8 @@ export class Question {
 			autocomplete,
 			editable = true,
 			actionLink,
-			viewData = {}
+			viewData = {},
+			formatSummaryValue
 		},
 		methodOverrides
 	) {
@@ -139,6 +136,7 @@ export class Question {
 		this.editable = editable;
 		this.actionLink = actionLink;
 		this.viewData = viewData;
+		this.formatSummaryValue = formatSummaryValue;
 
 		if (shouldDisplay) {
 			this.shouldDisplay = shouldDisplay;
@@ -179,6 +177,18 @@ export class Question {
 			throw new Error('Question isInManageListSection is false by default');
 		}
 		this._isInManageListSection = value;
+	}
+
+	/**
+	 * Applies custom summary formatting if a formatSummaryValue function is provided
+	 * @param {import('./question-types.js').SummaryFormatterContext} context - the context for formatting
+	 * @returns {string}
+	 */
+	applyCustomSummaryFormatter(context) {
+		if (this.formatSummaryValue) {
+			return this.formatSummaryValue(context);
+		}
+		return context.defaultValue;
 	}
 
 	/**
@@ -407,17 +417,27 @@ export class Question {
 	 * @returns {Array<{
 	 *   key: string;
 	 *   value: string | Object;
-	 *   action?: ActionView | ActionView[];
+	 *   action?: import('./question-types.js').ActionView | import('./question-types.js').ActionView[];
 	 * }>}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
 		const formattedAnswer = capitals ? capitalize(answer ?? this.notStartedText) : (answer ?? this.notStartedText);
+		const defaultValue = nl2br(escape(formattedAnswer));
 		const action = this.getAction(sectionSegment, journey, answer);
 		const key = this.title ?? this.question;
+
+		const displayValue = this.applyCustomSummaryFormatter({
+			answer,
+			defaultValue,
+			question: this,
+			journey,
+			sectionSegment
+		});
+
 		let rowParams = [];
 		rowParams.push({
 			key: key,
-			value: nl2br(escape(formattedAnswer)),
+			value: displayValue,
 			action: action
 		});
 		return rowParams;
@@ -428,7 +448,7 @@ export class Question {
 	 * @param {unknown} answer
 	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {String} sectionSegment
-	 * @returns {ActionView|ActionView[]|undefined}
+	 * @returns {import('./question-types.js').ActionView|import('./question-types.js').ActionView[]|undefined}
 	 */
 	getAction(sectionSegment, journey, answer) {
 		if (this.actionLink) {
