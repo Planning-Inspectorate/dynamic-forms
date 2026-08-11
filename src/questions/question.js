@@ -22,7 +22,7 @@ export class Question {
 	fieldName;
 	/** @type {boolean} if the question should appear in the journey overview task list or not */
 	taskList = true;
-	/** @type {Array.<BaseValidator>} array of validators that a question uses to validate answers */
+	/** @type {Array.<import('../validator/base-validator.js').BaseValidator>} array of validators that a question uses to validate answers */
 	validators = [];
 	/** @type {string|undefined} hint text displayed to user */
 	hint;

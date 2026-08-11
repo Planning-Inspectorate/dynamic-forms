@@ -18,7 +18,7 @@
     "format": "prettier --write .",
     "format-check": "prettier --check .",
     "generate-types": "npx tsc --project tsconfig.json",
-		"reset-generated-types" : "find . -name \"*.d.ts\" -not -path \"./typedefs/*\" -not -path \"./node_modules/*\" -delete && find . -name \"*.d.ts.map\" -not -path \"./node_modules/*\" -delete",
+    "reset-generated-types": "find . -name \"*.d.ts\" -not -path \"./typedefs/*\" -not -path \"./node_modules/*\" -delete && find . -name \"*.d.ts.map\" -not -path \"./node_modules/*\" -delete",
     "prepare": "node .husky/install.mjs",
     "test": "node --test",
     "test-coverage": "node --test --experimental-test-coverage"

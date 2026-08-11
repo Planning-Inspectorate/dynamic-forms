@@ -20,7 +20,7 @@ import ManageListQuestion from '../components/manage-list/question.js';
 // This looks a bit grim because so few of our
 // Questions overlap with Question correctly.
 // Maybe something to fix at some point
-/** @type {Record<string, import('./question').Question>} */
+/** @type {Record<string, import('./question.js').Question>} */
 export const questionClasses = Object.freeze({
 	[COMPONENT_TYPES.ADDRESS]: AddressQuestion,
 	[COMPONENT_TYPES.CHECKBOX]: CheckboxQuestion,
