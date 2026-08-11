@@ -1,6 +1,6 @@
 /**
  * @template {string} K Question keys in questionPropsRecord
- * @template {import('./question-props.js').BaseQuestionProps} T
+ * @template {import('#typedefs/question-props.d.ts').BaseQuestionProps} T
  * @param {{[questionName in K]: T}} questionPropsRecord
  * @param {Record<string, import('#typedefs/question-types.d.ts').QuestionClass>} questionClasses
   * @param {{[questionType: string]: Record<string, Function>}} questionMethodOverrides

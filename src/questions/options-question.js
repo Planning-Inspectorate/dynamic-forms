@@ -31,7 +31,7 @@ const defaultOptionJoinString = ',';
  */
 
 /**
- * @typedef {import('./question').QuestionViewModel & { question: { options: Option[] } }} OptionsViewModel
+ * @typedef {import('./question.js').QuestionViewModel & { question: { options: Option[] } }} OptionsViewModel
  */
 /**
  * @typedef {import('#typedefs/question-types.d.ts').QuestionParameters & { options: Array<Option> }} OptionsQuestionParameters
@@ -66,7 +66,7 @@ export class OptionsQuestion extends Question {
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {Record<string, unknown>} [payload]
 	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} options
-	 * @returns {import('./question').QuestionViewModel} QuestionViewModel
+	 * @returns {import('./question.js').QuestionViewModel} QuestionViewModel
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload, options) {
 		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload, options);

@@ -1,9 +1,9 @@
+import RequiredValidator from './validator/required-validator.js';
+import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
+
 /**
  * @typedef {((response: import('./journey/journey-response').JourneyResponse) => boolean)} QuestionCondition
  */
-
-import RequiredValidator from './validator/required-validator.js';
-import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
 
 /**
  * A value indicating the final question of a section has been reached
@@ -103,7 +103,7 @@ export class Section {
 
 	/**
 	 * Apply conditions to the given question
-	 * @param {any} question
+	 * @param {import('./questions/question.js').Question} question
 	 * @param [condition] - specific condition for this question
 	 */
 	#applyConditions(question, condition) {
@@ -199,7 +199,7 @@ export class Section {
 	/**
 	 * Get the next question in this section given a questionParam (question fieldName)
 	 * @param {import('#typedefs/section-types.d.ts').GetNextQuestionParams} params
-	 * @returns {Question|Symbol|null}
+	 * @returns {import('./questions/question.js').Question|Symbol|null}
 	 */
 	getNextQuestion(params) {
 		const { response, manageListQuestion, routeParams } = params;

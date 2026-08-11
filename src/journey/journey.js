@@ -239,6 +239,7 @@ export class Journey {
 	/**
 	 * Get url for the next question in the journey
 	 *
+	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} params
 	 * @param {Object} options
 	 * @param {boolean} [options.reverse] - if passed in this will get the previous question
 	 * @param {import('#src/components/manage-list/question.js')} [options.manageListQuestion]
