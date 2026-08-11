@@ -63,7 +63,7 @@ export class Question {
 	html;
 	/** @type {string|undefined} optional question type */
 	interfaceType;
-	/** @type {ActionLink|undefined} override action link */
+	/** @type {import('#typedefs/question-types.d.ts').ActionLink|undefined} override action link */
 	actionLink;
 
 	/** @type {string} 'not started' text to display (if a question has no answer) */
@@ -97,7 +97,7 @@ export class Question {
 	_isInManageListSection = false;
 
 	/**
-	 * @param {import('./question-types.js').QuestionParameters} params
+	 * @param {import('#typedefs/question-types.d.ts').QuestionParameters} params
 	 * @param {Record<string, Function>} [methodOverrides]
 	 */
 	constructor(
@@ -199,7 +199,7 @@ export class Question {
 	 * that prepQuestionForRendering doesn't need
 	 *
 	 * @param {Object} options
-	 * @param {import('../journey/journey-types.js').RouteParams} options.params
+	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} options.params
 	 * @param {import('../components/manage-list/question.js')} [options.manageListQuestion]
 	 * @param {import('../section.js').Section} options.section - the current section
 	 * @param {import('../journey/journey.js').Journey} options.journey - the journey we are in
@@ -223,8 +223,8 @@ export class Question {
 	 * @param {import('../journey/journey.js').Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {unknown} [payload]
-	 * @param {import('./question-types.js').PrepQuestionForRenderingOptions} [options] - required to support manage list question
-	 * @returns {QuestionViewModel}
+	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} [options] - required to support manage list question
+	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel}
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload, options) {
 		const answers = payload || this.answerObjectFromJourneyResponse(journey.response, options);
@@ -291,7 +291,7 @@ export class Question {
 	 * Get the answers object from the journey response, which may be nested in an array for manage list questions
 	 *
 	 * @param {import('../journey/journey-response.js').JourneyResponse} response
-	 * @param {import('./question-types.js').PrepQuestionForRenderingOptions} [options]
+	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} [options]
 	 * @returns {Record<string, any>}
 	 */
 	answerObjectFromJourneyResponse(response, { params, manageListQuestion } = {}) {
@@ -404,11 +404,7 @@ export class Question {
 	 * @param {String} sectionSegment
 	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {unknown} answer
-	 * @returns {Array<{
-	 *   key: string;
-	 *   value: string | Object;
-	 *   action?: ActionView | ActionView[];
-	 * }>}
+	 * @returns {import('#typedefs/question-types.d.ts').SummaryRow[]}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
 		const formattedAnswer = capitals ? capitalize(answer ?? this.notStartedText) : (answer ?? this.notStartedText);

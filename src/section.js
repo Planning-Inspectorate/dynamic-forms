@@ -200,7 +200,7 @@ export class Section {
 
 	/**
 	 * Get the next question in this section given a questionParam (question fieldName)
-	 * @param {import('./section-types.d.ts').GetNextQuestionParams} params
+	 * @param {import('#typedefs/section-types.d.ts').GetNextQuestionParams} params
 	 * @returns {Question|Symbol|null}
 	 */
 	getNextQuestion(params) {
@@ -229,8 +229,8 @@ export class Section {
 	/**
 	 * Implementation of getNextQuestion given a list of questions
 	 *
-	 * @param {import('./section-types.d.ts').StaticGetNextQuestionParams} params
-	 * @returns {Question|Symbol|null}
+	 * @param {import('#typedefs/section-types.d.ts').StaticGetNextQuestionParams} params
+	 * @returns {import('./questions/question.js').Question|Symbol|null}
 	 */
 	static getNextQuestion({ questions, questionFieldName, response, takeNextQuestion = false, reverse = false }) {
 		const numberOfQuestions = questions.length;

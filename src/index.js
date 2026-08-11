@@ -1,3 +1,9 @@
+// Type declaration files
+export * from '../typedefs/journey-types.js';
+export * from '../typedefs/question-props.js';
+export * from '../typedefs/question-types.js';
+export * from '../typedefs/section-types.js';
+
 // Components
 export * from './components/address/question.js';
 export * from './components/boolean/question.js';
@@ -29,7 +35,6 @@ export * from './controller.js';
 // Journey
 export { Journey } from './journey/journey.js';
 export { JourneyResponse } from './journey/journey-response.js';
-export * from './journey/journey-types.js';
 
 // lib
 export * from './lib/address.js';
@@ -47,9 +52,6 @@ export { Question } from './questions/question.js';
 export { createQuestions } from './questions/create-questions.js';
 export * from './questions/options-question.js';
 export { questionClasses } from './questions/questions.js';
-
-export * from './questions/question-props.js';
-export * from './questions/question-types.js';
 
 // Section
 export { Section } from './section.js';

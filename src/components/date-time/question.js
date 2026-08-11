@@ -9,7 +9,7 @@ export class DateTimeQuestion extends Question {
 	static PM = 'pm';
 
 	/**
-	 * @param {import('../../questions/question-props.d.ts').DateTimeQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').DateTimeQuestionParams} params
 	 */
 	constructor({ dateFormat = DEFAULT_DATE_FORMAT, timeFormat = DEFAULT_TIME_FORMAT, ...parentParams }) {
 		super({

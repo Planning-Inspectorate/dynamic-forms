@@ -10,7 +10,7 @@ import { mockRandomUUID } from '#test/mock/uuid.js';
 import { createJourney as createTestJourney, JOURNEY_ID } from '#test/journey.js';
 
 /**
- * @type {import('../src/questions/question-types.d.ts').SecondaryAction[]}
+ * @type {import('#typedefs/question-types.d.ts').SecondaryAction[]}
  */
 const testSecondaryActions = [
 	{

@@ -3,7 +3,8 @@ node_modules
 npm-debug.log
 
 # Build, cache
-# Do not exclude /types as it is needed for the release
+# Type declarations (.d.ts) are generated inline and should be committed
+# or regenerated during publish via npm run generate-types
 dist
 build-tmp
 .cache
