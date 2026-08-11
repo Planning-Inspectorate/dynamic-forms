@@ -37,29 +37,31 @@ export type BaseQuestionProps = CommonQuestionParams & {
 	type: string;
 };
 
-type Option =
-	| {
-			text: string;
-			value: string;
-			hint?: object;
-			checked?: boolean | undefined;
-			attributes?: Record<string, string>;
-			behaviour?: 'exclusive';
-			conditional?: {
-				question: string;
-				type: string;
-				fieldName: string;
-				inputClasses?: string;
-				html?: string;
-				value?: unknown;
-				label?: string;
-				hint?: string;
-			};
-			conditionalText?: {
-				html: string;
-			};
-	  }
-	| { divider?: string };
+export type SelectableOption = {
+	text: string;
+	value: string;
+	hint?: object;
+	checked?: boolean | undefined;
+	attributes?: Record<string, string>;
+	behaviour?: 'exclusive';
+	conditional?: {
+		question: string;
+		type: string;
+		fieldName: string;
+		inputClasses?: string;
+		html?: string;
+		value?: unknown;
+		label?: string;
+		hint?: string;
+	};
+	conditionalText?: {
+		html: string;
+	};
+};
+
+export type DividerOption = { divider?: string };
+
+export type Option = SelectableOption | DividerOption;
 
 type Affix = {
 	text: string;
