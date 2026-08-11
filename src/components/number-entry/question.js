@@ -3,7 +3,7 @@ import { getPersistedNumberAnswer } from '../utils/persisted-number-answer.js';
 
 export class NumberEntryQuestion extends Question {
 	/**
-	 * @param {import('../../questions/question-props.d.ts').NumberEntryQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').NumberEntryQuestionParams} params
 	 */
 	constructor({ label, suffix, ...parentParams }) {
 		super({

@@ -12,7 +12,7 @@ const defaultOptionJoinString = ',';
 
 export class CheckboxQuestion extends OptionsQuestion {
 	/**
-	 * @param {import('../../questions/question-props.d.ts').CheckboxQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').CheckboxQuestionParams} params
 	 */
 	constructor({ title, question, fieldName, url, pageTitle, description, options, validators, viewData }) {
 		super({
@@ -34,9 +34,7 @@ export class CheckboxQuestion extends OptionsQuestion {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 * @param {string | ConditionalAnswerObject } answer will be a single value string, a comma-separated string representing multiple values (one of which may be a conditional) or a single ConditionalAnswerObject
-	 * @param {import('#journey').Journey} journey
-	 * @param {String} sectionSegment
-	 * @returns {Array.<Object>}
+	 * @type {import('#question').Question['formatAnswerForSummary']}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer) {
 		if (!answer) {

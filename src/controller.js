@@ -23,14 +23,7 @@ import { toArray } from '#src/lib/utils.js';
  * @typedef {Object} RowView
  * @property {{ text: string }} key
  * @property {{ text: string } | { html: string }} value
- * @property {{ items: ActionView[] }} [actions]
- */
-
-/**
- * @typedef {Object} ActionView
- * @property {string} href
- * @property {string} text
- * @property {string} [visuallyHiddenText]
+ * @property {{ items: import('#typedefs/question-types.d.ts').ActionView[] }} [actions]
  */
 
 /**
@@ -53,7 +46,7 @@ function buildSectionViewModel(name, status = '') {
  * build a view model for a row in the journey overview
  * @param {string} key
  * @param {string} value
- * @param {ActionView|ActionView[]} [action]
+ * @param {import('#typedefs/question-types.d.ts').ActionView|import('#typedefs/question-types.d.ts').ActionView[]} [action]
  * @returns {RowView} a representation of a row
  */
 function buildSectionRowViewModel(key, value, action) {
