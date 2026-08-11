@@ -1,8 +1,8 @@
 # Dynamics Forms
 
-This package is for building [GDS](https://design-system.service.gov.uk/) forms using a configuration-based approach. It allows you to define a set of questions, and combine them into journeys. Questions can be configured to be included conditionally, based on the answers to other questions.
+This package is for building [GOV.UK Frontend](https://design-system.service.gov.uk/) forms using a configuration-based approach. It allows you to define a set of questions, and combine them into journeys. Questions can be configured to be included conditionally, based on the answers to other questions.
 
-The functionality for 'check-your-answers' pages can also be useful for generating pages outside the context of a journey or form, such as for managing data. Each row shown on the page can include a link to edit that data.
+The functionality for ['check-your-answers'](https://design-system.service.gov.uk/patterns/check-answers/) pages can also be useful for generating pages outside the context of a journey or form, such as for managing data. Each row shown on the page can include a link to edit that data.
 
 > Note this is ported from Appeals: [dynamic forms](https://github.com/Planning-Inspectorate/appeal-planning-decision/tree/a46f945047dc1f13d523a0853b4fcbb4bd0f6d6e/packages/forms-web-app/src/dynamic-forms), but transformed for ES6 modules and Node Test Runner. Not all functionality has been brought across, such as 'add more'.
 > It is hoped that this version can be developed over time so Appeals can move to this version.
@@ -21,18 +21,66 @@ For more details, see the [Getting started](./docs/Getting%20Started.md) guide.
 
 ## Terminology
 
-- Component - A "blueprint" of a type of question. i.e. input, radio button, checkbox etc.
-- Question - A specific question within a journey which is made up of one (usually) or many (sometimes) components and
-  their required content.
-- Section - A group of Questions
-- Journey - An entire set of questions required for a completion of a submission
-- Answer - Data input by a user against a specific Question.
-- Response - a collection of answers submitted as part of a Journey.
-- Validation - Verification that an individual Answer meets the criteria of that Question. i.e. String is greater than 3
+| Term       | Description                                                                                                          |
+|------------|----------------------------------------------------------------------------------------------------------------------|
+| Component  | A reusable part of a user interface. Usually forming the main content of a page in the context of a user journey.    |
+| Question   | An instantiated component with associated configuration, a specific question within a journey                        |
+| Section    | A group of questions, configured with any conditional logic                                                          |
+| Journey    | An entire set of questions and sections which make up a user journey                                                 |
+| Answer     | Data input by a user against a specific Question                                                                     |
+| Response   | A collection of answers submitted as part of a Journey                                                               |
+| Validation | Verification that an individual Answer meets the criteria of that Question. i.e. String is greater than 3 characters |
 
 ## Usage
 
 The test directory includes a very basic journey in `test/journey.js`. This may be a useful guide for setting up a journey and associated questions. Also in `test/questions.test.js` there is a function `createAppWithQuestions` which may be a useful guide for setting up the appropriate controllers and routes for a journey.
+
+All exports are named exports from the root module:
+
+`import {COMPONENT_TYPES} from '@planning-inspectorate/dynamic-forms`
+
+### Components
+
+Components available are exported via the `COMPONENT_TYPES` constant. 
+
+#### Custom components
+
+Components can be created and used with Dynamic Forms with some configuration. Extend the base `Question` class. 
+
+1. Ensure nunjucks is configured with the folder containing your custom components
+2. Export the custom component type names and classes
+3. Merge the exported question classes object with the custom classes
+
+See also [Contributing > new components](#new-components)
+
+### Controllers
+
+Dynamic forms includes several Express handlers/controllers which implement the core logic. They all have prerequisites and expect particular properties have been added to the `res.locals` object. These are:
+
+* `res.locals.journey` must be an instance of the `Journey` class
+* `res.locals.journeyResponse` must be an instance of the `JourneyResponse` class
+
+They can be added using middleware, and utility functions are available for this, for example:
+
+```typescript
+  // get the answers from the session, and add JourneyResponse to `res.locals`
+  const getJourneyResponse = buildGetJourneyResponseFromSession(JOURNEY_ID);
+  // create the journey with the given journeyResponse and questions, and add to `res.locals`
+  const getJourney = buildGetJourney((req, journeyResponse) => createJourney(req, journeyResponse, questions));
+  
+  router.use(
+          getJourneyResponse,
+          getJourney
+  );
+```
+
+The controllers available are:
+
+| Controller     | Purpose                                                                                                                                                         |
+|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| question       | To render a question page as part of a journey                                                                                                                  |
+| buildSave      | Returns a controller to handle saving the answer and either redirecting to the next question or show any validation errors if present. Accepts a save function. |
+| list/buildList | Renders a check-your-answers page showing all the answers, links to change any answer, and a button to submit the answers.                                      |
 
 ### Conditions
 
@@ -95,92 +143,9 @@ These conditions combine with individual conditions and section conditions. In t
 | q6       | q1 = 'yes'        | q5 = 90          | N/A                 |
 | q7       | q1 = 'yes'        | q5 = 90          | N/A                 |
 
-### Email Validation
+### Validators
 
-Email validation is provided through the `EmailValidator` class and `EmailQuestion` component. The validator uses express-validator's robust email validation with configurable options.
-
-#### Basic Usage
-
-```javascript
-import { 
-	COMPONENT_TYPES,
-    createQuestions,
-    questionClasses,
-    EmailValidator
-} from '@planning-inspectorate/dynamic-forms';
-
-// Define question configuration
-const questionProps = {
-    contactEmail: {
-        type: COMPONENT_TYPES.EMAIL,
-        title: 'Contact Information',
-        question: 'What is your email address?',
-        fieldName: 'contactEmail',
-        url: 'contact-email',
-        label: 'Email address',
-        validators: [
-            new EmailValidator({
-                errorMessage: 'Enter an email address in the correct format, like name@example.com'
-            })
-        ]
-    }
-};
-
-// Create questions using the factory function
-const questions = createQuestions(questionProps, questionClasses, {});
-const emailQuestion = questions.contactEmail;
-```
-
-The EmailQuestion uses the following default input attributes:
-
-- `type="email"`
-- `spellcheck="false"`
-- `autocomplete="email"`
-
-#### Advanced Validation Options
-
-For stricter email validation requirements:
-
-```javascript
-const businessEmailValidator = new EmailValidator({
-    options: {
-        allowDisplayName: false,        // Reject "Name <email@domain.com>" format
-        requireTld: true,              // Require top-level domain (default: true)
-        allowUtf8LocalPart: false,     // Only ASCII characters in local part
-        allowIpDomain: false           // Don't allow IP addresses as domain
-    },
-    errorMessage: 'Enter a valid business email address'
-});
-```
-
-#### Alternative: Single Line Input with Email Attributes
-
-You can also configure a single line input with email-specific attributes:
-
-```javascript
-import {
-	COMPONENT_TYPES,
-	createQuestions,
-	questionClasses,
-	EmailValidator
-} from '@planning-inspectorate/dynamic-forms';
-
-const questionProps = {
-    contactEmail: {
-        type: COMPONENT_TYPES.SINGLE_LINE_INPUT,
-        title: 'Contact Information',
-        question: 'What is your email address?',
-        fieldName: 'contactEmail',
-        url: 'contact-email',
-        label: 'Email address',
-        inputAttributes: { type: 'email', spellcheck: 'false' },
-        autocomplete: 'email',
-        validators: [new EmailValidator()]
-    }
-};
-
-const questions = createQuestions(questionProps, questionClasses, {});
-```
+Many validators are available such as `RequiredValidator` and `AddressValidator`. More detail on email validation is available in [docs/Email Validation](./docs/Email%20Validation.md).
 
 ### Custom Summary Formatting
 
@@ -324,7 +289,7 @@ When adding a new question type, be sure to add an example question into `test/q
 
 To update any snapshots with rendering changes (or new questions), run `node --test --test-update-snapshots`.
 
-### Components
+### New components
 
 When implement a new component, extend the base `Question` class. Common methods to override are:
 
