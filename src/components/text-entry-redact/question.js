@@ -9,7 +9,7 @@ export const TRUNCATED_MAX_LENGTH = 500;
  */
 export class TextEntryRedactQuestion extends Question {
 	/**
-	 * @param {import('../../questions/question-props.d.ts').TextEntryRedactQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').TextEntryRedactQuestionParams} params
 	 */
 	constructor({
 		textEntryCheckbox,
@@ -73,6 +73,10 @@ export class TextEntryRedactQuestion extends Question {
 		viewModel.showSuggestionsUi = this.showSuggestionsUi;
 	}
 
+	/**
+	 * returns the formatted answers values to be used to build task list elements
+	 * @type {import('#question').Question['formatAnswerForSummary']}
+	 */
 	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
 		const redacted = journey.response.answers[this.fieldName + 'Redacted'];
 		let toShow;

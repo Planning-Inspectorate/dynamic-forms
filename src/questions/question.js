@@ -4,29 +4,6 @@ import MultiFieldInputValidator from '../validator/multi-field-input-validator.j
 import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
 
 /**
- * @typedef {Object} PreppedQuestion
- * @property {Object} value
- * @property {string} question
- * @property {string} fieldName
- * @property {string} pageTitle
- * @property {string} [description]
- * @property {string} [html]
- */
-
-/**
- * @typedef {Record<string, any>} QuestionViewModel
- * @property {PreppedQuestion} question
- * @property {string} layoutTemplate
- * @property {string} pageCaption
- * @property {string} [continueButtonText]
- * @property {string} backLink
- * @property {boolean} showBackToListLink
- * @property {string} listLink
- * @property {Object} util
- * @property {function(string): string} util.trimTrailingSlash
- */
-
-/**
  * A specific question within a journey which is made up of one (usually) or many (sometimes) components and their required content.
  * @class
  */
@@ -77,7 +54,8 @@ export class Question {
 	 * @param {import('../journey/journey-response.js').JourneyResponse} [response]
 	 * @returns {boolean}
 	 */
-	shouldDisplay = () => true;
+	// eslint-disable-next-line no-unused-vars -- response will be used by extending classes
+	shouldDisplay = (response) => true;
 
 	details = {
 		title: '',
@@ -215,7 +193,7 @@ export class Question {
 	 * @param {import('../journey/journey.js').Journey} options.journey - the journey we are in
 	 * @param {Record<string, unknown>} [options.customViewData] additional data to send to view
 	 * @param {unknown} [options.payload]
-	 * @returns {QuestionViewModel}
+	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel}
 	 */
 	toViewModel({ params, manageListQuestion, section, journey, customViewData, payload }) {
 		const viewModel = this.prepQuestionForRendering(section, journey, customViewData, payload, {
@@ -293,7 +271,7 @@ export class Question {
 	 *
 	 * If possible override this method instead of prepQuestionForRendering for simple changes to the view model
 	 *
-	 * @param {QuestionViewModel} viewModel
+	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
 	 */ // eslint-disable-next-line no-unused-vars
 	addCustomDataToViewModel(viewModel) {}
 
@@ -321,7 +299,7 @@ export class Question {
 	/**
 	 * renders the question
 	 * @param {import('express').Response} res - the express response
-	 * @param {QuestionViewModel} viewModel additional data to send to view
+	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel additional data to send to view
 	 * @returns {void}
 	 */
 	renderAction(res, viewModel) {
@@ -339,7 +317,7 @@ export class Question {
 	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {import('../section.js').Section} section
 	 * @param {import('../components/manage-list/question.js')} [manageListQuestion]
-	 * @returns {QuestionViewModel|undefined} returns the view model for displaying the error or undefined if there are no errors
+	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel|undefined} returns the view model for displaying the error or undefined if there are no errors
 	 */
 	checkForValidationErrors(req, section, journey, manageListQuestion) {
 		const { body = {} } = req;
@@ -386,7 +364,7 @@ export class Question {
 	 * @param {import('express').Request} req
 	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {import('../section.js').Section} sectionObj
-	 * @returns {QuestionViewModel | undefined} returns the view model for displaying the error or undefined if there are no errors
+	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel | undefined} returns the view model for displaying the error or undefined if there are no errors
 	 */ //eslint-disable-next-line no-unused-vars
 	checkForSavingErrors(req, sectionObj, journey) {
 		return;
@@ -441,10 +419,10 @@ export class Question {
 
 	/**
 	 * Returns the action link for the question
-	 * @param {unknown} answer
-	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {String} sectionSegment
-	 * @returns {import('./question-types.js').ActionView|import('./question-types.js').ActionView[]|undefined}
+	 * @param {import('../journey/journey.js').Journey} journey
+	 * @param {unknown} answer
+	 * @returns {import('#typedefs/question-types.d.ts').ActionView | import('#typedefs/question-types.d.ts').ActionView[] | undefined}
 	 */
 	getAction(sectionSegment, journey, answer) {
 		if (this.actionLink) {

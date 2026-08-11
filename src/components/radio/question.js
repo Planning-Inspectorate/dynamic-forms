@@ -3,7 +3,7 @@ import { nl2br } from '../../lib/utils.js';
 
 export class RadioQuestion extends OptionsQuestion {
 	/**
-	 * @param {import('../../questions/question-props.d.ts').RadioQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').RadioQuestionParams} params
 	 */
 	constructor({
 		title,
@@ -56,10 +56,7 @@ export class RadioQuestion extends OptionsQuestion {
 
 	/**
 	 * returns the formatted answers values to be used to build task list elements
-	 * @param {unknown} answer
-	 * @param {import('../../journey/journey.js').Journey} journey
-	 * @param {String} sectionSegment
-	 * @returns {Array<{ key: string; value: string | Object; action?: import('../../questions/question.js').ActionView | import('../../questions/question.js').ActionView[] | undefined; }>}
+	 * @type {import('#question').Question['formatAnswerForSummary']}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer) {
 		let defaultValue;

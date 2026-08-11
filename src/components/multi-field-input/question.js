@@ -7,7 +7,7 @@ import { nl2br } from '../../lib/utils.js';
  */
 export class MultiFieldInputQuestion extends Question {
 	/**
-	 * @param {import('../../questions/question-props.d.ts').MultiFieldInputQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').MultiFieldInputQuestionParams} params
 	 */
 	constructor({ inputFields, ...parentParams }) {
 		super({
