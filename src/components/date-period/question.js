@@ -11,7 +11,7 @@ const DEFAULT_DATE_FORMAT = 'HH:mm d MMMM yyyy';
  */
 export class DatePeriodQuestion extends Question {
 	/**
-	 * @param {import('../../questions/question-props.d.ts').DatePeriodQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').DatePeriodQuestionParams} params
 	 */
 	constructor({
 		dateFormat = DEFAULT_DATE_FORMAT,

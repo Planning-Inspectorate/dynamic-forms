@@ -4,7 +4,7 @@
   "description": "This package is for building GDS forms using a configuration-based approach.",
   "main": "./src/index.js",
   "type": "module",
-  "types": "./types/src/index.d.ts",
+  "types": "./src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Planning-Inspectorate/dynamic-forms.git"
@@ -17,7 +17,8 @@
     "lint": "npx eslint .",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
-    "generate-types": "npx tsc --project tsconfig.json && node move-types.js",
+    "generate-types": "npx tsc --project tsconfig.json",
+		"reset-generated-types" : "find . -name \"*.d.ts\" -not -path \"./typedefs/*\" -not -path \"./node_modules/*\" -delete && find . -name \"*.d.ts.map\" -not -path \"./node_modules/*\" -delete",
     "prepare": "node .husky/install.mjs",
     "test": "node --test",
     "test-coverage": "node --test --experimental-test-coverage"
@@ -30,7 +31,8 @@
     "nunjucks": "^3.2.4"
   },
   "imports": {
-    "#question-types": "./src/questions/question-types.d.ts",
+    "#question-types": "./typedefs/question-types.d.ts",
+    "#typedefs/*": "./typedefs/*",
     "#test/*": "./test/*",
     "#base-validator": "./src/validator/base-validator.js",
     "#journey": "./src/journey/journey.js",

@@ -1,7 +1,7 @@
-import type { RouteParams } from '#src/journey/journey-types.d.ts';
+import type { RouteParams } from './journey-types.d.ts';
 import type ManageListQuestion from '#src/components/manage-list/question.js';
-import type BaseValidator from '../validator/base-validator.js';
-import type { JourneyResponse } from '../journey/journey-response.js';
+import type BaseValidator from '#src/validator/base-validator.js';
+import type { JourneyResponse } from '#src/journey/journey-response.js';
 
 export interface QuestionParameters {
 	title: string;
@@ -55,23 +55,33 @@ export interface SecondaryActionLink {
 	classes?: string;
 }
 
-export interface QuestionViewModel {
-	question: {
-		value: string | number | Record<string, any>;
-		question: string;
-		fieldName: string;
-		pageTitle: string;
-		description?: string;
-		html?: string;
-	};
+interface BaseQuestionViewData {
+	value: unknown;
+	question: string;
+	fieldName: string;
+	pageTitle: string;
+	description?: string;
+	html?: string;
+	hint?: string;
+	interfaceType?: string;
+	autocomplete?: string;
+}
+
+export interface QuestionViewModel<TQuestionViewData extends BaseQuestionViewData = BaseQuestionViewData> {
+	question: TQuestionViewData;
+	answer: unknown;
 	layoutTemplate: string;
-	pageCaption: string;
+	pageCaption?: string;
 	continueButtonText: string;
-	backLink: string;
-	showBackToListLink: string;
+	backLink?: string;
+	showBackToListLink: boolean;
 	listLink: string;
 	journeyTitle: string;
-	[k: string]: any;
+	payload?: unknown;
+	util: {
+		trimTrailingSlash: (str: string) => string;
+	};
+	[key: string]: unknown;
 }
 
 export interface PrepQuestionForRenderingOptions {
@@ -84,3 +94,21 @@ export interface PrepQuestionForRenderingOptions {
  * Question class and still pass them to the createQuestions function.
  */
 export type QuestionClass<TQuestion extends Question = Question> = new (...args: never[]) => TQuestion;
+
+/**
+ * Action link displayed in summary lists
+ */
+export interface ActionView {
+	href: string;
+	text: string;
+	visuallyHiddenText?: string;
+}
+
+/**
+ * A row in a summary list, returned by formatAnswerForSummary
+ */
+export interface SummaryRow {
+	key: string;
+	value: string;
+	action?: ActionView | ActionView[];
+}

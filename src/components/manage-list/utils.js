@@ -18,8 +18,8 @@ export function answerObjectForManageList(response, manageListQuestion, manageLi
  *
  * @param {import('../../journey/journey-response.js').JourneyResponse} response
  * @param {import('./question.js')} manageListQuestion
- * @param {import('../../journey/journey-types.js').RouteParams} params
- * @returns {import('../../journey/journey-types.js').ManageListAnswers}
+ * @param {import('#typedefs/journey-types.d.ts').RouteParams} params
+ * @returns {import('#typedefs/journey-types.d.ts').ManageListAnswers}
  */
 export function answerObjectForManageListSaving(response, manageListQuestion, params) {
 	const answersList =

@@ -1,7 +1,7 @@
 import { JourneyResponse } from '#src/journey/journey-response.js';
 import ManageListQuestion from '#src/components/manage-list/question.js';
 import { Question } from '#src/questions/question.js';
-import { RouteParams } from '#src/journey/journey-types.d.ts';
+import { RouteParams } from './journey-types.d.ts';
 
 export interface GetNextQuestionParams {
 	questionFieldName: string;

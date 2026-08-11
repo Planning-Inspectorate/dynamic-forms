@@ -131,7 +131,7 @@ export class Journey {
 
 	/**
 	 * utility function to build up a url to a question
-	 * @param {import('./journey-types.js').RouteParams} params
+	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} params
 	 * @returns {string} url for a question
 	 */
 	#buildQuestionUrl(params) {
@@ -183,7 +183,7 @@ export class Journey {
 
 	/**
 	 * gets a question from the object's sections based on a section + question names
-	 * @param {import('./journey-types.js').RouteParams} params
+	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} params
 	 * @returns {import('../questions/question.js').Question | undefined} question found by lookup
 	 */
 	getQuestionByParams(params) {
@@ -207,7 +207,7 @@ export class Journey {
 	 * Get the back link for the journey - e.g. the previous question
 	 *
 	 * @param {Object} options
-	 * @param {import('./journey-types.js').RouteParams} options.params
+	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} options.params
 	 * @param {import('#src/components/manage-list/question.js')} [options.manageListQuestion]
 	 * @returns {string|null} url for the next question, or null if unmatched
 	 */
@@ -227,7 +227,7 @@ export class Journey {
 	 * Used after question post/saving
 	 *
 	 * @param {import('express').Response} res
-	 * @param {import('./journey-types.js').RouteParams} params
+	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} params
 	 * @param {import('#src/components/manage-list/question.js')} [manageListQuestion]
 	 * @returns {void}
 	 */
@@ -239,7 +239,6 @@ export class Journey {
 	/**
 	 * Get url for the next question in the journey
 	 *
-	 * @param {import('./journey-types.js').RouteParams} params
 	 * @param {Object} options
 	 * @param {boolean} [options.reverse] - if passed in this will get the previous question
 	 * @param {import('#src/components/manage-list/question.js')} [options.manageListQuestion]
@@ -293,7 +292,7 @@ export class Journey {
 					 * don't include other params which may be set (e.g. manageList* params), as we may now be
 					 * redirecting to a non-manage list question, having previously been on a manage list question
 					 *
-					 * @type {import('./journey-types.js').RouteParams}
+					 * @type {import('#typedefs/journey-types.d.ts').RouteParams}
 					 */
 					let newParams = {
 						section: currentSection.segment,
