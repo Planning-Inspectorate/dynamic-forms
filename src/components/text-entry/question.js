@@ -19,7 +19,7 @@ import { Question } from '#question';
  */
 export class TextEntryQuestion extends Question {
 	/**
-	 * @param {import('../../questions/question-props.d.ts').TextEntryQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').TextEntryQuestionParams} params
 	 */
 	constructor({ textEntryCheckbox, label, ...parentParams }) {
 		super({

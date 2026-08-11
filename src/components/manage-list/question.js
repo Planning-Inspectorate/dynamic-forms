@@ -19,7 +19,7 @@ export class ManageListQuestion extends Question {
 	#confirmationQuestionParam;
 
 	/**
-	 * @param {import('../../questions/question-props.d.ts').ManageListQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').ManageListQuestionParams} params
 	 */
 	constructor(params) {
 		super({

@@ -33,7 +33,7 @@ export const booleanToYesNoOrNull = (value) => {
 
 export class BooleanQuestion extends RadioQuestion {
 	/**
-	 * @param {import('../../questions/question-props.d.ts').BooleanQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').BooleanQuestionParams} params
 	 */
 	constructor({
 		title,

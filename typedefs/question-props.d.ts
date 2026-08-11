@@ -1,6 +1,6 @@
-import type { QuestionParameters } from '#src/questions/question-types.d.ts';
+import type { QuestionParameters } from './question-types.d.ts';
 
-type QuestionTypes =
+export type QuestionTypes =
 	| 'boolean'
 	| 'checkbox'
 	| 'date'
@@ -26,7 +26,7 @@ export type CommonQuestionParams = Omit<QuestionParameters, 'viewFolder'>;
 /**
  * Full props including type for routing/factory layer
  */
-type CommonQuestionProps = CommonQuestionParams & {
+export type CommonQuestionProps = CommonQuestionParams & {
 	type: QuestionTypes;
 };
 

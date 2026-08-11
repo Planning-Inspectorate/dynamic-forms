@@ -7,7 +7,7 @@ import AddressValidator from '../../validator/address-validator.js';
 
 export class AddressQuestion extends Question {
 	/**
-	 * @param {import('../../questions/question-props.d.ts').SiteAddressQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').SiteAddressQuestionParams} params
 	 */
 	constructor(params) {
 		super({

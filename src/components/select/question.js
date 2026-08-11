@@ -3,7 +3,7 @@ import OptionsQuestion from '../../questions/options-question.js';
 export class SelectQuestion extends OptionsQuestion {
 	#disableAccessibleAutocomplete;
 	/**
-	 * @param {import('../../questions/question-props.d.ts').SelectQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').SelectQuestionParams} params
 	 */
 	constructor({
 		title,

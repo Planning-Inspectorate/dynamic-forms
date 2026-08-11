@@ -8,7 +8,7 @@ export class SingleLineInputQuestion extends Question {
 	inputAttributes;
 
 	/**
-	 * @param {import('../../questions/question-props.d.ts').SingleLineInputQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').SingleLineInputQuestionParams} params
 	 */
 	constructor(params) {
 		super({

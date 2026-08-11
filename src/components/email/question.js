@@ -7,7 +7,7 @@ import SingleLineInputQuestion from '../single-line-input/question.js';
  */
 export class EmailQuestion extends SingleLineInputQuestion {
 	/**
-	 * @param {import('../../questions/question-props.d.ts').EmailQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').EmailQuestionParams} params
 	 */
 	constructor(params) {
 		// Set default input attributes for email

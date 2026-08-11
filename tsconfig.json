@@ -1,6 +1,15 @@
 {
-	"include": ["**/*.ts", "**/*.js"],
-	"exclude": ["node_modules", "packages/database/src/client/**", "**/*.test.ts", "**/*.test.js", "test/**"],
+	"include": ["**/*.ts", "**/*.js", "typedefs/**/*.d.ts"],
+	"exclude": [
+		"node_modules",
+		"packages/database/src/client/**",
+		"**/*.test.ts",
+		"**/*.test.js",
+		"test/**",
+		"src/**/*.d.ts",
+		"*.d.ts",
+		"typedefs/**"
+	],
 	"compilerOptions": {
 		"allowImportingTsExtensions": true,
 		"allowJs": true,
@@ -14,13 +23,12 @@
 		"esModuleInterop": true,
 		"module": "NodeNext",
 		"moduleResolution": "nodenext",
-		"outDir": "types",
-		"rootDir": ".",
 		"strict": true,
 		"target": "esnext",
 		"skipLibCheck": true,
 		"paths": {
-			"#question-types": ["./src/questions/question-types.d.ts"],
+			"#question-types": ["./typedefs/question-types.d.ts"],
+			"#typedefs/*": ["./typedefs/*"],
 			"#src/*": ["./src/*"],
 			"#test/*": ["./test/*"],
 			"#question": ["./src/questions/question.js"],

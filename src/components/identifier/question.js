@@ -7,7 +7,7 @@ export class IdentifierQuestion extends Question {
 	inputClasses;
 
 	/**
-	 * @param {import('../../questions/question-types.d.ts').QuestionParameters} params
+	 * @param {import('#typedefs/question-types.d.ts').QuestionParameters} params
 	 * @param {string} [params.inputClasses] css class string to be added to the input
 	 * @param {string|undefined} [params.label] if defined this show as a label for the input and the question will just be a standard h1
 	 */

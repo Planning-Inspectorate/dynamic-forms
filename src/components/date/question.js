@@ -8,7 +8,7 @@ const DEFAULT_DATE_FORMAT = 'd MMMM yyyy';
  */
 export class DateQuestion extends Question {
 	/**
-	 * @param {import('../../questions/question-props.d.ts').DateQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').DateQuestionParams} params
 	 */
 	constructor({ dateFormat = DEFAULT_DATE_FORMAT, ...parentParams }) {
 		super({
