@@ -8,6 +8,7 @@
 		"test/**",
 		"src/**/*.d.ts",
 		"*.d.ts",
+		"*.config.js",
 		"typedefs/**"
 	],
 	"compilerOptions": {
