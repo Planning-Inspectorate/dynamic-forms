@@ -1,2 +1,5 @@
+# Ensure all text files use LF line endings
+* text=auto eol=lf
+
 # snapshots always use \n
 test/snapshots/** text eol=lf
