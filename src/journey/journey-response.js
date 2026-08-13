@@ -5,6 +5,8 @@
 /**
  * Defines a response to a journey, a set of Answers to the questions
  * @class
+ * @template {import('./journey-types.d.ts').JourneyAnswers} [TAnswers=import('./journey-types.d.ts').JourneyAnswers]
+ * @implements {import('./journey-types.d.ts').JourneyResponseLike<TAnswers>}
  */
 export class JourneyResponse {
 	/**
@@ -18,7 +20,7 @@ export class JourneyResponse {
 	journeyId;
 
 	/**
-	 * @type {import('./journey-types.js').JourneyAnswers} - answers to the journey
+	 * @type {TAnswers} - answers to the journey
 	 */
 	answers;
 
@@ -26,7 +28,7 @@ export class JourneyResponse {
 	 * creates an instance of a JourneyResponse
 	 * @param {JourneyType} journeyId
 	 * @param {string} referenceId
-	 * @param {import('./journey-types.js').JourneyAnswers | null} answers
+	 * @param {TAnswers | null} answers
 	 * @param {string} [lpaCode]
 	 */
 	constructor(journeyId, referenceId, answers, lpaCode) {
@@ -35,7 +37,8 @@ export class JourneyResponse {
 		if (answers) {
 			this.answers = answers;
 		} else {
-			this.answers = {};
+			// @ts-ignore - default to empty object when no answers provided
+			this.answers = /** @type {TAnswers} */ ({});
 		}
 		this.LPACode = lpaCode;
 	}

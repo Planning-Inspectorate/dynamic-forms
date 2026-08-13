@@ -78,7 +78,7 @@ export class Question {
 	addActionText = 'Add';
 
 	/**
-	 * @param {import('../journey/journey-response.js').JourneyResponse} [response]
+	 * @param {import('../journey/journey-types.d.ts').JourneyResponseLike} [response]
 	 * @returns {boolean}
 	 */
 	shouldDisplay = () => true;
@@ -290,7 +290,7 @@ export class Question {
 	/**
 	 * Get the answers object from the journey response, which may be nested in an array for manage list questions
 	 *
-	 * @param {import('../journey/journey-response.js').JourneyResponse} response
+	 * @param {import('../journey/journey-types.d.ts').JourneyResponseLike} response
 	 * @param {import('./question-types.js').PrepQuestionForRenderingOptions} [options]
 	 * @returns {Record<string, any>}
 	 */
@@ -354,7 +354,7 @@ export class Question {
 	 * Get the data to save from the request, returns an object of answers
 	 *
 	 * @param {import('express').Request} req
-	 * @param {import('../journey/journey-response.js').JourneyResponse} journeyResponse - current journey response
+	 * @param {import('../journey/journey-types.d.ts').JourneyResponseLike} journeyResponse - current journey response
 	 * @returns {Promise<{ answers: Record<string, unknown> }>}
 	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
@@ -476,7 +476,7 @@ export class Question {
 	}
 
 	/**
-	 * @param {import('../journey/journey-response.js').JourneyResponse} journeyResponse
+	 * @param {import('../journey/journey-types.d.ts').JourneyResponseLike} journeyResponse
 	 * @param {string} [fieldName] optional fieldname for multi field input questions
 	 * @returns {boolean}
 	 */

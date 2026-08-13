@@ -86,7 +86,7 @@ export async function list(req, res, pageCaption, viewData) {
 	//render check your answers view
 	/** @type {Journey} */
 	const journey = res.locals.journey;
-	/** @type {import("./journey/journey-response.js").JourneyResponse} */
+	/** @type {import("./journey/journey-types.d.ts").JourneyResponseLike} */
 	const journeyResponse = res.locals.journeyResponse;
 
 	const summaryListData = {
@@ -218,7 +218,7 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 	return async (req, res) => {
 		/** @type {import('./journey/journey.js').Journey} */
 		const journey = res.locals.journey;
-		/** @type {import('./journey/journey-response.js').JourneyResponse} */
+		/** @type {import('./journey/journey-types.js').JourneyResponseLike} */
 		const journeyResponse = res.locals.journeyResponse;
 
 		const section = journey.getSection(req.params.section);

@@ -15,11 +15,11 @@ export class Journey {
 	journeyId;
 	/** @type {Array.<import('../section.js').Section>} sections - sections within the journey */
 	sections = [];
-	/** @type {import('./journey-response.js').JourneyResponse} response - the user's response to the journey so far */
+	/** @type {import('./journey-types.d.ts').JourneyResponseLike} response - the user's response to the journey so far */
 	response;
 	/** @type {string} baseUrl - base url of the journey, gets prepended to question urls */
 	baseUrl = '';
-	/** @type {(journeyResponse: import('./journey-response.js').JourneyResponse) => string} makeBaseUrl - function to generate base url of the journey */
+	/** @type {(journeyResponse: import('./journey-types.d.ts').JourneyResponseLike) => string} makeBaseUrl - function to generate base url of the journey */
 	makeBaseUrl = () => '';
 	/** @type {string} taskListUrl - url that renders the task list */
 	taskListUrl = '';
@@ -38,9 +38,9 @@ export class Journey {
 	 * creates an instance of a journey
 	 * @param {object} options
 	 * @param {string} options.journeyId - a unique, human-readable id for this journey
-	 * @param {(response: import('./journey-response.js').JourneyResponse) => string} options.makeBaseUrl - base url of journey
+	 * @param {(response: import('./journey-types.d.ts').JourneyResponseLike) => string} options.makeBaseUrl - base url of journey
 	 * @param {string} [options.taskListUrl] - task list url - added to base url, can be left undefined
-	 * @param {import('./journey-response.js').JourneyResponse} options.response - user's response
+	 * @param {import('./journey-types.d.ts').JourneyResponseLike} options.response - user's response
 	 * @param {string} options.journeyTemplate - template used for all views
 	 * @param {string} options.taskListTemplate - path to njk view for listing page
 	 * @param {string} [options.informationPageViewPath] - path to njk view for pdf summary page
@@ -393,7 +393,7 @@ export class Journey {
 	}
 
 	/**
-	 * @param {import('./journey-response.js').JourneyResponse} journeyResponse
+	 * @param {import('./journey-types.d.ts').JourneyResponseLike} journeyResponse
 	 */
 	setResponse(journeyResponse) {
 		this.response = journeyResponse;

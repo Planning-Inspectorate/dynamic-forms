@@ -1,7 +1,6 @@
 /**
  * @typedef {import('./questions/question').Question} Question
- * @typedef {import('./journey/journey-response').JourneyResponse} JourneyResponse
- * @typedef {((response: JourneyResponse) => boolean)} QuestionCondition
+ * @typedef {((response: import('./journey/journey-types.d.ts').JourneyResponseLike) => boolean)} QuestionCondition
  */
 
 import RequiredValidator from './validator/required-validator.js';
@@ -254,7 +253,7 @@ export class Section {
 
 	/**
 	 * checks answers on response to ensure that a answer is provided for each required question in the section
-	 * @param {JourneyResponse} journeyResponse
+	 * @param {import('./journey/journey-types.d.ts').JourneyResponseLike} journeyResponse
 	 * @returns {SectionStatus}
 	 */
 	getStatus(journeyResponse) {
@@ -311,7 +310,7 @@ export class Section {
 
 	/**
 	 * checks answers on response and return true if the status of the section is complete
-	 * @param {JourneyResponse} journeyResponse
+	 * @param {import('./journey/journey-types.d.ts').JourneyResponseLike} journeyResponse
 	 * @returns {boolean}
 	 */
 	isComplete(journeyResponse) {
