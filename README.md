@@ -299,14 +299,13 @@ We use JSDocs to describe the types used. This is helpful for the JavaScript dev
 
 **Type definitions:**
 - Shared type definitions should be placed in the `typedefs/` folder (e.g. `typedefs/question-types.d.ts`)
-- New type definition files need a corresponding empty `.js` file to ensure they are imported in `index.js`
+- New type definition files need a corresponding empty `.js` file, which needs to be exported from `index.js`, in order to be importable from the package root.
 - Types can be imported using path aliases, e.g. `@param {import('#typedefs/question-types.d.ts').SummaryRow[]} rows`
 
 **Best practices:**
 1. Always use inline imports for JSDoc types, e.g. `@param {import('#section').Section} section`
 2. Avoid top-level `@typedef` imports like `@typedef {import('../validator/base-validator.js')} BaseValidator` - these can create confusion when the compiler auto-generates declarations
-3. For method overrides, use `@type` to reference the parent type, e.g. `@type {import('#question').Question['formatAnswerForSummary']}`
-4. Maintain `index.js` - if you're adding code that users of this module will import, ensure it is exported in `index.js`
+3. Maintain `index.js` - if you're adding code that users of this module will import, ensure it is exported in `index.js`
 
 Thank you for your co-operation and contributions!
 
