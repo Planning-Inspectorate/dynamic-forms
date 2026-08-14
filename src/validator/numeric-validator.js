@@ -5,13 +5,13 @@ import BaseValidator from './base-validator.js';
 /**
  * @typedef {Object} MinValue
  * @property {Number} min
- * @property {String} minMessage
+ * @property {string} minMessage
  */
 
 /**
  * @typedef {Object} MaxValue
  * @property {Number} max
- * @property {String} maxMessage
+ * @property {string} maxMessage
  */
 
 export class NumericValidator extends BaseValidator {

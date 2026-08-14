@@ -57,7 +57,7 @@ export class SelectQuestion extends OptionsQuestion {
 	 *
 	 * @param {unknown} answer
 	 * @param {Journey} journey
-	 * @param {String} sectionSegment
+	 * @param {string} sectionSegment
 	 * @returns {Array.<Object>}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer) {

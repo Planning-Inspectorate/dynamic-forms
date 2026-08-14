@@ -1,5 +1,5 @@
 /**
- * @typedef {function(import('../section').Question, import('../journey/journey-response').JourneyResponse): boolean} ShouldDisplayCondition
+ * @typedef {function(import('../questions/question.js').Question, import('#journey-response').JourneyResponse): boolean} ShouldDisplayCondition
  */
 
 /**

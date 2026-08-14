@@ -75,7 +75,6 @@ export class TextEntryRedactQuestion extends Question {
 
 	/**
 	 * returns the formatted answers values to be used to build task list elements
-	 * @type {import('#question').Question['formatAnswerForSummary']}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
 		const redacted = journey.response.answers[this.fieldName + 'Redacted'];

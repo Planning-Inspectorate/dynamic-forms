@@ -8,7 +8,7 @@ import { toArray } from '#src/lib/utils.js';
 /**
  * @typedef {import('./journey/journey.js').Journey} Journey
  * @typedef {import('./questions/question.js').Question} Question
- * @typedef {import('./section').Section} Section
+ * @typedef {import('./section.js').Section} Section
  */
 
 /**

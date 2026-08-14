@@ -4,19 +4,19 @@ import BaseValidator from './base-validator.js';
 /**
  * @typedef {Object} MinLength
  * @property {Number} minLength
- * @property {String} [minLengthMessage]
+ * @property {string} [minLengthMessage]
  */
 
 /**
  * @typedef {Object} MaxLength
  * @property {Number} maxLength
- * @property {String} [maxLengthMessage]
+ * @property {string} [maxLengthMessage]
  */
 
 /**
  * @typedef {Object} Regex
  * @property {String | RegExp} regex
- * @property {String} [regexMessage]
+ * @property {string} [regexMessage]
  */
 
 export class StringValidator extends BaseValidator {

@@ -72,7 +72,6 @@ export class DateQuestion extends Question {
 
 	/**
 	 * returns the formatted answers values to be used to build task list elements
-	 * @type {Question['formatAnswerForSummary']}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer) {
 		let formattedAnswer;
