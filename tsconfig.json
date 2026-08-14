@@ -1,13 +1,11 @@
 {
-	"include": ["**/*.ts", "**/*.js", "typedefs/**/*.d.ts"],
+	"include": ["**/*.ts", "**/*.js"],
 	"exclude": [
 		"node_modules",
 		"packages/database/src/client/**",
 		"**/*.test.ts",
 		"**/*.test.js",
 		"test/**",
-		"src/**/*.d.ts",
-		"*.d.ts",
 		"*.config.js",
 		"typedefs/**"
 	],
