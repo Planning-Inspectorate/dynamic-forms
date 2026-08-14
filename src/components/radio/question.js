@@ -53,7 +53,6 @@ export class RadioQuestion extends OptionsQuestion {
 
 	/**
 	 * returns the formatted answers values to be used to build task list elements
-	 * @type {import('#question').Question['formatAnswerForSummary']}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer) {
 		if (answer?.conditional) {

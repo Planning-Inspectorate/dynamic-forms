@@ -373,7 +373,7 @@ export class Question {
 
 	/**
 	 * returns the formatted answers values to be used to build task list elements
-	 * @param {String} sectionSegment
+	 * @param {string} sectionSegment
 	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {unknown} answer
 	 * @returns {import('#typedefs/question-types.d.ts').SummaryRow[]}
@@ -393,7 +393,7 @@ export class Question {
 
 	/**
 	 * Returns the action link for the question
-	 * @param {String} sectionSegment
+	 * @param {string} sectionSegment
 	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {unknown} answer
 	 * @returns {import('#typedefs/question-types.d.ts').ActionView | import('#typedefs/question-types.d.ts').ActionView[] | undefined}

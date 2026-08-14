@@ -58,13 +58,13 @@ export class UnitOptionEntryQuestion extends Question {
 
 	/**
 	 * gets the view model for this question
-	 * @param {import('../../section').Section} section - the current section
+	 * @param {import('../../section.js').Section} section - the current section
 	 * @param {import('#journey').Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {Record<string, unknown>} [payload]
 	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} options
-	 * @returns {import('../../questions/question.js').QuestionViewModel & {
-	 *   question: import('../../questions/question.js').QuestionViewModel['question'] & {
+	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel & {
+	 *   question: import('#typedefs/question-types.d.ts').QuestionViewModel['question'] & {
 	 *     options:UnitOption[]
 	 *   }
 	 * }}
@@ -160,7 +160,6 @@ export class UnitOptionEntryQuestion extends Question {
 
 	/**
 	 * returns the formatted answers values to be used to build task list elements
-	 * @type {Question['formatAnswerForSummary']}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer) {
 		if (answer == null) return super.formatAnswerForSummary(sectionSegment, journey, answer);

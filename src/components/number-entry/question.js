@@ -31,7 +31,7 @@ export class NumberEntryQuestion extends Question {
 	 * returns the formatted answers values to be used to build task list elements
 	 * @param {unknown} answer
 	 * @param {import('#journey').Journey} journey
-	 * @param {String} sectionSegment
+	 * @param {string} sectionSegment
 	 * @returns {Array<{
 	 *   key: string;
 	 *   value: string | Object;

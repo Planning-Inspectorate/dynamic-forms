@@ -2,7 +2,7 @@ import RequiredValidator from './validator/required-validator.js';
 import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
 
 /**
- * @typedef {((response: import('./journey/journey-response').JourneyResponse) => boolean)} QuestionCondition
+ * @typedef {((response: import('#journey-response').JourneyResponse) => boolean)} QuestionCondition
  */
 
 /**
@@ -252,7 +252,7 @@ export class Section {
 
 	/**
 	 * checks answers on response to ensure that a answer is provided for each required question in the section
-	 * @param {import('./journey/journey-response').JourneyResponse} journeyResponse
+	 * @param {import('#journey-response').JourneyResponse} journeyResponse
 	 * @returns {SectionStatus}
 	 */
 	getStatus(journeyResponse) {
@@ -309,7 +309,7 @@ export class Section {
 
 	/**
 	 * checks answers on response and return true if the status of the section is complete
-	 * @param {import('./journey/journey-response').JourneyResponse} journeyResponse
+	 * @param {import('#journey-response').JourneyResponse} journeyResponse
 	 * @returns {boolean}
 	 */
 	isComplete(journeyResponse) {

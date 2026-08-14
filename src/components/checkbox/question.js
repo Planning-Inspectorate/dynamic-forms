@@ -33,8 +33,6 @@ export class CheckboxQuestion extends OptionsQuestion {
 
 	/**
 	 * returns the formatted answers values to be used to build task list elements
-	 * @param {string | ConditionalAnswerObject } answer will be a single value string, a comma-separated string representing multiple values (one of which may be a conditional) or a single ConditionalAnswerObject
-	 * @type {import('#question').Question['formatAnswerForSummary']}
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer) {
 		if (!answer) {
