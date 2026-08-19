@@ -101,9 +101,24 @@ export function mockAnswerBody(q) {
 	switch (q.type) {
 		case COMPONENT_TYPES.BOOLEAN:
 			return { [q.fieldName]: BOOLEAN_OPTIONS.YES };
-		case COMPONENT_TYPES.CHECKBOX:
-			return { [q.fieldName]: [q.options[0].value] };
-		case COMPONENT_TYPES.RADIO:
+		case COMPONENT_TYPES.CHECKBOX: {
+			const result = { [q.fieldName]: [q.options[0].value] };
+			// Include conditional field if present on the first option
+			if (q.options[0].conditional?.fieldName) {
+				const conditionalFieldName = `${q.fieldName}_${q.options[0].conditional.fieldName}`;
+				result[conditionalFieldName] = 'test conditional answer';
+			}
+			return result;
+		}
+		case COMPONENT_TYPES.RADIO: {
+			const result = { [q.fieldName]: q.options[0].value };
+			// Include conditional field if present on the first option
+			if (q.options[0].conditional?.fieldName) {
+				const conditionalFieldName = `${q.fieldName}_${q.options[0].conditional.fieldName}`;
+				result[conditionalFieldName] = 'test conditional answer';
+			}
+			return result;
+		}
 		case COMPONENT_TYPES.SELECT:
 			return { [q.fieldName]: q.options[0].value };
 		case COMPONENT_TYPES.NUMBER:
@@ -181,9 +196,24 @@ export function mockAnswer(q) {
 	switch (q.type) {
 		case COMPONENT_TYPES.BOOLEAN:
 			return BOOLEAN_OPTIONS.YES;
-		case COMPONENT_TYPES.CHECKBOX:
-			return q.options[0].text;
-		case COMPONENT_TYPES.RADIO:
+		case COMPONENT_TYPES.CHECKBOX: {
+			const optionText = q.options[0].text;
+			// Include conditional value if present on the first option
+			if (q.options[0].conditional?.fieldName) {
+				const label = q.options[0].conditional.label ? `${q.options[0].conditional.label} ` : '';
+				return `${optionText}<br>${label}test conditional answer`;
+			}
+			return optionText;
+		}
+		case COMPONENT_TYPES.RADIO: {
+			const optionText = q.options[0].text;
+			// Include conditional value if present on the first option
+			if (q.options[0].conditional?.fieldName) {
+				const label = q.options[0].conditional.label ? `${q.options[0].conditional.label} ` : '';
+				return `${optionText}<br>${label}test conditional answer`;
+			}
+			return optionText;
+		}
 		case COMPONENT_TYPES.SELECT:
 			return q.options[0].text;
 		case COMPONENT_TYPES.NUMBER:

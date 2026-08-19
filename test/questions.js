@@ -195,6 +195,54 @@ export const questionProps = {
 		question: 'Travel Companion Email',
 		fieldName: 'travelCompanionEmail',
 		url: 'travel-companion-email'
+	},
+	// Test questions for conditional reveal functionality
+	favouriteActivityReason: {
+		type: COMPONENT_TYPES.RADIO,
+		title: 'Favourite Activity Reason',
+		question: 'Why do you want to do your favourite activity?',
+		fieldName: 'favouriteActivityReason',
+		url: 'favourite-activity-reason',
+		label: 'Select a reason',
+		options: [
+			{
+				value: 'relaxation',
+				text: 'Relaxation',
+				conditional: {
+					question: 'How do you like to relax?',
+					type: 'text',
+					fieldName: 'relaxationDetails',
+					label: 'Details:'
+				}
+			},
+			{ value: 'adventure', text: 'Adventure' },
+			{ value: 'culture', text: 'Culture' }
+		]
+	},
+	travelRequirements: {
+		type: COMPONENT_TYPES.CHECKBOX,
+		title: 'Travel Requirements',
+		question: 'What special requirements do you have?',
+		fieldName: 'travelRequirements',
+		url: 'travel-requirements',
+		label: 'Select all that apply',
+		options: [
+			{
+				value: 'dietary',
+				text: 'Dietary requirements',
+				conditional: {
+					question: 'Please describe your dietary requirements',
+					type: 'text',
+					fieldName: 'dietaryDetails',
+					label: 'Dietary details:'
+				}
+			},
+			{
+				value: 'mobility',
+				text: 'Mobility assistance'
+			},
+			{ value: 'medical', text: 'Medical needs' }
+		]
 	}
 };
 
@@ -216,6 +264,8 @@ export const questionsInOrder = [
 	questionProps.hotelAddress,
 	questionProps.luggageWeight,
 	questionProps.contactEmail,
+	questionProps.favouriteActivityReason,
+	questionProps.travelRequirements,
 	questionProps.travelCompanions
 ];
 
