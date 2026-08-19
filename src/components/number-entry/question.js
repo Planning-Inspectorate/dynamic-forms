@@ -7,9 +7,10 @@ export class NumberEntryQuestion extends Question {
 	 */
 	constructor({ label, suffix, ...parentParams }) {
 		super({
+			// default but allow overrides
+			capitaliseAnswer: false,
 			...parentParams,
-			viewFolder: 'number-entry',
-			capitaliseAnswer: false
+			viewFolder: 'number-entry'
 		});
 
 		this.suffix = suffix;
