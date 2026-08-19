@@ -3,6 +3,29 @@ import type ManageListQuestion from '#src/components/manage-list/question.js';
 import type BaseValidator from '#src/validator/base-validator.js';
 import type { JourneyResponse } from '#src/journey/journey-response.js';
 
+/**
+ * Context passed to the custom summary formatter
+ */
+export interface SummaryFormatterContext<TAnswer = unknown> {
+	/** The raw answer value */
+	answer: TAnswer;
+	/** The default display value */
+	formattedAnswer: string;
+	/** The question instance */
+	question: import('./question.js').Question;
+	/** The journey instance */
+	journey: import('../journey/journey.js').Journey;
+	/** The section segment */
+	sectionSegment: string;
+	/** The selected option objects (for options-based questions) */
+	selectedOptions?: import('./options-question.js').Option[];
+}
+
+/**
+ * Custom function to format the summary display value
+ */
+export type SummaryValueFormatter<TAnswer = unknown> = (context: SummaryFormatterContext<TAnswer>) => string;
+
 export interface QuestionParameters {
 	title: string;
 	question: string;
@@ -21,6 +44,10 @@ export interface QuestionParameters {
 	editable?: boolean;
 	// override the action link for this question
 	actionLink?: ActionLink;
+	// custom function to format the summary display value
+	formatSummaryValue?: SummaryValueFormatter;
+	// whether to capitalise the first letter of the answer in summary (defaults to true)
+	capitaliseAnswer?: boolean;
 	// static view data for this question
 	viewData?: {
 		/**

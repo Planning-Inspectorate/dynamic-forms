@@ -5,35 +5,10 @@ export class SelectQuestion extends OptionsQuestion {
 	/**
 	 * @param {import('#typedefs/question-props.d.ts').SelectQuestionParams} params
 	 */
-	constructor({
-		title,
-		question,
-		fieldName,
-		viewFolder,
-		url,
-		hint,
-		pageTitle,
-		description,
-		label,
-		html,
-		legend,
-		disableAccessibleAutocomplete,
-		options,
-		validators,
-		viewData
-	}) {
+	constructor({ label, html, legend, disableAccessibleAutocomplete, viewFolder, ...parentParams }) {
 		super({
-			title,
-			question,
-			viewFolder: !viewFolder ? 'select' : viewFolder,
-			fieldName,
-			url,
-			hint,
-			pageTitle,
-			description,
-			options,
-			validators,
-			viewData
+			...parentParams,
+			viewFolder: viewFolder || 'select'
 		});
 
 		this.html = html;
@@ -43,30 +18,12 @@ export class SelectQuestion extends OptionsQuestion {
 	}
 
 	/**
-	 * @param {import('#question').QuestionViewModel} viewModel
+	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
 	 */
 	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.legend = this.legend;
 		viewModel.question.disableAccessibleAutocomplete = this.#disableAccessibleAutocomplete;
-	}
-
-	/**
-	 * returns the formatted answers values to be used to build task list elements
-	 * note: only supports a single answer
-	 *
-	 * @param {unknown} answer
-	 * @param {Journey} journey
-	 * @param {string} sectionSegment
-	 * @returns {Array.<Object>}
-	 */
-	formatAnswerForSummary(sectionSegment, journey, answer) {
-		if (answer) {
-			const selectedOption = this.options.find((option) => option.value === answer);
-			const selectedText = selectedOption?.text || '';
-			return super.formatAnswerForSummary(sectionSegment, journey, selectedText, false);
-		}
-		return super.formatAnswerForSummary(sectionSegment, journey, answer);
 	}
 }
 

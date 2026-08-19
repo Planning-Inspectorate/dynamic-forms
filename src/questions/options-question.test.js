@@ -303,4 +303,110 @@ describe('./src/dynamic-forms/question.js', () => {
 			);
 		});
 	});
+
+	describe('formatAnswer', () => {
+		it('should return not started text for null answer', () => {
+			const question = getTestQuestion({
+				options: [{ text: 'Option A', value: 'a' }]
+			});
+			const result = question.formatAnswer(null);
+			assert.strictEqual(result, 'Not started');
+		});
+
+		it('should return not started text for undefined answer', () => {
+			const question = getTestQuestion({
+				options: [{ text: 'Option A', value: 'a' }]
+			});
+			const result = question.formatAnswer(undefined);
+			assert.strictEqual(result, 'Not started');
+		});
+
+		it('should return not started text for empty string answer', () => {
+			const question = getTestQuestion({
+				options: [{ text: 'Option A', value: 'a' }]
+			});
+			const result = question.formatAnswer('');
+			assert.strictEqual(result, 'Not started');
+		});
+
+		it('should format a single value using option text', () => {
+			const question = getTestQuestion({
+				options: [
+					{ text: 'Option A', value: 'a' },
+					{ text: 'Option B', value: 'b' }
+				]
+			});
+			const result = question.formatAnswer('a');
+			assert.strictEqual(result, 'Option A');
+		});
+
+		it('should format multiple values joined with line breaks', () => {
+			const question = getTestQuestion({
+				options: [
+					{ text: 'Option A', value: 'a' },
+					{ text: 'Option B', value: 'b' },
+					{ text: 'Option C', value: 'c' }
+				]
+			});
+			const result = question.formatAnswer('a,b');
+			assert.strictEqual(result, 'Option A<br>Option B');
+		});
+
+		it('should fall back to value when option not found', () => {
+			const question = getTestQuestion({
+				options: [{ text: 'Option A', value: 'a' }]
+			});
+			const result = question.formatAnswer('unknown');
+			assert.strictEqual(result, 'unknown');
+		});
+
+		it('should handle mixed known and unknown values', () => {
+			const question = getTestQuestion({
+				options: [
+					{ text: 'Option A', value: 'a' },
+					{ text: 'Option B', value: 'b' }
+				]
+			});
+			const result = question.formatAnswer('a,unknown,b');
+			assert.strictEqual(result, 'Option A<br>unknown<br>Option B');
+		});
+
+		it('should trim whitespace from values', () => {
+			const question = getTestQuestion({
+				options: [
+					{ text: 'Option A', value: 'a' },
+					{ text: 'Option B', value: 'b' }
+				]
+			});
+			const result = question.formatAnswer('a , b');
+			assert.strictEqual(result, 'Option A<br>Option B');
+		});
+
+		it('should escape HTML in option text', () => {
+			const question = getTestQuestion({
+				options: [{ text: '<script>alert("xss")</script>', value: 'a' }]
+			});
+			const result = question.formatAnswer('a');
+			assert.strictEqual(result, '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;');
+		});
+
+		it('should escape HTML in fallback value when option not found', () => {
+			const question = getTestQuestion({
+				options: [{ text: 'Option A', value: 'a' }]
+			});
+			const result = question.formatAnswer('<img src=x onerror=alert(1)>');
+			assert.strictEqual(result, '&lt;img src=x onerror=alert(1)&gt;');
+		});
+
+		it('should escape HTML in multiple option texts', () => {
+			const question = getTestQuestion({
+				options: [
+					{ text: '<b>Bold</b>', value: 'a' },
+					{ text: '<i>Italic</i>', value: 'b' }
+				]
+			});
+			const result = question.formatAnswer('a,b');
+			assert.strictEqual(result, '&lt;b&gt;Bold&lt;/b&gt;<br>&lt;i&gt;Italic&lt;/i&gt;');
+		});
+	});
 });

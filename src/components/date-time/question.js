@@ -102,19 +102,11 @@ export class DateTimeQuestion extends Question {
 	}
 
 	/**
-	 * returns the formatted answers values to be used to build task list elements
+	 * Formats a date-time answer for display in the summary.
+	 * @param {unknown} answer - the date value
+	 * @returns {string} the formatted date and time
 	 */
-	formatAnswerForSummary(sectionSegment, journey, answer) {
-		return [
-			{
-				key: this.title,
-				value: this.#formatDateTimeValue(answer),
-				action: this.getAction(sectionSegment, journey, answer)
-			}
-		];
-	}
-
-	#formatDateTimeValue(answer) {
+	formatAnswer(answer) {
 		if (!answer) return this.notStartedText;
 
 		const formattedDate = formatDateForDisplay(answer, { format: this.dateFormat });

@@ -39,6 +39,8 @@ export class Question {
 
 	/** @type {string} 'not started' text to display (if a question has no answer) */
 	notStartedText = 'Not started';
+	/** @type {boolean} whether to capitalize the first letter of the answer in summary */
+	capitaliseAnswer = true;
 	/** @type {string} button text to display */
 	continueButtonText = 'Continue';
 	/** @type {string} text to display for 'change' link */
@@ -47,6 +49,8 @@ export class Question {
 	answerActionText = 'Answer';
 	/** @type {string} text to display for 'add' link */
 	addActionText = 'Add';
+	/** @type {import('#typedefs/question-types.d.ts').SummaryValueFormatter|undefined} custom function to format the summary display value */
+	formatSummaryValue;
 
 	/**
 	 * @param {import('../journey/journey-response.js').JourneyResponse} [response]
@@ -89,7 +93,9 @@ export class Question {
 			autocomplete,
 			editable = true,
 			actionLink,
-			viewData = {}
+			viewData = {},
+			formatSummaryValue,
+			capitaliseAnswer = true
 		},
 		methodOverrides
 	) {
@@ -111,6 +117,8 @@ export class Question {
 		this.editable = editable;
 		this.actionLink = actionLink;
 		this.viewData = viewData;
+		this.formatSummaryValue = formatSummaryValue;
+		this.capitaliseAnswer = capitaliseAnswer;
 
 		if (shouldDisplay) {
 			this.shouldDisplay = shouldDisplay;
@@ -151,6 +159,18 @@ export class Question {
 			throw new Error('Question isInManageListSection is false by default');
 		}
 		this._isInManageListSection = value;
+	}
+
+	/**
+	 * Applies custom summary formatting if a formatSummaryValue function is provided
+	 * @param {import('#typedefs/question-types.d.ts').SummaryFormatterContext} context - the context for formatting
+	 * @returns {string}
+	 */
+	#applyCustomSummaryFormatter(context) {
+		if (this.formatSummaryValue) {
+			return this.formatSummaryValue(context);
+		}
+		return context.formattedAnswer;
 	}
 
 	/**
@@ -376,19 +396,38 @@ export class Question {
 	 * @param {string} sectionSegment
 	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {unknown} answer
+	 * @param {boolean} [capitals] - deprecated: use capitaliseAnswer property instead
 	 * @returns {import('#typedefs/question-types.d.ts').SummaryRow[]}
 	 */
-	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
-		const formattedAnswer = capitals ? capitalize(answer ?? this.notStartedText) : (answer ?? this.notStartedText);
+	formatAnswerForSummary(sectionSegment, journey, answer, capitals) {
+		let formattedAnswer = this.formatAnswer(answer);
+
+		// Handle deprecated capitals parameter
+		// TODO DF-49 fully remove capitals parameter
+		if (capitals !== undefined && capitals !== this.capitaliseAnswer) {
+			console.warn(
+				`[Deprecation Warning] The 'capitals' parameter in formatAnswerForSummary is deprecated. ` +
+					`Set 'capitaliseAnswer: ${capitals}' in the question constructor instead.`
+			);
+			// Temporarily override for backwards compatibility
+			const originalCapitalize = this.capitaliseAnswer;
+			this.capitaliseAnswer = capitals;
+			formattedAnswer = this.formatAnswer(answer);
+			this.capitaliseAnswer = originalCapitalize;
+		}
+
 		const action = this.getAction(sectionSegment, journey, answer);
 		const key = this.title ?? this.question;
-		let rowParams = [];
-		rowParams.push({
-			key: key,
-			value: nl2br(escape(formattedAnswer)),
-			action: action
+
+		const displayValue = this.#applyCustomSummaryFormatter({
+			answer,
+			formattedAnswer,
+			question: this,
+			journey,
+			sectionSegment
 		});
-		return rowParams;
+
+		return [{ key, value: displayValue, action }];
 	}
 
 	/**
@@ -425,6 +464,22 @@ export class Question {
 	 */
 	format(answer) {
 		return answer;
+	}
+
+	/**
+	 * Formats an answer value for display in the summary.
+	 * Subclasses can override this to provide custom formatting without
+	 * needing to override the full formatAnswerForSummary method.
+	 *
+	 * @param {unknown} answer - the raw answer value
+	 * @returns {string} the formatted answer for display
+	 */
+	formatAnswer(answer) {
+		let formatted = answer ?? this.notStartedText;
+		if (this.capitaliseAnswer) {
+			formatted = capitalize(formatted);
+		}
+		return nl2br(escape(formatted));
 	}
 
 	/**
