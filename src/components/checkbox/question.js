@@ -1,76 +1,63 @@
+import escape from 'escape-html';
 import OptionsQuestion from '../../questions/options-question.js';
-import questionUtils from '../utils/question-utils.js';
 
 const defaultOptionJoinString = ',';
-
-/**
- * @typedef ConditionalAnswerObject
- * @type {object}
- * @property {string} value the checkbox answer
- * @property {string} conditional the conditional text input
- */
 
 export class CheckboxQuestion extends OptionsQuestion {
 	/**
 	 * @param {import('#typedefs/question-props.d.ts').CheckboxQuestionParams} params
 	 */
-	constructor({ title, question, fieldName, url, pageTitle, description, options, validators, viewData }) {
+	constructor({ ...parentParams }) {
 		super({
-			title,
-			question,
+			...parentParams,
 			viewFolder: 'checkbox',
-			fieldName,
-			url,
-			pageTitle,
-			description,
-			options,
-			validators,
-			viewData
+			capitaliseAnswer: false
 		});
 
 		this.optionJoinString = defaultOptionJoinString;
 	}
 
 	/**
-	 * returns the formatted answers values to be used to build task list elements
+	 * Formats an answer value for display in the summary.
+	 * Handles object answers with conditional fields.
+	 * - Single value with conditional: { value: 'yes', conditional: { yes: 'details' } }
+	 * - Multiple values with conditionals: { value: 'yes,no', conditional: { yes: 'details1', no: 'details2' } }
+	 *
+	 * @param {unknown} answer - the raw answer value
+	 * @returns {string} the formatted answer for display
 	 */
-	formatAnswerForSummary(sectionSegment, journey, answer) {
-		if (!answer) {
-			return super.formatAnswerForSummary(sectionSegment, journey, answer, false);
+	formatAnswer(answer) {
+		if (answer === null || answer === undefined || answer === '') {
+			return this.notStartedText;
 		}
 
-		// answer is single ConditionalAnswerObject
-		if (answer?.conditional) {
-			const selectedOption = this.options.find((option) => option.value === answer.value);
-
-			const conditionalAnswerText = selectedOption.conditional?.label
-				? `${selectedOption.conditional.label} ${answer.conditional}`
-				: answer.conditional;
-
-			const formattedConditionalText = [selectedOption.text, conditionalAnswerText].join('\n');
-
-			return super.formatAnswerForSummary(sectionSegment, journey, formattedConditionalText, false);
+		// Handle simple string answers (e.g. '1,2')
+		if (typeof answer !== 'object' || answer.value === undefined) {
+			return super.formatAnswer(answer);
 		}
 
-		// answer is a string
-		const answerArray = answer.split(this.optionJoinString);
+		// Handle object answers with conditional fields
+		// TODO DF-51 treat as an array
+		const answerValues = String(answer.value)
+			.split(this.optionJoinString)
+			.map((v) => v.trim());
+		const conditionals = answer.conditional || {};
 
-		const formattedAnswer = this.options
-			.filter((option) => answerArray.includes(option.value))
-			.map((option) => {
-				if (option.conditional) {
-					const conditionalAnswer =
-						journey.response.answers[
-							questionUtils.getConditionalFieldName(this.fieldName, option.conditional.fieldName)
-						];
-					return [option.text, conditionalAnswer].join('\n');
-				}
+		const formattedParts = answerValues.map((value) => {
+			const option = this.options.find((opt) => opt.value === value);
+			const optionText = escape(option ? option.text : value);
 
-				return option.text;
-			})
-			.join('\n');
+			// Check if this option has a conditional answer
+			const conditionalValue = conditionals[value];
+			if (conditionalValue) {
+				const label = option?.conditional?.label ? `${escape(option.conditional.label)} ` : '';
+				return `${optionText}<br>${label}${escape(conditionalValue)}`;
+			}
 
-		return super.formatAnswerForSummary(sectionSegment, journey, formattedAnswer, false);
+			return optionText;
+		});
+
+		return formattedParts.join('<br>');
 	}
 }
 

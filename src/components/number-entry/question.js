@@ -8,7 +8,8 @@ export class NumberEntryQuestion extends Question {
 	constructor({ label, suffix, ...parentParams }) {
 		super({
 			...parentParams,
-			viewFolder: 'number-entry'
+			viewFolder: 'number-entry',
+			capitaliseAnswer: false
 		});
 
 		this.suffix = suffix;
@@ -20,30 +21,11 @@ export class NumberEntryQuestion extends Question {
 	}
 
 	/**
-	 * @param {import('#question').QuestionViewModel} viewModel
+	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
 	 */
 	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.suffix = this.suffix;
-	}
-
-	/**
-	 * returns the formatted answers values to be used to build task list elements
-	 * @param {unknown} answer
-	 * @param {import('#journey').Journey} journey
-	 * @param {string} sectionSegment
-	 * @returns {Array<{
-	 *   key: string;
-	 *   value: string | Object;
-	 *   action: {
-	 *     href: string;
-	 *     text: string;
-	 *     visuallyHiddenText: string;
-	 *   };
-	 * }>}
-	 */
-	formatAnswerForSummary(sectionSegment, journey, answer) {
-		return super.formatAnswerForSummary(sectionSegment, journey, answer, false);
 	}
 }
 

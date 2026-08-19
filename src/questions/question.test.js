@@ -457,4 +457,90 @@ describe('./src/dynamic-forms/question.js', () => {
 			assert.strictEqual(q.isRequired(), true);
 		});
 	});
+
+	describe('formatSummaryValue', () => {
+		it('should default to undefined', () => {
+			const question = getTestQuestion();
+			assert.strictEqual(question.formatSummaryValue, undefined);
+		});
+
+		it('should accept formatSummaryValue in constructor', () => {
+			const formatter = ({ formattedAnswer }) => `<em>${formattedAnswer}</em>`;
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue: formatter
+			});
+			assert.strictEqual(question.formatSummaryValue, formatter);
+		});
+
+		it('should apply custom formatting in formatAnswerForSummary when provided', () => {
+			const journey = {
+				getCurrentQuestionUrl: () => 'current'
+			};
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue: ({ formattedAnswer }) => `<strong>${formattedAnswer}</strong>`
+			});
+			const result = question.formatAnswerForSummary('segment', journey, 'test answer');
+			assert.strictEqual(result[0].value, '<strong>Test answer</strong>');
+		});
+
+		it('should use default formatting when formatSummaryValue is not provided', () => {
+			const journey = {
+				getCurrentQuestionUrl: () => 'current'
+			};
+			const question = getTestQuestion();
+			const result = question.formatAnswerForSummary('segment', journey, 'test answer');
+			assert.strictEqual(result[0].value, 'Test answer');
+		});
+
+		it('should allow access to journey in formatter', () => {
+			const journey = {
+				getCurrentQuestionUrl: () => 'current',
+				response: { answers: { otherField: 'other value' } }
+			};
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue: ({ formattedAnswer, journey }) => {
+					const extra = journey.response.answers.otherField;
+					return `${formattedAnswer} (${extra})`;
+				}
+			});
+			const result = question.formatAnswerForSummary('segment', journey, 'test');
+			assert.strictEqual(result[0].value, 'Test (other value)');
+		});
+
+		it('should pass all context properties to formatSummaryValue', () => {
+			const formatSummaryValue = mock.fn((ctx) => ctx.formattedAnswer);
+			const journey = {
+				id: 'test-journey',
+				getCurrentQuestionUrl: () => 'current'
+			};
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue
+			});
+			question.formatAnswerForSummary('my-segment', journey, 'my-answer');
+
+			assert.strictEqual(formatSummaryValue.mock.callCount(), 1);
+			const receivedContext = formatSummaryValue.mock.calls[0].arguments[0];
+			assert.strictEqual(receivedContext.answer, 'my-answer');
+			assert.strictEqual(receivedContext.formattedAnswer, 'My-answer');
+			assert.strictEqual(receivedContext.question, question);
+			assert.strictEqual(receivedContext.journey, journey);
+			assert.strictEqual(receivedContext.sectionSegment, 'my-segment');
+		});
+	});
 });

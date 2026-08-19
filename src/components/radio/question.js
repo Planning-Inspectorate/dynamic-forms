@@ -1,41 +1,14 @@
+import escape from 'escape-html';
 import OptionsQuestion from '../../questions/options-question.js';
 
 export class RadioQuestion extends OptionsQuestion {
 	/**
 	 * @param {import('#typedefs/question-props.d.ts').RadioQuestionParams} params
 	 */
-	constructor({
-		title,
-		question,
-		fieldName,
-		viewFolder,
-		url,
-		hint,
-		pageTitle,
-		description,
-		label,
-		html,
-		legend,
-		options,
-		validators,
-		actionLink,
-		editable,
-		viewData
-	}) {
+	constructor({ label, html, legend, viewFolder, ...parentParams }) {
 		super({
-			title,
-			question,
-			viewFolder: !viewFolder ? 'radio' : viewFolder,
-			fieldName,
-			url,
-			hint,
-			pageTitle,
-			description,
-			options,
-			validators,
-			actionLink,
-			editable,
-			viewData
+			...parentParams,
+			viewFolder: viewFolder || 'radio'
 		});
 
 		this.html = html;
@@ -44,7 +17,7 @@ export class RadioQuestion extends OptionsQuestion {
 	}
 
 	/**
-	 * @param {import('#question').QuestionViewModel} viewModel
+	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
 	 */
 	addCustomDataToViewModel(viewModel) {
 		viewModel.question.label = this.label;
@@ -52,22 +25,32 @@ export class RadioQuestion extends OptionsQuestion {
 	}
 
 	/**
-	 * returns the formatted answers values to be used to build task list elements
+	 * Formats an answer value for display in the summary.
+	 * Handles object answers with conditional fields (e.g. { value: 'yes', conditional: { yes: 'details' } })
+	 *
+	 * @param {unknown} answer - the raw answer value
+	 * @returns {string} the formatted answer for display
 	 */
-	formatAnswerForSummary(sectionSegment, journey, answer) {
-		if (answer?.conditional) {
-			const selectedOption = this.options.find((option) => option.value === answer.value);
-			const conditionalAnswerText = selectedOption.conditional?.label
-				? `${selectedOption.conditional.label} ${answer.conditional}`
-				: answer.conditional;
-			const formattedAnswer = [selectedOption.text, conditionalAnswerText].join('\n');
-			return super.formatAnswerForSummary(sectionSegment, journey, formattedAnswer, false);
-		} else if (answer) {
-			const selectedOption = this.options.find((option) => option.value === answer);
-			const selectedText = selectedOption?.text || '';
-			return super.formatAnswerForSummary(sectionSegment, journey, selectedText, false);
+	formatAnswer(answer) {
+		if (answer === null || answer === undefined || answer === '') {
+			return this.notStartedText;
 		}
-		return super.formatAnswerForSummary(sectionSegment, journey, answer);
+
+		// Handle simple string answers
+		if (typeof answer !== 'object' || answer.value === undefined) {
+			return super.formatAnswer(answer);
+		}
+
+		// Handle object answers with conditional fields
+		const option = this.options.find((opt) => opt.value === answer.value);
+		const optionText = escape(option ? option.text : answer.value);
+
+		const conditionalValue = answer.conditional?.[answer.value];
+		if (conditionalValue) {
+			const label = option?.conditional?.label ? `${escape(option.conditional.label)} ` : '';
+			return `${optionText}<br>${label}${escape(conditionalValue)}`;
+		}
+		return optionText;
 	}
 }
 

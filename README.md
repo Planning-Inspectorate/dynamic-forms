@@ -286,6 +286,117 @@ const questionProps = {
 const questions = createQuestions(questionProps, questionClasses, {});
 ```
 
+### Custom Summary Formatting
+
+The `formatSummaryValue` option allows you to customise how answers are displayed on check-your-answers pages without needing to create a custom question class.
+
+#### Basic Usage
+
+Pass a `formatSummaryValue` function when creating a question:
+
+```javascript
+import { RadioQuestion } from '@planning-inspectorate/dynamic-forms';
+
+new RadioQuestion({
+    fieldName: 'status',
+    title: 'Application status',
+    question: 'What is the application status?',
+    options: [
+        { text: 'Approved', value: 'approved' },
+        { text: 'Rejected', value: 'rejected' }
+    ],
+    formatSummaryValue: ({ formattedAnswer }) => `<strong>${formattedAnswer}</strong>`
+});
+```
+
+#### Formatter Context
+
+The formatter function receives a context object with the following properties:
+
+| Property | Type | Description                                    |
+|----------|------|------------------------------------------------|
+| `answer` | `unknown` | The raw answer value                           |
+| `formattedAnswer` | `string` | The default formatted display value            |
+| `question` | `Question` | The question instance                          |
+| `journey` | `Journey` | The journey instance                           |
+| `sectionSegment` | `string` | The current section segment                    |
+| `selectedOptions` | `Option[] \| undefined` | For OptionsQuestions (such as Checkbox or Radio), the matched option object(s) as an array |
+
+#### Answer Formats
+
+Different options-based questions store answers in different formats. The `selectedOptions` array normalises these formats for your formatter:
+
+| Question Type | Answer Format | `selectedOptions` Result |
+|---------------|---------------|--------------------------|
+| **Radio / Select** | Single string value: `"approved"` | `[{ text: 'Approved', value: 'approved' }]` |
+| **Radio / Select** | Conditional object: `{ value: "yes", conditional: "details" }` | `[{ text: 'Yes', value: 'yes', conditional: {...} }]` |
+| **Checkbox** | Comma-separated string: `"option1,option2"` | `[{ text: 'Option 1', value: 'option1' }, { text: 'Option 2', value: 'option2' }]` |
+| **Checkbox** | Single conditional object: `{ value: "other", conditional: "details" }` | `[{ text: 'Other', value: 'other', conditional: {...} }]` |
+
+For single-select questions (Radio, Select), use `selectedOptions[0]` to access the selected option. For multi-select questions (Checkbox), iterate over the array.
+
+#### Examples
+
+**Bold formatting:**
+
+```javascript
+formatSummaryValue: ({ formattedAnswer }) => `<strong>${escapeHtml(formattedAnswer)}</strong>`
+```
+
+**Conditional styling based on answer:**
+
+```javascript
+formatSummaryValue: ({ selectedOptions }) => {
+    const selectedOption = selectedOptions[0];
+    const color = selectedOption?.value === 'approved' ? 'green' : 'red';
+    return `<span style="color: ${color}">${escapeHtml(selectedOption?.text ?? '-')}</span>`;
+}
+```
+
+**Adding a suffix from another answer:**
+
+```javascript
+const suffixes = { solid: ' (tonnes)', liquid: ' (litres)' };
+
+formatSummaryValue: ({ answer, formattedAnswer }) => {
+    const suffix = suffixes[answer] ?? '';
+    return `${formattedAnswer}${suffix}`;
+}
+```
+
+**Accessing other journey answers:**
+
+```javascript
+formatSummaryValue: ({ formattedAnswer, journey }) => {
+    const capacity = journey.response.answers.wasteCapacity;
+    return capacity ? `${formattedAnswer}: ${capacity}` : formattedAnswer;
+}
+```
+
+**Using selectedOptions for single-select questions (Radio/Select):**
+
+```javascript
+formatSummaryValue: ({ selectedOptions }) => {
+    const selectedOption = selectedOptions[0];
+    // Access the full option object including any custom properties
+    const warning = selectedOption?.warning;
+    return warning ? `${escapeHtml(selectedOption?.text ?? '-')} ⚠️` : escapeHtml(selectedOption?.text ?? '-');
+}
+```
+
+**Using selectedOptions for multi-select questions (Checkbox):**
+
+```javascript
+formatSummaryValue: ({ selectedOptions }) => {
+    // Join all selected option texts with custom formatting
+    return selectedOptions
+        .map(opt => `<span class="tag">${escapeHtml(opt.text)}</span>`)
+        .join(' ');
+}
+```
+
+> **Note:** `formattedAnswer` is already escaped by dynamic-forms; you are responsible for escaping any additional user-controlled values you include (for example `answer`, option text from `selectedOptions`, or values read from `journey.response.answers`).
+
 ## Contributing
 
 When contributing to this package, ensure changes are generic and not service-specific. Speak to the R&D devs if you are not sure. Prefer configuration over hardcoding values, and ensure the code is well documented. 
@@ -321,7 +432,7 @@ To update any snapshots with rendering changes (or new questions), run `node --t
 
 When implement a new component, extend the base `Question` class. Common methods to override are:
 
-* `formatAnswerForSummary` - used for check-your-answers display
+* `formatAnswer` - used for check-your-answers display
 * `getDataToSave` - answer data to save
 * `addCustomDataToViewModel` - customise the view model with extra data/configuration
 * `answerForViewModel` - customise the view model answer value

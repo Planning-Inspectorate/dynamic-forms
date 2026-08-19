@@ -96,78 +96,157 @@ describe('./src/dynamic-forms/components/radio/question.js', () => {
 		assert.strictEqual(preppedQuestion.question.label, LABEL);
 	});
 
-	it('should customise answer for summary when question has a conditional field filled in', () => {
-		const radioQuestion = new RadioQuestion({
-			title: TITLE,
-			question: QUESTION,
-			description: DESCRIPTION,
-			fieldName: FIELDNAME,
-			viewFolder: VIEWFOLDER,
-			html: HTML,
-			label: LABEL,
-			options: OPTIONS
+	describe('formatAnswer', () => {
+		it('should delegate simple string answers to parent class', () => {
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				description: DESCRIPTION,
+				fieldName: FIELDNAME,
+				options: [
+					{ text: 'Option 1', value: 'op-1' },
+					{ text: 'Option 2', value: 'op-2' }
+				]
+			});
+
+			const result = radioQuestion.formatAnswer('op-1');
+			assert.strictEqual(result, 'Option 1');
 		});
 
-		const rowParams = radioQuestion.formatAnswerForSummary(SECTION, JOURNEY, {
-			value: 'yes',
-			conditional: 'test'
-		});
-		assert.strictEqual(rowParams[0].value, 'Yes<br>test');
-	});
+		it('should format object answer with value only (no conditional)', () => {
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				description: DESCRIPTION,
+				fieldName: FIELDNAME,
+				options: OPTIONS
+			});
 
-	it('should use option text (not value) for display', () => {
-		const radioQuestion = new RadioQuestion({
-			title: TITLE,
-			question: QUESTION,
-			description: DESCRIPTION,
-			fieldName: FIELDNAME,
-			viewFolder: VIEWFOLDER,
-			html: HTML,
-			label: LABEL,
-			options: [
-				{ text: 'Option 1', value: 'op-1' },
-				{ text: 'Option 2', value: 'op-2' }
-			]
+			const result = radioQuestion.formatAnswer({ value: 'no' });
+			assert.strictEqual(result, 'No');
 		});
 
-		const rowParams = radioQuestion.formatAnswerForSummary(SECTION, JOURNEY, 'op-1');
-		assert.strictEqual(rowParams[0].value, 'Option 1');
-	});
+		it('should format object answer with conditional', () => {
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				description: DESCRIPTION,
+				fieldName: FIELDNAME,
+				options: OPTIONS
+			});
 
-	it('should customise answer for summary and add label when question has a conditional field filled in and conditional field has a label', () => {
-		const optionsWithLabel = [...OPTIONS];
-		optionsWithLabel[0].conditional.label = 'label:';
-		const radioQuestion = new RadioQuestion({
-			title: TITLE,
-			question: QUESTION,
-			description: DESCRIPTION,
-			fieldName: FIELDNAME,
-			viewFolder: VIEWFOLDER,
-			html: HTML,
-			label: LABEL,
-			options: optionsWithLabel
+			const result = radioQuestion.formatAnswer({
+				value: 'yes',
+				conditional: { yes: 'test details' }
+			});
+			assert.strictEqual(result, 'Yes<br>test details');
 		});
 
-		const rowParams = radioQuestion.formatAnswerForSummary(SECTION, JOURNEY, {
-			value: 'yes',
-			conditional: 'test'
-		});
-		assert.strictEqual(rowParams[0].value, 'Yes<br>label: test');
-	});
+		it('should format object answer with conditional and label', () => {
+			const optionsWithLabel = [...OPTIONS];
+			optionsWithLabel[0] = {
+				...optionsWithLabel[0],
+				conditional: {
+					...optionsWithLabel[0].conditional,
+					label: 'label:'
+				}
+			};
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				description: DESCRIPTION,
+				fieldName: FIELDNAME,
+				options: optionsWithLabel
+			});
 
-	it('should not customise answer for summary when question does not have a conditional field filled in', () => {
-		const radioQuestion = new RadioQuestion({
-			title: TITLE,
-			question: QUESTION,
-			description: DESCRIPTION,
-			fieldName: FIELDNAME,
-			viewFolder: VIEWFOLDER,
-			html: HTML,
-			label: LABEL,
-			options: OPTIONS
+			const result = radioQuestion.formatAnswer({
+				value: 'yes',
+				conditional: { yes: 'test details' }
+			});
+			assert.strictEqual(result, 'Yes<br>label: test details');
 		});
 
-		const rowParams = radioQuestion.formatAnswerForSummary(SECTION, JOURNEY, 'no');
-		assert.strictEqual(rowParams[0].value, 'No');
+		it('should fall back to value when option not found in object answer', () => {
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				description: DESCRIPTION,
+				fieldName: FIELDNAME,
+				options: OPTIONS
+			});
+
+			const result = radioQuestion.formatAnswer({ value: 'unknown' });
+			assert.strictEqual(result, 'unknown');
+		});
+
+		it('should escape HTML in option text', () => {
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				description: DESCRIPTION,
+				fieldName: FIELDNAME,
+				options: [{ text: '<script>alert("xss")</script>', value: 'xss' }]
+			});
+
+			const result = radioQuestion.formatAnswer('xss');
+			assert.strictEqual(result, '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;');
+		});
+
+		it('should escape HTML in conditional value', () => {
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				description: DESCRIPTION,
+				fieldName: FIELDNAME,
+				options: [
+					{
+						text: 'Yes',
+						value: 'yes',
+						conditional: { fieldName: 'details', type: 'text' }
+					}
+				]
+			});
+
+			const result = radioQuestion.formatAnswer({
+				value: 'yes',
+				conditional: { yes: '<img src=x onerror=alert(1)>' }
+			});
+			assert.strictEqual(result, 'Yes<br>&lt;img src=x onerror=alert(1)&gt;');
+		});
+
+		it('should escape HTML in conditional label', () => {
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				description: DESCRIPTION,
+				fieldName: FIELDNAME,
+				options: [
+					{
+						text: 'Yes',
+						value: 'yes',
+						conditional: { fieldName: 'details', type: 'text', label: '<b>Label</b>' }
+					}
+				]
+			});
+
+			const result = radioQuestion.formatAnswer({
+				value: 'yes',
+				conditional: { yes: 'safe value' }
+			});
+			assert.strictEqual(result, 'Yes<br>&lt;b&gt;Label&lt;/b&gt; safe value');
+		});
+
+		it('should escape HTML in fallback value when option not found', () => {
+			const radioQuestion = new RadioQuestion({
+				title: TITLE,
+				question: QUESTION,
+				description: DESCRIPTION,
+				fieldName: FIELDNAME,
+				options: OPTIONS
+			});
+
+			const result = radioQuestion.formatAnswer({ value: '<script>xss</script>' });
+			assert.strictEqual(result, '&lt;script&gt;xss&lt;/script&gt;');
+		});
 	});
 });

@@ -71,21 +71,13 @@ export class DateQuestion extends Question {
 	}
 
 	/**
-	 * returns the formatted answers values to be used to build task list elements
+	 * Formats a date answer for display in the summary.
+	 * @param {unknown} answer - the date value
+	 * @returns {string} the formatted date
 	 */
-	formatAnswerForSummary(sectionSegment, journey, answer) {
-		let formattedAnswer;
-
-		if (answer) {
-			formattedAnswer = formatDateForDisplay(answer, { format: this.dateFormat });
-		} else {
-			formattedAnswer = this.notStartedText;
-		}
-
-		const action = this.getAction(sectionSegment, journey, answer);
-		const key = this.title ?? this.question;
-
-		return [{ key: key, value: formattedAnswer, action: action }];
+	formatAnswer(answer) {
+		if (!answer) return this.notStartedText;
+		return formatDateForDisplay(answer, { format: this.dateFormat });
 	}
 }
 

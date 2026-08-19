@@ -34,8 +34,8 @@ describe('getConditionalAnswer', () => {
 
 	it('returns conditional field value when it exists', () => {
 		const { answers, question } = setup();
-		const expectedResult = 'test';
-		assert.strictEqual(getConditionalAnswer(answers, question, 'yes'), expectedResult);
+		const expectedResult = { yes: 'test' };
+		assert.deepStrictEqual(getConditionalAnswer(answers, question, 'yes'), expectedResult);
 	});
 
 	it('returns null when option chosen does not have conditional value', () => {
@@ -48,5 +48,92 @@ describe('getConditionalAnswer', () => {
 		const { answers, question } = setup();
 		delete question.options[0].conditional;
 		assert.strictEqual(getConditionalAnswer(answers, question, 'yes'), null);
+	});
+
+	it('returns null when answer is null', () => {
+		const { answers, question } = setup();
+		assert.strictEqual(getConditionalAnswer(answers, question, null), null);
+	});
+
+	it('returns null when answer is empty string', () => {
+		const { answers, question } = setup();
+		assert.strictEqual(getConditionalAnswer(answers, question, ''), null);
+	});
+
+	it('returns null when question has no options', () => {
+		const { answers, question } = setup();
+		delete question.options;
+		assert.strictEqual(getConditionalAnswer(answers, question, 'yes'), null);
+	});
+
+	describe('multi-value answers (checkboxes)', () => {
+		const setupMultiValue = () => {
+			const answers = {
+				field: 'a,b,c',
+				field_detailsA: 'details for A',
+				field_detailsC: 'details for C'
+			};
+			const question = {
+				fieldName: 'field',
+				options: [
+					{
+						value: 'a',
+						conditional: {
+							fieldName: 'detailsA'
+						}
+					},
+					{
+						value: 'b'
+					},
+					{
+						value: 'c',
+						conditional: {
+							fieldName: 'detailsC'
+						}
+					}
+				]
+			};
+			return { answers, question };
+		};
+
+		it('returns object with conditional values for multiple selected options', () => {
+			const { answers, question } = setupMultiValue();
+			const result = getConditionalAnswer(answers, question, 'a,c');
+			assert.deepStrictEqual(result, {
+				a: 'details for A',
+				c: 'details for C'
+			});
+		});
+
+		it('returns object with only options that have conditional values', () => {
+			const { answers, question } = setupMultiValue();
+			const result = getConditionalAnswer(answers, question, 'a,b');
+			assert.deepStrictEqual(result, {
+				a: 'details for A'
+			});
+		});
+
+		it('returns null when no selected options have conditional values', () => {
+			const { answers, question } = setupMultiValue();
+			const result = getConditionalAnswer(answers, question, 'b');
+			assert.strictEqual(result, null);
+		});
+
+		it('returns null when conditional fields have no values', () => {
+			const { answers, question } = setupMultiValue();
+			delete answers.field_detailsA;
+			delete answers.field_detailsC;
+			const result = getConditionalAnswer(answers, question, 'a,c');
+			assert.strictEqual(result, null);
+		});
+
+		it('handles whitespace in comma-separated values', () => {
+			const { answers, question } = setupMultiValue();
+			const result = getConditionalAnswer(answers, question, 'a , c');
+			assert.deepStrictEqual(result, {
+				a: 'details for A',
+				c: 'details for C'
+			});
+		});
 	});
 });

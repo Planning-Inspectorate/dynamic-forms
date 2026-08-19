@@ -70,7 +70,7 @@ export class AddressQuestion extends Question {
 	}
 
 	/**
-	 * @param {import('#question').QuestionViewModel} viewModel
+	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
 	 */
 	addCustomDataToViewModel(viewModel) {
 		viewModel.question.labels = this.addressLabels;
@@ -123,23 +123,12 @@ export class AddressQuestion extends Question {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 */
-	formatAnswerForSummary(sectionSegment, journey, answer) {
-		let formattedAnswer = this.notStartedText;
-
-		if (answer) {
-			formattedAnswer = nl2br(escape(this.format(answer)));
-		} else if (answer === null) {
-			formattedAnswer = '';
-		}
-
-		return [
-			{
-				key: `${this.title}`,
-				value: formattedAnswer,
-				action: this.getAction(sectionSegment, journey, answer)
-			}
-		];
+	formatAnswer(answer) {
+		if (answer === null) return '';
+		if (!answer) return this.notStartedText;
+		return nl2br(escape(this.format(answer)));
 	}
+
 	formatLabelFromRequiredFields(fieldName) {
 		if (this.requiredFields && this.requiredFields[fieldName]) {
 			return '';

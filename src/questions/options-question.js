@@ -3,6 +3,7 @@ import { Question } from './question.js';
 import ValidOptionValidator from '../validator/valid-option-validator.js';
 import { getConditionalFieldName } from '../components/utils/question-utils.js';
 import { toArray } from '#src/lib/utils.js';
+import escape from 'escape-html';
 
 const defaultOptionJoinString = ',';
 
@@ -31,7 +32,7 @@ const defaultOptionJoinString = ',';
  */
 
 /**
- * @typedef {import('./question.js').QuestionViewModel & { question: { options: Option[] } }} OptionsViewModel
+ * @typedef {import('#typedefs/question-types.d.ts').QuestionViewModel & { question: { options: Option[] } }} OptionsViewModel
  */
 /**
  * @typedef {import('#typedefs/question-types.d.ts').QuestionParameters & { options: Array<Option> }} OptionsQuestionParameters
@@ -66,7 +67,7 @@ export class OptionsQuestion extends Question {
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {Record<string, unknown>} [payload]
 	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} options
-	 * @returns {import('./question.js').QuestionViewModel} QuestionViewModel
+	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel} QuestionViewModel
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload, options) {
 		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload, options);
@@ -119,6 +120,29 @@ export class OptionsQuestion extends Question {
 	}
 
 	/**
+	 * Formats an answer value for display in the summary.
+	 * Looks up the option text for the given value(s).
+	 *
+	 * @param {unknown} answer - the raw answer value
+	 * @returns {string} the formatted answer for display
+	 */
+	formatAnswer(answer) {
+		if (answer === null || answer === undefined || answer === '') {
+			return this.notStartedText;
+		}
+
+		const answerValues = String(answer)
+			.split(this.optionJoinString)
+			.map((value) => value.trim());
+		const texts = answerValues.map((value) => {
+			const option = this.options.find((opt) => opt.value === value);
+			return escape(option ? option.text : value);
+		});
+
+		return texts.join('<br>');
+	}
+
+	/**
 	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
 	 * @param {import('../journey/journey-response.js').JourneyResponse} journeyResponse - current journey response, modified with the new answers
@@ -137,6 +161,7 @@ export class OptionsQuestion extends Question {
 		if (selectedOptions.length !== fieldValues.length)
 			throw new Error(`User submitted option(s) did not correlate with valid answers to ${this.fieldName} question`);
 
+		// TODO DF-51 treat as an array
 		answers[this.fieldName] = fieldValues.join(this.optionJoinString);
 
 		this.options.forEach((option) => {
