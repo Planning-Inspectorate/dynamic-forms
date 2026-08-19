@@ -9,9 +9,10 @@ export class CheckboxQuestion extends OptionsQuestion {
 	 */
 	constructor({ ...parentParams }) {
 		super({
+			// default but allow overrides
+			capitaliseAnswer: false,
 			...parentParams,
-			viewFolder: 'checkbox',
-			capitaliseAnswer: false
+			viewFolder: 'checkbox'
 		});
 
 		this.optionJoinString = defaultOptionJoinString;

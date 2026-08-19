@@ -53,6 +53,14 @@ describe('./src/dynamic-forms/components/checkbox/question.js', () => {
 		assert.deepStrictEqual(question.validators, [...VALIDATORS, new ValidOptionValidator()]);
 		assert.deepStrictEqual(question.options, OPTIONS);
 	});
+	it('should allow capitaliseAnswer override', () => {
+		const question = new CheckboxQuestion({
+			...CHECKBOX_PARAMS,
+			capitaliseAnswer: true
+		});
+
+		assert.strictEqual(question.capitaliseAnswer, true);
+	});
 
 	describe('formatAnswer', () => {
 		it('should delegate simple string answers to parent class', () => {
