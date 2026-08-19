@@ -30,6 +30,8 @@ export function createJourney(questions, response) {
 				.addQuestion(questions.hotelAddress)
 				.addQuestion(questions.luggageWeight)
 				.addQuestion(questions.contactEmail)
+				.addQuestion(questions.favouriteActivityReason)
+				.addQuestion(questions.travelRequirements)
 				.addQuestion(
 					questions.travelCompanions,
 					new ManageListSection().addQuestion(questions.travelCompanionName).addQuestion(questions.travelCompanionEmail)

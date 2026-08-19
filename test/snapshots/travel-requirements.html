@@ -1,0 +1,48 @@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form action="" method="post" novalidate>
+                <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+    <h1 class="govuk-fieldset__heading">
+      What special requirements do you have?
+    </h1>
+  </legend>
+  <div class="govuk-checkboxes govuk-checkboxes" data-module="govuk-checkboxes">
+    <div class="govuk-checkboxes__item">
+      <input class="govuk-checkboxes__input" id="travelRequirements" name="travelRequirements" type="checkbox" value="dietary" data-aria-controls="conditional-travelRequirements" data-cy="answer-dietary">
+      <label class="govuk-label govuk-checkboxes__label" for="travelRequirements">
+        Dietary requirements
+      </label>
+    </div>
+    <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-travelRequirements">
+      <div class="govuk-form-group">
+  <label class="govuk-label" for="travelRequirements_dietaryDetails">
+    Please describe your dietary requirements
+  </label>
+  <input class="govuk-input" id="travelRequirements_dietaryDetails" name="travelRequirements_dietaryDetails" type="text" value="">
+</div>
+    </div>
+    <div class="govuk-checkboxes__item">
+      <input class="govuk-checkboxes__input" id="travelRequirements-2" name="travelRequirements" type="checkbox" value="mobility" data-cy="answer-mobility">
+      <label class="govuk-label govuk-checkboxes__label" for="travelRequirements-2">
+        Mobility assistance
+      </label>
+    </div>
+    <div class="govuk-checkboxes__item">
+      <input class="govuk-checkboxes__input" id="travelRequirements-3" name="travelRequirements" type="checkbox" value="medical" data-cy="answer-medical">
+      <label class="govuk-label govuk-checkboxes__label" for="travelRequirements-3">
+        Medical needs
+      </label>
+    </div>
+  </div>
+</fieldset>
+</div>
+
+<button type="submit" class="govuk-button" data-module="govuk-button" data-cy="button-save-and-continue">
+  Continue
+</button>
+
+            </form>
+        </div>
+    </div>
