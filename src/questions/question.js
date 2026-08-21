@@ -49,7 +49,7 @@ export class Question {
 	answerActionText = 'Answer';
 	/** @type {string} text to display for 'add' link */
 	addActionText = 'Add';
-	/** @type {import('#typedefs/question-types.d.ts').SummaryValueFormatter|undefined} custom function to format the summary display value */
+	/** @type {import('#typedefs/question-props.d.ts').SummaryValueFormatter|undefined} custom function to format the summary display value */
 	formatSummaryValue;
 
 	/**
@@ -163,7 +163,7 @@ export class Question {
 
 	/**
 	 * Applies custom summary formatting if a formatSummaryValue function is provided
-	 * @param {import('#typedefs/question-types.d.ts').SummaryFormatterContext} context - the context for formatting
+	 * @param {import('#typedefs/question-props.d.ts').SummaryFormatterContext} context - the context for formatting
 	 * @returns {string}
 	 */
 	#applyCustomSummaryFormatter(context) {

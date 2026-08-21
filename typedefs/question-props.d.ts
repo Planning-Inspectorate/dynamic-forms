@@ -1,4 +1,27 @@
 import type { QuestionParameters } from './question-types.d.ts';
+import type { Question } from '../src/questions/question.js';
+import type { Journey } from '../src/journey/journey.js';
+
+/**
+ * Context passed to the custom summary formatter
+ */
+export interface SummaryFormatterContext<TAnswer = unknown> {
+	/** The raw answer value */
+	answer: TAnswer;
+	/** The default display value */
+	formattedAnswer: string;
+	/** The question instance */
+	question: Question;
+	/** The journey instance */
+	journey: Journey;
+	/** The section segment */
+	sectionSegment: string;
+}
+
+/**
+ * Custom function to format the summary display value
+ */
+export type SummaryValueFormatter<TAnswer = unknown> = (context: SummaryFormatterContext<TAnswer>) => string;
 
 export type QuestionTypes =
 	| 'boolean'
@@ -74,6 +97,7 @@ interface InputField {
 	formatJoinString?: string; // used by formatAnswerForSummary (e.g. task list display), effective default to line break
 	formatPrefix?: string; // used by formatAnswerForSummary (e.g. task list display), to prefix answer
 	formatTextFunction?: (text: string) => string; // used to format the answer for display and value in question
+	formatSummaryValue?: (context: InputFieldSummaryContext) => string; // used to format the answer for summary display only (not escaped)
 	attributes?: Record<string, string>; // used to add HTML attributes to the field
 	suffix?: Affix; // used to add a suffix to the field
 	prefix?: Affix; // used to add a prefix to the field
@@ -81,6 +105,15 @@ interface InputField {
 	classes?: string;
 	inputmode?: 'decimal' | 'numeric';
 	pattern?: string; // Used for backwards-compatibility for older iOS devices in numeric input fields
+}
+
+/**
+ * Context passed to InputField.formatSummaryValue
+ * Extends the base SummaryFormatterContext with field-specific properties
+ */
+interface InputFieldSummaryContext extends SummaryFormatterContext {
+	/** The input field configuration */
+	field: InputField;
 }
 
 /*

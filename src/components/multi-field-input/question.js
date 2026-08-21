@@ -1,6 +1,6 @@
 import { Question } from '#question';
 import escape from 'escape-html';
-import { nl2br } from '../../lib/utils.js';
+import { capitalize, nl2br } from '../../lib/utils.js';
 
 /**
  * @class
@@ -11,6 +11,8 @@ export class MultiFieldInputQuestion extends Question {
 	 */
 	constructor({ inputFields, ...parentParams }) {
 		super({
+			// default but allow overrides
+			capitaliseAnswer: false,
 			...parentParams,
 			viewFolder: 'multi-field-input'
 		});
@@ -60,35 +62,95 @@ export class MultiFieldInputQuestion extends Question {
 	}
 
 	/**
+	 * Formats an answer value for display in the summary.
+	 * Handles the ManageListSection edge case where nl2br should not be applied.
+	 *
+	 * @param {unknown} answer - the raw answer value (composed from multiple fields)
+	 * @returns {string} the formatted answer for display
+	 */
+	formatAnswer(answer) {
+		// Only show notStartedText for null/undefined, not for empty string
+		if (answer === null || answer === undefined) return this.notStartedText;
+		if (answer === '') return '';
+
+		// Coerce to string and apply optional capitalisation
+		let formatted = String(answer);
+		if (this.capitaliseAnswer) {
+			formatted = capitalize(formatted);
+		}
+
+		// Do not convert new lines to breaks in ManageListSection, as this causes a "doubled up" <br>
+		return this.isInManageListSection ? escape(formatted) : nl2br(escape(formatted));
+	}
+
+	/**
 	 * returns the formatted answers values to be used to build task list elements
-	 * @param {import('#journey').Journey} journey
 	 * @param {string} sectionSegment
-	 * @returns {Array<{
-	 *   key: string;
-	 *   value: string | Object;
-	 *   action: {
-	 *     href: string;
-	 *     text: string;
-	 *     visuallyHiddenText: string;
-	 *   };
-	 * }>}
+	 * @param {import('#journey').Journey} journey
+	 * @returns {import('#typedefs/question-types.d.ts').SummaryRow[]}
 	 */
 	formatAnswerForSummary(sectionSegment, journey) {
-		const summaryDetails = this.inputFields.reduce((acc, field) => {
-			const answer = this.#formatValue(journey.response.answers[field.fieldName], field.formatTextFunction);
-			return answer ? acc + (field.formatPrefix || '') + answer + (field.formatJoinString || '\n') : acc;
+		// Handle unanswered case - delegate to parent for notStartedText
+		if (this.#allQuestionsUnanswered(journey)) {
+			return super.formatAnswerForSummary(sectionSegment, journey, null);
+		}
+
+		// Default join string depends on context
+		const defaultJoinString = this.isInManageListSection ? '\n' : '<br>';
+
+		let summaryDetails = this.inputFields.reduce((accumulator, field) => {
+			const rawAnswer = journey.response.answers[field.fieldName];
+			if (rawAnswer === undefined || rawAnswer === null || rawAnswer === '') return accumulator;
+
+			const formatted = this.#formatFieldForSummary(rawAnswer, field, journey, sectionSegment);
+			return accumulator + (field.formatPrefix || '') + formatted + (field.formatJoinString ?? defaultJoinString);
 		}, '');
 
-		const formattedAnswer = this.#allQuestionsUnanswered(journey) ? this.notStartedText : summaryDetails || '';
+		// Remove trailing join string
+		if (summaryDetails.endsWith(defaultJoinString)) {
+			summaryDetails = summaryDetails.slice(0, -defaultJoinString.length);
+		}
 
-		return [
-			{
-				key: `${this.title}`,
-				// Do not convert new lines to breaks in ManageListSection, as this causes a "doubled up" <br>
-				value: this.isInManageListSection ? escape(formattedAnswer) : nl2br(escape(formattedAnswer)),
-				action: this.getAction(sectionSegment, journey, summaryDetails)
-			}
-		];
+		// Apply question-level formatSummaryValue if provided
+		const displayValue = this.formatSummaryValue
+			? this.formatSummaryValue({
+					answer: summaryDetails,
+					formattedAnswer: summaryDetails,
+					question: this,
+					journey,
+					sectionSegment
+				})
+			: summaryDetails;
+
+		// Build result directly - escaping already handled per-field
+		const action = this.getAction(sectionSegment, journey, summaryDetails);
+		const key = this.title ?? this.question;
+		return [{ key, value: displayValue || '', action }];
+	}
+
+	/**
+	 * Formats a single field value for summary display
+	 * @param {unknown} answer - the raw answer value
+	 * @param {import('#typedefs/question-props.d.ts').InputField} field - the input field config
+	 * @param {import('#journey').Journey} journey - the journey instance
+	 * @param {string} sectionSegment - the section segment
+	 * @returns {string}
+	 */
+	#formatFieldForSummary(answer, field, journey, sectionSegment) {
+		// If formatSummaryValue is provided, use it with full context (output is not escaped)
+		if (typeof field.formatSummaryValue === 'function') {
+			return field.formatSummaryValue({
+				answer,
+				formattedAnswer: escape(String(answer)),
+				question: this,
+				journey,
+				sectionSegment,
+				field
+			});
+		}
+
+		// Default: escape the value
+		return escape(String(answer));
 	}
 
 	/**
