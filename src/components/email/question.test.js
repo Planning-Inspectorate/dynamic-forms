@@ -16,6 +16,25 @@ describe('src/dynamic-forms/components/email/question.js', () => {
 		assert.strictEqual(emailQuestion.autocomplete, 'email');
 	});
 
+	it('should default capitaliseAnswer to false', () => {
+		const emailQuestion = new EmailQuestion({
+			title: 'Email Address',
+			question: 'What is your email address?',
+			fieldName: 'email'
+		});
+		assert.strictEqual(emailQuestion.capitaliseAnswer, false);
+	});
+
+	it('should allow capitaliseAnswer to be set via constructor', () => {
+		const emailQuestion = new EmailQuestion({
+			title: 'Email Address',
+			question: 'What is your email address?',
+			fieldName: 'email',
+			capitaliseAnswer: true
+		});
+		assert.strictEqual(emailQuestion.capitaliseAnswer, true);
+	});
+
 	it('should allow custom input attributes while preserving email defaults', () => {
 		const customAttributes = {
 			placeholder: 'Enter your email',
