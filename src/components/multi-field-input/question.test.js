@@ -1,4 +1,4 @@
-import { describe, it } from 'node:test';
+import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
 import MultiFieldInputQuestion from './question.js';
 import { Journey } from '#journey';
@@ -43,6 +43,11 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 		assert.strictEqual(testQuestion.html, HTML);
 		assert.strictEqual(testQuestion.hint, HINT);
 		assert.strictEqual(testQuestion.inputFields, INPUTFIELDS);
+	});
+
+	it('should default capitaliseAnswer to false', () => {
+		const testQuestion = createMultiFieldInputQuestion();
+		assert.strictEqual(testQuestion.capitaliseAnswer, false);
 	});
 
 	it('should throw error if no inputFields parameter is passed to the constructor', () => {
@@ -247,7 +252,7 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 						visuallyHiddenText: 'Question?'
 					},
 					key: 'title',
-					value: 'planning-permission<br>Test User<br>'
+					value: 'planning-permission<br>Test User'
 				}
 			];
 
@@ -344,12 +349,350 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 				sections: []
 			});
 
-			const expectedValue = 'Line 1\nLine &amp; 2\n';
+			const expectedValue = 'Line 1\nLine &amp; 2';
 
 			const result = question.formatAnswerForSummary('questions', journey);
 
 			assert.strictEqual(result[0].value, expectedValue);
 			assert.strictEqual(result[0].value.includes('<br>'), false);
+		});
+		it('should apply formatSummaryValue when provided', () => {
+			const question = new MultiFieldInputQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				inputFields: INPUTFIELDS,
+				formatSummaryValue: ({ formattedAnswer }) => `Custom: ${formattedAnswer}`
+			});
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: 'Value 1',
+						testField2: 'Value 2'
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			assert.strictEqual(result[0].value, 'Custom: Value 1<br>Value 2');
+		});
+		it('should apply formatSummaryValue on input fields with context (not escaped, not in form view)', () => {
+			// formatSummaryValue receives full context and output is not escaped
+			const formatSummaryValue = ({ answer }) => `<strong>${answer}</strong>`;
+			const question = new MultiFieldInputQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				inputFields: [
+					{ fieldName: 'testField1', formatSummaryValue, formatJoinString: '<br>' },
+					{ fieldName: 'testField2', formatSummaryValue, formatJoinString: '<br>' }
+				]
+			});
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: 'Value 1',
+						testField2: 'Value 2'
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			// formatSummaryValue should be applied in summary (with HTML not escaped)
+			const summaryResult = question.formatAnswerForSummary('questions', journey);
+			assert.strictEqual(summaryResult[0].value, '<strong>Value 1</strong><br><strong>Value 2</strong>');
+
+			// formatSummaryValue should NOT be applied in view model (form inputs)
+			const viewResult = question.prepQuestionForRendering({}, journey, {});
+			assert.strictEqual(viewResult.question?.value[0].value, 'Value 1');
+			assert.strictEqual(viewResult.question?.value[1].value, 'Value 2');
+		});
+		it('should pass full context to formatSummaryValue including journey and field', () => {
+			const formatSummaryValue = mock.fn((ctx) => ctx.answer);
+			const question = new MultiFieldInputQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				inputFields: [{ fieldName: 'testField1', formatSummaryValue }]
+			});
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: 'Test Value'
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			question.formatAnswerForSummary('test-section', journey);
+
+			assert.strictEqual(formatSummaryValue.mock.callCount(), 1);
+			const capturedContext = formatSummaryValue.mock.calls[0].arguments[0];
+			assert.strictEqual(capturedContext.answer, 'Test Value');
+			assert.strictEqual(capturedContext.formattedAnswer, 'Test Value');
+			assert.strictEqual(capturedContext.question, question);
+			assert.strictEqual(capturedContext.journey, journey);
+			assert.strictEqual(capturedContext.sectionSegment, 'test-section');
+			assert.strictEqual(capturedContext.field.fieldName, 'testField1');
+		});
+		it('should apply formatPrefix to each field value in summary', () => {
+			const question = new MultiFieldInputQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				inputFields: [
+					{ fieldName: 'testField1', formatPrefix: 'Name: ' },
+					{ fieldName: 'testField2', formatPrefix: 'Email: ' }
+				]
+			});
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: 'John Doe',
+						testField2: 'john@example.com'
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			assert.strictEqual(result[0].value, 'Name: John Doe<br>Email: john@example.com');
+		});
+		it('should only include answered fields in summary (partial answers)', () => {
+			const question = createMultiFieldInputQuestion();
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: 'Answered value',
+						testField2: null
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			// Only the answered field should be included
+			assert.strictEqual(result[0].value, 'Answered value');
+		});
+		it('should include falsy-but-valid answers such as false and 0 in the summary', () => {
+			const question = new MultiFieldInputQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				inputFields: [{ fieldName: 'testField1' }, { fieldName: 'testField2' }]
+			});
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: false,
+						testField2: 0
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			assert.strictEqual(result[0].value, 'false<br>0');
+		});
+		it('should exclude fields with an empty string answer from the summary', () => {
+			const question = createMultiFieldInputQuestion();
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: 'Answered value',
+						testField2: ''
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			// Only the non-empty field should be included, no trailing join string
+			assert.strictEqual(result[0].value, 'Answered value');
+		});
+		it('should escape HTML characters in field values by default', () => {
+			const question = createMultiFieldInputQuestion();
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: '<script>alert("xss")</script>',
+						testField2: 'Safe & Sound'
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			assert.strictEqual(result[0].value, '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;<br>Safe &amp; Sound');
+		});
+		it('should use default <br> join string when not in ManageListSection', () => {
+			const question = new MultiFieldInputQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				inputFields: [
+					{ fieldName: 'testField1' }, // no formatJoinString specified
+					{ fieldName: 'testField2' }
+				]
+			});
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: 'Value 1',
+						testField2: 'Value 2'
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			// Default join string should be <br> (not \n)
+			assert.ok(result[0].value.includes('<br>'));
+			assert.strictEqual(result[0].value, 'Value 1<br>Value 2');
+		});
+		it('should use custom formatJoinString when provided', () => {
+			const question = new MultiFieldInputQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				inputFields: [
+					{ fieldName: 'testField1', formatJoinString: ' - ' },
+					{ fieldName: 'testField2', formatJoinString: '' }
+				]
+			});
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: 'Value 1',
+						testField2: 'Value 2'
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			assert.strictEqual(result[0].value, 'Value 1 - Value 2');
+		});
+	});
+	describe('formatAnswer', () => {
+		it('should return notStartedText for null', () => {
+			const question = createMultiFieldInputQuestion();
+			assert.strictEqual(question.formatAnswer(null), 'Not started');
+		});
+		it('should return notStartedText for undefined', () => {
+			const question = createMultiFieldInputQuestion();
+			assert.strictEqual(question.formatAnswer(undefined), 'Not started');
+		});
+		it('should return empty string for empty string', () => {
+			const question = createMultiFieldInputQuestion();
+			assert.strictEqual(question.formatAnswer(''), '');
+		});
+		it('should escape HTML and convert newlines to <br>', () => {
+			const question = createMultiFieldInputQuestion();
+			assert.strictEqual(question.formatAnswer('Line 1\nLine <2>'), 'Line 1<br>Line &lt;2&gt;');
+		});
+		it('should not apply nl2br when isInManageListSection is true', () => {
+			const question = createMultiFieldInputQuestion();
+			question.isInManageListSection = true;
+			assert.strictEqual(question.formatAnswer('Line 1\nLine 2'), 'Line 1\nLine 2');
+		});
+		it('should capitalise answer when capitaliseAnswer is true', () => {
+			const question = new MultiFieldInputQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				inputFields: INPUTFIELDS,
+				capitaliseAnswer: true
+			});
+			assert.strictEqual(question.formatAnswer('hello world'), 'Hello world');
+		});
+		it('should not capitalise answer when capitaliseAnswer is false (default)', () => {
+			const question = createMultiFieldInputQuestion();
+			assert.strictEqual(question.formatAnswer('hello world'), 'hello world');
+		});
+		it('should coerce non-string values to string before formatting', () => {
+			const question = createMultiFieldInputQuestion();
+			assert.strictEqual(question.formatAnswer(123), '123');
+			assert.strictEqual(question.formatAnswer(true), 'true');
 		});
 	});
 });

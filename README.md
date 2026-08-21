@@ -181,20 +181,6 @@ The formatter function receives a context object with the following properties:
 | `question` | `Question` | The question instance                          |
 | `journey` | `Journey` | The journey instance                           |
 | `sectionSegment` | `string` | The current section segment                    |
-| `selectedOptions` | `Option[] \| undefined` | For OptionsQuestions (such as Checkbox or Radio), the matched option object(s) as an array |
-
-#### Answer Formats
-
-Different options-based questions store answers in different formats. The `selectedOptions` array normalises these formats for your formatter:
-
-| Question Type | Answer Format | `selectedOptions` Result |
-|---------------|---------------|--------------------------|
-| **Radio / Select** | Single string value: `"approved"` | `[{ text: 'Approved', value: 'approved' }]` |
-| **Radio / Select** | Conditional object: `{ value: "yes", conditional: "details" }` | `[{ text: 'Yes', value: 'yes', conditional: {...} }]` |
-| **Checkbox** | Comma-separated string: `"option1,option2"` | `[{ text: 'Option 1', value: 'option1' }, { text: 'Option 2', value: 'option2' }]` |
-| **Checkbox** | Single conditional object: `{ value: "other", conditional: "details" }` | `[{ text: 'Other', value: 'other', conditional: {...} }]` |
-
-For single-select questions (Radio, Select), use `selectedOptions[0]` to access the selected option. For multi-select questions (Checkbox), iterate over the array.
 
 #### Examples
 
@@ -207,10 +193,9 @@ formatSummaryValue: ({ formattedAnswer }) => `<strong>${escapeHtml(formattedAnsw
 **Conditional styling based on answer:**
 
 ```javascript
-formatSummaryValue: ({ selectedOptions }) => {
-    const selectedOption = selectedOptions[0];
-    const color = selectedOption?.value === 'approved' ? 'green' : 'red';
-    return `<span style="color: ${color}">${escapeHtml(selectedOption?.text ?? '-')}</span>`;
+formatSummaryValue: ({ answer, formattedAnswer }) => {
+    const color = answer === 'approved' ? 'green' : 'red';
+    return `<span style="color: ${color}">${escapeHtml(formattedAnswer)}</span>`;
 }
 ```
 
@@ -234,29 +219,7 @@ formatSummaryValue: ({ formattedAnswer, journey }) => {
 }
 ```
 
-**Using selectedOptions for single-select questions (Radio/Select):**
-
-```javascript
-formatSummaryValue: ({ selectedOptions }) => {
-    const selectedOption = selectedOptions[0];
-    // Access the full option object including any custom properties
-    const warning = selectedOption?.warning;
-    return warning ? `${escapeHtml(selectedOption?.text ?? '-')} ⚠️` : escapeHtml(selectedOption?.text ?? '-');
-}
-```
-
-**Using selectedOptions for multi-select questions (Checkbox):**
-
-```javascript
-formatSummaryValue: ({ selectedOptions }) => {
-    // Join all selected option texts with custom formatting
-    return selectedOptions
-        .map(opt => `<span class="tag">${escapeHtml(opt.text)}</span>`)
-        .join(' ');
-}
-```
-
-> **Note:** `formattedAnswer` is already escaped by dynamic-forms; you are responsible for escaping any additional user-controlled values you include (for example `answer`, option text from `selectedOptions`, or values read from `journey.response.answers`).
+> **Note:** `formattedAnswer` is already escaped by dynamic-forms; you are responsible for escaping any additional user-controlled values you include (for example `answer` or values read from `journey.response.answers`).
 
 ## Contributing
 
