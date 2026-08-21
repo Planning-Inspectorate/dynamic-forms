@@ -53,6 +53,21 @@ describe('./src/dynamic-forms/components/unit-option-entry/question.js', () => {
 		assert.strictEqual(unitOptionEntryQuestion.options, OPTIONS);
 	});
 
+	it('should default capitaliseAnswer to false', () => {
+		assert.strictEqual(unitOptionEntryQuestion.capitaliseAnswer, false);
+	});
+
+	it('should allow capitaliseAnswer to be set via constructor', () => {
+		const customQuestion = new UnitOptionEntryQuestion({
+			title: TITLE,
+			question: QUESTION,
+			fieldName: FIELDNAME,
+			conditionalFieldName: CONDITIONAL_FIELDNAME,
+			options: OPTIONS,
+			capitaliseAnswer: true
+		});
+		assert.strictEqual(customQuestion.capitaliseAnswer, true);
+	});
 	it('should handle decimal string formatting conversion', () => {
 		const journey = {
 			response: {

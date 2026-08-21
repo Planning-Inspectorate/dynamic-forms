@@ -41,6 +41,8 @@ export class UnitOptionEntryQuestion extends Question {
 	constructor({ conditionalFieldName, options, label, ...parentParams }, methodOverrides) {
 		super(
 			{
+				// Prevent capitalisation of answers, but allow override
+				capitaliseAnswer: false,
 				...parentParams,
 				viewFolder: 'unit-option-entry'
 			},
@@ -173,7 +175,7 @@ export class UnitOptionEntryQuestion extends Question {
 		if (isNaN(answerQuantity)) throw new Error('Conditional answer had an unexpected type');
 
 		const formattedAnswer = `${answerQuantity} ${answer}`;
-		return super.formatAnswerForSummary(sectionSegment, journey, formattedAnswer, false);
+		return super.formatAnswerForSummary(sectionSegment, journey, formattedAnswer);
 	}
 }
 

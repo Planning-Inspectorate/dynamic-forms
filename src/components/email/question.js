@@ -21,24 +21,13 @@ export class EmailQuestion extends SingleLineInputQuestion {
 		const autocomplete = params.autocomplete || 'email';
 
 		super({
+			// Prevent capitalisation of email answers by default, but allow override
+			capitaliseAnswer: false,
 			...params,
 			viewFolder: 'single-line-input', // Reuse single-line-input template
 			inputAttributes: emailInputAttributes,
 			autocomplete: autocomplete
 		});
-	}
-
-	/**
-	 * Override formatAnswerForSummary to prevent capitalization of email addresses
-	 * Email addresses should remain in their original case (typically lowercase)
-	 * @param {string} sectionSegment
-	 * @param {import('#journey').Journey} journey
-	 * @param {string} answer
-	 * @returns {Array}
-	 */
-	formatAnswerForSummary(sectionSegment, journey, answer) {
-		// Call parent method with capitals=false to prevent email capitalization
-		return super.formatAnswerForSummary(sectionSegment, journey, answer, false);
 	}
 }
 
