@@ -621,6 +621,101 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 			assert.ok(result[0].value.includes('<br>'));
 			assert.strictEqual(result[0].value, 'Value 1<br>Value 2');
 		});
+		it('should apply formatTextFunction to field values in summary', () => {
+			const formatTextFunction = (value) => `Formatted: ${value}`;
+			const question = new MultiFieldInputQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				inputFields: [
+					{ fieldName: 'testField1', formatTextFunction },
+					{ fieldName: 'testField2', formatTextFunction }
+				]
+			});
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: 'Value 1',
+						testField2: 'Value 2'
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			assert.strictEqual(result[0].value, 'Formatted: Value 1<br>Formatted: Value 2');
+		});
+		it('should escape output of formatTextFunction in summary', () => {
+			const formatTextFunction = (value) => `<b>${value}</b>`;
+			const question = new MultiFieldInputQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				inputFields: [{ fieldName: 'testField1', formatTextFunction }]
+			});
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: 'Value 1'
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			assert.strictEqual(result[0].value, '&lt;b&gt;Value 1&lt;/b&gt;');
+		});
+		it('should apply formatTextFunction before formatSummaryValue, passing it as formattedAnswer', () => {
+			const formatTextFunction = (value) => value.toUpperCase();
+			const formatSummaryValue = mock.fn(({ answer, formattedAnswer }) => `[${answer}] ${formattedAnswer}`);
+			const question = new MultiFieldInputQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				inputFields: [{ fieldName: 'testField1', formatTextFunction, formatSummaryValue }]
+			});
+
+			const journey = new Journey({
+				journeyId: 'TEST',
+				makeBaseUrl: () => 'base',
+				taskListUrl: 'cases/create-a-case/check-your-answers',
+				response: {
+					answers: {
+						testField1: 'Value 1'
+					}
+				},
+				journeyTemplate: 'mock template',
+				taskListTemplate: 'mock path',
+				journeyTitle: 'mock title',
+				sections: []
+			});
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			assert.strictEqual(formatSummaryValue.mock.callCount(), 1);
+			const capturedContext = formatSummaryValue.mock.calls[0].arguments[0];
+			// answer should remain the raw value
+			assert.strictEqual(capturedContext.answer, 'Value 1');
+			// formattedAnswer should reflect formatTextFunction output (escaped)
+			assert.strictEqual(capturedContext.formattedAnswer, 'VALUE 1');
+			assert.strictEqual(result[0].value, '[Value 1] VALUE 1');
+		});
 		it('should use custom formatJoinString when provided', () => {
 			const question = new MultiFieldInputQuestion({
 				title: TITLE,

@@ -137,11 +137,15 @@ export class MultiFieldInputQuestion extends Question {
 	 * @returns {string}
 	 */
 	#formatFieldForSummary(answer, field, journey, sectionSegment) {
+		// Apply formatTextFunction (if provided) before escaping, same as answerForViewModel
+		const textFormattedAnswer = this.#formatValue(answer, field.formatTextFunction);
+		const formattedAnswer = escape(String(textFormattedAnswer));
+
 		// If formatSummaryValue is provided, use it with full context (output is not escaped)
 		if (typeof field.formatSummaryValue === 'function') {
 			return field.formatSummaryValue({
 				answer,
-				formattedAnswer: escape(String(answer)),
+				formattedAnswer,
 				question: this,
 				journey,
 				sectionSegment,
@@ -149,8 +153,8 @@ export class MultiFieldInputQuestion extends Question {
 			});
 		}
 
-		// Default: escape the value
-		return escape(String(answer));
+		// Default: escaped, formatTextFunction-applied value
+		return formattedAnswer;
 	}
 
 	/**

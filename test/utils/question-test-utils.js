@@ -235,7 +235,8 @@ export function mockAnswer(q) {
 				for (const field of q.inputFields) {
 					res += mockInputFieldValue(field) + '<br>';
 				}
-				return res;
+				// Remove trailing <br>
+				return res.slice(0, -4);
 			}
 			break;
 		case COMPONENT_TYPES.ADDRESS: {
