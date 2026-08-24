@@ -1,18 +1,4 @@
-import js from '@eslint/js';
-import eslintConfigPrettier from 'eslint-config-prettier';
-import globals from 'globals';
+import { eslintConfig } from '@planning-inspectorate/coding-standards';
+import { defineConfig } from 'eslint/config';
 
-export default [
-	js.configs.recommended,
-	{
-		ignores: ['dist/**', 'node_modules/**', '**/*.min*.js', '**/static/scripts/app.js'],
-		languageOptions: {
-			ecmaVersion: 2025,
-			sourceType: 'module',
-			globals: {
-				...globals.node
-			}
-		}
-	},
-	eslintConfigPrettier
-];
+export default defineConfig(eslintConfig);

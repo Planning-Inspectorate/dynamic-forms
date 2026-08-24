@@ -45,6 +45,7 @@
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
     "@eslint/js": "^10.0.1",
+    "@planning-inspectorate/coding-standards": "^1.0.0",
     "@types/express": "^5.0.6",
     "body-parser": "^2.2.0",
     "conventional-changelog-conventionalcommits": "^10.2.0",
@@ -58,6 +59,8 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.0.4",
     "prettier": "^3.6.2",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "prettier-plugin-prisma": "^5.0.0",
     "semantic-release": "^25.0.1"
   },
   "publishConfig": {
