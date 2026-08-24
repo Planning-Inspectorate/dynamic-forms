@@ -15,7 +15,7 @@ export type ManageListRouteParams =
 			manageListItemId: string;
 			manageListQuestion: string;
 	  }
-	| {};
+	| object;
 
 export interface JourneyAnswers {
 	// if the answer is for a manage list question, the answer will be an array of answer objects
