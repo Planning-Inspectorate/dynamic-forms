@@ -11,7 +11,7 @@ const defaultOptionJoinString = ',';
  * @typedef {{
  *   text: string;
  *   value: string;
- *     hint?: object;
+ *	 hint?: object;
  *   checked?: boolean | undefined;
  *   attributes?: Record<string, string>;
  *   behaviour?: 'exclusive';
@@ -19,14 +19,16 @@ const defaultOptionJoinString = ',';
  *     question: string;
  *     type: string;
  *     fieldName: string;
- *         inputClasses?: string;
- *         html?: string;
+ *	   inputClasses?: string;
+ *	   html?: string;
  *     value?: unknown;
- *         label?: string;
- *         hint?: string
+ *	   label?: string;
+ *	   hint?: string
+ *	   prefix?: { text?: string; html?: string; classes?: string };
+ *	   suffix?: { text?: string; html?: string; classes?: string };
  *   };
- *     conditionalText?: {
- *       html: string;
+ *	 conditionalText?: {
+ *	   html: string;
  *   }
  *}} Option
  */
