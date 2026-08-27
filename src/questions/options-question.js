@@ -11,7 +11,7 @@ const defaultOptionJoinString = ',';
  * @typedef {{
  *   text: string;
  *   value: string;
- *     hint?: object;
+ *	 hint?: object;
  *   checked?: boolean | undefined;
  *   attributes?: Record<string, string>;
  *   behaviour?: 'exclusive';
@@ -19,14 +19,16 @@ const defaultOptionJoinString = ',';
  *     question: string;
  *     type: string;
  *     fieldName: string;
- *         inputClasses?: string;
- *         html?: string;
+ *	   inputClasses?: string;
+ *	   html?: string;
  *     value?: unknown;
- *         label?: string;
- *         hint?: string
+ *	   label?: string;
+ *	   hint?: string
+ *	   prefix?: { text?: string; html?: string; classes?: string };
+ *	   suffix?: { text?: string; html?: string; classes?: string };
  *   };
- *     conditionalText?: {
- *       html: string;
+ *	 conditionalText?: {
+ *	   html: string;
  *   }
  *}} Option
  */
@@ -161,7 +163,7 @@ export class OptionsQuestion extends Question {
 		if (selectedOptions.length !== fieldValues.length)
 			throw new Error(`User submitted option(s) did not correlate with valid answers to ${this.fieldName} question`);
 
-		// TODO DF-51 treat as an array
+		//TODO DF-51 treat as an array
 		answers[this.fieldName] = fieldValues.join(this.optionJoinString);
 
 		this.options.forEach((option) => {
