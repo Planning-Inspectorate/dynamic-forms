@@ -258,7 +258,7 @@ describe('DatePeriodQuestion', () => {
 		});
 	});
 
-	describe('formatAnswerForSummary', () => {
+	describe('formatAnswer', () => {
 		it('should return correctly formatted answer if it exists', () => {
 			const dateQuestion = new DatePeriodQuestion({
 				title: TITLE,
@@ -274,22 +274,12 @@ describe('DatePeriodQuestion', () => {
 				start: new Date('2023-01-01T00:00:00.000Z'),
 				end: new Date('2023-01-10T00:00:00.000Z')
 			};
-			const href = 'fake href';
 
-			const journey = {
-				getCurrentQuestionUrl: () => {
-					return href;
-				}
-			};
+			const result = dateQuestion.formatAnswer(answer);
 
-			const result = dateQuestion.formatAnswerForSummary('segment', journey, answer);
-
-			assert.strictEqual(result[0].value, 'Start: 00:00 1 January 2023<br>End: 00:00 10 January 2023');
-			assert.strictEqual(result[0].action.href, href);
-			assert.strictEqual(result[0].action.text, 'Change');
-			assert.strictEqual(result[0].action.visuallyHiddenText, QUESTION);
-			assert.strictEqual(result[0].key, TITLE);
+			assert.strictEqual(result, 'Start: 00:00 1 January 2023<br>End: 00:00 10 January 2023');
 		});
+
 		it('should return start only if set', () => {
 			const dateQuestion = new DatePeriodQuestion({
 				title: TITLE,
@@ -304,21 +294,30 @@ describe('DatePeriodQuestion', () => {
 			const answer = {
 				start: new Date('2023-01-01T00:00:00.000Z')
 			};
-			const href = 'fake href';
 
-			const journey = {
-				getCurrentQuestionUrl: () => {
-					return href;
-				}
+			const result = dateQuestion.formatAnswer(answer);
+
+			assert.strictEqual(result, 'Start: 00:00 1 January 2023');
+		});
+
+		it('should return end only if set', () => {
+			const dateQuestion = new DatePeriodQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
+				validators: VALIDATORS
+			});
+
+			const answer = {
+				end: new Date('2023-01-10T00:00:00.000Z')
 			};
 
-			const result = dateQuestion.formatAnswerForSummary('segment', journey, answer);
+			const result = dateQuestion.formatAnswer(answer);
 
-			assert.strictEqual(result[0].value, 'Start: 00:00 1 January 2023');
-			assert.strictEqual(result[0].action.href, href);
-			assert.strictEqual(result[0].action.text, 'Change');
-			assert.strictEqual(result[0].action.visuallyHiddenText, QUESTION);
-			assert.strictEqual(result[0].key, TITLE);
+			assert.strictEqual(result, 'End: 00:00 10 January 2023');
 		});
 
 		it('should use custom labels if set', () => {
@@ -337,6 +336,66 @@ describe('DatePeriodQuestion', () => {
 				start: new Date('2023-01-01T00:00:00.000Z'),
 				end: new Date('2023-01-10T00:00:00.000Z')
 			};
+
+			const result = dateQuestion.formatAnswer(answer);
+
+			assert.strictEqual(result, 'Open: 00:00 1 January 2023<br>Close: 00:00 10 January 2023');
+		});
+
+		it('should return not started text if answer does not exist', () => {
+			const dateQuestion = new DatePeriodQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
+				validators: VALIDATORS
+			});
+
+			const result = dateQuestion.formatAnswer(null);
+
+			assert.strictEqual(result, dateQuestion.notStartedText);
+		});
+
+		it('should escape html in labels', () => {
+			const dateQuestion = new DatePeriodQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
+				validators: VALIDATORS,
+				labels: { start: '<b>Start</b>', end: 'End' }
+			});
+
+			const answer = {
+				start: new Date('2023-01-01T00:00:00.000Z')
+			};
+
+			const result = dateQuestion.formatAnswer(answer);
+
+			assert.strictEqual(result, '&lt;b&gt;Start&lt;/b&gt;: 00:00 1 January 2023');
+		});
+	});
+
+	describe('formatAnswerForSummary', () => {
+		it('should integrate formatAnswer output with the summary row action and key', () => {
+			const dateQuestion = new DatePeriodQuestion({
+				title: TITLE,
+				question: QUESTION,
+				fieldName: FIELDNAME,
+				hint: HINT,
+				hintStart: HINTSTART,
+				hintEnd: HINTEND,
+				validators: VALIDATORS
+			});
+
+			const answer = {
+				start: new Date('2023-01-01T00:00:00.000Z'),
+				end: new Date('2023-01-10T00:00:00.000Z')
+			};
 			const href = 'fake href';
 
 			const journey = {
@@ -347,14 +406,15 @@ describe('DatePeriodQuestion', () => {
 
 			const result = dateQuestion.formatAnswerForSummary('segment', journey, answer);
 
-			assert.strictEqual(result[0].value, 'Open: 00:00 1 January 2023<br>Close: 00:00 10 January 2023');
+			assert.strictEqual(result[0].value, dateQuestion.formatAnswer(answer));
+			assert.strictEqual(result[0].value, 'Start: 00:00 1 January 2023<br>End: 00:00 10 January 2023');
 			assert.strictEqual(result[0].action.href, href);
 			assert.strictEqual(result[0].action.text, 'Change');
 			assert.strictEqual(result[0].action.visuallyHiddenText, QUESTION);
 			assert.strictEqual(result[0].key, TITLE);
 		});
 
-		it('should return not started if answer does not exist', () => {
+		it('should return not started action if answer does not exist', () => {
 			const dateQuestion = new DatePeriodQuestion({
 				title: TITLE,
 				question: QUESTION,

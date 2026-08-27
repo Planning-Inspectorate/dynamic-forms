@@ -140,33 +140,29 @@ export class DatePeriodQuestion extends Question {
 	}
 
 	/**
-	 * returns the formatted answers values to be used to build task list elements
+	 * Formats the start/end date period for display in the summary.
+	 *
+	 * @param {{start?: string|Date, end?: string|Date}} answer
+	 * @returns {string}
 	 */
-	formatAnswerForSummary(sectionSegment, journey, answer) {
-		let formattedAnswer;
-
-		if (answer) {
-			const start = answer.start && formatDateForDisplay(answer.start, { format: this.dateFormat });
-			const end = answer.end && formatDateForDisplay(answer.end, { format: this.dateFormat });
-			formattedAnswer = '';
-			if (start) {
-				formattedAnswer += `${this.labels.start}: ${start}`;
-				if (end) {
-					formattedAnswer += `\n`;
-				}
-			}
-			if (end) {
-				formattedAnswer += `${this.labels.end}: ${end}`;
-			}
-			formattedAnswer = nl2br(escape(formattedAnswer));
-		} else {
-			formattedAnswer = this.notStartedText;
+	formatAnswer(answer) {
+		if (!answer) {
+			return this.notStartedText;
 		}
 
-		const action = this.getAction(sectionSegment, journey, answer);
-		const key = this.title ?? this.question;
-
-		return [{ key: key, value: formattedAnswer, action: action }];
+		const start = answer.start && formatDateForDisplay(answer.start, { format: this.dateFormat });
+		const end = answer.end && formatDateForDisplay(answer.end, { format: this.dateFormat });
+		let formattedAnswer = '';
+		if (start) {
+			formattedAnswer += `${this.labels.start}: ${start}`;
+			if (end) {
+				formattedAnswer += `\n`;
+			}
+		}
+		if (end) {
+			formattedAnswer += `${this.labels.end}: ${end}`;
+		}
+		return nl2br(escape(formattedAnswer));
 	}
 }
 
