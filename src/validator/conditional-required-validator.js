@@ -1,11 +1,6 @@
 import { body } from 'express-validator';
-
 import BaseValidator from './base-validator.js';
 import { toArray } from '#src/lib/utils.js';
-
-/**
- * @typedef {import('../questions/question.js')} Question
- */
 
 /**
  * enforces a field is not empty when condition is satisfied
