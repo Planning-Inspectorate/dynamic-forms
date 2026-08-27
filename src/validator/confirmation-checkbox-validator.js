@@ -1,10 +1,5 @@
 import { body } from 'express-validator';
-
 import BaseValidator from './base-validator.js';
-
-/**
- * @typedef {import('../questions/question.js')} Question
- */
 
 /**
  * enforces a confirmation checkbox is checked before proceeding
