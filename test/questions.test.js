@@ -31,7 +31,7 @@ describe('question pages', () => {
 	 * @param {import('node:test').TestContext} ctx
 	 * @param {string} url
 	 * @param {string} snapshotName
-	 * @param {import('#src/questions/question.js')} q
+	 * @param {import('#src/questions/question.js').Question} q
 	 * @returns {Promise<void>}
 	 */
 	async function renderQuestionAndSnapshot(ctx, url, snapshotName, q) {
@@ -59,7 +59,7 @@ describe('question pages', () => {
 	/**
 	 * @param {import('node:test').TestContext} ctx
 	 * @param {string} url
-	 * @param {import('#src/questions/question.js')} q
+	 * @param {import('#src/questions/question.js').Question} q
 	 * @returns {Promise<string>}
 	 */
 	async function postQuestionCheck(ctx, url, q) {

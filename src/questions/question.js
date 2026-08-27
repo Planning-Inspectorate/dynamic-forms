@@ -192,7 +192,7 @@ export class Question {
 	 *
 	 * @param {Object} options
 	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} options.params
-	 * @param {import('../components/manage-list/question.js')} [options.manageListQuestion]
+	 * @param {import('../components/manage-list/question.js').ManageListQuestion} [options.manageListQuestion]
 	 * @param {import('../section.js').Section} options.section - the current section
 	 * @param {import('../journey/journey.js').Journey} options.journey - the journey we are in
 	 * @param {Record<string, unknown>} [options.customViewData] additional data to send to view
@@ -320,7 +320,7 @@ export class Question {
 	 * @param {import('express').Request} req
 	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {import('../section.js').Section} section
-	 * @param {import('../components/manage-list/question.js')} [manageListQuestion]
+	 * @param {import('../components/manage-list/question.js').ManageListQuestion} [manageListQuestion]
 	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel|undefined} returns the view model for displaying the error or undefined if there are no errors
 	 */
 	checkForValidationErrors(req, section, journey, manageListQuestion) {
