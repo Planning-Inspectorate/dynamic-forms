@@ -81,21 +81,45 @@ describe('components/manage-list/question', () => {
 		});
 	});
 
-	it('should format list answer for summary', (ctx) => {
-		const q = newQuestion();
-		mockRandomUUID(ctx);
-		const answerForSummary = q.formatAnswerForSummary('section-1', mockJourney(), [{}, {}, {}]);
-		assert.strictEqual(answerForSummary.length, 1);
-		assert.strictEqual(answerForSummary[0].value, '3 Things');
+	describe('formatAnswer', () => {
+		it('should return the not started text when answer is not set', () => {
+			const q = newQuestion();
+			assert.strictEqual(q.formatAnswer(undefined), q.notStartedText);
+		});
+
+		it('should return the not started text when answer is not an array', () => {
+			const q = newQuestion();
+			assert.strictEqual(q.formatAnswer('not-an-array'), q.notStartedText);
+		});
+
+		it('should return the not started text when answer is an empty array', () => {
+			const q = newQuestion();
+			assert.strictEqual(q.formatAnswer([]), q.notStartedText);
+		});
+
+		it('should return a count of the answers by default', () => {
+			const q = newQuestion();
+			assert.strictEqual(q.formatAnswer([{}, {}, {}]), '3 Things');
+		});
+
+		it('should render all answers when showAnswersInSummary is true', (ctx) => {
+			// nunjucks.render uses the last environment configured, so make sure one is configured
+			configureNunjucksTestEnv();
+			const { q } = questionWithManageQuestions(ctx, { showAnswersInSummary: true });
+			const formatted = q.formatAnswer([{}, {}, {}]);
+			assertSnapshot(ctx, formatted, 'manage-list-answer-summary.html');
+		});
 	});
 
-	it('should support showing all answers in the format list answer for summary', (ctx) => {
-		// nunjucks.render uses the last environment configured, so make sure one is configured
-		configureNunjucksTestEnv();
-		const { q } = questionWithManageQuestions(ctx, { showAnswersInSummary: true });
-		const answerForSummary = q.formatAnswerForSummary('section-1', mockJourney(), [{}, {}, {}]);
+	it('should integrate with formatAnswerForSummary to build a full summary row', (ctx) => {
+		const q = newQuestion();
+		mockRandomUUID(ctx);
+		const journey = mockJourney();
+		const answerForSummary = q.formatAnswerForSummary('section-1', journey, [{}, {}, {}]);
 		assert.strictEqual(answerForSummary.length, 1);
-		assertSnapshot(ctx, answerForSummary[0].value, 'manage-list-answer-summary.html');
+		assert.deepStrictEqual(answerForSummary[0].key, TITLE);
+		assert.strictEqual(answerForSummary[0].value, '3 Things');
+		assert.ok(answerForSummary[0].action);
 	});
 
 	it('should render with answers', (ctx) => {

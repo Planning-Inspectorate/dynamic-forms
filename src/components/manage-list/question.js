@@ -116,30 +116,26 @@ export class ManageListQuestion extends Question {
 	}
 
 	/**
-	 * returns the formatted answers values to be used to build task list elements
+	 * Format the answer for display in the summary, either as a count or as a list of answers
 	 */
-	formatAnswerForSummary(sectionSegment, journey, answer) {
-		let formattedAnswer = this.notStartedText;
-		if (answer && Array.isArray(answer)) {
-			if (this.#showAnswersInSummary) {
-				const answers = answer.map((a) => this.#formatItemAnswers(a));
-				// note: nunjucks.render uses the last configured environment
-				// so we assume here that it is the one used by the main application and
-				// is configured for dynamic-forms and govuk components
-				formattedAnswer = nunjucks.render('components/manage-list/answer-summary-list.njk', { answers });
-			} else if (answer.length > 0) {
-				formattedAnswer = `${answer.length} ${this.title}`;
-			}
+	formatAnswer(answer) {
+		if (!answer || !Array.isArray(answer)) {
+			return this.notStartedText;
 		}
-		const action = this.getAction(sectionSegment, journey, answer);
-		const key = this.title ?? this.question;
-		return [
-			{
-				key: key,
-				value: formattedAnswer,
-				action: action
-			}
-		];
+
+		if (this.#showAnswersInSummary) {
+			const answers = answer.map((a) => this.#formatItemAnswers(a));
+			// note: nunjucks.render uses the last configured environment
+			// so we assume here that it is the one used by the main application and
+			// is configured for dynamic-forms and govuk components
+			return nunjucks.render('components/manage-list/answer-summary-list.njk', { answers });
+		}
+
+		if (answer.length > 0) {
+			return `${answer.length} ${this.title}`;
+		}
+
+		return this.notStartedText;
 	}
 
 	renderConfirmationAction(res, itemToRemove, viewModel) {
