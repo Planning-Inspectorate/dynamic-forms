@@ -1,6 +1,7 @@
 /**
  * Defines a response to a journey, a set of Answers to the questions
  * @class
+ * @template {object} [Answers=import("#typedefs/journey-types.d.ts").JourneyAnswers]
  */
 export class JourneyResponse {
 	/**
@@ -14,7 +15,7 @@ export class JourneyResponse {
 	journeyId;
 
 	/**
-	 * @type {import('#typedefs/journey-types.d.ts').JourneyAnswers} - answers to the journey
+	 * @type {Answers} - answers to the journey
 	 */
 	answers;
 
@@ -22,7 +23,7 @@ export class JourneyResponse {
 	 * creates an instance of a JourneyResponse
 	 * @param {string} journeyId
 	 * @param {string} referenceId
-	 * @param {import('#typedefs/journey-types.d.ts').JourneyAnswers | null} answers
+	 * @param {Answers | null} answers
 	 * @param {string} [lpaCode]
 	 */
 	constructor(journeyId, referenceId, answers, lpaCode) {
