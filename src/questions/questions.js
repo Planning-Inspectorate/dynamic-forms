@@ -17,10 +17,19 @@ import TextEntryRedactQuestion from '../components/text-entry-redact/question.js
 import DateTimeQuestion from '../components/date-time/question.js';
 import ManageListQuestion from '../components/manage-list/question.js';
 
-// This looks a bit grim because so few of our
-// Questions overlap with Question correctly.
-// Maybe something to fix at some point
-/** @type {Record<string, import('./question.js').Question>} */
+/**
+ * A map of component 'type' (or name') to question class
+ *
+ * Pass this to `createQuestions` to generate question instances based on the `type` field of `QuestionProps`.
+ * To support custom questions, create a new object with these properties and the custom ones,
+ * @example
+ * ```
+ * const classes = {
+ *     ...questionClasses,
+ *     ...myCustomQuestions
+ * };
+ * ```
+ */
 export const questionClasses = Object.freeze({
 	[COMPONENT_TYPES.ADDRESS]: AddressQuestion,
 	[COMPONENT_TYPES.CHECKBOX]: CheckboxQuestion,
