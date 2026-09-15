@@ -75,6 +75,9 @@ describe('public API', () => {
 		assert.equal(typeof api.TextEntryRedactQuestion, 'function');
 		assert.equal(typeof api.UnitOptionEntryQuestion, 'function');
 
+		assert.equal(typeof api.ManageListSection, 'function');
+		assert.equal(typeof api.MANAGE_LIST_ACTIONS, 'object');
+
 		assert.equal(typeof api.BOOLEAN_OPTIONS, 'object');
 		assert.equal(typeof api.yesNoToBoolean, 'function');
 		assert.equal(typeof api.booleanToYesNoValue, 'function');
