@@ -61,7 +61,7 @@
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-prisma": "^5.0.0",
-    "semantic-release": "^25.0.1"
+    "semantic-release": "^25.0.9"
   },
   "publishConfig": {
     "access": "public"
