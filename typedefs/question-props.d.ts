@@ -237,6 +237,7 @@ type NumberEntryQuestionProps = NumberEntryQuestionParams & {
 };
 
 export type RadioQuestionParams = OptionsQuestionParams & {
+	viewFolder?: string;
 	label?: string;
 	legend?: string;
 };
@@ -246,6 +247,7 @@ type RadioQuestionProps = RadioQuestionParams & {
 };
 
 export type SelectQuestionParams = OptionsQuestionParams & {
+	viewFolder?: string;
 	disableAccessibleAutocomplete?: boolean;
 	label?: string;
 	legend?: string;
