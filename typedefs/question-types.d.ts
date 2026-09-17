@@ -2,6 +2,7 @@ import type { RouteParams } from './journey-types.d.ts';
 import type ManageListQuestion from '#src/components/manage-list/question.js';
 import type BaseValidator from '#src/validator/base-validator.js';
 import type { JourneyResponse } from '#src/journey/journey-response.js';
+import type { SummaryValueFormatter } from './question-props.d.ts';
 
 export interface QuestionParameters {
 	title: string;
