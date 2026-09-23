@@ -21,6 +21,9 @@ export class EmailValidator extends BaseValidator {
 	constructor({ options = {}, errorMessage, fieldName } = {}) {
 		super();
 
+		// snake_case to match the express-validator options for isEmail
+		// https://express-validator.github.io/docs/api/validation-chain#isemail
+		/* eslint-disable camelcase */
 		this.options = {
 			allow_display_name: options.allowDisplayName || false,
 			require_tld: options.requireTld !== false, // Default to true
@@ -28,6 +31,7 @@ export class EmailValidator extends BaseValidator {
 			allow_ip_domain: options.allowIpDomain || false,
 			...options
 		};
+		/* eslint-enable camelcase */
 
 		this.errorMessage = errorMessage || 'Enter an email address in the correct format, like name@example.com';
 		this.fieldName = fieldName;
