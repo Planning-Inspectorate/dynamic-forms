@@ -86,7 +86,7 @@ The controllers available are:
 
 The `buildSave` controller accepts a `SaveDataFn` which is passed the context required to save the answer(s). To save answers to session during a journey, a `SaveDataFn` implementation is provided called `saveDataToSession`.
 
-For other use cases, write a custom `SaveDataFn`. A basic implementation (if you are not using ManageList) needs to save the answers passed in as `data.answers`, which is an object whose keys are the question field names, and the values are the answers. For example:
+For other use cases, write a custom `SaveDataFn`. A basic implementation (if you are not using ManageList or DynamicSection) needs to save the answers passed in as `data.answers`, which is an object whose keys are the question field names, and the values are the answers. For example:
 
 ```typescript
 const update: SaveDataFn = async ({data}) => {
@@ -106,6 +106,51 @@ const update: SaveDataFn = async ({data, req, isManageListItem, manageListQuesti
     if (isManageListItem) {
         const update = {
             id: req.params.manageListItemId,
+            ...data.answers
+        };
+
+        console.log('saving', update);
+        // TODO: map to database
+        // TODO: write to database
+        return;
+    } else if (manageListItemRemove) {
+        const id = req.params.manageListItemId;
+        // identify which type of item it is via the field name
+        const type = manageListQuestionFieldName;
+        console.log('removing item', {id, type});
+        // TODO: delete from database
+        return;
+    }
+    const answers = data.answers;
+    
+    console.log('saving', answers);
+    
+    // TODO: map to database
+    // TODO: write to database
+}
+```
+
+To support `DynamicSection`, handle `isDynamicSection`, `dynamicSectionFieldName`, and `dynamicSectionId`. The implementation is very similar to the manage lists and the logic can be combined. For example:
+
+```typescript
+const update: SaveDataFn = async ({
+        data,
+        req,
+        isManageListItem,
+        manageListQuestionFieldName,
+        manageListItemRemove,
+        isDynamicSection,
+        dynamicSectionFieldName,
+        dynamicSectionId
+    }) => {
+    if (isManageListItem || isDynamicSection) {
+        // manage list and dynamic sections can be handled the same, just with different properties
+        // for the fieldName and item id
+        const fieldName = isManageListItem ? manageListQuestionFieldName : dynamicSectionFieldName;
+        const itemId = isManageListItem ? req.params.manageListItemId : dynamicSectionId;
+        
+        const update = {
+            id: itemId,
             ...data.answers
         };
 
@@ -269,6 +314,12 @@ formatSummaryValue: ({ formattedAnswer, journey }) => {
 ```
 
 > **Note:** `formattedAnswer` is already escaped by dynamic-forms; you are responsible for escaping any additional user-controlled values you include (for example `answer` or values read from `journey.response.answers`).
+
+### Other features
+
+See documentation in [docs](./docs), including:
+
+* [Dynamic Sections](./docs/Dynamic%20Sections.md)
 
 ## Contributing
 

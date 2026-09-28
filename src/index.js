@@ -55,7 +55,10 @@ export * from './questions/options-question.js';
 export { questionClasses } from './questions/questions.js';
 
 // Section
-export { Section } from './section.js';
+export * from './dynamic-section.js';
+// note: controller re-exports the section type
+// the named export is required here to override this
+export { Section, SECTION_STATUS, END_OF_SECTION } from './section.js';
 
 // Validators
 export * from './validator/address-validator.js';

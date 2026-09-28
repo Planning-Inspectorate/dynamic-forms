@@ -90,8 +90,10 @@ export class MultiFieldInputQuestion extends Question {
 	 * @returns {import('#typedefs/question-types.d.ts').SummaryRow[]}
 	 */
 	formatAnswerForSummary(sectionSegment, journey) {
+		// get the response/answers for the section we're in - which might be a dynamic section
+		const response = journey.responseForSection(sectionSegment);
 		// Handle unanswered case - delegate to parent for notStartedText
-		if (this.#allQuestionsUnanswered(journey)) {
+		if (this.#allQuestionsUnanswered(response)) {
 			return super.formatAnswerForSummary(sectionSegment, journey, null);
 		}
 
@@ -99,7 +101,7 @@ export class MultiFieldInputQuestion extends Question {
 		const defaultJoinString = this.isInManageListSection ? '\n' : '<br>';
 
 		let summaryDetails = this.inputFields.reduce((accumulator, field) => {
-			const rawAnswer = journey.response.answers[field.fieldName];
+			const rawAnswer = response.answers[field.fieldName];
 			if (rawAnswer === undefined || rawAnswer === null || rawAnswer === '') return accumulator;
 
 			const formatted = this.#formatFieldForSummary(rawAnswer, field, journey, sectionSegment);
@@ -159,11 +161,11 @@ export class MultiFieldInputQuestion extends Question {
 
 	/**
 	 * checks whether any answers have been provided for input field questions
-	 * @param {import('#journey').Journey} journey
+	 * @param {import('#journey-response').JourneyResponse} response
 	 * @returns {boolean}
 	 */
-	#allQuestionsUnanswered(journey) {
-		return this.inputFields.every((field) => journey.response.answers[field.fieldName] === undefined);
+	#allQuestionsUnanswered(response) {
+		return this.inputFields.every((field) => response.answers[field.fieldName] === undefined);
 	}
 
 	/**

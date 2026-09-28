@@ -2,6 +2,8 @@ import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
 import MultiFieldInputQuestion from './question.js';
 import { Journey } from '#journey';
+import { Section } from '#section';
+import { DynamicSection } from '#src/dynamic-section.js';
 
 const TITLE = 'title';
 const QUESTION = 'Question?';
@@ -226,30 +228,39 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 	});
 
 	describe('formatAnswerForSummary', () => {
-		it('should return formatted answer', async () => {
-			const question = createMultiFieldInputQuestion();
+		const createJourney = (response, question = createMultiFieldInputQuestion(), dynamicSection = false) => {
+			const section = dynamicSection
+				? new DynamicSection('Questions', 'questions', 'myList')
+				: new Section('Questions', 'questions');
 			const journey = new Journey({
 				journeyId: 'TEST',
 				makeBaseUrl: () => 'base',
 				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
-					answers: {
-						testField1: 'planning-permission',
-						testField2: 'Test User'
-					}
-				},
+				response,
 				journeyTemplate: 'mock template',
 				taskListTemplate: 'mock path',
 				journeyTitle: 'mock title',
-				sections: []
+				sections: [section.addQuestion(question)]
+			});
+			return { question, journey };
+		};
+		const action = {
+			href: 'base/questions/' + FIELDNAME,
+			visuallyHiddenText: QUESTION
+		};
+		it('should return formatted answer', async () => {
+			const { question, journey } = createJourney({
+				answers: {
+					testField1: 'planning-permission',
+					testField2: 'Test User'
+				}
 			});
 
 			const expectedResult = [
 				{
 					action: {
-						href: 'base/cases/create-a-case/check-your-answers',
-						text: 'Change',
-						visuallyHiddenText: 'Question?'
+						...action,
+						text: 'Change'
 					},
 					key: 'title',
 					value: 'planning-permission<br>Test User'
@@ -261,29 +272,18 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 			assert.deepStrictEqual(result, expectedResult);
 		});
 		it('should return an empty string as answer text for unanswered multi field question', async () => {
-			const question = createMultiFieldInputQuestion();
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
-					answers: {
-						testField1: null,
-						testField2: null
-					}
-				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
+			const { question, journey } = createJourney({
+				answers: {
+					testField1: null,
+					testField2: null
+				}
 			});
 
 			const expectedResult = [
 				{
 					action: {
-						href: 'base/cases/create-a-case/check-your-answers',
-						text: 'Answer',
-						visuallyHiddenText: 'Question?'
+						...action,
+						text: 'Answer'
 					},
 					key: 'title',
 					value: ''
@@ -295,29 +295,18 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 			assert.deepStrictEqual(result, expectedResult);
 		});
 		it('should return not started text for undefined multi field question', async () => {
-			const question = createMultiFieldInputQuestion();
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
-					answers: {
-						testField1: undefined,
-						testField2: undefined
-					}
-				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
+			const { question, journey } = createJourney({
+				answers: {
+					testField1: undefined,
+					testField2: undefined
+				}
 			});
 
 			const expectedResult = [
 				{
 					action: {
-						href: 'base/cases/create-a-case/check-your-answers',
-						text: 'Answer',
-						visuallyHiddenText: 'Question?'
+						...action,
+						text: 'Answer'
 					},
 					key: 'title',
 					value: 'Not started'
@@ -329,25 +318,14 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 			assert.deepStrictEqual(result, expectedResult);
 		});
 		it('should return escaped text with newlines (no <br>) when isInManageListSection is true', () => {
-			const question = createMultiFieldInputQuestion();
+			const { question, journey } = createJourney({
+				answers: {
+					testField1: 'Line 1',
+					testField2: 'Line & 2'
+				}
+			});
 
 			question.isInManageListSection = true;
-
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
-					answers: {
-						testField1: 'Line 1',
-						testField2: 'Line & 2'
-					}
-				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
-			});
 
 			const expectedValue = 'Line 1\nLine &amp; 2';
 
@@ -365,21 +343,15 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 				formatSummaryValue: ({ formattedAnswer }) => `Custom: ${formattedAnswer}`
 			});
 
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
+			const { journey } = createJourney(
+				{
 					answers: {
 						testField1: 'Value 1',
 						testField2: 'Value 2'
 					}
 				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
-			});
+				question
+			);
 
 			const result = question.formatAnswerForSummary('questions', journey);
 
@@ -397,22 +369,15 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 					{ fieldName: 'testField2', formatSummaryValue, formatJoinString: '<br>' }
 				]
 			});
-
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
+			const { journey } = createJourney(
+				{
 					answers: {
 						testField1: 'Value 1',
 						testField2: 'Value 2'
 					}
 				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
-			});
+				question
+			);
 
 			// formatSummaryValue should be applied in summary (with HTML not escaped)
 			const summaryResult = question.formatAnswerForSummary('questions', journey);
@@ -432,22 +397,16 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 				inputFields: [{ fieldName: 'testField1', formatSummaryValue }]
 			});
 
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
+			const { journey } = createJourney(
+				{
 					answers: {
 						testField1: 'Test Value'
 					}
 				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
-			});
+				question
+			);
 
-			question.formatAnswerForSummary('test-section', journey);
+			question.formatAnswerForSummary('questions', journey);
 
 			assert.strictEqual(formatSummaryValue.mock.callCount(), 1);
 			const capturedContext = formatSummaryValue.mock.calls[0].arguments[0];
@@ -455,7 +414,7 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 			assert.strictEqual(capturedContext.formattedAnswer, 'Test Value');
 			assert.strictEqual(capturedContext.question, question);
 			assert.strictEqual(capturedContext.journey, journey);
-			assert.strictEqual(capturedContext.sectionSegment, 'test-section');
+			assert.strictEqual(capturedContext.sectionSegment, 'questions');
 			assert.strictEqual(capturedContext.field.fieldName, 'testField1');
 		});
 		it('should apply formatPrefix to each field value in summary', () => {
@@ -468,22 +427,15 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 					{ fieldName: 'testField2', formatPrefix: 'Email: ' }
 				]
 			});
-
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
+			const { journey } = createJourney(
+				{
 					answers: {
 						testField1: 'John Doe',
 						testField2: 'john@example.com'
 					}
 				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
-			});
+				question
+			);
 
 			const result = question.formatAnswerForSummary('questions', journey);
 
@@ -492,21 +444,15 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 		it('should only include answered fields in summary (partial answers)', () => {
 			const question = createMultiFieldInputQuestion();
 
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
+			const { journey } = createJourney(
+				{
 					answers: {
 						testField1: 'Answered value',
 						testField2: null
 					}
 				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
-			});
+				question
+			);
 
 			const result = question.formatAnswerForSummary('questions', journey);
 
@@ -521,43 +467,26 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 				inputFields: [{ fieldName: 'testField1' }, { fieldName: 'testField2' }]
 			});
 
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
+			const { journey } = createJourney(
+				{
 					answers: {
 						testField1: false,
 						testField2: 0
 					}
 				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
-			});
+				question
+			);
 
 			const result = question.formatAnswerForSummary('questions', journey);
 
 			assert.strictEqual(result[0].value, 'false<br>0');
 		});
 		it('should exclude fields with an empty string answer from the summary', () => {
-			const question = createMultiFieldInputQuestion();
-
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
-					answers: {
-						testField1: 'Answered value',
-						testField2: ''
-					}
-				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
+			const { journey, question } = createJourney({
+				answers: {
+					testField1: 'Answered value',
+					testField2: ''
+				}
 			});
 
 			const result = question.formatAnswerForSummary('questions', journey);
@@ -566,22 +495,11 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 			assert.strictEqual(result[0].value, 'Answered value');
 		});
 		it('should escape HTML characters in field values by default', () => {
-			const question = createMultiFieldInputQuestion();
-
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
-					answers: {
-						testField1: '<script>alert("xss")</script>',
-						testField2: 'Safe & Sound'
-					}
-				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
+			const { journey, question } = createJourney({
+				answers: {
+					testField1: '<script>alert("xss")</script>',
+					testField2: 'Safe & Sound'
+				}
 			});
 
 			const result = question.formatAnswerForSummary('questions', journey);
@@ -598,22 +516,15 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 					{ fieldName: 'testField2' }
 				]
 			});
-
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
+			const { journey } = createJourney(
+				{
 					answers: {
 						testField1: 'Value 1',
 						testField2: 'Value 2'
 					}
 				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
-			});
+				question
+			);
 
 			const result = question.formatAnswerForSummary('questions', journey);
 
@@ -632,22 +543,15 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 					{ fieldName: 'testField2', formatTextFunction }
 				]
 			});
-
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
+			const { journey } = createJourney(
+				{
 					answers: {
 						testField1: 'Value 1',
 						testField2: 'Value 2'
 					}
 				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
-			});
+				question
+			);
 
 			const result = question.formatAnswerForSummary('questions', journey);
 
@@ -662,20 +566,14 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 				inputFields: [{ fieldName: 'testField1', formatTextFunction }]
 			});
 
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
+			const { journey } = createJourney(
+				{
 					answers: {
 						testField1: 'Value 1'
 					}
 				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
-			});
+				question
+			);
 
 			const result = question.formatAnswerForSummary('questions', journey);
 
@@ -691,20 +589,14 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 				inputFields: [{ fieldName: 'testField1', formatTextFunction, formatSummaryValue }]
 			});
 
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
+			const { journey } = createJourney(
+				{
 					answers: {
 						testField1: 'Value 1'
 					}
 				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
-			});
+				question
+			);
 
 			const result = question.formatAnswerForSummary('questions', journey);
 
@@ -727,25 +619,46 @@ describe('./src/dynamic-forms/components/multi-field-input/question.js', () => {
 				]
 			});
 
-			const journey = new Journey({
-				journeyId: 'TEST',
-				makeBaseUrl: () => 'base',
-				taskListUrl: 'cases/create-a-case/check-your-answers',
-				response: {
+			const { journey } = createJourney(
+				{
 					answers: {
 						testField1: 'Value 1',
 						testField2: 'Value 2'
 					}
 				},
-				journeyTemplate: 'mock template',
-				taskListTemplate: 'mock path',
-				journeyTitle: 'mock title',
-				sections: []
-			});
+				question
+			);
 
 			const result = question.formatAnswerForSummary('questions', journey);
 
 			assert.strictEqual(result[0].value, 'Value 1 - Value 2');
+		});
+		it('should use section-scoped answers in summary for dynamic sections', () => {
+			const { journey, question } = createJourney(
+				{
+					answers: {
+						// root answers should not be used for a dynamic section summary
+						testField1: 'root value 1',
+						testField2: 'root value 2',
+						myList: [{ id: 'questions', testField1: 'nested value 1', testField2: 'nested value 2' }]
+					}
+				},
+				createMultiFieldInputQuestion(),
+				true
+			);
+
+			const result = question.formatAnswerForSummary('questions', journey);
+
+			assert.deepStrictEqual(result, [
+				{
+					action: {
+						...action,
+						text: 'Change'
+					},
+					key: 'title',
+					value: 'nested value 1<br>nested value 2'
+				}
+			]);
 		});
 	});
 	describe('formatAnswer', () => {
