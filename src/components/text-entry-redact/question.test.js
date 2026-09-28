@@ -211,6 +211,9 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			getCurrentQuestionUrl: () => {
 				return '/redacted-comment';
 			},
+			responseForSection() {
+				return this.response;
+			},
 			response: {
 				answers: {}
 			}
@@ -248,6 +251,9 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			getCurrentQuestionUrl: () => {
 				return '/redacted-comment';
 			},
+			responseForSection() {
+				return this.response;
+			},
 			response: {
 				answers: {}
 			}
@@ -283,6 +289,9 @@ describe('./src/dynamic-forms/components/text-entry-redact/question.js', () => {
 			},
 			getCurrentQuestionUrl: () => {
 				return '/redacted-comment';
+			},
+			responseForSection() {
+				return this.response;
 			},
 			response: {
 				answers: {}

@@ -154,6 +154,21 @@ export class Journey {
 	}
 
 	/**
+	 * Get the response for the given section, required to support dynamic sections
+	 *
+	 * Often used in formatAnswerForSummary to get other answer fields.
+	 *
+	 * @param {string} sectionSegment
+	 */
+	responseForSection(sectionSegment) {
+		const section = this.getSection(sectionSegment);
+		if (!section) {
+			throw new Error(`No section found for section segment: '${sectionSegment}'`);
+		}
+		return section.getResponse(this.response);
+	}
+
+	/**
 	 * Get question within a section
 	 * @param {import('../section.js').Section} section
 	 * @param {string} questionSegment

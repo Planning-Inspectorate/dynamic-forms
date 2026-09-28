@@ -13,11 +13,12 @@ export function redirectToUnansweredQuestion(conditions = []) {
 		const { journeyResponse, journey } = res.locals;
 
 		for (const section of journey.sections) {
+			const response = section.getResponse(journeyResponse);
 			for (const question of section.questions) {
-				const answer = journey.response?.answers[question.fieldName];
+				const answer = response?.answers[question.fieldName];
 
-				const shouldSkip = conditions.some((condition) => condition(question, journeyResponse));
-				const shouldDisplay = !question.shouldDisplay || question.shouldDisplay(journeyResponse);
+				const shouldSkip = conditions.some((condition) => condition(question, response));
+				const shouldDisplay = !question.shouldDisplay || question.shouldDisplay(response);
 
 				if (shouldSkip || !shouldDisplay) {
 					continue;

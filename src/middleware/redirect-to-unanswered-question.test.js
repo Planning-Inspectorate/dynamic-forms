@@ -7,6 +7,7 @@ import { Journey } from '../journey/journey.js';
 import { Section } from '../section.js';
 import { COMPONENT_TYPES } from '../components/utils/component-types.js';
 import { questionHasAnswer } from '../components/utils/question-has-answer.js';
+import { DynamicSection } from '#src/dynamic-section.js';
 
 describe('redirectToUnansweredQuestion Middleware', () => {
 	const questions = {
@@ -143,6 +144,37 @@ describe('redirectToUnansweredQuestion Middleware', () => {
 
 		assert.strictEqual(res.redirect.mock.callCount(), 1);
 		assert.deepStrictEqual(res.redirect.mock.calls[0].arguments, ['base/url/task-list/page']);
+		assert.strictEqual(next.mock.callCount(), 0);
+	});
+
+	it('should support dynamic sections', () => {
+		const journeyResponse = new JourneyResponse(
+			'id-1',
+			'0000003',
+			{
+				questionOne: true,
+				questionTwo: false,
+				items: [
+					{ id: 'item-1', questionThree: true, questionFour: true },
+					{ id: 'item-2', questionThree: true }
+				]
+			},
+			'Q9999'
+		);
+		res.locals.journeyResponse = journeyResponse;
+		const sections = [
+			new Section('S1', 's1').addQuestion(questions.q1).addQuestion(questions.q2),
+			new DynamicSection('S2', 'item-1', 'items').addQuestion(questions.q3).addQuestion(questions.q4),
+			new DynamicSection('S3', 'item-2', 'items').addQuestion(questions.q3).addQuestion(questions.q4)
+		];
+		const journey = new Journey({ response: journeyResponse, ...params, sections });
+		res.locals.journey = journey;
+
+		redirectToUnansweredQuestion([])(req, res, next);
+
+		assert.strictEqual(res.redirect.mock.callCount(), 1);
+		// all questions answered apart from the last dynamic section question
+		assert.deepStrictEqual(res.redirect.mock.calls[0].arguments, ['base/url/item-2/question-4']);
 		assert.strictEqual(next.mock.callCount(), 0);
 	});
 });

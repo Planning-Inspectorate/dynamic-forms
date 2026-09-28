@@ -1,5 +1,5 @@
 import RequiredValidator from './validator/required-validator.js';
-import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
+import { answerObjectForListItem } from '#src/lib/answer-utils.js';
 
 /**
  * @typedef {((response: import('#journey-response').JourneyResponse) => boolean)} QuestionCondition
@@ -57,6 +57,18 @@ export class Section {
 	constructor(name, segment) {
 		this.name = name;
 		this.segment = segment;
+	}
+
+	/**
+	 * Is this section dynamic?
+	 *
+	 * Implemented as a getter so dynamic section can override it,
+	 * but it cannot be changed at runtime.
+	 *
+	 * @returns {boolean}
+	 */
+	get isDynamicSection() {
+		return false;
 	}
 
 	/**
@@ -206,7 +218,7 @@ export class Section {
 		if (manageListQuestion) {
 			// first check if the next question is within the manage list section
 			// here we get the answers for the manage list item for the question.shouldDisplay logic
-			const answers = answerObjectForManageList(response, manageListQuestion, routeParams.manageListItemId);
+			const answers = answerObjectForListItem(response, manageListQuestion, routeParams.manageListItemId);
 			const next = Section.getNextQuestion({
 				...params,
 				response: { answers },
@@ -218,10 +230,16 @@ export class Section {
 			}
 			return next;
 		}
-		return Section.getNextQuestion({
+		const nextQuestionParams = {
 			...params,
 			questions: this.questions
-		});
+		};
+		if (this.isDynamicSection) {
+			// for dynamic sections, the answers are within an array
+			const answers = answerObjectForListItem(response, this, this.segment);
+			nextQuestionParams.response = { answers };
+		}
+		return Section.getNextQuestion(nextQuestionParams);
 	}
 
 	/**
@@ -261,8 +279,11 @@ export class Section {
 		let requiredAnswerCount = 0;
 		let answerCount = 0;
 
+		// answers for this section may be within an array, for example dynamic sections
+		const response = this.getResponse(journeyResponse);
+
 		for (let question of this.questions) {
-			if (!question.shouldDisplay(journeyResponse)) {
+			if (!question.shouldDisplay(response)) {
 				continue;
 			}
 			// if question is a multi field input question, check all fields
@@ -271,10 +292,10 @@ export class Section {
 					if (question.fieldIsRequired(field.fieldName)) {
 						requiredQuestionCount++;
 					}
-					if (question.isAnswered(journeyResponse, field.fieldName)) {
+					if (question.isAnswered(response, field.fieldName)) {
 						answerCount++;
 					}
-					if (question.isAnswered(journeyResponse, field.fieldName) && question.fieldIsRequired(field.fieldName)) {
+					if (question.isAnswered(response, field.fieldName) && question.fieldIsRequired(field.fieldName)) {
 						requiredAnswerCount++;
 					}
 				}
@@ -283,11 +304,11 @@ export class Section {
 					requiredQuestionCount++;
 				}
 
-				if (question.isAnswered(journeyResponse)) {
+				if (question.isAnswered(response)) {
 					answerCount++;
 				}
 
-				if (question.isAnswered(journeyResponse) && question.isRequired()) {
+				if (question.isAnswered(response) && question.isRequired()) {
 					requiredAnswerCount++;
 				}
 			}
@@ -305,6 +326,26 @@ export class Section {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Get the journey response (answers) for this section
+	 * That is most often the root answers object
+	 * For dynamic sections, it is an object within the configured array
+	 *
+	 * @param {import('#journey-response').JourneyResponse} journeyResponse
+	 */
+	getResponse(journeyResponse) {
+		// if this is a dynamic section, answers are within an array
+		// only answers within the dynamic section can be used for display logic
+		if (this.isDynamicSection) {
+			// this is not a JourneyResponse class, but is like it
+			// DF-46 will likely replace usage of JourneyResponse with an interface
+			return {
+				answers: answerObjectForListItem(journeyResponse, this, this.segment)
+			};
+		}
+		return journeyResponse;
 	}
 
 	/**

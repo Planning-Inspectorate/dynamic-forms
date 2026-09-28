@@ -169,7 +169,9 @@ export class UnitOptionEntryQuestion extends Question {
 		const selectedOption = this.options.find((option) => option.value === answer);
 		const conversionFactor =
 			(!conditionalIsJustHTML(selectedOption?.conditional) && selectedOption?.conditional.conversionFactor) || 1;
-		const unconvertedAnswer = journey.response.answers[this.conditionalFieldName];
+		// get the response/answers for the section we're in - which might be a dynamic section
+		const response = journey.responseForSection(sectionSegment);
+		const unconvertedAnswer = response.answers[this.conditionalFieldName];
 
 		const answerQuantity = Number(unconvertedAnswer) / conversionFactor;
 		if (isNaN(answerQuantity)) throw new Error('Conditional answer had an unexpected type');
