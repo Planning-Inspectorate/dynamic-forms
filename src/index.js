@@ -55,7 +55,8 @@ export * from './questions/options-question.js';
 export { questionClasses } from './questions/questions.js';
 
 // Section
-export { Section } from './section.js';
+export * from './dynamic-section.js';
+export * from './section.js';
 
 // Validators
 export * from './validator/address-validator.js';

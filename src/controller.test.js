@@ -3,11 +3,12 @@ import assert from 'node:assert';
 import { list, question, buildSave } from './controller.js';
 
 import { Journey } from './journey/journey.js';
-import { SECTION_STATUS } from './section.js';
+import { Section, SECTION_STATUS } from './section.js';
 
 import { mockReq, mockRes } from '#test/utils/utils.js';
 import { BOOLEAN_OPTIONS } from '#src/components/boolean/question.js';
 import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.js';
+import { DynamicSection } from '#src/dynamic-section.js';
 
 const mockBaseUrl = '/manage-appeals/questionnaire';
 const mockRef = '123456';
@@ -18,145 +19,129 @@ const mockAnswer = 'Not started';
 
 function testSetup() {
 	const sections = [
+		new Section('Section 1', 'segment-1'),
+		new Section('Section 2', 'segment-2'),
+		new DynamicSection('Section 3', 'segment-3', 'arrayOfAnswers')
+	];
+	// mock/override what we need
+	mock.method(sections[0], 'getStatus', () => SECTION_STATUS.COMPLETE);
+	mock.method(sections[0], 'isComplete', () => true);
+	sections[0].questions = [
 		{
-			name: 'Section 1',
-			segment: 'segment-1',
-			getStatus: () => {
-				return SECTION_STATUS.COMPLETE;
-			},
-			isComplete: () => {
-				return true;
-			},
-			questions: [
+			title: 'Title 1a',
+			question: 'Why?',
+			taskList: true,
+			fieldName: 'title-1a',
+			shouldDisplay: () => true,
+			formatAnswerForSummary: mock.fn(() => [
 				{
-					title: 'Title 1a',
-					question: 'Why?',
-					taskList: true,
-					fieldName: 'title-1a',
-					shouldDisplay: () => true,
-					formatAnswerForSummary: mock.fn(() => [
-						{
-							key: 'Title 1a',
-							value: mockAnswer,
-							action: {
-								href: '/manage-appeals/questionnaire/123456/segment-1/title-1a',
-								text: 'Answer',
-								visuallyHiddenText: 'Answer'
-							}
-						}
-					])
-				},
+					key: 'Title 1a',
+					value: mockAnswer,
+					action: {
+						href: '/manage-appeals/questionnaire/123456/segment-1/title-1a',
+						text: 'Answer',
+						visuallyHiddenText: 'Answer'
+					}
+				}
+			])
+		},
+		{
+			title: 'Title 1b',
+			question: 'Who?',
+			taskList: false,
+			fieldName: 'title-1b',
+			shouldDisplay: () => true,
+			formatAnswerForSummary: mock.fn(() => [
 				{
-					title: 'Title 1b',
-					question: 'Who?',
-					taskList: false,
-					fieldName: 'title-1b',
-					shouldDisplay: () => true,
-					formatAnswerForSummary: mock.fn(() => [
-						{
-							key: 'Title 1b',
-							value: mockAnswer,
-							action: {
-								href: '/manage-appeals/questionnaire/123456/segment-1/title-1b',
-								text: 'Answer',
-								visuallyHiddenText: 'Answer'
-							}
-						}
-					])
+					key: 'Title 1b',
+					value: mockAnswer,
+					action: {
+						href: '/manage-appeals/questionnaire/123456/segment-1/title-1b',
+						text: 'Answer',
+						visuallyHiddenText: 'Answer'
+					}
+				}
+			])
+		}
+	];
+
+	mock.method(sections[1], 'getStatus', () => SECTION_STATUS.IN_PROGRESS);
+	mock.method(sections[1], 'isComplete', () => true);
+	sections[1].questions = [
+		{
+			title: 'Title 2a',
+			question: 'How?',
+			taskList: true,
+			fieldName: 'title-2a',
+			shouldDisplay: () => true,
+			formatAnswerForSummary: () => [
+				{
+					key: 'Title 2a',
+					value: mockAnswer,
+					action: {
+						href: '/manage-appeals/questionnaire/123456/segment-2/title-2a',
+						text: 'Answer',
+						visuallyHiddenText: 'Answer'
+					}
 				}
 			]
 		},
 		{
-			name: 'Section 2',
-			segment: 'segment-2',
-			getStatus: () => {
-				return SECTION_STATUS.IN_PROGRESS;
-			},
-			isComplete: () => {
-				return true;
-			},
-			questions: [
+			title: 'Title 2b',
+			question: 'What?',
+			taskList: true,
+			fieldName: 'title-2b',
+			shouldDisplay: () => true,
+			formatAnswerForSummary: () => [
 				{
-					title: 'Title 2a',
-					question: 'How?',
-					taskList: true,
-					fieldName: 'title-2a',
-					shouldDisplay: () => true,
-					formatAnswerForSummary: () => [
-						{
-							key: 'Title 2a',
-							value: mockAnswer,
-							action: {
-								href: '/manage-appeals/questionnaire/123456/segment-2/title-2a',
-								text: 'Answer',
-								visuallyHiddenText: 'Answer'
-							}
-						}
-					]
-				},
+					key: 'Title 2b',
+					value: mockAnswer,
+					action: {
+						href: '/manage-appeals/questionnaire/123456/segment-2/title-2b',
+						text: 'Answer',
+						visuallyHiddenText: 'Answer'
+					}
+				}
+			]
+		}
+	];
+
+	mock.method(sections[2], 'getStatus', () => SECTION_STATUS.NOT_STARTED);
+	mock.method(sections[2], 'isComplete', () => false);
+	sections[2].questions = [
+		{
+			title: 'Title 3a',
+			question: 'When?',
+			taskList: false,
+			fieldName: 'title-3a',
+			shouldDisplay: () => true,
+			formatAnswerForSummary: () => [
 				{
-					title: 'Title 2b',
-					question: 'What?',
-					taskList: true,
-					fieldName: 'title-2b',
-					shouldDisplay: () => true,
-					formatAnswerForSummary: () => [
-						{
-							key: 'Title 2b',
-							value: mockAnswer,
-							action: {
-								href: '/manage-appeals/questionnaire/123456/segment-2/title-2b',
-								text: 'Answer',
-								visuallyHiddenText: 'Answer'
-							}
-						}
-					]
+					key: 'Title 3a',
+					value: mockAnswer,
+					action: {
+						href: '/manage-appeals/questionnaire/123456/segment-3/title-3a',
+						text: 'Answer',
+						visuallyHiddenText: 'Answer'
+					}
 				}
 			]
 		},
 		{
-			name: 'Section 3',
-			segment: 'segment-3',
-			getStatus: () => {
-				return SECTION_STATUS.NOT_STARTED;
-			},
-			isComplete: mock.fn(),
-			questions: [
+			title: 'Title 3b',
+			question: 'Really?',
+			taskList: true,
+			fieldName: 'title-3b',
+			shouldDisplay: () => true,
+			formatAnswerForSummary: () => [
 				{
-					title: 'Title 3a',
-					question: 'When?',
-					taskList: false,
-					fieldName: 'title-3a',
-					shouldDisplay: () => true,
-					formatAnswerForSummary: () => [
-						{
-							key: 'Title 3a',
-							value: mockAnswer,
-							action: {
-								href: '/manage-appeals/questionnaire/123456/segment-3/title-3a',
-								text: 'Answer',
-								visuallyHiddenText: 'Answer'
-							}
-						}
-					]
-				},
-				{
-					title: 'Title 3b',
-					question: 'Really?',
-					taskList: true,
-					fieldName: 'title-3b',
-					shouldDisplay: () => true,
-					formatAnswerForSummary: () => [
-						{
-							key: 'Title 3b',
-							value: mockAnswer,
-							action: {
-								href: '/manage-appeals/questionnaire/123456/segment-3/title-3b',
-								text: 'Answer',
-								visuallyHiddenText: 'Answer'
-							}
-						}
-					]
+					key: 'Title 3b',
+					value: mockAnswer,
+					action: {
+						href: '/manage-appeals/questionnaire/123456/segment-3/title-3b',
+						text: 'Answer',
+						visuallyHiddenText: 'Answer'
+					}
 				}
 			]
 		}
@@ -186,7 +171,7 @@ function testSetup() {
 
 	const mockJourney = new Journey({ response: mockResponse, ...journeyParams });
 
-	res.locals.journeyResponse = {};
+	res.locals.journeyResponse = mockResponse;
 	res.locals.journey = mockJourney;
 
 	const sampleQuestionObj = {
@@ -343,6 +328,50 @@ describe('dynamic-form/controller', () => {
 				text: 'Answer',
 				visuallyHiddenText: 'Answer'
 			});
+		});
+
+		it('should render dynamic sections answers', async () => {
+			const { req, res, mockJourney } = testSetup();
+			const dynamicSection = mockJourney.sections[2];
+
+			// setup a dynamic section
+			// TODO: consider using real questions?
+			const format = (sectionSegment, journey, answer) => [
+				{
+					key: 'Some key',
+					value: answer,
+					action: {
+						href: '/manage-appeals/questionnaire/123456/segment-2/title-2a',
+						text: 'Answer',
+						visuallyHiddenText: 'Answer'
+					}
+				}
+			];
+			dynamicSection.questions[0].formatAnswerForSummary = mock.fn(format);
+			dynamicSection.questions[0].taskList = true;
+			dynamicSection.questions[1].formatAnswerForSummary = mock.fn(format);
+			dynamicSection.questions[1].taskList = true;
+			mockJourney.response.answers = {
+				arrayOfAnswers: [
+					{ id: 'id-1', 'title-3a': 'First answer', 'title-3b': 'Second answer' },
+					// should match these answers - based on section segment
+					{ id: 'segment-3', 'title-3a': 'Another answer', 'title-3b': 'A fourth answer' }
+				]
+			};
+
+			await list(req, res, '', {});
+
+			const mockFn = res.render.mock;
+			assert.strictEqual(mockFn.callCount(), 1);
+			const args = mockFn.calls[0].arguments[1];
+			assert.ok(args.summaryListData);
+			const section = args.summaryListData.sections[2];
+			assert.strictEqual(section.heading, 'Section 3');
+			const rows = section.list.rows;
+			assert.strictEqual(rows.length, 2);
+			// answers extracted from the array
+			assert.strictEqual(rows[0].value.html, 'Another answer');
+			assert.strictEqual(rows[1].value.html, 'A fourth answer');
 		});
 	});
 
@@ -562,6 +591,9 @@ describe('dynamic-form/controller', () => {
 					isManageListItem: undefined,
 					manageListItemRemove: false,
 					manageListQuestionFieldName: undefined,
+					isDynamicSection: false,
+					dynamicSectionId: undefined,
+					dynamicSectionFieldName: undefined,
 					data: undefined
 				}
 			]);
@@ -623,7 +655,10 @@ describe('dynamic-form/controller', () => {
 						data: undefined,
 						isManageListItem: undefined,
 						manageListItemRemove: false,
-						manageListQuestionFieldName: undefined
+						manageListQuestionFieldName: undefined,
+						isDynamicSection: false,
+						dynamicSectionId: undefined,
+						dynamicSectionFieldName: undefined
 					}
 				],
 				'save data args'
@@ -678,7 +713,7 @@ describe('dynamic-form/controller', () => {
 			};
 			sampleQuestionObjWithActions.getDataToSave.mock.mockImplementationOnce(() => ({
 				answers: {
-					[sampleQuestionObj.fieldName]: 'my-answer',
+					[sampleQuestionObjWithActions.fieldName]: 'my-answer',
 					aBooleanToTest: true
 				}
 			}));
@@ -747,6 +782,63 @@ describe('dynamic-form/controller', () => {
 			assert.strictEqual(mockJourney.getNextQuestionUrl.mock.callCount(), 0);
 			// journey response should not be edited if redirecting to task list
 			assert.strictEqual(Object.keys(res.locals.journeyResponse.answers).length, 0);
+		});
+
+		it('should call saveData with dynamic section properties', async () => {
+			const { req, res, mockJourney, sampleQuestionObj, journeyParams } = testSetup();
+			const journeyId = 'has-questionnaire';
+			const dynamicSection = mockJourney.sections[2];
+
+			sampleQuestionObj.getDataToSave.mock.mockImplementationOnce(() => ({
+				answers: {
+					[sampleQuestionObj.fieldName]: 'my-answer'
+				}
+			}));
+
+			req.params = {
+				referenceId: mockRef,
+				section: dynamicSection.segment,
+				question: dynamicSection.questions[0].fieldName
+			};
+
+			res.locals.journeyResponse = {
+				...journeyParams,
+				answers: {}
+			};
+
+			req.body = {
+				sampleFieldName: true,
+				sampleFieldName_sub: 'send this',
+				notSampleFieldName: 'do not send this'
+			};
+
+			mockJourney.getQuestionByParams = mock.fn();
+			mockJourney.getQuestionByParams.mock.mockImplementationOnce(() => sampleQuestionObj);
+
+			const saveData = mock.fn();
+			await buildSave(saveData)(req, res, journeyId);
+
+			assert.strictEqual(sampleQuestionObj.getDataToSave.mock.callCount(), 1);
+			assert.strictEqual(saveData.mock.callCount(), 1);
+			assert.deepStrictEqual(saveData.mock.calls[0].arguments, [
+				{
+					req,
+					res,
+					journeyId: journeyParams.journeyId,
+					referenceId: journeyParams.referenceId,
+					isManageListItem: undefined,
+					manageListItemRemove: false,
+					manageListQuestionFieldName: undefined,
+					isDynamicSection: true,
+					dynamicSectionId: 'segment-3',
+					dynamicSectionFieldName: 'arrayOfAnswers',
+					data: { answers: { [sampleQuestionObj.fieldName]: 'my-answer' } }
+				}
+			]);
+			// journey response should be edited if redirecting to next question
+			assert.deepStrictEqual(res.locals.journeyResponse.answers?.arrayOfAnswers, [
+				{ id: 'segment-3', [sampleQuestionObj.fieldName]: 'my-answer' }
+			]);
 		});
 
 		describe('manageListQuestions', () => {

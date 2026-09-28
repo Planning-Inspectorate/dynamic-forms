@@ -77,7 +77,9 @@ export class TextEntryRedactQuestion extends Question {
 	 * returns the formatted answers values to be used to build task list elements
 	 */
 	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
-		const redacted = journey.response.answers[this.fieldName + 'Redacted'];
+		// get the response/answers for the section we're in - which might be a dynamic section
+		const response = journey.responseForSection(sectionSegment);
+		const redacted = response.answers[this.fieldName + 'Redacted'];
 		let toShow;
 		if (this.onlyShowRedactedValueForSummary) {
 			toShow = redacted;

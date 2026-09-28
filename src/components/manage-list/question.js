@@ -85,6 +85,11 @@ export class ManageListQuestion extends Question {
 		}
 		const mockJourney = {
 			getCurrentQuestionUrl() {},
+			responseForSection() {
+				// this function is already passed the array-item
+				// call to formatAnswerForSummary may use responseForSection so we implement here
+				return this.response;
+			},
 			response: {
 				answers: answer
 			}

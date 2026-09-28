@@ -754,4 +754,13 @@ describe('./src/dynamic-forms/section.js', () => {
 			});
 		});
 	});
+
+	describe('responseForSection', () => {
+		it('should return response for normal section', () => {
+			const section = new Section('s1', 'S');
+			const res = { answers: {} };
+			const got = section.responseForSection(res);
+			assert.strictEqual(got, res);
+		});
+	});
 });

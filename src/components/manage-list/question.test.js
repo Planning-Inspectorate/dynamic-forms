@@ -54,7 +54,9 @@ describe('components/manage-list/question', () => {
 		const innerQ2 = {
 			url: 'second-question',
 			title: 'Q 2',
-			formatAnswerForSummary() {
+			formatAnswerForSummary(sectionSegment, journey) {
+				// simulate a question which may call responseForSection, such as multi field input
+				journey.responseForSection(sectionSegment);
 				return [{ value: 'mock answer 2' }];
 			}
 		};
