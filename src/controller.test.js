@@ -1,4 +1,4 @@
-import { describe, it, mock, beforeEach } from 'node:test';
+import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
 import { list, question, buildSave } from './controller.js';
 
@@ -9,214 +9,210 @@ import { mockReq, mockRes } from '#test/utils/utils.js';
 import { BOOLEAN_OPTIONS } from '#src/components/boolean/question.js';
 import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.js';
 
-const res = mockRes();
 const mockBaseUrl = '/manage-appeals/questionnaire';
 const mockRef = '123456';
 const mockTemplateUrl = 'template.njk';
 const mockListingPath = 'mockListingPath.njk';
 const mockJourneyTitle = 'Mock Manage Appeals';
 const mockAnswer = 'Not started';
-const sections = [
-	{
-		name: 'Section 1',
-		segment: 'segment-1',
-		getStatus: () => {
-			return SECTION_STATUS.COMPLETE;
-		},
-		isComplete: () => {
-			return true;
-		},
-		questions: [
-			{
-				title: 'Title 1a',
-				question: 'Why?',
-				taskList: true,
-				fieldName: 'title-1a',
-				shouldDisplay: () => true,
-				formatAnswerForSummary: mock.fn()
+
+function testSetup() {
+	const sections = [
+		{
+			name: 'Section 1',
+			segment: 'segment-1',
+			getStatus: () => {
+				return SECTION_STATUS.COMPLETE;
 			},
-			{
-				title: 'Title 1b',
-				question: 'Who?',
-				taskList: false,
-				fieldName: 'title-1b',
-				shouldDisplay: () => true,
-				formatAnswerForSummary: mock.fn(() => [
-					{
-						key: 'Title 1b',
-						value: mockAnswer,
-						action: {
-							href: '/manage-appeals/questionnaire/123456/segment-1/title-1b',
-							text: 'Answer',
-							visuallyHiddenText: 'Answer'
-						}
-					}
-				])
-			}
-		]
-	},
-	{
-		name: 'Section 2',
-		segment: 'segment-2',
-		getStatus: () => {
-			return SECTION_STATUS.IN_PROGRESS;
-		},
-		isComplete: () => {
-			return true;
-		},
-		questions: [
-			{
-				title: 'Title 2a',
-				question: 'How?',
-				taskList: true,
-				fieldName: 'title-2a',
-				shouldDisplay: () => true,
-				formatAnswerForSummary: () => [
-					{
-						key: 'Title 2a',
-						value: mockAnswer,
-						action: {
-							href: '/manage-appeals/questionnaire/123456/segment-2/title-2a',
-							text: 'Answer',
-							visuallyHiddenText: 'Answer'
-						}
-					}
-				]
+			isComplete: () => {
+				return true;
 			},
-			{
-				title: 'Title 2b',
-				question: 'What?',
-				taskList: true,
-				fieldName: 'title-2b',
-				shouldDisplay: () => true,
-				formatAnswerForSummary: () => [
-					{
-						key: 'Title 2b',
-						value: mockAnswer,
-						action: {
-							href: '/manage-appeals/questionnaire/123456/segment-2/title-2b',
-							text: 'Answer',
-							visuallyHiddenText: 'Answer'
+			questions: [
+				{
+					title: 'Title 1a',
+					question: 'Why?',
+					taskList: true,
+					fieldName: 'title-1a',
+					shouldDisplay: () => true,
+					formatAnswerForSummary: mock.fn(() => [
+						{
+							key: 'Title 1a',
+							value: mockAnswer,
+							action: {
+								href: '/manage-appeals/questionnaire/123456/segment-1/title-1a',
+								text: 'Answer',
+								visuallyHiddenText: 'Answer'
+							}
 						}
-					}
-				]
-			}
-		]
-	},
-	{
-		name: 'Section 3',
-		segment: 'segment-3',
-		getStatus: () => {
-			return SECTION_STATUS.NOT_STARTED;
+					])
+				},
+				{
+					title: 'Title 1b',
+					question: 'Who?',
+					taskList: false,
+					fieldName: 'title-1b',
+					shouldDisplay: () => true,
+					formatAnswerForSummary: mock.fn(() => [
+						{
+							key: 'Title 1b',
+							value: mockAnswer,
+							action: {
+								href: '/manage-appeals/questionnaire/123456/segment-1/title-1b',
+								text: 'Answer',
+								visuallyHiddenText: 'Answer'
+							}
+						}
+					])
+				}
+			]
 		},
-		isComplete: mock.fn(),
-		questions: [
-			{
-				title: 'Title 3a',
-				question: 'When?',
-				taskList: false,
-				fieldName: 'title-3a',
-				shouldDisplay: () => true,
-				formatAnswerForSummary: () => [
-					{
-						key: 'Title 3a',
-						value: mockAnswer,
-						action: {
-							href: '/manage-appeals/questionnaire/123456/segment-3/title-3a',
-							text: 'Answer',
-							visuallyHiddenText: 'Answer'
-						}
-					}
-				]
+		{
+			name: 'Section 2',
+			segment: 'segment-2',
+			getStatus: () => {
+				return SECTION_STATUS.IN_PROGRESS;
 			},
-			{
-				title: 'Title 3b',
-				question: 'Really?',
-				taskList: true,
-				fieldName: 'title-3b',
-				shouldDisplay: () => true,
-				formatAnswerForSummary: () => [
-					{
-						key: 'Title 3b',
-						value: mockAnswer,
-						action: {
-							href: '/manage-appeals/questionnaire/123456/segment-3/title-3b',
-							text: 'Answer',
-							visuallyHiddenText: 'Answer'
+			isComplete: () => {
+				return true;
+			},
+			questions: [
+				{
+					title: 'Title 2a',
+					question: 'How?',
+					taskList: true,
+					fieldName: 'title-2a',
+					shouldDisplay: () => true,
+					formatAnswerForSummary: () => [
+						{
+							key: 'Title 2a',
+							value: mockAnswer,
+							action: {
+								href: '/manage-appeals/questionnaire/123456/segment-2/title-2a',
+								text: 'Answer',
+								visuallyHiddenText: 'Answer'
+							}
 						}
-					}
-				]
-			}
-		]
-	}
-];
+					]
+				},
+				{
+					title: 'Title 2b',
+					question: 'What?',
+					taskList: true,
+					fieldName: 'title-2b',
+					shouldDisplay: () => true,
+					formatAnswerForSummary: () => [
+						{
+							key: 'Title 2b',
+							value: mockAnswer,
+							action: {
+								href: '/manage-appeals/questionnaire/123456/segment-2/title-2b',
+								text: 'Answer',
+								visuallyHiddenText: 'Answer'
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			name: 'Section 3',
+			segment: 'segment-3',
+			getStatus: () => {
+				return SECTION_STATUS.NOT_STARTED;
+			},
+			isComplete: mock.fn(),
+			questions: [
+				{
+					title: 'Title 3a',
+					question: 'When?',
+					taskList: false,
+					fieldName: 'title-3a',
+					shouldDisplay: () => true,
+					formatAnswerForSummary: () => [
+						{
+							key: 'Title 3a',
+							value: mockAnswer,
+							action: {
+								href: '/manage-appeals/questionnaire/123456/segment-3/title-3a',
+								text: 'Answer',
+								visuallyHiddenText: 'Answer'
+							}
+						}
+					]
+				},
+				{
+					title: 'Title 3b',
+					question: 'Really?',
+					taskList: true,
+					fieldName: 'title-3b',
+					shouldDisplay: () => true,
+					formatAnswerForSummary: () => [
+						{
+							key: 'Title 3b',
+							value: mockAnswer,
+							action: {
+								href: '/manage-appeals/questionnaire/123456/segment-3/title-3b',
+								text: 'Answer',
+								visuallyHiddenText: 'Answer'
+							}
+						}
+					]
+				}
+			]
+		}
+	];
 
-const journeyParams = {
-	sections,
-	journeyId: 'TEST',
-	referenceId: 'REF',
-	taskListUrl: 'task-list',
-	makeBaseUrl: () => `${mockBaseUrl}/${mockRef}`,
-	journeyTemplate: mockTemplateUrl,
-	taskListTemplate: mockListingPath,
-	journeyTitle: mockJourneyTitle
-};
+	const journeyParams = {
+		sections,
+		journeyId: 'TEST',
+		referenceId: 'REF',
+		taskListUrl: 'task-list',
+		makeBaseUrl: () => `${mockBaseUrl}/${mockRef}`,
+		journeyTemplate: mockTemplateUrl,
+		taskListTemplate: mockListingPath,
+		journeyTitle: mockJourneyTitle
+	};
 
-const mockResponse = {
-	referenceId: mockRef,
-	answers: {
-		'title-1a': 'yes',
-		'title-2a': null,
-		'title-2b': undefined
-	}
-};
+	const mockResponse = {
+		referenceId: mockRef,
+		answers: {
+			'title-1a': 'yes',
+			'title-2a': null,
+			'title-2b': undefined
+		}
+	};
+	const res = mockRes();
+	const req = mockReq(null);
 
-let mockJourney;
-let mockSummaryListData;
+	const mockJourney = new Journey({ response: mockResponse, ...journeyParams });
 
-const sampleQuestionObj = {
-	fieldName: 'sampleFieldName',
-	renderAction: mock.fn(),
-	getDataToSave: mock.fn(),
-	checkForValidationErrors: mock.fn(),
-	checkForSavingErrors: mock.fn(),
-	toViewModel: mock.fn(),
-	prepQuestionForRendering: mock.fn(),
-	formatAnswerForSummary: mock.fn(() => [mockAnswer]),
-	viewFolder: 'sampleType'
-};
+	res.locals.journeyResponse = {};
+	res.locals.journey = mockJourney;
 
-const mockSection = {
-	name: '123',
-	segment: 'test'
-};
+	const sampleQuestionObj = {
+		fieldName: 'sampleFieldName',
+		renderAction: mock.fn(),
+		getDataToSave: mock.fn(),
+		checkForValidationErrors: mock.fn(),
+		checkForSavingErrors: mock.fn(),
+		toViewModel: mock.fn(),
+		prepQuestionForRendering: mock.fn(),
+		formatAnswerForSummary: mock.fn(() => [mockAnswer]),
+		viewFolder: 'sampleType'
+	};
+
+	const mockSection = {
+		name: '123',
+		segment: 'test'
+	};
+
+	return { req, res, mockJourney, sampleQuestionObj, mockSection, journeyParams };
+}
 
 describe('dynamic-form/controller', () => {
-	let req;
-	beforeEach(() => {
-		res.locals.journeyResponse = {};
-		mockJourney = new Journey({ response: mockResponse, ...journeyParams });
-		res.locals.journey = mockJourney;
-		mockJourney.sections[0].questions[0].formatAnswerForSummary.mock.mockImplementation(() => [
-			{
-				key: 'Title 1a',
-				value: mockAnswer,
-				action: {
-					href: '/manage-appeals/questionnaire/123456/segment-1/title-1a',
-					text: 'Answer',
-					visuallyHiddenText: 'Answer'
-				}
-			}
-		]);
-		mockJourney.sections[2].isComplete = mock.fn(() => false);
-
-		mockSummaryListData = _getmockSummaryListData(mockJourney);
-		req = mockReq(null);
-	});
-
 	describe('list', () => {
 		it('should render the view correctly', async () => {
-			res.locals.journeyResponse.referenceId = mockRef;
+			const { req, res, mockJourney } = testSetup();
 			const appeal = { a: 1, caseReference: 2 };
 
 			const pageCaption = `Appeal ${appeal.caseReference}`;
@@ -228,7 +224,7 @@ describe('dynamic-form/controller', () => {
 				'components/task-list/index',
 				{
 					appeal,
-					summaryListData: mockSummaryListData,
+					summaryListData: _getmockSummaryListData(mockJourney),
 					layoutTemplate: mockListingPath,
 					journeyComplete: false,
 					pageCaption: pageCaption,
@@ -237,8 +233,8 @@ describe('dynamic-form/controller', () => {
 			]);
 		});
 		it('support array of actions', async () => {
+			const { req, res, mockJourney } = testSetup();
 			const mockFn = res.render.mock;
-			mockFn.resetCalls();
 			mockJourney.sections[0].questions[0].formatAnswerForSummary.mock.mockImplementation(() => [
 				{
 					key: 'Title 1a',
@@ -257,13 +253,14 @@ describe('dynamic-form/controller', () => {
 					]
 				}
 			]);
-			res.locals.journeyResponse.referenceId = mockRef;
+
 			const appeal = { a: 1, caseReference: 2 };
 
 			const pageCaption = `Appeal ${appeal.caseReference}`;
 			await list(req, res, pageCaption, { appeal });
 
-			mockSummaryListData.sections[0].list.rows[0].actions.items.push({
+			const expectSummaryList = _getmockSummaryListData(mockJourney);
+			expectSummaryList.sections[0].list.rows[0].actions.items.push({
 				href: '/manage-appeals/questionnaire/123456/segment-1/title-1a/edit',
 				text: 'Edit',
 				visuallyHiddenText: 'Edit'
@@ -274,7 +271,7 @@ describe('dynamic-form/controller', () => {
 				'components/task-list/index',
 				{
 					appeal,
-					summaryListData: mockSummaryListData,
+					summaryListData: expectSummaryList,
 					layoutTemplate: mockListingPath,
 					journeyComplete: false,
 					pageCaption: pageCaption,
@@ -284,9 +281,8 @@ describe('dynamic-form/controller', () => {
 		});
 
 		it('should format answer summary including conditional answer', async () => {
+			const { req, res, mockJourney } = testSetup();
 			const mockFn = mockJourney.sections[0].questions[0].formatAnswerForSummary.mock;
-			mockFn.resetCalls();
-			res.locals.journeyResponse.referenceId = mockRef;
 
 			await list(req, res);
 
@@ -300,8 +296,8 @@ describe('dynamic-form/controller', () => {
 			assert.strictEqual(args[2], expectedAnswer.value);
 		});
 		it('should format an undefined action as undefined', async () => {
+			const { req, res, mockJourney } = testSetup();
 			const mockFn = res.render.mock;
-			mockFn.resetCalls();
 			mockJourney.sections[0].questions[0].formatAnswerForSummary.mock.mockImplementation(() => [
 				{
 					key: 'Title 1a',
@@ -309,7 +305,7 @@ describe('dynamic-form/controller', () => {
 					action: undefined
 				}
 			]);
-			res.locals.journeyResponse.referenceId = mockRef;
+
 			const appeal = { a: 1, caseReference: 2 };
 
 			const pageCaption = `Appeal ${appeal.caseReference}`;
@@ -321,8 +317,8 @@ describe('dynamic-form/controller', () => {
 		});
 
 		it('should format a single action object as an array in the actions property', async () => {
+			const { req, res, mockJourney } = testSetup();
 			const mockFn = res.render.mock;
-			mockFn.resetCalls();
 			mockJourney.sections[0].questions[0].formatAnswerForSummary.mock.mockImplementation(() => [
 				{
 					key: 'Title 1a',
@@ -334,7 +330,6 @@ describe('dynamic-form/controller', () => {
 					}
 				}
 			]);
-			res.locals.journeyResponse.referenceId = mockRef;
 
 			await list(req, res);
 
@@ -353,6 +348,7 @@ describe('dynamic-form/controller', () => {
 
 	describe('question', () => {
 		it('should redirect if question is not found', async () => {
+			const { req, res, mockJourney } = testSetup();
 			mockJourney.getQuestionByParams = mock.fn();
 			mockJourney.getQuestionByParams.mock.mockImplementationOnce(() => null);
 
@@ -362,6 +358,7 @@ describe('dynamic-form/controller', () => {
 		});
 
 		it('should use custom action if renderAction is defined', async () => {
+			const { req, res, mockJourney, sampleQuestionObj } = testSetup();
 			mockJourney.getSection = mock.fn();
 			mockJourney.getSection.mock.mockImplementationOnce(() => {
 				return {};
@@ -377,8 +374,7 @@ describe('dynamic-form/controller', () => {
 		});
 
 		it('should render the question template', async () => {
-			sampleQuestionObj.renderAction.mock.resetCalls();
-			sampleQuestionObj.toViewModel.mock.resetCalls();
+			const { req, res, mockJourney, sampleQuestionObj, mockSection } = testSetup();
 			req.params.referenceId = mockRef;
 			const mockAnswer = 'sampleAnswer';
 			const mockBackLink = 'back';
@@ -404,7 +400,7 @@ describe('dynamic-form/controller', () => {
 		});
 
 		it('should redirect to tasklist when manage list action is remove and journey response has no answers', async () => {
-			res.redirect.mock.resetCalls();
+			const { req, res, mockJourney, sampleQuestionObj, mockSection } = testSetup();
 
 			sampleQuestionObj.isManageListQuestion = true;
 			sampleQuestionObj.renderConfirmationAction = mock.fn();
@@ -433,7 +429,7 @@ describe('dynamic-form/controller', () => {
 		});
 
 		it('should redirect to tasklist when manage list action is remove and the manage list answer is undefined', async () => {
-			res.redirect.mock.resetCalls();
+			const { req, res, mockJourney, sampleQuestionObj, mockSection } = testSetup();
 
 			sampleQuestionObj.isManageListQuestion = true;
 			sampleQuestionObj.renderConfirmationAction = mock.fn();
@@ -464,7 +460,7 @@ describe('dynamic-form/controller', () => {
 		});
 
 		it('should redirect to tasklist when manage list action is remove and the manage list answer is not an array', async () => {
-			res.redirect.mock.resetCalls();
+			const { req, res, mockJourney, sampleQuestionObj, mockSection } = testSetup();
 
 			sampleQuestionObj.isManageListQuestion = true;
 			sampleQuestionObj.renderConfirmationAction = mock.fn();
@@ -495,7 +491,7 @@ describe('dynamic-form/controller', () => {
 		});
 
 		it('should render the confirmation page when manage list action is remove and the question has a renderConfirmationAction function', async () => {
-			res.redirect.mock.resetCalls();
+			const { req, res, mockJourney, sampleQuestionObj, mockSection } = testSetup();
 
 			sampleQuestionObj.isManageListQuestion = true;
 
@@ -529,6 +525,7 @@ describe('dynamic-form/controller', () => {
 
 	describe('save', () => {
 		it('should use saveData', async () => {
+			const { req, res, mockJourney, sampleQuestionObj, journeyParams } = testSetup();
 			const journeyId = 'has-questionnaire';
 
 			req.params = {
@@ -573,12 +570,13 @@ describe('dynamic-form/controller', () => {
 			for (const mockFn of mocks) {
 				assert.strictEqual(mockFn.callCount(), 1);
 				assert.deepStrictEqual(mockFn.calls[0].arguments[0], req);
-				assert.deepStrictEqual(mockFn.calls[0].arguments[1], sections[0]);
+				assert.deepStrictEqual(mockFn.calls[0].arguments[1], mockJourney.sections[0]);
 				assert.deepStrictEqual(mockFn.calls[0].arguments[2], mockJourney);
 			}
 		});
 
 		it('should handle error', async () => {
+			const { req, res, mockJourney, sampleQuestionObj, journeyParams } = testSetup();
 			const journeyId = 'has-questionnaire';
 			const expectedViewModel = { a: 1 };
 			const sampleQuestionObjWithActions = {
@@ -639,6 +637,7 @@ describe('dynamic-form/controller', () => {
 		});
 
 		it('should handle validation errors', async () => {
+			const { req, res, mockJourney, sampleQuestionObj, journeyParams } = testSetup();
 			const expectedErrors = {
 				errorViewModel: 'mocked-validation-error'
 			};
@@ -671,7 +670,7 @@ describe('dynamic-form/controller', () => {
 		});
 
 		it('should handle saving', async () => {
-			res.redirect.mock.resetCalls();
+			const { req, res, mockJourney, sampleQuestionObj, journeyParams } = testSetup();
 			const journeyId = 'has-questionnaire';
 			const expectedUrl = 'redirect-url';
 			const sampleQuestionObjWithActions = {
@@ -713,7 +712,7 @@ describe('dynamic-form/controller', () => {
 		});
 
 		it('should redirect to task list if configured', async () => {
-			res.redirect.mock.resetCalls();
+			const { req, res, mockJourney, sampleQuestionObj, journeyParams } = testSetup();
 			const journeyId = 'has-questionnaire';
 			const expectedUrl = 'redirect-url';
 			const sampleQuestionObjWithActions = {
