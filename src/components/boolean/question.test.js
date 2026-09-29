@@ -54,7 +54,9 @@ describe('./src/dynamic-forms/components/boolean/question.js', () => {
 	const renderTests = [
 		{ answers: {}, yesChecked: false, noChecked: false },
 		{ answers: { [FIELDNAME]: BOOLEAN_OPTIONS.YES }, yesChecked: true, noChecked: false },
-		{ answers: { [FIELDNAME]: BOOLEAN_OPTIONS.NO }, yesChecked: false, noChecked: true }
+		{ answers: { [FIELDNAME]: BOOLEAN_OPTIONS.NO }, yesChecked: false, noChecked: true },
+		{ answers: { [FIELDNAME]: true }, yesChecked: true, noChecked: false },
+		{ answers: { [FIELDNAME]: false }, yesChecked: false, noChecked: true }
 	];
 	for (const t of renderTests) {
 		it(`should render with ${JSON.stringify(t.answers)}`, async () => {
@@ -90,4 +92,23 @@ describe('./src/dynamic-forms/components/boolean/question.js', () => {
 			assert.strictEqual(booleanToYesNoValue(t.req), t.expect);
 		});
 	}
+
+	describe('formatAnswer', () => {
+		it('formats a true boolean answer as Yes', () => {
+			const booleanQuestion = newQuestion();
+			assert.strictEqual(booleanQuestion.formatAnswer(true), 'Yes');
+		});
+		it('formats a false boolean answer as No', () => {
+			const booleanQuestion = newQuestion();
+			assert.strictEqual(booleanQuestion.formatAnswer(false), 'No');
+		});
+		it('formats a yes string answer as Yes', () => {
+			const booleanQuestion = newQuestion();
+			assert.strictEqual(booleanQuestion.formatAnswer(BOOLEAN_OPTIONS.YES), 'Yes');
+		});
+		it('formats a no string answer as No', () => {
+			const booleanQuestion = newQuestion();
+			assert.strictEqual(booleanQuestion.formatAnswer(BOOLEAN_OPTIONS.NO), 'No');
+		});
+	});
 });
