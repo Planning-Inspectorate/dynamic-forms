@@ -1,5 +1,9 @@
 import RadioQuestion from '../radio/question.js';
 
+/**
+ * @typedef {"yes"|"no"} YesNo
+ */
+
 export const BOOLEAN_OPTIONS = Object.freeze({
 	YES: 'yes',
 	NO: 'no'
@@ -16,6 +20,10 @@ export const yesNoToBoolean = (value) => {
 	return value === BOOLEAN_OPTIONS.YES;
 };
 
+/**
+ * @param value
+ * @return {YesNo}
+ */
 export const booleanToYesNoValue = (value) => {
 	return value ? BOOLEAN_OPTIONS.YES : BOOLEAN_OPTIONS.NO;
 };
@@ -105,6 +113,43 @@ export class BooleanQuestion extends RadioQuestion {
 		}
 
 		return { answers };
+	}
+
+	/**
+	 * Normalises a stored boolean answer back to 'yes'/'no' before computing the
+	 * view model value, so the radio's `checked` state resolves correctly.
+	 *
+	 * getDataToSave() saves a real boolean. Top-level questions get this converted
+	 * back to 'yes'/'no' by buildGetJourneyResponseFromSession, but that conversion
+	 * is shallow and doesn't reach into manage-list item arrays, so nested
+	 * BooleanQuestions (e.g. a manage-list sub-question) would otherwise receive
+	 * the raw boolean.
+	 *
+	 * @param {Record<string, unknown>} answers
+	 * @param {boolean} isPayload
+	 * @returns {unknown|YesNo}
+	 */
+	answerForViewModel(answers, isPayload) {
+		const rawValue = answers[this.fieldName];
+		if (typeof rawValue === 'boolean') {
+			return booleanToYesNoValue(rawValue);
+		}
+		return super.answerForViewModel(answers, isPayload);
+	}
+
+	/**
+	 * Normalises a stored boolean answer back to 'yes'/'no' before formatting,
+	 * so summary/check-your-answers pages display 'Yes'/'No' instead of the
+	 * literal 'true'/'false' - see answerForViewModel for why this is needed.
+	 *
+	 * @param {unknown} answer
+	 * @returns {string}
+	 */
+	formatAnswer(answer) {
+		if (typeof answer === 'boolean') {
+			return super.formatAnswer(booleanToYesNoValue(answer));
+		}
+		return super.formatAnswer(answer);
 	}
 }
 
