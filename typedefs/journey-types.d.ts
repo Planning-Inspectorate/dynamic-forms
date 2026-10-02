@@ -22,6 +22,13 @@ export interface JourneyAnswers {
 	[k: string]: unknown | ManageListAnswers[];
 }
 
+export interface JourneyResponseLike<Answers = JourneyAnswers> {
+	journeyId: string;
+	referenceId: string;
+	answers: Answers;
+	LPACode: string | undefined;
+}
+
 export interface ManageListAnswers {
 	id: string;
 	[k: string]: unknown;
