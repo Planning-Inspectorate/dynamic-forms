@@ -39,6 +39,54 @@ All exports are named exports from the root module:
 
 `import {COMPONENT_TYPES} from '@planning-inspectorate/dynamic-forms`
 
+### Custom answer types
+
+TypeScript consumers can supply an answer interface without an index signature. Both
+`JourneyResponse` and `Journey` default to `JourneyAnswers` when no answer type is specified.
+
+```typescript
+import { Journey, JourneyResponse } from '@planning-inspectorate/dynamic-forms';
+import type { JourneyResponseLike } from '@planning-inspectorate/dynamic-forms';
+
+interface HolidayAppViewModel {
+    holidayDestination: string;
+    holidayActivities: string[];
+}
+
+const answers: HolidayAppViewModel = {
+    holidayDestination: 'beach',
+    holidayActivities: ['swimming', 'sightseeing']
+};
+const response = new JourneyResponse<HolidayAppViewModel>('holiday-journey', 'ref', answers);
+const journey = new Journey<HolidayAppViewModel>({
+    journeyId: 'holiday-journey',
+    response,
+    makeBaseUrl: (currentResponse) => `/journey/${currentResponse.referenceId}`,
+    journeyTemplate: 'views/layout-journey.njk',
+    taskListTemplate: 'views/layout-check-your-answers.njk',
+    journeyTitle: 'Holiday Booking',
+    sections: []
+});
+
+journey.response.answers.holidayDestination; // string
+
+// Plain objects are also accepted in the constructor and by setResponse.
+const plainResponse: JourneyResponseLike<HolidayAppViewModel> = {
+    journeyId: 'holiday-journey',
+    referenceId: 'ref',
+    answers
+};
+journey.setResponse(plainResponse);
+```
+
+Answer types can also be inferred from the supplied response. `makeBaseUrl` and
+`setResponse` retain the journey's answer type. Component, validator, controller,
+and middleware APIs continue to use their existing default answer types.
+
+Supply populated answers when using an interface with required properties:
+`JourneyResponse` retains its existing empty-object fallback for null or missing
+answers, which does not populate those properties.
+
 ### Components
 
 Components available are exported via the `COMPONENT_TYPES` constant. 
