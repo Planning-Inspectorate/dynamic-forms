@@ -52,6 +52,7 @@ describe('public API', () => {
 		assert.equal(typeof api.Question, 'function');
 		assert.equal(typeof api.createQuestions, 'function');
 		assert.equal(typeof api.questionClasses, 'object');
+		assert.equal(typeof api.DynamicSection, 'function');
 		assert.equal(typeof api.Section, 'function');
 		assert.equal(typeof api.Journey, 'function');
 		assert.equal(typeof api.JourneyResponse, 'function');
@@ -84,5 +85,7 @@ describe('public API', () => {
 		assert.equal(typeof api.booleanToYesNoOrNull, 'function');
 		assert.equal(typeof api.REDACT_CHARACTER, 'string');
 		assert.equal(typeof api.TRUNCATED_MAX_LENGTH, 'number');
+		assert.equal(typeof api.END_OF_SECTION, 'symbol');
+		assert.equal(typeof api.SECTION_STATUS, 'object');
 	});
 });

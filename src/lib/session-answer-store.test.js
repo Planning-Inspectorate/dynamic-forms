@@ -123,6 +123,49 @@ describe('session-answer-store', () => {
 			});
 		});
 
+		it('should add a new dynamic section when not present in the session', async () => {
+			const req = mockReq();
+			req.session = {};
+			const journeyId = 'j-1';
+			const data = { answers: { q1: 'a1' } };
+			const isDynamicSection = true;
+			const dynamicSectionFieldName = 'myList';
+			const dynamicSectionId = 'section-1';
+			const saveDataToSession = buildSaveDataToSession();
+			await saveDataToSession({ req, journeyId, data, isDynamicSection, dynamicSectionFieldName, dynamicSectionId });
+			assert.deepStrictEqual(req.session, {
+				forms: {
+					'j-1': {
+						myList: [{ id: 'section-1', q1: 'a1' }]
+					}
+				}
+			});
+		});
+		it('should add to an existing dynamic section using the id when present in the session', async () => {
+			const req = mockReq();
+			req.session = {
+				forms: {
+					'j-1': {
+						myList: [{ id: 'section-1', q1: 'old value' }]
+					}
+				}
+			};
+			const journeyId = 'j-1';
+			const data = { answers: { q2: 'a1' } };
+			const isDynamicSection = true;
+			const dynamicSectionFieldName = 'myList';
+			const dynamicSectionId = 'section-1';
+			const saveDataToSession = buildSaveDataToSession();
+			await saveDataToSession({ req, journeyId, data, isDynamicSection, dynamicSectionFieldName, dynamicSectionId });
+			assert.deepStrictEqual(req.session, {
+				forms: {
+					'j-1': {
+						myList: [{ id: 'section-1', q1: 'old value', q2: 'a1' }]
+					}
+				}
+			});
+		});
+
 		it('should remove a managed list item using the id when present in the session', async () => {
 			const req = mockReq();
 			req.params = { manageListItemId: '56789' };

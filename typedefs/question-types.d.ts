@@ -92,6 +92,9 @@ export interface QuestionViewModel<TQuestionViewData extends BaseQuestionViewDat
 export interface PrepQuestionForRenderingOptions {
 	params: RouteParams;
 	manageListQuestion?: ManageListQuestion;
+	dynamicSection?: {
+		fieldName: string;
+	};
 }
 
 /**

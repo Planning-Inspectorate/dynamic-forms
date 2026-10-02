@@ -221,6 +221,12 @@ formatSummaryValue: ({ formattedAnswer, journey }) => {
 
 > **Note:** `formattedAnswer` is already escaped by dynamic-forms; you are responsible for escaping any additional user-controlled values you include (for example `answer` or values read from `journey.response.answers`).
 
+### Other features
+
+See documentation in [docs](./docs), including:
+
+* [Dynamic Sections](./docs/Dynamic%20Sections.md)
+
 ## Contributing
 
 When contributing to this package, ensure changes are generic and not service-specific. Speak to the R&D devs if you are not sure. Prefer configuration over hardcoding values, and ensure the code is well documented. 

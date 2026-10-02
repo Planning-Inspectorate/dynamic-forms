@@ -75,6 +75,9 @@ describe('./src/dynamic-forms/components/unit-option-entry/question.js', () => {
 					[CONDITIONAL_FIELDNAME]: '1.123456789'
 				}
 			},
+			responseForSection() {
+				return this.response;
+			},
 			getCurrentQuestionUrl: mock.fn()
 		};
 		const result = unitOptionEntryQuestion.formatAnswerForSummary('test', journey, 'ha');
@@ -87,6 +90,9 @@ describe('./src/dynamic-forms/components/unit-option-entry/question.js', () => {
 					[CONDITIONAL_FIELDNAME]: '1'
 				}
 			},
+			responseForSection() {
+				return this.response;
+			},
 			getCurrentQuestionUrl: mock.fn()
 		};
 		const result = unitOptionEntryQuestion.formatAnswerForSummary('test', journey, 'ha');
@@ -98,6 +104,9 @@ describe('./src/dynamic-forms/components/unit-option-entry/question.js', () => {
 				answers: {
 					[CONDITIONAL_FIELDNAME]: 'hello'
 				}
+			},
+			responseForSection() {
+				return this.response;
 			},
 			getCurrentQuestionUrl: mock.fn()
 		};

@@ -1,33 +1,32 @@
 /**
  *
  * @param {import('../../journey/journey-response.js').JourneyResponse} response
- * @param {import('./question.js')} manageListQuestion
- * @param {string} manageListItemId
+ * @param {{fieldName: string}} withFieldName
+ * @param {string} itemId
  * @returns {Record<string, unknown>}
  */
-export function answerObjectForManageList(response, manageListQuestion, manageListItemId) {
-	const answers = response.answers[manageListQuestion.fieldName];
+export function answerObjectForListItem(response, withFieldName, itemId) {
+	const answers = response.answers[withFieldName.fieldName];
 	if (!Array.isArray(answers)) {
 		return {};
 	}
-	return answers.find((a) => a.id === manageListItemId) || {};
+	return answers.find((a) => a.id === itemId) || {};
 }
 
 /**
- * Similar to answerObjectForManageList but will edit response and add a new array entry if not found
+ * Similar to answerObjectForListItem but will edit response and add a new array entry if not found
  *
  * @param {import('../../journey/journey-response.js').JourneyResponse} response
- * @param {import('./question.js')} manageListQuestion
- * @param {import('#typedefs/journey-types.d.ts').RouteParams} params
+ * @param {{fieldName: string}} withFieldName
+ * @param {string} itemId
  * @returns {import('#typedefs/journey-types.d.ts').ManageListAnswers}
  */
-export function answerObjectForManageListSaving(response, manageListQuestion, params) {
-	const answersList =
-		response.answers[manageListQuestion?.fieldName] || (response.answers[manageListQuestion?.fieldName] = []);
-	let answers = answersList.find((item) => item.id === params.manageListItemId);
+export function answerObjectForListItemSaving(response, withFieldName, itemId) {
+	const answersList = response.answers[withFieldName?.fieldName] || (response.answers[withFieldName?.fieldName] = []);
+	let answers = answersList.find((item) => item.id === itemId);
 	if (!answers) {
 		answers = {
-			id: params.manageListItemId
+			id: itemId
 		};
 		answersList.push(answers);
 	}

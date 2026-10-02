@@ -1,6 +1,6 @@
 import { SECTION_STATUS } from './section.js';
 import questionUtils from './components/utils/question-utils.js';
-import { answerObjectForManageListSaving } from '#src/components/manage-list/utils.js';
+import { answerObjectForListItemSaving } from '#src/components/manage-list/utils.js';
 import { booleanToYesNoValue } from '#src/components/boolean/question.js';
 import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.js';
 import { toArray } from '#src/lib/utils.js';
@@ -92,6 +92,9 @@ export async function list(req, res, pageCaption, viewData) {
 		const status = section.getStatus(journeyResponse);
 		const sectionView = buildSectionViewModel(section.name, status);
 
+		// answers for this section may be within an array, for example dynamic sections
+		const response = section.responseForSection(journeyResponse);
+
 		// update completed count
 		if (status === SECTION_STATUS.COMPLETE) {
 			summaryListData.completedSectionCount++;
@@ -104,11 +107,13 @@ export async function list(req, res, pageCaption, viewData) {
 				continue;
 			}
 
-			if (!question.shouldDisplay(journeyResponse)) {
+			if (!question.shouldDisplay(response)) {
 				continue;
 			}
 
-			const answers = journey.response?.answers;
+			// answers here may be from an array for dynamic sections
+			// this is handled by section.responseForSection above
+			const answers = response.answers;
 			let answer = answers[question.fieldName];
 			const conditionalAnswer = questionUtils.getConditionalAnswer(answers, question, answer);
 			if (conditionalAnswer) {
@@ -195,6 +200,9 @@ export async function question(req, res) {
  * @property {boolean} isManageListItem
  * @property {string} [manageListQuestionFieldName]
  * @property {boolean} [manageListItemRemove]
+ * @property {boolean} isDynamicSection is this save action for a question within a DynamicSection?
+ * @property {string} [dynamicSectionId] if this is within a DynamicSection, what is the section ID (segment)
+ * @property {string} [dynamicSectionFieldName] if this is within a DynamicSection, what is the fieldName for the array?
  * @property {Object<string, any>} data
  */
 
@@ -229,6 +237,7 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				return res.redirect(journey.taskListUrl);
 			}
 		}
+		const isDynamicSection = section.isDynamicSection;
 
 		try {
 			// check for validation errors
@@ -248,6 +257,9 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				isManageListItem: question.isInManageListSection,
 				manageListQuestionFieldName: manageListQuestion?.fieldName,
 				manageListItemRemove: req.params?.manageListAction === MANAGE_LIST_ACTIONS.REMOVE,
+				isDynamicSection,
+				dynamicSectionId: isDynamicSection ? section.segment : undefined,
+				dynamicSectionFieldName: isDynamicSection ? section.fieldName : undefined,
 				data
 			});
 
@@ -264,7 +276,9 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 			// as question.shouldDisplay checks the response and is used to determine the next question
 			let answers = journeyResponse.answers;
 			if (question.isInManageListSection) {
-				answers = answerObjectForManageListSaving(journeyResponse, manageListQuestion, req.params);
+				answers = answerObjectForListItemSaving(journeyResponse, manageListQuestion, req.params.manageListItemId);
+			} else if (isDynamicSection) {
+				answers = answerObjectForListItemSaving(journeyResponse, section, section.segment);
 			}
 			for (const [k, v] of Object.entries(data?.answers || {})) {
 				if (typeof v === 'boolean') {

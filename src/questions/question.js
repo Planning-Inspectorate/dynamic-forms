@@ -1,7 +1,7 @@
 import escape from 'escape-html';
 import { capitalize, nl2br, trimTrailingSlash } from '../lib/utils.js';
 import MultiFieldInputValidator from '../validator/multi-field-input-validator.js';
-import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
+import { answerObjectForListItem } from '#src/components/manage-list/utils.js';
 
 /**
  * A specific question within a journey which is made up of one (usually) or many (sometimes) components and their required content.
@@ -202,7 +202,8 @@ export class Question {
 	toViewModel({ params, manageListQuestion, section, journey, customViewData, payload }) {
 		const viewModel = this.prepQuestionForRendering(section, journey, customViewData, payload, {
 			params,
-			manageListQuestion
+			manageListQuestion,
+			dynamicSection: section.isDynamicSection ? section : undefined
 		});
 		viewModel.backLink = journey.getBackLink({ params, manageListQuestion });
 		return viewModel;
@@ -215,7 +216,7 @@ export class Question {
 	 * @param {import('../journey/journey.js').Journey} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {unknown} [payload]
-	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} [options] - required to support manage list question
+	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} [options] - required to support manage list question and dynamic sections
 	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel}
 	 */
 	prepQuestionForRendering(section, journey, customViewData, payload, options) {
@@ -280,13 +281,13 @@ export class Question {
 	addCustomDataToViewModel(viewModel) {}
 
 	/**
-	 * Get the answers object from the journey response, which may be nested in an array for manage list questions
+	 * Get the answers object from the journey response, which may be nested in an array for manage list questions or dynamic sections
 	 *
 	 * @param {import('../journey/journey-response.js').JourneyResponse} response
 	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} [options]
 	 * @returns {Record<string, any>}
 	 */
-	answerObjectFromJourneyResponse(response, { params, manageListQuestion } = {}) {
+	answerObjectFromJourneyResponse(response, { params, manageListQuestion, dynamicSection } = {}) {
 		if (this.isInManageListSection) {
 			if (!params?.manageListItemId) {
 				throw new Error('no list item id for manage list question');
@@ -295,7 +296,11 @@ export class Question {
 				throw new Error('no manageListQuestion for manage list question');
 			}
 			// if this is a manage list question, the response is within the 'parent' manage list answers array
-			return answerObjectForManageList(response, manageListQuestion, params.manageListItemId);
+			return answerObjectForListItem(response, manageListQuestion, params.manageListItemId);
+		}
+		if (dynamicSection) {
+			// if this is a question in a dynamic section, the response is within an answers array, key by section
+			return answerObjectForListItem(response, dynamicSection, params.section);
 		}
 		return response.answers;
 	}
@@ -393,6 +398,11 @@ export class Question {
 
 	/**
 	 * returns the formatted answers values to be used to build task list elements
+	 *
+	 * If overriding this method and access answers on the journey, use journey.responseForSection
+	 * to get the answers, instead of `journey.response` directly. This is to support DynamicSections
+	 * where answers are in an array. See `MultiFieldInputQuestion` for an example.
+	 *
 	 * @param {string} sectionSegment
 	 * @param {import('../journey/journey.js').Journey} journey
 	 * @param {unknown} answer

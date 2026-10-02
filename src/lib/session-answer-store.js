@@ -50,7 +50,10 @@ export function buildSaveDataToSession({ reqParam } = {}) {
 		data,
 		isManageListItem,
 		manageListQuestionFieldName,
-		manageListItemRemove = false
+		manageListItemRemove = false,
+		isDynamicSection,
+		dynamicSectionFieldName,
+		dynamicSectionId
 	}) => {
 		if (!req.session) {
 			throw new Error('request session required');
@@ -64,12 +67,17 @@ export function buildSaveDataToSession({ reqParam } = {}) {
 		}
 		let answers = forms[journeyId] || (forms[journeyId] = {});
 
-		if (isManageListItem) {
-			const answersList = answers[manageListQuestionFieldName] || (answers[manageListQuestionFieldName] = []);
-			answers = answersList.find((item) => item.id === req.params.manageListItemId);
+		if (isManageListItem || isDynamicSection) {
+			// manage list and dynamic sections can be handled the same, just with different properties
+			// for the fieldName and item id
+			const fieldName = isManageListItem ? manageListQuestionFieldName : dynamicSectionFieldName;
+			const itemId = isManageListItem ? req.params.manageListItemId : dynamicSectionId;
+
+			const answersList = answers[fieldName] || (answers[fieldName] = []);
+			answers = answersList.find((item) => item.id === itemId);
 			if (!answers) {
-				answers = { id: req.params.manageListItemId };
-				answersList.push(answers);
+				answers = { id: itemId }; // answers object to manipulate and add other answers to
+				answersList.push(answers); // add the answers object to the array
 			}
 		} else if (manageListItemRemove && manageListQuestionFieldName && req.params.manageListItemId) {
 			const answersList = answers[manageListQuestionFieldName];

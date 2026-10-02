@@ -285,6 +285,25 @@ describe('./src/dynamic-forms/question.js', () => {
 				/no manageListQuestion for manage list question/
 			);
 		});
+
+		it('should return dynamic section object', () => {
+			const question = getTestQuestion();
+			const answers = {
+				id: 'section-1',
+				myField: 'my-value'
+			};
+			const journeyResponse = {
+				answers: {
+					myList: [answers]
+				}
+			};
+			const params = { section: 'section-1' };
+			const got = question.answerObjectFromJourneyResponse(journeyResponse, {
+				params,
+				dynamicSection: { fieldName: 'myList' }
+			});
+			assert.strictEqual(got, answers);
+		});
 	});
 
 	describe('renderAction', () => {
