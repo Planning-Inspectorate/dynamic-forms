@@ -1,8 +1,10 @@
-/**
- * @param {(req: import('express').Request, journeyResponse: import('../journey/journey-response.ts').JourneyResponse) => import('../journey/journey.ts').Journey} createJourney
- * @returns {import('express').Handler}
- */
-export function buildGetJourney(createJourney) {
+import type { JourneyResponse } from '#src/journey/journey-response.ts';
+import type { Journey } from '#src/journey/journey.ts';
+import type { Request, Handler } from 'express';
+
+export type CreateJourney = (req: Request, journeyResponse: JourneyResponse) => Journey;
+
+export function buildGetJourney(createJourney: CreateJourney): Handler {
 	return (req, res, next) => {
 		if (!('journeyId' in res.locals.journeyResponse)) {
 			throw new Error('no journey ID specified');
