@@ -31,14 +31,14 @@
     "nunjucks": "^3.2.4"
   },
   "imports": {
-    "#question-types": "./typedefs/question-types.d.ts",
+    "#question-types": "./typedefs/question-types.ts",
     "#typedefs/*": "./typedefs/*",
     "#test/*": "./test/*",
-    "#base-validator": "./src/validator/base-validator.js",
-    "#journey": "./src/journey/journey.js",
-    "#journey-response": "./src/journey/journey-response.js",
-    "#question": "./src/questions/question.js",
-    "#section": "./src/section.js",
+    "#base-validator": "./src/validator/base-validator.ts",
+    "#journey": "./src/journey/journey.ts",
+    "#journey-response": "./src/journey/journey-response.ts",
+    "#question": "./src/questions/question.ts",
+    "#section": "./src/section.ts",
     "#src/*": "./src/*"
   },
   "devDependencies": {

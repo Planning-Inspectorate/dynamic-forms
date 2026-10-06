@@ -1,0 +1,179 @@
+import { JourneyResponse } from '../journey/journey-response.ts';
+import { booleanToYesNoValue } from '../components/boolean/question.ts';
+
+// functions for saving answers to the session
+
+/**
+ * A `SaveDataFn` implementation that saves answers to the session.
+ * Answers are saved into a forms object, keyed by the journeyId, and optionally by a request parameter
+ * @example
+ * req: {
+ * 	session: {
+ * 		forms: {
+ * 			'journey-id-1': {
+ * 				questionOne: 'my answer'
+ * 				// ...
+ * 			}
+ * 		}
+ * 	}
+ * }
+ *
+ * or when keyed by a req parameter:
+ * @example
+ * req: {
+ * 	session: {
+ * 		forms: {
+ * 			'some-req-param': {
+ * 			   'journey-id-1': {
+ * 				   questionOne: 'my answer'
+ * 				   // ...
+ * 			   }
+ * 			}
+ * 		}
+ * 	}
+ * }
+ *
+ * Delete behavior for manage-list items:
+ * - When `manageListItemRemove === true`, and both `manageListQuestionFieldName` and `req.params.manageListItemId`
+ *   are present, the item with a matching `id` is removed from the array stored at `answers[manageListQuestionFieldName]`.
+ * - If the list does not exist or is not an array, no action is taken.
+ *
+ * @param {Object} opts
+ * @param {string} [opts.reqParam]
+ * - optional request parameter to use as a key
+ * @returns {import('../controller.ts').SaveDataFn}
+ */
+export function buildSaveDataToSession({ reqParam } = {}) {
+	return async ({
+		req,
+		journeyId,
+		data,
+		isManageListItem,
+		manageListQuestionFieldName,
+		manageListItemRemove = false,
+		isDynamicSection,
+		dynamicSectionFieldName,
+		dynamicSectionId
+	}) => {
+		if (!req.session) {
+			throw new Error('request session required');
+		}
+		/** @type {Object<string, any>} */
+		let forms = req.session.forms || (req.session.forms = {});
+		if (reqParam) {
+			const reqParamValue = req.params[reqParam];
+			// key by a further param
+			forms = forms[reqParamValue] || (forms[reqParamValue] = {});
+		}
+		let answers = forms[journeyId] || (forms[journeyId] = {});
+
+		if (isManageListItem || isDynamicSection) {
+			// manage list and dynamic sections can be handled the same, just with different properties
+			// for the fieldName and item id
+			const fieldName = isManageListItem ? manageListQuestionFieldName : dynamicSectionFieldName;
+			const itemId = isManageListItem ? req.params.manageListItemId : dynamicSectionId;
+
+			const answersList = answers[fieldName] || (answers[fieldName] = []);
+			answers = answersList.find((item) => item.id === itemId);
+			if (!answers) {
+				answers = { id: itemId }; // answers object to manipulate and add other answers to
+				answersList.push(answers); // add the answers object to the array
+			}
+		} else if (manageListItemRemove && manageListQuestionFieldName && req.params.manageListItemId) {
+			const answersList = answers[manageListQuestionFieldName];
+
+			if (!answersList || !Array.isArray(answersList)) return; // nothing to remove
+
+			const index = answersList.findIndex((item) => item.id === req.params.manageListItemId);
+			if (index > -1) {
+				answersList.splice(index, 1);
+				return;
+			}
+			return; // item not found, nothing to remove
+		}
+		for (const [k, v] of Object.entries(data?.answers || {})) {
+			answers[k] = v;
+		}
+	};
+}
+
+/**
+ * Default save-to-session function with no request parameter
+ *
+ * @type {import('../controller.ts').SaveDataFn}
+ */
+export const saveDataToSession = buildSaveDataToSession();
+
+/**
+ * A function to clear journey answers from the session
+ *
+ * @example
+ * req: {
+ * 	session: {
+ * 		forms: {
+ * 			'journey-id-1': {
+ * 				questionOne: 'my answer'
+ * 				// ...
+ * 			}
+ * 		}
+ * 	}
+ * }
+ *
+ * @param {Object} params
+ * @param {import('express').Request} params.req
+ * @param {string} params.journeyId
+ * @param {Object<string, any>} [params.replaceWith] - optional data to replace the form answers with
+ * @param {string} [params.reqParam] - optional request parameter used as a key
+ * @returns {void}
+ */
+export function clearDataFromSession({ req, journeyId, replaceWith, reqParam }) {
+	if (!req.session) {
+		return; // no need to error, no action
+	}
+	/** @type {Object<string, any>} */
+	let forms = req.session.forms || (req.session.forms = {});
+	if (reqParam) {
+		const reqParamValue = req.params[reqParam];
+		// key by a further param
+		forms = forms[reqParamValue] || (forms[reqParamValue] = {});
+	}
+	if (replaceWith) {
+		forms[journeyId] = replaceWith;
+	} else {
+		delete forms[journeyId];
+	}
+}
+
+/**
+ * Fetch session answers from the session
+ *
+ * @param {string} journeyId
+ * @param {string} [reqParam] - optional request parameter used as a key
+ * @returns {import('express').Handler}
+ */
+export function buildGetJourneyResponseFromSession(journeyId, reqParam) {
+	return (req, res, next) => {
+		if (!req.session) {
+			throw new Error('request session required');
+		}
+		/** @type {Record<string, unknown>} */
+		let answers = {};
+
+		/** @type {Object<string, Record<string, unknown>>|undefined} */
+		let forms = req.session?.forms;
+		if (reqParam) {
+			const reqParamValue = req.params[reqParam];
+			forms = forms && forms[reqParamValue];
+		}
+		if (forms && journeyId in forms) {
+			answers = { ...forms[journeyId] }; // work with a copy, we don't want to edit session values
+		}
+		for (const [k, v] of Object.entries(answers)) {
+			if (typeof v === 'boolean') {
+				answers[k] = booleanToYesNoValue(v);
+			}
+		}
+		res.locals.journeyResponse = new JourneyResponse(journeyId, req.sessionID, answers);
+		next();
+	};
+}
