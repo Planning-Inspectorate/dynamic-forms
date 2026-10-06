@@ -1,32 +1,42 @@
-/**
- * @template {string} K Question keys in questionPropsRecord
- * @template {import('#typedefs/question-props.d.ts').BaseQuestionProps} T
- * @param {{[questionName in K]: T}} questionPropsRecord
- * @param {Record<string, import('#typedefs/question-types.d.ts').QuestionClass>} questionClasses
- * @param {{[questionType: string]: Record<string, Function>}} questionMethodOverrides
- * @param {{notStartedText?: string, continueButtonText?: string, changeActionText?: string, answerActionText?: string}} [textOverrides] - customise question text
- * @returns {{[questionName in K]: InstanceType<import('#typedefs/question-types.d.ts').QuestionClass>}} Returns the same question keys that were passed in with each value being an instantiated question
- */
-export function createQuestions(questionPropsRecord, questionClasses, questionMethodOverrides, textOverrides) {
+import type { BaseQuestionProps } from '#typedefs/question-props.ts';
+import type { QuestionClass } from '#typedefs/question-types.ts';
+import type { Question, QuestionMethodOverrides } from '#src/questions/question.ts';
+
+export interface TextOverrides {
+	notStartedText?: string;
+	continueButtonText?: string;
+	changeActionText?: string;
+	answerActionText?: string;
+}
+
+type OverrideFields = keyof TextOverrides;
+
+export function createQuestions<K extends string = string, T extends BaseQuestionProps = BaseQuestionProps>(
+	questionPropsRecord: Record<K, T>,
+	questionClasses: Record<string, QuestionClass>,
+	// eslint-lint-disable-next-line @typescript-eslint/no-unsafe-function-type
+	questionMethodOverrides: Record<string, QuestionMethodOverrides>,
+	textOverrides?: TextOverrides
+): { [questionName in K]: Question } {
 	return Object.fromEntries(
-		Object.entries(questionPropsRecord).map(([questionName, props]) => {
-			// This error happens because many of the
-			// question extensions hardcode their viewFolder
-			// in their super call. We want view folder to be
-			// optional in question params but it's necessary
-			// to super Question.
-			// @ts-ignore
+		Object.entries<T>(questionPropsRecord).map(([questionName, props]) => {
+			// @ts-expect-error props here is not compatible with the QuestionClass type, this may be fixable!
 			const question = new questionClasses[props.type](props, questionMethodOverrides[props.type]);
 			if (textOverrides) {
 				// todo: is there a better way? this is used to customise e.g. the notStartedText text
-				const options = ['notStartedText', 'continueButtonText', 'changeActionText', 'answerActionText'];
+				const options: OverrideFields[] = [
+					'notStartedText',
+					'continueButtonText',
+					'changeActionText',
+					'answerActionText'
+				];
 				for (const option of options) {
 					if (option in textOverrides) {
-						question[option] = textOverrides[option];
+						question[option] = textOverrides[option] as string;
 					}
 				}
 			}
 			return [questionName, question];
 		})
-	);
+	) as { [questionName in K]: Question };
 }
