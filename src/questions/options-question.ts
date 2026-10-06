@@ -4,52 +4,37 @@ import ValidOptionValidator from '../validator/valid-option-validator.ts';
 import { getConditionalFieldName } from '../components/utils/question-utils.ts';
 import { toArray } from '#src/lib/utils.ts';
 import escape from 'escape-html';
+import type { OptionsQuestionParams, Option, SelectableOption, DividerOption } from '#typedefs/question-props.ts';
+import type BaseValidator from '#src/validator/base-validator.ts';
+import type { Section } from '#src/section.ts';
+import type { Journey } from '#src/journey/journey.ts';
+import type { PrepQuestionForRenderingOptions, QuestionViewModel } from '#typedefs/question-types.ts';
+import type { Request } from 'express';
 
 const defaultOptionJoinString = ',';
 
-/**
- * @typedef {{
- *   text: string;
- *   value: string;
- *	 hint?: object;
- *   checked?: boolean | undefined;
- *   attributes?: Record<string, string>;
- *   behaviour?: 'exclusive';
- *   conditional?: {
- *     question: string;
- *     type: string;
- *     fieldName: string;
- *	   inputClasses?: string;
- *	   html?: string;
- *     value?: unknown;
- *	   label?: string;
- *	   hint?: string
- *	   prefix?: { text?: string; html?: string; classes?: string };
- *	   suffix?: { text?: string; html?: string; classes?: string };
- *   };
- *	 conditionalText?: {
- *	   html: string;
- *   }
- *}} Option
- */
+export type SelectableOptionView = {
+	text: string;
+	value: string;
+	hint?: object;
+	checked?: boolean | undefined;
+	selected?: boolean | undefined;
+	attributes?: Record<string, string>;
+	behaviour?: 'exclusive';
+	conditional?: {
+		html: string;
+	};
+};
 
-/**
- * @typedef {import('#typedefs/question-types.d.ts').QuestionViewModel & { question: { options: Option[] } }} OptionsViewModel
- */
-/**
- * @typedef {import('#typedefs/question-types.d.ts').QuestionParameters & { options: Array<Option> }} OptionsQuestionParameters
- */
+export type OptionView = SelectableOptionView | DividerOption;
 
 export class OptionsQuestion extends Question {
-	/** @type {Array<Option>} */
-	options;
+	options: Option[];
+	optionJoinString: string;
 
-	/**
-	 * @param {OptionsQuestionParameters} params
-	 */
-	constructor(params) {
+	constructor(params: OptionsQuestionParams & { viewFolder: string }) {
 		// add default valid options validator to all options questions
-		let optionsValidators = [new ValidOptionValidator()];
+		let optionsValidators: BaseValidator[] = [new ValidOptionValidator()];
 		if (params.validators && Array.isArray(params.validators)) {
 			optionsValidators = params.validators.concat(optionsValidators);
 		}
@@ -64,41 +49,46 @@ export class OptionsQuestion extends Question {
 
 	/**
 	 * gets the view model for this question
-	 * @param {import('#section').Section} section - the current section
-	 * @param {import('#journey').Journey} journey - the journey we are in
-	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
-	 * @param {Record<string, unknown>} [payload]
-	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} options
-	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel} QuestionViewModel
 	 */
-	prepQuestionForRendering(section, journey, customViewData, payload, options) {
+	prepQuestionForRendering(
+		section: Section,
+		journey: Journey,
+		customViewData?: Record<string, unknown>,
+		payload?: Record<string, unknown>,
+		options?: PrepQuestionForRenderingOptions
+	): QuestionViewModel {
 		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload, options);
 		const answers = payload || this.answerObjectFromJourneyResponse(journey.response, options);
 		const answer = viewModel.question.value;
 
-		viewModel.question.options = [];
+		const viewOptions: OptionView[] = [];
 
 		for (const option of this.options) {
-			let optionData = { ...option };
-			if (optionData.value !== undefined) {
-				const selected = (',' + answer + ',').includes(',' + optionData.value + ',');
+			if (!optionIsSelectable(option)) {
+				viewOptions.push(option);
+				continue;
+			}
+			const optionView: SelectableOptionView = { ...option, conditional: undefined };
+			delete optionView.conditional;
+			if (optionView.value !== undefined) {
+				const selected = (',' + answer + ',').includes(',' + optionView.value + ',');
 				// support checkboxes/radios
-				optionData.checked = selected;
+				optionView.checked = selected;
 				// support selects
-				optionData.selected = selected;
-				if (!optionData.attributes) {
-					optionData.attributes = { 'data-cy': 'answer-' + optionData.value };
+				optionView.selected = selected;
+				if (!optionView.attributes) {
+					optionView.attributes = { 'data-cy': 'answer-' + optionView.value };
 				}
 			}
 
 			// handle conditional (dependant) fields & set their answers
-			if (optionData.conditional !== undefined) {
-				let conditionalField = { ...optionData.conditional };
+			if (option.conditional !== undefined) {
+				const conditionalField: Partial<SelectableOption['conditional']> = { ...option.conditional };
 
 				conditionalField.fieldName = getConditionalFieldName(this.fieldName, conditionalField.fieldName);
 				conditionalField.value = answers[conditionalField.fieldName] || '';
 
-				optionData.conditional = {
+				optionView.conditional = {
 					// note: nunjucks.render uses the last configured environment
 					// so we assume here that it is the one used by the main application and
 					// is configured for dynamic-forms and govuk components
@@ -111,12 +101,13 @@ export class OptionsQuestion extends Question {
 			}
 
 			// handles conditional text only - if using conditional question the use conditional field
-			if (optionData.conditionalText !== undefined) {
-				optionData.conditional = optionData.conditionalText;
+			if (option.conditionalText !== undefined) {
+				optionView.conditional = option.conditionalText;
 			}
 
-			viewModel.question.options.push(optionData);
+			viewOptions.push(optionView);
 		}
+		viewModel.question.options = viewOptions;
 
 		return viewModel;
 	}
@@ -124,11 +115,8 @@ export class OptionsQuestion extends Question {
 	/**
 	 * Formats an answer value for display in the summary.
 	 * Looks up the option text for the given value(s).
-	 *
-	 * @param {unknown} answer - the raw answer value
-	 * @returns {string} the formatted answer for display
 	 */
-	formatAnswer(answer) {
+	formatAnswer(answer: unknown) {
 		if (answer === null || answer === undefined || answer === '') {
 			return this.notStartedText;
 		}
@@ -137,7 +125,7 @@ export class OptionsQuestion extends Question {
 			.split(this.optionJoinString)
 			.map((value) => value.trim());
 		const texts = answerValues.map((value) => {
-			const option = this.options.find((opt) => opt.value === value);
+			const option = this.options.filter(optionIsSelectable).find((opt) => opt.value === value);
 			return escape(option ? option.text : value);
 		});
 
@@ -146,17 +134,14 @@ export class OptionsQuestion extends Question {
 
 	/**
 	 * Get the data to save from the request, returns an object of answers
-	 * @param {import('express').Request} req
-	 * @param {import('../journey/journey-response.ts').JourneyResponse} journeyResponse - current journey response
-	 * @returns {Promise<{ answers: Record<string, unknown> }>}
-	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
-	async getDataToSave(req, journeyResponse) {
-		const answers = {};
+	 */
+	async getDataToSave(req: Request) {
+		const answers: Record<string, unknown> = {};
 
 		const fields = req.body[this.fieldName] !== undefined ? toArray(req.body[this.fieldName]) : [];
 		const fieldValues = fields.map((x) => x.trim());
 
-		const selectedOptions = this.options.filter(({ value }) => {
+		const selectedOptions = this.options.filter(optionIsSelectable).filter(({ value }) => {
 			return fieldValues.includes(value);
 		});
 
@@ -167,6 +152,9 @@ export class OptionsQuestion extends Question {
 		answers[this.fieldName] = fieldValues.join(this.optionJoinString);
 
 		this.options.forEach((option) => {
+			if (!optionIsSelectable(option)) {
+				return;
+			}
 			if (!option.conditional) return;
 			const key = getConditionalFieldName(this.fieldName, option.conditional.fieldName);
 			const optionIsSelectedOption = selectedOptions.some(
@@ -178,6 +166,10 @@ export class OptionsQuestion extends Question {
 
 		return { answers };
 	}
+}
+
+function optionIsSelectable(option: Option): option is SelectableOption {
+	return 'text' in option;
 }
 
 export default OptionsQuestion;
