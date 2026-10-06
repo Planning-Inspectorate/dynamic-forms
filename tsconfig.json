@@ -26,14 +26,14 @@
 		"target": "esnext",
 		"skipLibCheck": true,
 		"paths": {
-			"#question-types": ["./typedefs/question-types.d.ts"],
+			"#question-types": ["./typedefs/question-types.ts"],
 			"#typedefs/*": ["./typedefs/*"],
 			"#src/*": ["./src/*"],
 			"#test/*": ["./test/*"],
-			"#question": ["./src/questions/question.js"],
-			"#journey": ["./src/journey/journey.js"],
-			"#journey-response": ["./src/journey/journey-response.js"],
-			"#section": ["./src/section.js"]
+			"#question": ["./src/questions/question.ts"],
+			"#journey": ["./src/journey/journey.ts"],
+			"#journey-response": ["./src/journey/journey-response.ts"],
+			"#section": ["./src/section.ts"]
 		}
 	}
 }
