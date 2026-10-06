@@ -30,12 +30,13 @@ import { Section } from '#section';
  * When using with buildSave, be sure to handle the parameters: `isDynamicSection`, `dynamicSectionId`,`dynamicSectionFieldName`
  */
 export class DynamicSection extends Section {
+	fieldName: string;
 	/**
 	 * @param name
 	 * @param segment
 	 * @param fieldName the key used in the answers object, which will be an array of answers for this section
 	 */
-	constructor(name, segment, fieldName) {
+	constructor(name: string, segment: string, fieldName: string) {
 		super(name, segment);
 
 		this.fieldName = fieldName;
@@ -43,7 +44,6 @@ export class DynamicSection extends Section {
 
 	/**
 	 * Indicate that this section is dynamic, and answers should be pulled from an array
-	 * @returns {boolean}
 	 */
 	get isDynamicSection() {
 		return true;

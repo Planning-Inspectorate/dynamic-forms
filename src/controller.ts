@@ -4,29 +4,32 @@ import { answerObjectForListItemSaving } from '#src/lib/answer-utils.ts';
 import { booleanToYesNoValue } from '#src/components/boolean/question.ts';
 import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.ts';
 import { toArray } from '#src/lib/utils.ts';
+import type { ActionView } from '#typedefs/question-types.ts';
+import type { Request, Response, Handler } from 'express';
+import type { Journey } from '#src/journey/journey.ts';
+import type { JourneyResponse } from '#journey-response';
+import type { ManageListAnswers, RouteParams } from '#typedefs/journey-types.ts';
+import type ManageListQuestion from '#src/components/manage-list/question.ts';
+import type { DynamicSection } from '#src/dynamic-section.ts';
 
-/**
- * @typedef {Object} SectionView
- * @property {string} heading
- * @property {string} status
- * @property {Object} list
- * @property {Array.<RowView>} list.rows
- */
+export interface SectionView {
+	heading: string;
+	status: string;
+	list: {
+		rows: RowView[];
+	};
+}
 
-/**
- * @typedef {Object} RowView
- * @property {{ text: string }} key
- * @property {{ text: string } | { html: string }} value
- * @property {{ items: import('#typedefs/question-types.d.ts').ActionView[] }} [actions]
- */
+export interface RowView {
+	key: { text: string };
+	value: { text: string } | { html: string };
+	actions?: { items: ActionView[] };
+}
 
 /**
  * build a view model for a section in the journey overview
- * @param {string} name
- * @param {string} [status]
- * @returns {SectionView} a representation of a section
  */
-function buildSectionViewModel(name, status = '') {
+function buildSectionViewModel(name: string, status: string = ''): SectionView {
 	return {
 		heading: name,
 		status: status,
@@ -38,12 +41,8 @@ function buildSectionViewModel(name, status = '') {
 
 /**
  * build a view model for a row in the journey overview
- * @param {string} key
- * @param {string} value
- * @param {import('#typedefs/question-types.d.ts').ActionView|import('#typedefs/question-types.d.ts').ActionView[]} [action]
- * @returns {RowView} a representation of a row
  */
-function buildSectionRowViewModel(key, value, action) {
+function buildSectionRowViewModel(key: string, value: string, action?: ActionView | ActionView[]): RowView {
 	return {
 		key: {
 			text: key
@@ -55,30 +54,20 @@ function buildSectionRowViewModel(key, value, action) {
 	};
 }
 
-/**
- * @param {object} [viewData]
- * @returns {import('express').Handler}
- */
-export function buildList(viewData = {}) {
-	return (req, res) => list(req, res, viewData.pageCaption, viewData);
+export function buildList(viewData: Record<string, unknown> = {}): Handler {
+	return (req, res) => list(req, res, viewData.pageCaption as string, viewData);
 }
 
 /**
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- * @param {string} pageCaption
- * @param {object} viewData
+ * Controller to render the task-list/check-your-answers page
  */
-export async function list(req, res, pageCaption, viewData) {
+export async function list(req: Request, res: Response, pageCaption: string, viewData: Record<string, unknown>) {
 	//render check your answers view
-	/** @type {import('./journey/journey.js').Journey} */
-	const journey = res.locals.journey;
-	/** @type {import("./journey/journey-response.js").JourneyResponse} */
-	const journeyResponse = res.locals.journeyResponse;
+	const journey = res.locals.journey as Journey;
+	const journeyResponse = res.locals.journeyResponse as JourneyResponse;
 
 	const summaryListData = {
-		/** @type {SectionView[]} */
-		sections: [],
+		sections: [] as SectionView[],
 		completedSectionCount: 0
 	};
 
@@ -118,7 +107,7 @@ export async function list(req, res, pageCaption, viewData) {
 			}
 			const rows = question.formatAnswerForSummary(section.segment, journey, answer);
 			rows.forEach((row) => {
-				let viewModelRow = buildSectionRowViewModel(row.key, row.value, row.action);
+				const viewModelRow = buildSectionRowViewModel(row.key, row.value, row.action);
 				sectionView.list.rows.push(viewModelRow);
 			});
 		}
@@ -138,10 +127,8 @@ export async function list(req, res, pageCaption, viewData) {
 
 /**
  * Render an individual question
- *
- * @type {import('express').Handler}
  */
-export async function question(req, res) {
+export async function question(req: Request, res: Response) {
 	const { journey } = res.locals;
 
 	const section = journey.getSection(req.params.section);
@@ -176,7 +163,9 @@ export async function question(req, res) {
 	) {
 		const answers = journey.response.answers;
 		if (answers && Object.hasOwn(answers, question.fieldName) && Array.isArray(answers[question.fieldName])) {
-			const item = answers[question.fieldName].find((i) => i.id === req.params.manageListItemId);
+			const item = (answers[question.fieldName] as ManageListAnswers[]).find(
+				(i) => i.id === req.params.manageListItemId
+			);
 			if (item) return question.renderConfirmationAction(res, item, viewModel);
 		}
 		// if we can't find the item to remove, redirect to task list rather than erroring out as the session may have expired or been tampered with
@@ -185,48 +174,51 @@ export async function question(req, res) {
 	return question.renderAction(res, viewModel);
 }
 
-/**
- * @typedef {Object} SaveParams
- * @property {import('express').Request} req
- * @property {import('express').Response} res
- * @property {string} journeyId
- * @property {string} referenceId
- * @property {boolean} isManageListItem
- * @property {string} [manageListQuestionFieldName]
- * @property {boolean} [manageListItemRemove]
- * @property {boolean} isDynamicSection is this save action for a question within a DynamicSection?
- * @property {string} [dynamicSectionId] if this is within a DynamicSection, what is the section ID (segment)
- * @property {string} [dynamicSectionFieldName] if this is within a DynamicSection, what is the fieldName for the array?
- * @property {Object<string, any>} data
- */
+export interface SaveParams {
+	req: Request;
+	res: Response;
+	journeyId: string;
+	referenceId: string;
+	isManageListItem: boolean;
+	manageListQuestionFieldName?: string;
+	manageListItemRemove?: boolean;
+	data: Record<string, unknown>;
+
+	/** is this save action for a question within a DynamicSection? */
+	isDynamicSection: boolean;
+	/** if this is within a DynamicSection, what is the section ID (segment) */
+	dynamicSectionId?: string;
+	/** if this is within a DynamicSection, what is the fieldName for the array? */
+	dynamicSectionFieldName?: string;
+}
+
+export type SaveDataFn = (params: SaveParams) => Promise<void>;
 
 /**
- * @typedef {(params: SaveParams) => Promise<void>} SaveDataFn
+ * @param saveData
+ * @param [redirectToTaskListOnSuccess] - optionally redirect to the task list after save instead of next question
  */
-
-/**
- * @param {SaveDataFn} saveData
- * @param {boolean} [redirectToTaskListOnSuccess] - optionally redirect to the task list after save instead of next question
- * @returns {import('express').Handler}
- */
-export function buildSave(saveData, redirectToTaskListOnSuccess) {
+export function buildSave(saveData: SaveDataFn, redirectToTaskListOnSuccess?: boolean): Handler {
 	return async (req, res) => {
-		/** @type {import('./journey/journey.ts').Journey} */
-		const journey = res.locals.journey;
-		/** @type {import('./journey/journey-response.ts').JourneyResponse} */
-		const journeyResponse = res.locals.journeyResponse;
+		const journey = res.locals.journey as Journey;
+		const journeyResponse = res.locals.journeyResponse as JourneyResponse;
 
-		const section = journey.getSection(req.params.section);
-		const question = journey.getQuestionByParams(req.params);
+		const routeParams = req.params as RouteParams;
+
+		const section = journey.getSection(routeParams.section);
+		const question = journey.getQuestionByParams(routeParams);
 
 		if (!question || !section) {
 			return res.redirect(journey.taskListUrl);
 		}
 
-		let manageListQuestion;
-		if (question.isInManageListSection || req.params.manageListAction === MANAGE_LIST_ACTIONS.REMOVE) {
+		let manageListQuestion: ManageListQuestion | undefined;
+		if (question.isInManageListSection || routeParams.manageListAction === MANAGE_LIST_ACTIONS.REMOVE) {
 			// find parent question for the manage list
-			manageListQuestion = journey.getQuestionByParams({ section: req.params.section, question: req.params.question });
+			manageListQuestion = journey.getQuestionByParams({
+				section: routeParams.section,
+				question: routeParams.question
+			}) as ManageListQuestion;
 			if (!manageListQuestion) {
 				return res.redirect(journey.taskListUrl);
 			}
@@ -253,7 +245,7 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				manageListItemRemove: req.params?.manageListAction === MANAGE_LIST_ACTIONS.REMOVE,
 				isDynamicSection,
 				dynamicSectionId: isDynamicSection ? section.segment : undefined,
-				dynamicSectionFieldName: isDynamicSection ? section.fieldName : undefined,
+				dynamicSectionFieldName: isDynamicSection ? (section as DynamicSection).fieldName : undefined,
 				data
 			});
 
@@ -270,9 +262,9 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 			// as question.shouldDisplay checks the response and is used to determine the next question
 			let answers = journeyResponse.answers;
 			if (question.isInManageListSection) {
-				answers = answerObjectForListItemSaving(journeyResponse, manageListQuestion, req.params.manageListItemId);
+				answers = answerObjectForListItemSaving(journeyResponse, manageListQuestion!, routeParams.manageListItemId);
 			} else if (isDynamicSection) {
-				answers = answerObjectForListItemSaving(journeyResponse, section, section.segment);
+				answers = answerObjectForListItemSaving(journeyResponse, section as DynamicSection, section.segment);
 			}
 			for (const [k, v] of Object.entries(data?.answers || {})) {
 				if (typeof v === 'boolean') {
@@ -284,16 +276,18 @@ export function buildSave(saveData, redirectToTaskListOnSuccess) {
 				answers[k] = v;
 			}
 			// move to the next question
-			return journey.redirectToNextQuestion(res, req.params, manageListQuestion);
+			return journey.redirectToNextQuestion(res, routeParams, manageListQuestion);
 		} catch (err) {
 			const viewModel = question.toViewModel({
-				params: req.params,
+				params: routeParams,
 				manageListQuestion,
 				section,
 				journey,
 				customViewData: {
 					originalUrl: req.originalUrl,
-					errorSummary: err.errorSummary ?? [{ text: err.toString(), href: '#' }]
+					errorSummary: (err as { errorSummary?: unknown }).errorSummary ?? [
+						{ text: (err as Error).toString(), href: '#' }
+					]
 				}
 			});
 			return question.renderAction(res, viewModel);
