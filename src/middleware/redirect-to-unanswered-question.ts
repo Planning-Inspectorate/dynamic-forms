@@ -1,14 +1,13 @@
-/**
- * @typedef {function(import('../questions/question.ts').Question, import('#journey-response').JourneyResponse): boolean} ShouldDisplayCondition
- */
+import type { Question } from '#src/questions/question.ts';
+import type { JourneyResponse } from '#src/journey/journey-response.ts';
+import type { Handler } from 'express';
+
+export type ShouldDisplayCondition = (question: Question, response: JourneyResponse) => boolean;
 
 /**
  * Redirects to the first unanswered question in a journey, or to the task list if complete
- *
- * @param {ShouldDisplayCondition[]} [conditions]
- * @returns {import('express').Handler}
  */
-export function redirectToUnansweredQuestion(conditions = []) {
+export function redirectToUnansweredQuestion(conditions: ShouldDisplayCondition[] = []): Handler {
 	return (req, res, next) => {
 		const { journeyResponse, journey } = res.locals;
 
