@@ -29,7 +29,7 @@ export class DateQuestion extends Question {
 	/**
 	 * Get the data to save from the request, returns an object of answers
 	 * @param {import('express').Request} req
-	 * @param {import('#journey-response').JourneyResponse} journeyResponse - current journey response, modified with the new answers
+	 * @param {import('#journey-response').JourneyResponse} journeyResponse - current journey response
 	 * @returns {Promise.<Object>}
 	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
