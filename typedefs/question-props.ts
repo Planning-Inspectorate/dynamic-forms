@@ -229,7 +229,8 @@ export type MultiFieldInputQuestionProps = MultiFieldInputQuestionParams & {
 };
 
 export type NumberEntryQuestionParams = CommonQuestionParams & {
-	suffix?: string;
+	prefix?: Affix;
+	suffix?: string | Affix;
 	label?: string;
 };
 

@@ -2,80 +2,101 @@ import escape from 'escape-html';
 import { capitalize, nl2br, trimTrailingSlash } from '../lib/utils.ts';
 import MultiFieldInputValidator from '../validator/multi-field-input-validator.ts';
 import { answerObjectForListItem } from '#src/lib/answer-utils.ts';
+import type {
+	ActionLink,
+	ActionView,
+	PrepQuestionForRenderingOptions,
+	QuestionParameters,
+	QuestionViewModel,
+	SummaryRow
+} from '#typedefs/question-types.ts';
+import type { SummaryFormatterContext, SummaryValueFormatter } from '#typedefs/question-props.ts';
+import type BaseValidator from '#src/validator/base-validator.ts';
+import type { JourneyResponse } from '#src/journey/journey-response.ts';
+import type { Response, Request } from 'express';
+import type { Section } from '#src/section.ts';
+import type ManageListQuestion from '#src/components/manage-list/question.ts';
+import type { Journey } from '#src/journey/journey.ts';
+import type { RouteParams } from '#typedefs/journey-types.ts';
+import type { DynamicSection } from '#src/dynamic-section.ts';
+
+export interface ToViewModelParams {
+	params: RouteParams;
+	journey: Journey;
+	section: Section;
+	manageListQuestion?: ManageListQuestion;
+	customViewData?: Record<string, unknown>;
+	payload?: Record<string, unknown>;
+}
+
+export type QuestionCondition = (response: JourneyResponse) => boolean;
+// we want a generic function type here
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+export type QuestionMethodOverrides = Record<string, Function>;
 
 /**
  * A specific question within a journey which is made up of one (usually) or many (sometimes) components and their required content.
  * @class
  */
 export class Question {
-	/** @type {string} - html page title, defaults to question if not provided */
-	pageTitle;
-	/** @type {string} - title used in the summary list */
-	title;
-	/** @type {string} - question shown to user on question page */
-	question;
-	/** @type {string|undefined} - additional information to user about the question */
-	description;
-	/** @type {string} the folder name of the view */
-	viewFolder;
-	/** @type {string} the unique name of the input on the page, also used as a url segment (should this be separated) */
-	fieldName;
-	/** @type {boolean} if the question should appear in the journey overview task list or not */
-	taskList = true;
-	/** @type {Array.<import('../validator/base-validator.ts').BaseValidator>} array of validators that a question uses to validate answers */
-	validators = [];
-	/** @type {string|undefined} hint text displayed to user */
-	hint;
-	/** @type {boolean} show return to listing page link after question */
-	showBackToListLink = true;
-	/** @type {string|undefined} alternative url slug */
-	url;
-	/** @type {string|undefined} optional html content */
-	html;
-	/** @type {string|undefined} optional question type */
-	interfaceType;
-	/** @type {import('#typedefs/question-types.d.ts').ActionLink|undefined} override action link */
-	actionLink;
+	/** html page title, defaults to question if not provided */
+	pageTitle: string;
+	/** title used in the summary list */
+	title: string;
+	/** question shown to user on question page */
+	question: string;
+	/** additional information to user about the question */
+	description: string | undefined;
+	/** the folder name of the view */
+	viewFolder: string;
+	/** the unique name of the input on the page, also used as a url segment (should this be separated) */
+	fieldName: string;
+	/** if the question should appear in the journey overview task list or not */
+	taskList: boolean = true;
+	/** array of validators that a question uses to validate answers */
+	validators: BaseValidator[] = [];
+	/** hint text displayed to user */
+	hint: string | undefined;
+	/** show return to listing page link after question */
+	showBackToListLink: boolean = true;
+	/** alternative url slug */
+	url: string | undefined;
+	/** optional html content */
+	html: string | undefined;
+	/** optional question type */
+	interfaceType: string | undefined;
+	/** override action link */
+	actionLink: ActionLink | undefined;
 
-	/** @type {string} 'not started' text to display (if a question has no answer) */
-	notStartedText = 'Not started';
-	/** @type {boolean} whether to capitalize the first letter of the answer in summary */
-	capitaliseAnswer = true;
-	/** @type {string} button text to display */
-	continueButtonText = 'Continue';
-	/** @type {string} text to display for 'change' link */
-	changeActionText = 'Change';
-	/** @type {string} text to display for 'answer' link */
-	answerActionText = 'Answer';
-	/** @type {string} text to display for 'add' link */
-	addActionText = 'Add';
-	/** @type {import('#typedefs/question-props.d.ts').SummaryValueFormatter|undefined} custom function to format the summary display value */
-	formatSummaryValue;
+	/** 'not started' text to display (if a question has no answer) */
+	notStartedText: string = 'Not started';
+	/** whether to capitalize the first letter of the answer in summary */
+	capitaliseAnswer: boolean = true;
+	/** button text to display */
+	continueButtonText: string = 'Continue';
+	/** text to display for 'change' link */
+	changeActionText: string = 'Change';
+	/** text to display for 'answer' link */
+	answerActionText: string = 'Answer';
+	/** text to display for 'add' link */
+	addActionText: string = 'Add';
+	/** custom function to format the summary display value */
+	formatSummaryValue: SummaryValueFormatter | undefined;
 
-	/**
-	 * @param {import('../journey/journey-response.ts').JourneyResponse} [response]
-	 * @returns {boolean}
-	 */
-	// eslint-disable-next-line no-unused-vars -- response will be used by extending classes
-	shouldDisplay = (response) => true;
+	// TODO: move to questions which support autocomplete?
+	autocomplete: string | undefined;
+	editable: boolean | undefined;
+	viewData: QuestionParameters['viewData'];
+
+	shouldDisplay: QuestionCondition = () => true;
 
 	details = {
 		title: '',
 		text: ''
 	};
-	/**
-	 * Private, but not marked as such because it breaks types, either using #variable:
-	 * - Property '#isInManageListSection' is missing in type
-	 * or with the @ private tag
-	 * - Types have separate declarations of a private property '_isInManageListSection'.
-	 * @type {boolean}
-	 */
-	_isInManageListSection = false;
 
-	/**
-	 * @param {import('#typedefs/question-types.d.ts').QuestionParameters} params
-	 * @param {Record<string, Function>} [methodOverrides]
-	 */
+	private _isInManageListSection: boolean = false;
+
 	constructor(
 		{
 			title,
@@ -96,8 +117,8 @@ export class Question {
 			viewData = {},
 			formatSummaryValue,
 			capitaliseAnswer = true
-		},
-		methodOverrides
+		}: QuestionParameters,
+		methodOverrides?: QuestionMethodOverrides
 	) {
 		if (!title || title === '') throw new Error('title parameter is mandatory');
 		if (!question || question === '') throw new Error('question parameter is mandatory');
@@ -129,7 +150,7 @@ export class Question {
 		}
 
 		Object.entries(methodOverrides || {}).forEach(([methodName, methodOverride]) => {
-			// @ts-ignore
+			// @ts-expect-error the types are not specific enough for this
 			this[methodName] = methodOverride.bind(this);
 		});
 	}
@@ -138,23 +159,19 @@ export class Question {
 	 * Is this question a manage list question?
 	 * Implemented as a getter so manage list question implementations can override it,
 	 * but it cannot be changed at runtime.
-	 *
-	 * @returns {boolean}
 	 */
-	get isManageListQuestion() {
+	get isManageListQuestion(): boolean {
 		return false;
 	}
 
 	/**
 	 * Is this question added to a ManageListSection?
-	 *
-	 * @returns {boolean}
 	 */
-	get isInManageListSection() {
+	get isInManageListSection(): boolean {
 		return this._isInManageListSection;
 	}
 
-	set isInManageListSection(value) {
+	set isInManageListSection(value: boolean) {
 		if (!value) {
 			throw new Error('Question isInManageListSection is false by default');
 		}
@@ -163,10 +180,9 @@ export class Question {
 
 	/**
 	 * Applies custom summary formatting if a formatSummaryValue function is provided
-	 * @param {import('#typedefs/question-props.d.ts').SummaryFormatterContext} context - the context for formatting
-	 * @returns {string}
+	 * @param context - the context for formatting
 	 */
-	#applyCustomSummaryFormatter(context) {
+	#applyCustomSummaryFormatter(context: SummaryFormatterContext): string {
 		if (this.formatSummaryValue) {
 			return this.formatSummaryValue(context);
 		}
@@ -177,10 +193,8 @@ export class Question {
 	 * Gets the body field names used by this question in form submissions.
 	 * Returns the field names that should be present in req.body when this question is submitted.
 	 * Subclasses should override this for questions with multiple or differently-named body fields.
-	 *
-	 * @returns {string[]}
 	 */
-	get bodyFieldNames() {
+	get bodyFieldNames(): string[] {
 		return [this.fieldName];
 	}
 
@@ -189,21 +203,19 @@ export class Question {
 	 *
 	 * Wraps prepQuestionForRendering to add the back link - which requires more parameters
 	 * that prepQuestionForRendering doesn't need
-	 *
-	 * @param {Object} options
-	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} options.params
-	 * @param {import('../components/manage-list/question.ts').ManageListQuestion} [options.manageListQuestion]
-	 * @param {import('../section.ts').Section} options.section - the current section
-	 * @param {import('../journey/journey.ts').Journey} options.journey - the journey we are in
-	 * @param {Record<string, unknown>} [options.customViewData] additional data to send to view
-	 * @param {unknown} [options.payload]
-	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel}
 	 */
-	toViewModel({ params, manageListQuestion, section, journey, customViewData, payload }) {
+	toViewModel({
+		params,
+		manageListQuestion,
+		section,
+		journey,
+		customViewData,
+		payload
+	}: ToViewModelParams): QuestionViewModel {
 		const viewModel = this.prepQuestionForRendering(section, journey, customViewData, payload, {
 			params,
 			manageListQuestion,
-			dynamicSection: section.isDynamicSection ? section : undefined
+			dynamicSection: section.isDynamicSection ? (section as DynamicSection) : undefined
 		});
 		viewModel.backLink = journey.getBackLink({ params, manageListQuestion });
 		return viewModel;
@@ -211,15 +223,14 @@ export class Question {
 
 	/**
 	 * gets the base view model for this question
-	 *
-	 * @param {import('../section.ts').Section} section - the current section
-	 * @param {import('../journey/journey.ts').Journey} journey - the journey we are in
-	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
-	 * @param {unknown} [payload]
-	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} [options] - required to support manage list question and dynamic sections
-	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel}
 	 */
-	prepQuestionForRendering(section, journey, customViewData, payload, options) {
+	prepQuestionForRendering(
+		section: Section,
+		journey: Journey,
+		customViewData?: Record<string, unknown>,
+		payload?: Record<string, unknown>,
+		options?: PrepQuestionForRenderingOptions
+	): QuestionViewModel {
 		const answers = payload || this.answerObjectFromJourneyResponse(journey.response, options);
 		const answer = this.answerForViewModel(answers, Boolean(payload));
 
@@ -263,11 +274,10 @@ export class Question {
 	 *
 	 * Question implementations can override this for more complex answer types
 	 *
-	 * @param {Record<string, any>} answers - collection of answers to pull the answer from, may be from the response or the request/payload
-	 * @param {Boolean} isPayload - whether the answers object is from the request/payload
-	 * @returns {*|string}
-	 */ // eslint-disable-next-line no-unused-vars
-	answerForViewModel(answers, isPayload) {
+	 * @param answers - collection of answers to pull the answer from, may be from the response or the request/payload
+	 * @param isPayload - whether the answers object is from the request/payload
+	 */ //eslint-disable-next-line @typescript-eslint/no-unused-vars
+	answerForViewModel(answers: Record<string, unknown>, isPayload: boolean): unknown | string {
 		return answers[this.fieldName] || '';
 	}
 
@@ -275,19 +285,16 @@ export class Question {
 	 * Question implementations can override this to add configuration or other values to the view model
 	 *
 	 * If possible override this method instead of prepQuestionForRendering for simple changes to the view model
-	 *
-	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
-	 */ // eslint-disable-next-line no-unused-vars
-	addCustomDataToViewModel(viewModel) {}
+	 */ //eslint-disable-next-line @typescript-eslint/no-unused-vars
+	addCustomDataToViewModel(viewModel: QuestionViewModel) {}
 
 	/**
-	 * Get the answers object from the journey response, which may be nested in an array for manage list questions or dynamic sections
-	 *
-	 * @param {import('../journey/journey-response.ts').JourneyResponse} response
-	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} [options]
-	 * @returns {Record<string, any>}
+	 * Get the answers object from the journey response, which may be nested in an array for manage list questions
 	 */
-	answerObjectFromJourneyResponse(response, { params, manageListQuestion, dynamicSection } = {}) {
+	answerObjectFromJourneyResponse(
+		response: JourneyResponse,
+		{ params, manageListQuestion, dynamicSection }: Partial<PrepQuestionForRenderingOptions> = {}
+	): Record<string, unknown> {
 		if (this.isInManageListSection) {
 			if (!params?.manageListItemId) {
 				throw new Error('no list item id for manage list question');
@@ -299,6 +306,9 @@ export class Question {
 			return answerObjectForListItem(response, manageListQuestion, params.manageListItemId);
 		}
 		if (dynamicSection) {
+			if (!params?.section) {
+				throw new Error('no section param for dynamic section');
+			}
 			// if this is a question in a dynamic section, the response is within an answers array, key by section
 			return answerObjectForListItem(response, dynamicSection, params.section);
 		}
@@ -307,11 +317,8 @@ export class Question {
 
 	/**
 	 * renders the question
-	 * @param {import('express').Response} res - the express response
-	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel additional data to send to view
-	 * @returns {void}
 	 */
-	renderAction(res, viewModel) {
+	renderAction(res: Response, viewModel: QuestionViewModel) {
 		let view = `components/${this.viewFolder}/index`;
 		if (this.viewFolder.includes('/')) {
 			// custom view folder
@@ -322,19 +329,20 @@ export class Question {
 
 	/**
 	 * check for validation errors
-	 * @param {import('express').Request} req
-	 * @param {import('../journey/journey.ts').Journey} journey
-	 * @param {import('../section.ts').Section} section
-	 * @param {import('../components/manage-list/question.ts').ManageListQuestion} [manageListQuestion]
-	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel|undefined} returns the view model for displaying the error or undefined if there are no errors
+	 * @returns returns the view model for displaying the error or undefined if there are no errors
 	 */
-	checkForValidationErrors(req, section, journey, manageListQuestion) {
+	checkForValidationErrors(
+		req: Request,
+		section: Section,
+		journey: Journey,
+		manageListQuestion?: ManageListQuestion
+	): QuestionViewModel | undefined {
 		const { body = {} } = req;
 		const { errors = {}, errorSummary = [] } = body;
 
 		if (Object.keys(errors).length > 0) {
 			return this.toViewModel({
-				params: req.params,
+				params: req.params as RouteParams,
 				section,
 				journey,
 				customViewData: {
@@ -349,13 +357,9 @@ export class Question {
 
 	/**
 	 * Get the data to save from the request, returns an object of answers
-	 *
-	 * @param {import('express').Request} req
-	 * @param {import('../journey/journey-response.ts').JourneyResponse} journeyResponse - current journey response
-	 * @returns {Promise<{ answers: Record<string, unknown> }>}
-	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
-	async getDataToSave(req, journeyResponse) {
-		const answers = {};
+	 */ //eslint-disable-next-line @typescript-eslint/no-unused-vars
+	async getDataToSave(req: Request, journeyResponse: JourneyResponse): Promise<{ answers: Record<string, unknown> }> {
+		const answers: Record<string, unknown> = {};
 
 		answers[this.fieldName] = req.body[this.fieldName];
 
@@ -370,26 +374,18 @@ export class Question {
 
 	/**
 	 * check for errors after saving, by default this does nothing
-	 * @param {import('express').Request} req
-	 * @param {import('../journey/journey.ts').Journey} journey
-	 * @param {import('../section.ts').Section} sectionObj
-	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel | undefined} returns the view model for displaying the error or undefined if there are no errors
-	 */ //eslint-disable-next-line no-unused-vars
-	checkForSavingErrors(req, sectionObj, journey) {
+	 * @returns returns the view model for displaying the error or undefined if there are no errors
+	 */ //eslint-disable-next-line @typescript-eslint/no-unused-vars
+	checkForSavingErrors(req: Request, sectionObj: Section, journey: Journey): QuestionViewModel | undefined {
 		return;
 	}
 
 	/**
 	 * Handles redirect after saving. Kept around for backwards compatibility.
 	 *
-	 * @param {import('express').Response} res
-	 * @param {import('../journey/journey.ts').Journey} journey
-	 * @param {string} sectionSegment
-	 * @param {string} questionSegment
-	 * @returns {void}
 	 * @deprecated - use `journey.redirectToNextQuestion`
 	 */
-	handleNextQuestion(res, journey, sectionSegment, questionSegment) {
+	handleNextQuestion(res: Response, journey: Journey, sectionSegment: string, questionSegment: string) {
 		return journey.redirectToNextQuestion(res, {
 			section: sectionSegment,
 			question: questionSegment
@@ -403,13 +399,12 @@ export class Question {
 	 * to get the answers, instead of `journey.response` directly. This is to support DynamicSections
 	 * where answers are in an array. See `MultiFieldInputQuestion` for an example.
 	 *
-	 * @param {string} sectionSegment
-	 * @param {import('../journey/journey.ts').Journey} journey
-	 * @param {unknown} answer
-	 * @param {boolean} [capitals] - deprecated: use capitaliseAnswer property instead
-	 * @returns {import('#typedefs/question-types.d.ts').SummaryRow[]}
+	 * @param sectionSegment
+	 * @param journey
+	 * @param answer
+	 * @param [capitals] - deprecated: use capitaliseAnswer property instead
 	 */
-	formatAnswerForSummary(sectionSegment, journey, answer, capitals) {
+	formatAnswerForSummary(sectionSegment: string, journey: Journey, answer: unknown, capitals?: boolean): SummaryRow[] {
 		let formattedAnswer = this.formatAnswer(answer);
 
 		// Handle deprecated capitals parameter
@@ -442,12 +437,8 @@ export class Question {
 
 	/**
 	 * Returns the action link for the question
-	 * @param {string} sectionSegment
-	 * @param {import('../journey/journey.ts').Journey} journey
-	 * @param {unknown} answer
-	 * @returns {import('#typedefs/question-types.d.ts').ActionView | import('#typedefs/question-types.d.ts').ActionView[] | undefined}
 	 */
-	getAction(sectionSegment, journey, answer) {
+	getAction(sectionSegment: string, journey: Journey, answer: unknown): ActionView | ActionView[] | undefined {
 		if (this.actionLink) {
 			// show the override if its set
 			return {
@@ -468,11 +459,7 @@ export class Question {
 		};
 	}
 
-	/**
-	 * @param {unknown} answer
-	 * @returns {unknown}
-	 */
-	format(answer) {
+	format(answer: unknown): unknown {
 		return answer;
 	}
 
@@ -480,40 +467,30 @@ export class Question {
 	 * Formats an answer value for display in the summary.
 	 * Subclasses can override this to provide custom formatting without
 	 * needing to override the full formatAnswerForSummary method.
-	 *
-	 * @param {unknown} answer - the raw answer value
-	 * @returns {string} the formatted answer for display
 	 */
-	formatAnswer(answer) {
-		let formatted = answer ?? this.notStartedText;
+	formatAnswer(answer: unknown): string {
+		let formatted = (answer as string | null) ?? this.notStartedText;
 		if (this.capitaliseAnswer) {
 			formatted = capitalize(formatted);
 		}
 		return nl2br(escape(formatted));
 	}
 
-	/**
-	 * @returns {boolean}
-	 */
 	isRequired() {
 		return this.validators?.some((validator) => validator.isRequired());
 	}
-	/**
-	 * @param {string} inputField
-	 * @returns {boolean}
-	 */
-	fieldIsRequired(inputField) {
+
+	fieldIsRequired(inputField: string) {
 		return this.validators?.some(
 			(item) => item instanceof MultiFieldInputValidator && item.inputFieldIsRequired(inputField)
 		);
 	}
 
 	/**
-	 * @param {import('../journey/journey-response.ts').JourneyResponse} journeyResponse
-	 * @param {string} [fieldName] optional fieldname for multi field input questions
-	 * @returns {boolean}
+	 * @param journeyResponse
+	 * @param [fieldName] optional fieldname for multi field input questions
 	 */
-	isAnswered(journeyResponse, fieldName = this.fieldName) {
+	isAnswered(journeyResponse: JourneyResponse, fieldName: string = this.fieldName): boolean {
 		return !!journeyResponse.answers[fieldName];
 	}
 }

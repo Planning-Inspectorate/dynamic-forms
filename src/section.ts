@@ -1,14 +1,15 @@
 import RequiredValidator from './validator/required-validator.ts';
 import { answerObjectForListItem } from '#src/lib/answer-utils.ts';
-
-/**
- * @typedef {((response: import('#journey-response').JourneyResponse) => boolean)} QuestionCondition
- */
+import type { Question, QuestionCondition } from '#src/questions/question.ts';
+import type { JourneyResponse } from '#src/journey/journey-response.ts';
+import type { ManageListSection } from '#src/components/manage-list/manage-list-section.ts';
+import type ManageListQuestion from '#src/components/manage-list/question.ts';
+import type { GetNextQuestionParams, StaticGetNextQuestionParams } from '#typedefs/section-types.ts';
+import type MultiFieldInputQuestion from '#src/components/multi-field-input/question.ts';
+import type { DynamicSection } from '#src/dynamic-section.ts';
 
 /**
  * A value indicating the final question of a section has been reached
- *
- * @type {Symbol}
  */
 export const END_OF_SECTION = Symbol('END_OF_SECTION');
 
@@ -17,44 +18,25 @@ export const END_OF_SECTION = Symbol('END_OF_SECTION');
  * @class
  */
 export class Section {
-	/**
-	 * @type {string} - the display name of the section shown to user
-	 */
-	name;
+	/** the display name of the section shown to user */
+	name: string;
 
-	/**
-	 * @type {string} - the unique url segment for the section
-	 */
-	segment;
+	/** the unique url segment for the section */
+	segment: string;
 
-	/**
-	 * @type {Array<import('./questions/question.ts').Question>} - questions within the section
-	 */
-	questions = [];
+	/** questions within the section */
+	questions: Question[] = [];
 
-	/**
-	 * @type {boolean} - if a condition has just been added ensure a question is added before the next condition
-	 */
-	#conditionAdded = false;
+	/** if a condition has just been added ensure a question is added before the next condition */
+	#conditionAdded: boolean = false;
 
-	/**
-	 * A condition to apply to every question in this section
-	 * @type {QuestionCondition|null}
-	 */
-	#sectionCondition = null;
+	/** A condition to apply to every question in this section */
+	#sectionCondition: QuestionCondition | null = null;
 
-	/**
-	 * conditions to apply to a set of questions, until ended is true
-	 * @type {Object<string, {ended: boolean, condition: QuestionCondition}>}
-	 */
-	#multiQuestionConditions = {};
+	/** conditions to apply to a set of questions, until ended is true */
+	#multiQuestionConditions: Record<string, { ended: boolean; condition: QuestionCondition }> = {};
 
-	/**
-	 * creates an instance of a section
-	 * @param {string} name
-	 * @param {string} segment
-	 */
-	constructor(name, segment) {
+	constructor(name: string, segment: string) {
 		this.name = name;
 		this.segment = segment;
 	}
@@ -64,8 +46,6 @@ export class Section {
 	 *
 	 * Implemented as a getter so dynamic section can override it,
 	 * but it cannot be changed at runtime.
-	 *
-	 * @returns {boolean}
 	 */
 	get isDynamicSection() {
 		return false;
@@ -73,11 +53,8 @@ export class Section {
 
 	/**
 	 * Add a condition to all questions in this section
-	 *
-	 * @param {QuestionCondition} shouldIncludeSection
-	 * @returns {this}
 	 */
-	withSectionCondition(shouldIncludeSection) {
+	withSectionCondition(shouldIncludeSection: QuestionCondition) {
 		if (this.questions.length > 0) {
 			throw new Error('section conditions must be added before any questions');
 		}
@@ -93,11 +70,8 @@ export class Section {
 
 	/**
 	 * Fluent API method for adding questions
-	 * @param {import('./questions/question.ts').Question} question
-	 * @param {import('./components/manage-list/manage-list-section.ts').ManageListSection} [manageListSection]
-	 * @returns {this}
 	 */
-	addQuestion(question, manageListSection) {
+	addQuestion(question: Question, manageListSection?: ManageListSection) {
 		if (!question) {
 			throw new Error('question is required');
 		}
@@ -105,7 +79,7 @@ export class Section {
 			if (!manageListSection || !manageListSection.isManageListSection) {
 				throw new Error('manage list questions require a ManageListSection');
 			}
-			question.section = manageListSection;
+			(question as ManageListQuestion).section = manageListSection;
 		}
 		this.questions.push(question);
 		this.#conditionAdded = false; // reset condition flag
@@ -115,11 +89,9 @@ export class Section {
 
 	/**
 	 * Apply conditions to the given question
-	 * @param {import('./questions/question.ts').Question} question
-	 * @param [condition] - specific condition for this question
 	 */
-	#applyConditions(question, condition) {
-		const conditions = [];
+	#applyConditions(question: Question, condition?: QuestionCondition) {
+		const conditions: QuestionCondition[] = [];
 
 		// any section based conditions first
 		if (this.#sectionCondition) {
@@ -143,10 +115,8 @@ export class Section {
 
 	/**
 	 * Fluent API method for attaching conditions to the previously added question
-	 * @param {QuestionCondition} shouldIncludeQuestion
-	 * @returns {this}
 	 */
-	withCondition(shouldIncludeQuestion) {
+	withCondition(shouldIncludeQuestion: QuestionCondition) {
 		if (this.#conditionAdded) {
 			// don't allow two conditions in a row
 			throw new Error('conditions must follow a question');
@@ -159,7 +129,7 @@ export class Section {
 		return this;
 	}
 
-	withRequiredCondition(isQuestionMandatory, requiredFieldErrorMsg) {
+	withRequiredCondition(isQuestionMandatory: boolean, requiredFieldErrorMsg: string) {
 		if (this.#conditionAdded) {
 			// don't allow two conditions in a row
 			throw new Error('conditions must follow a question');
@@ -183,11 +153,8 @@ export class Section {
 
 	/**
 	 * Fluent API method for starting a multi question condition
-	 * @param {string} conditionName
-	 * @param {QuestionCondition} shouldIncludeQuestion
-	 * @returns {this}
 	 */
-	startMultiQuestionCondition(conditionName, shouldIncludeQuestion) {
+	startMultiQuestionCondition(conditionName: string, shouldIncludeQuestion: QuestionCondition) {
 		if (this.#multiQuestionConditions[conditionName]) {
 			throw new Error('group condition already started');
 		}
@@ -197,10 +164,8 @@ export class Section {
 
 	/**
 	 * Fluent API method for ending a multi question condition
-	 * @param {string} conditionName
-	 * @returns {this}
 	 */
-	endMultiQuestionCondition(conditionName) {
+	endMultiQuestionCondition(conditionName: string) {
 		if (!this.#multiQuestionConditions[conditionName]) {
 			throw new Error('group condition not started');
 		}
@@ -210,10 +175,8 @@ export class Section {
 
 	/**
 	 * Get the next question in this section given a questionParam (question fieldName)
-	 * @param {import('#typedefs/section-types.d.ts').GetNextQuestionParams} params
-	 * @returns {import('./questions/question.ts').Question|Symbol|null}
 	 */
-	getNextQuestion(params) {
+	getNextQuestion(params: GetNextQuestionParams): Question | symbol | null {
 		const { response, manageListQuestion, routeParams } = params;
 		if (manageListQuestion) {
 			// first check if the next question is within the manage list section
@@ -221,7 +184,7 @@ export class Section {
 			const answers = answerObjectForListItem(response, manageListQuestion, routeParams.manageListItemId);
 			const next = Section.getNextQuestion({
 				...params,
-				response: { answers },
+				response: { answers } as JourneyResponse,
 				questions: manageListQuestion.section.questions
 			});
 			if (next === END_OF_SECTION) {
@@ -236,19 +199,23 @@ export class Section {
 		};
 		if (this.isDynamicSection) {
 			// for dynamic sections, the answers are within an array
-			const answers = answerObjectForListItem(response, this, this.segment);
-			nextQuestionParams.response = { answers };
+			const section = this as unknown as DynamicSection;
+			const answers = answerObjectForListItem(response, section, this.segment);
+			nextQuestionParams.response = { answers } as JourneyResponse;
 		}
 		return Section.getNextQuestion(nextQuestionParams);
 	}
 
 	/**
 	 * Implementation of getNextQuestion given a list of questions
-	 *
-	 * @param {import('#typedefs/section-types.d.ts').StaticGetNextQuestionParams} params
-	 * @returns {import('./questions/question.ts').Question|Symbol|null}
 	 */
-	static getNextQuestion({ questions, questionFieldName, response, takeNextQuestion = false, reverse = false }) {
+	static getNextQuestion({
+		questions,
+		questionFieldName,
+		response,
+		takeNextQuestion = false,
+		reverse = false
+	}: StaticGetNextQuestionParams): Question | symbol | null {
 		const numberOfQuestions = questions.length;
 
 		const questionsStart = reverse ? numberOfQuestions - 1 : 0;
@@ -270,11 +237,9 @@ export class Section {
 
 	/**
 	 * checks answers on response to ensure that a answer is provided for each required question in the section
-	 * @param {import('#journey-response').JourneyResponse} journeyResponse
-	 * @returns {SectionStatus}
 	 */
-	getStatus(journeyResponse) {
-		let result = SECTION_STATUS.NOT_STARTED;
+	getStatus(journeyResponse: JourneyResponse) {
+		let result: SECTION_STATUSES = SECTION_STATUS.NOT_STARTED;
 		let requiredQuestionCount = 0;
 		let requiredAnswerCount = 0;
 		let answerCount = 0;
@@ -282,13 +247,13 @@ export class Section {
 		// answers for this section may be within an array, for example dynamic sections
 		const response = this.getResponse(journeyResponse);
 
-		for (let question of this.questions) {
+		for (const question of this.questions) {
 			if (!question.shouldDisplay(response)) {
 				continue;
 			}
 			// if question is a multi field input question, check all fields
-			if (question.inputFields) {
-				for (const field of question.inputFields) {
+			if ((question as MultiFieldInputQuestion).inputFields) {
+				for (const field of (question as MultiFieldInputQuestion).inputFields) {
 					if (question.fieldIsRequired(field.fieldName)) {
 						requiredQuestionCount++;
 					}
@@ -332,28 +297,25 @@ export class Section {
 	 * Get the journey response (answers) for this section
 	 * That is most often the root answers object
 	 * For dynamic sections, it is an object within the configured array
-	 *
-	 * @param {import('#journey-response').JourneyResponse} journeyResponse
 	 */
-	getResponse(journeyResponse) {
+	getResponse(journeyResponse: JourneyResponse): JourneyResponse {
 		// if this is a dynamic section, answers are within an array
 		// only answers within the dynamic section can be used for display logic
 		if (this.isDynamicSection) {
 			// this is not a JourneyResponse class, but is like it
 			// DF-46 will likely replace usage of JourneyResponse with an interface
+			const section = this as unknown as DynamicSection;
 			return {
-				answers: answerObjectForListItem(journeyResponse, this, this.segment)
-			};
+				answers: answerObjectForListItem(journeyResponse, section, this.segment)
+			} as JourneyResponse;
 		}
 		return journeyResponse;
 	}
 
 	/**
 	 * checks answers on response and return true if the status of the section is complete
-	 * @param {import('#journey-response').JourneyResponse} journeyResponse
-	 * @returns {boolean}
 	 */
-	isComplete(journeyResponse) {
+	isComplete(journeyResponse: JourneyResponse) {
 		return this.getStatus(journeyResponse) === SECTION_STATUS.COMPLETE;
 	}
 
@@ -362,15 +324,10 @@ export class Section {
 	//constructor - should only evaluate if on task list view
 }
 
-/**
- * @typedef {string} SectionStatus
- */
-
-/**
- * @enum {SectionStatus}
- */
 export const SECTION_STATUS = Object.freeze({
 	NOT_STARTED: 'Not started',
 	IN_PROGRESS: 'In progress',
 	COMPLETE: 'Completed'
 });
+
+export type SECTION_STATUSES = (typeof SECTION_STATUS)[keyof typeof SECTION_STATUS];
