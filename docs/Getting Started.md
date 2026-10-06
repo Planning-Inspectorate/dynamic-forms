@@ -78,7 +78,7 @@ Dynamic forms requires two templates to work for rendering questions and renderi
 ### Journey (or question) template
 
 The journey template is used for question pages. It must include a block called `dynQuestionContent`, and a block called `head` (which the default gov.uk template has).
-It should also include the rendering of the errorSummary component. The path to this template is configured via the `journeyTemplate` property on a Journey.
+It should also include the rendering of the errorSummary component, and optionally the back link. The path to this template is configured via the `journeyTemplate` property on a Journey.
 
 For example:
 
@@ -87,7 +87,13 @@ e.g.
 ```nunjucks
 {% extends "govuk/template.njk" %}
 
-{% block beforeContent %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block containerStart %}
+    {% if backLink %}
+        {{ govukBackLink({ href: backLink }) }}
+    {% endif %}
     {% if errorSummary %}
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
