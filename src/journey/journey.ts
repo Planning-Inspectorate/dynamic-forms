@@ -3,53 +3,70 @@
  * (e.g. questionnaire). Specific journeys should be       *
  * instances of this class                                 *
  ***********************************************************/
-import { END_OF_SECTION } from '#src/section.ts';
-import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.ts';
+import type { Section } from '../section.ts';
+import { END_OF_SECTION } from '../section.ts';
+import { MANAGE_LIST_ACTIONS } from '../components/manage-list/manage-list-actions.ts';
+import type { JourneyResponse } from './journey-response.ts';
+import type { RouteParams, JourneyAnswers, JourneyResponseLike } from '../types/journey-types.ts';
+import type { Question } from '../questions/question.ts';
+import type ManageListQuestion from '../components/manage-list/question.ts';
+import type { Response } from 'express';
+
+export type MakeBaseUrl<TAnswers> = (journeyResponse: JourneyResponseLike<TAnswers>) => string;
+
+export interface JourneyParams<TAnswers> {
+	/** a unique, human-readable id for this journey */
+	journeyId: string;
+	makeBaseUrl: MakeBaseUrl<TAnswers>;
+	/** added to base url, can be left undefined */
+	taskListUrl?: string;
+	response: JourneyResponseLike<TAnswers>;
+	/** template used for all (question) views */
+	journeyTemplate: string;
+	/** path to njk view for listing page */
+	taskListTemplate: string;
+	// TODO: deprecate this property
+	/** path to njk view for pdf summary page */
+	informationPageViewPath?: string;
+	/** part of the title in the njk view */
+	journeyTitle: string;
+	/** defines how the next/previous question handles end of sections */
+	returnToListing?: boolean;
+	sections: Section[];
+	/** back link when on the first question */
+	initialBackLink?: string;
+}
 
 /**
  * A journey (An entire set of questions required for a completion of a submission)
  * @class
- * @template {object} [TAnswers=import("#typedefs/journey-types.d.ts").JourneyAnswers]
  */
-export class Journey {
-	/** @type {string} journeyId - a unique, human-readable id for this journey */
-	journeyId;
-	/** @type {Array.<import('../section.ts').Section>} sections - sections within the journey */
-	sections = [];
-	/** @type {import('#typedefs/journey-types.d.ts').JourneyResponseLike<TAnswers>} response - the user's response to the journey so far */
-	response;
-	/** @type {string} baseUrl - base url of the journey, gets prepended to question urls */
-	baseUrl = '';
-	/** @type {(journeyResponse: import('#typedefs/journey-types.d.ts').JourneyResponseLike<TAnswers>) => string} makeBaseUrl - function to generate base url of the journey */
-	makeBaseUrl = () => '';
-	/** @type {string} taskListUrl - url that renders the task list */
-	taskListUrl = '';
-	/** @type {string} journeyTemplate - nunjucks template file used for */
-	journeyTemplate = '';
-	/** @type {string} taskListTemplate - nunjucks template file used for listing page */
-	taskListTemplate = '';
-	/** @type {string} informationPageViewPath - nunjucks template file used for pdf summary information page */
-	informationPageViewPath = '';
-	/** @type {boolean} defines how the next/previous question handles end of sections */
-	returnToListing = false;
-	/**@type {string} used as part of the overall page title */
-	journeyTitle;
+export class Journey<TAnswers = JourneyAnswers> {
+	/** a unique, human-readable id for this journey */
+	journeyId: string;
+	/** sections within the journey */
+	sections: Section[] = [];
+	/** the user's response to the journey so far */
+	response: JourneyResponseLike<TAnswers>;
+	/** baseUrl - base url of the journey, gets prepended to question urls */
+	baseUrl: string = '';
+	/** function to generate base url of the journey */
+	makeBaseUrl: MakeBaseUrl<TAnswers> = () => '';
+	/** url that renders the task list */
+	taskListUrl: string = '';
+	/** nunjucks template file used for */
+	journeyTemplate: string = '';
+	/** nunjucks template file used for listing page */
+	taskListTemplate: string = '';
+	/** nunjucks template file used for pdf summary information page */
+	informationPageViewPath: string = '';
+	/** defines how the next/previous question handles end of sections */
+	returnToListing: boolean = false;
+	/** used as part of the overall page title */
+	journeyTitle: string;
+	/** back link when on the first question */
+	initialBackLink: string | null;
 
-	/**
-	 * creates an instance of a journey
-	 * @param {object} options
-	 * @param {string} options.journeyId - a unique, human-readable id for this journey
-	 * @param {(response: import('#typedefs/journey-types.d.ts').JourneyResponseLike<TAnswers>) => string} options.makeBaseUrl - base url of journey
-	 * @param {string} [options.taskListUrl] - task list url - added to base url, can be left undefined
-	 * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<TAnswers>} options.response - user's response
-	 * @param {string} options.journeyTemplate - template used for all views
-	 * @param {string} options.taskListTemplate - path to njk view for listing page
-	 * @param {string} [options.informationPageViewPath] - path to njk view for pdf summary page
-	 * @param {string} options.journeyTitle - part of the title in the njk view
-	 * @param {boolean} [options.returnToListing] - defines how the next/previous question handles end of sections
-	 * @param {import('../section.ts').Section[]} options.sections
-	 * @param {string} [options.initialBackLink] - back link when on the first question
-	 */
 	constructor({
 		journeyId,
 		makeBaseUrl,
@@ -62,7 +79,7 @@ export class Journey {
 		returnToListing,
 		sections,
 		initialBackLink
-	}) {
+	}: JourneyParams<TAnswers>) {
 		if (!journeyId || typeof journeyId !== 'string') {
 			throw new Error('journeyId should be a string.');
 		}
@@ -103,21 +120,11 @@ export class Journey {
 		this.initialBackLink = initialBackLink || null;
 	}
 
-	/**
-	 * trim the final slash off of a string
-	 * @param {string} urlPath
-	 * @returns {string} returns a string without a trailing slash
-	 */
-	#trimTrailingSlash(urlPath) {
+	#trimTrailingSlash(urlPath: string) {
 		return urlPath.endsWith('/') ? urlPath.slice(0, -1) : urlPath;
 	}
 
-	/**
-	 * @param {string} originalUrl
-	 * @param {string} [pathToPrepend]
-	 * @returns {string}
-	 */
-	#prependPathToUrl(originalUrl, pathToPrepend) {
+	#prependPathToUrl(originalUrl: string, pathToPrepend?: string) {
 		if (!pathToPrepend) return originalUrl;
 
 		const urlObject = new URL(originalUrl, 'http://example.com'); // requires a base url, not returned
@@ -132,10 +139,8 @@ export class Journey {
 
 	/**
 	 * utility function to build up a url to a question
-	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} params
-	 * @returns {string} url for a question
 	 */
-	#buildQuestionUrl(params) {
+	#buildQuestionUrl(params: RouteParams) {
 		const parts = [params.section, params.question];
 		if (params.manageListAction) {
 			parts.push(params.manageListAction, params.manageListItemId, params.manageListQuestion);
@@ -145,10 +150,8 @@ export class Journey {
 
 	/**
 	 * Gets section based on segment
-	 * @param {string} sectionSegment
-	 * @returns {import('../section.ts').Section | undefined}
 	 */
-	getSection(sectionSegment) {
+	getSection(sectionSegment: string) {
 		return this.sections.find((s) => {
 			return s.segment === sectionSegment;
 		});
@@ -158,26 +161,25 @@ export class Journey {
 	 * Get the response for the given section, required to support dynamic sections
 	 *
 	 * Often used in formatAnswerForSummary to get other answer fields.
-	 *
-	 * @param {string} sectionSegment
 	 */
-	responseForSection(sectionSegment) {
+	responseForSection(sectionSegment: string) {
 		const section = this.getSection(sectionSegment);
 		if (!section) {
 			throw new Error(`No section found for section segment: '${sectionSegment}'`);
 		}
-		return section.getResponse(this.response);
+		return section.getResponse(this.response as JourneyResponse);
 	}
 
 	/**
 	 * Get question within a section
-	 * @param {import('../section.ts').Section} section
-	 * @param {string} questionSegment
-	 * @param {{action: string, itemId: string, question: string}} [manageListParams]
-	 * @returns {import('../questions/question.ts').Question | undefined} question if it belongs in the given section
+	 * @returns question if it belongs in the given section
 	 */
-	#getQuestion(section, questionSegment, manageListParams) {
-		const matchQuestion = (q, toMatch) => {
+	#getQuestion(
+		section: Section,
+		questionSegment: string,
+		manageListParams?: { action: string; itemId: string; question: string }
+	): Question | undefined {
+		const matchQuestion = (q: Question, toMatch: string) => {
 			return q.fieldName === toMatch || q.url === toMatch;
 		};
 		const question = section?.questions.find((q) => matchQuestion(q, questionSegment));
@@ -185,24 +187,24 @@ export class Journey {
 			return undefined;
 		}
 		if (manageListParams && question.isManageListQuestion) {
+			const manageListQuestion = question as ManageListQuestion;
 			if (
-				manageListParams.question === question.confirmationQuestionParam &&
+				manageListParams.question === manageListQuestion.confirmationQuestionParam &&
 				manageListParams.action === MANAGE_LIST_ACTIONS.REMOVE
 			) {
 				// special case for the delete confirmation page
-				return question;
+				return manageListQuestion;
 			}
-			return question.section.questions.find((q) => matchQuestion(q, manageListParams.question));
+			return manageListQuestion.section.questions.find((q) => matchQuestion(q, manageListParams.question));
 		}
 		return question;
 	}
 
 	/**
 	 * gets a question from the object's sections based on a section + question names
-	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} params
-	 * @returns {import('../questions/question.ts').Question | undefined} question found by lookup
+	 * @returns question found by lookup
 	 */
-	getQuestionByParams(params) {
+	getQuestionByParams(params: RouteParams): Question | undefined {
 		const section = this.getSection(params.section);
 
 		if (!section) {
@@ -222,12 +224,9 @@ export class Journey {
 	/**
 	 * Get the back link for the journey - e.g. the previous question
 	 *
-	 * @param {Object} options
-	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} options.params
-	 * @param {import('#src/components/manage-list/question.ts')} [options.manageListQuestion]
-	 * @returns {string|null} url for the next question, or null if unmatched
+	 * @returns url for the next question, or null if unmatched
 	 */
-	getBackLink({ params, manageListQuestion }) {
+	getBackLink({ params, manageListQuestion }: { params: RouteParams; manageListQuestion?: ManageListQuestion }) {
 		const previousQuestion = this.getNextQuestionUrl(params, {
 			manageListQuestion,
 			reverse: true
@@ -241,27 +240,22 @@ export class Journey {
 	/**
 	 * Handles redirect to the next question in the journey
 	 * Used after question post/saving
-	 *
-	 * @param {import('express').Response} res
-	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} params
-	 * @param {import('#src/components/manage-list/question.ts')} [manageListQuestion]
-	 * @returns {void}
 	 */
-	redirectToNextQuestion(res, params, manageListQuestion) {
+	redirectToNextQuestion(res: Response, params: RouteParams, manageListQuestion?: ManageListQuestion) {
 		const next = this.getNextQuestionUrl(params, { manageListQuestion }) ?? this.taskListUrl;
 		return res.redirect(next);
 	}
 
 	/**
 	 * Get url for the next question in the journey
+	 * Pass `reverse` to get the previous question.
 	 *
-	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} params
-	 * @param {Object} options
-	 * @param {boolean} [options.reverse] - if passed in this will get the previous question
-	 * @param {import('#src/components/manage-list/question.ts')} [options.manageListQuestion]
-	 * @returns {string|null} url for the next question, or null if unmatched
+	 * @returns url for the next question, or null if unmatched
 	 */
-	getNextQuestionUrl(params, { reverse = false, manageListQuestion } = {}) {
+	getNextQuestionUrl(
+		params: RouteParams,
+		{ reverse = false, manageListQuestion }: { reverse?: boolean; manageListQuestion?: ManageListQuestion } = {}
+	) {
 		const numberOfSections = this.sections.length;
 		const sectionsStart = reverse ? numberOfSections - 1 : 0;
 		const questionFieldName = manageListQuestion ? params.manageListQuestion : params.question;
@@ -295,23 +289,21 @@ export class Journey {
 				}
 				const question = currentSection.getNextQuestion({
 					questionFieldName,
-					response: this.response,
+					response: this.response as JourneyResponse,
 					manageListQuestion,
 					takeNextQuestion,
 					routeParams: params,
 					reverse
 				});
-				if (question === END_OF_SECTION) {
+				if (isEndOfSection(question)) {
 					takeNextQuestion = true; // get the first question from the following section
 				} else if (question) {
 					/**
 					 * if this is a regular question, then only section and question params are required
 					 * don't include other params which may be set (e.g. manageList* params), as we may now be
 					 * redirecting to a non-manage list question, having previously been on a manage list question
-					 *
-					 * @type {import('#typedefs/journey-types.d.ts').RouteParams}
 					 */
-					let newParams = {
+					let newParams: RouteParams = {
 						section: currentSection.segment,
 						question: question.url || question.fieldName
 					};
@@ -321,7 +313,7 @@ export class Journey {
 						newParams = {
 							...params,
 							// the question param is for the 'parent' manageListQuestion
-							question: manageListQuestion.url,
+							question: manageListQuestion.url as string,
 							// the manageListQuestion param is for the next question
 							manageListQuestion: question.url || question.fieldName
 						};
@@ -336,11 +328,8 @@ export class Journey {
 
 	/**
 	 * Gets the url for the current question
-	 * @param {string} sectionSegment - section segment name
-	 * @param {string} questionSegment - question segment name
-	 * @returns {string} url for the current question
 	 */
-	getCurrentQuestionUrl = (sectionSegment, questionSegment) => {
+	getCurrentQuestionUrl = (sectionSegment: string, questionSegment: string) => {
 		const unmatchedUrl = this.taskListUrl;
 
 		// find section
@@ -363,21 +352,15 @@ export class Journey {
 
 	/**
 	 * Gets the url for the current question
-	 * @param {string} questionSegment - question segment name
-	 * @returns {string} url for the current question
 	 */
-	getCurrentQuestionUrlWithoutSection = (questionSegment) => {
+	getCurrentQuestionUrlWithoutSection = (questionSegment: string) => {
 		return `${this.baseUrl}/${encodeURIComponent(questionSegment)}`;
 	};
 
 	/**
 	 * Gets the url for the current question
-	 * @param {string} sectionSegment - section segment name
-	 * @param {string} questionSegment - question segment name
-	 * @param {string} addition - question segment name
-	 * @returns {string} url for the current question
 	 */
-	addToCurrentQuestionUrl = (sectionSegment, questionSegment, addition) => {
+	addToCurrentQuestionUrl = (sectionSegment: string, questionSegment: string, addition: string) => {
 		const unmatchedUrl = this.taskListUrl;
 
 		// find section
@@ -402,17 +385,18 @@ export class Journey {
 
 	/**
 	 * Gets the overall completeness status of a journey based on the response associated with it and the complete state of each section.
-	 * @returns {boolean} Boolean indicating if a journey response is complete
+	 * @returns is the journey response complete
 	 */
 	isComplete() {
-		return this.sections.every((section) => section.isComplete(this.response));
+		return this.sections.every((section) => section.isComplete(this.response as JourneyResponse));
 	}
 
-	/**
-	 * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<TAnswers>} journeyResponse
-	 */
-	setResponse(journeyResponse) {
+	setResponse(journeyResponse: JourneyResponseLike<TAnswers>) {
 		this.response = journeyResponse;
 		this.baseUrl = this.#trimTrailingSlash(this.makeBaseUrl(journeyResponse));
 	}
+}
+
+function isEndOfSection(question: Question | symbol | null): question is symbol {
+	return question === END_OF_SECTION;
 }
