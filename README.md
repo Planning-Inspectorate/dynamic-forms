@@ -82,6 +82,55 @@ The controllers available are:
 | buildSave      | Returns a controller to handle saving the answer and either redirecting to the next question or show any validation errors if present. Accepts a save function. |
 | list/buildList | Renders a check-your-answers page showing all the answers, links to change any answer, and a button to submit the answers.                                      |
 
+#### Saving answers
+
+The `buildSave` controller accepts a `SaveDataFn` which is passed the context required to save the answer(s). To save answers to session during a journey, a `SaveDataFn` implementation is provided called `saveDataToSession`.
+
+For other use cases, write a custom `SaveDataFn`. A basic implementation (if you are not using ManageList) needs to save the answers passed in as `data.answers`, which is an object whose keys are the question field names, and the values are the answers. For example:
+
+```typescript
+const update: SaveDataFn = async ({data}) => {
+    const answers = data.answers;
+    
+    console.log('saving', answers);
+    
+    // TODO: map to database
+    // TODO: write to database
+}
+```
+
+To support `ManageList` questions as well, handle the `isManageListItem`, `manageListQuestionFieldName`, `manageListItemRemove` parameters. For example:
+
+```typescript
+const update: SaveDataFn = async ({data, req, isManageListItem, manageListQuestionFieldName, manageListItemRemove}) => {
+    if (isManageListItem) {
+        const update = {
+            id: req.params.manageListItemId,
+            ...data.answers
+        };
+
+        console.log('saving', update);
+        // TODO: map to database
+        // TODO: write to database
+        return;
+    } else if (manageListItemRemove) {
+        const id = req.params.manageListItemId;
+        // identify which type of item it is via the field name
+        const type = manageListQuestionFieldName;
+        console.log('removing item', {id, type});
+        // TODO: delete from database
+        return;
+    }
+    const answers = data.answers;
+    
+    console.log('saving', answers);
+    
+    // TODO: map to database
+    // TODO: write to database
+}
+```
+
+
 ### Conditions
 
 Conditions are used to show/hide questions based on the answers to other questions. There are fluent methods on a Section
