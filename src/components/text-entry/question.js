@@ -16,10 +16,12 @@ import { Question } from '#question';
 
 /**
  * @class
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {Question<Answers>}
  */
 export class TextEntryQuestion extends Question {
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').TextEntryQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').TextEntryQuestionParams<Answers>} params
 	 */
 	constructor({ textEntryCheckbox, label, ...parentParams }) {
 		super({

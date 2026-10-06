@@ -1,6 +1,7 @@
 /**
- * @param {(req: import('express').Request, journeyResponse: import('../journey/journey-response.js').JourneyResponse) => import('../journey/journey.js').Journey} createJourney
- * @returns {import('express').Handler}
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @param {(req: import('express').Request, journeyResponse: import('../journey/journey-response.js').JourneyResponse<Answers>) => import('../journey/journey.js').Journey<Answers>} createJourney
+ * @returns {import('express').RequestHandler<any, any, any, any, import('#typedefs/journey-types.d.ts').JourneyLocals<Answers>>}
  */
 export function buildGetJourney(createJourney) {
 	return (req, res, next) => {

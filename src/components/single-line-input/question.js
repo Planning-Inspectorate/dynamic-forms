@@ -2,13 +2,15 @@ import { Question } from '#question';
 
 /**
  * @class
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {Question<Answers>}
  */
 export class SingleLineInputQuestion extends Question {
 	/** @type {Record<string, string>} */
 	inputAttributes;
 
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').SingleLineInputQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').SingleLineInputQuestionParams<Answers>} params
 	 */
 	constructor(params) {
 		super({

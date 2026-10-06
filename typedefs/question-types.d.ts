@@ -1,10 +1,10 @@
-import type { RouteParams } from './journey-types.d.ts';
+import type { JourneyAnswers, JourneyResponseLike, RouteParams } from './journey-types.d.ts';
 import type ManageListQuestion from '#src/components/manage-list/question.js';
 import type BaseValidator from '#src/validator/base-validator.js';
-import type { JourneyResponse } from '#src/journey/journey-response.js';
+import type { Question } from '#src/questions/question.js';
 import type { SummaryValueFormatter } from './question-props.d.ts';
 
-export interface QuestionParameters {
+export interface QuestionParameters<Answers extends object = JourneyAnswers> {
 	title: string;
 	question: string;
 	viewFolder: string;
@@ -12,18 +12,18 @@ export interface QuestionParameters {
 	url?: string;
 	pageTitle?: string;
 	description?: string;
-	validators?: BaseValidator[];
+	validators?: BaseValidator<Answers>[];
 	html?: string;
 	hint?: string;
 	interfaceType?: string;
-	shouldDisplay?: (response: JourneyResponse) => boolean;
+	shouldDisplay?: (response: JourneyResponseLike<Answers>) => boolean;
 	autocomplete?: string;
 	// is this question editable? defaults to true
 	editable?: boolean;
 	// override the action link for this question
 	actionLink?: ActionLink;
 	// custom function to format the summary display value
-	formatSummaryValue?: SummaryValueFormatter;
+	formatSummaryValue?: SummaryValueFormatter<unknown, Answers>;
 	// whether to capitalise the first letter of the answer in summary (defaults to true)
 	capitaliseAnswer?: boolean;
 	// static view data for this question
@@ -98,7 +98,7 @@ export interface PrepQuestionForRenderingOptions {
  * Define a question class type so that projects downstream can extend the
  * Question class and still pass them to the createQuestions function.
  */
-export type QuestionClass<TQuestion extends Question = Question> = new (...args: never[]) => TQuestion;
+export type QuestionClass<TQuestion extends Question<any> = Question> = new (...args: never[]) => TQuestion;
 
 /**
  * Action link displayed in summary lists

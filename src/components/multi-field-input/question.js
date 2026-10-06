@@ -4,10 +4,12 @@ import { capitalize, nl2br } from '../../lib/utils.js';
 
 /**
  * @class
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {Question<Answers>}
  */
 export class MultiFieldInputQuestion extends Question {
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').MultiFieldInputQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').MultiFieldInputQuestionParams<Answers>} params
 	 */
 	constructor({ inputFields, ...parentParams }) {
 		super({

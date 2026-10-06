@@ -11,15 +11,20 @@ import { MANAGE_LIST_ACTIONS } from './manage-list-actions.js';
  * @property {string} [confirmationQuestion] - the name of the confirmation question to use when removing an item, default 'confirm'
  */
 
+/**
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @template {object} [ItemAnswers=import('#typedefs/journey-types.d.ts').ManageListAnswers]
+ * @extends {Question<Answers>}
+ */
 export class ManageListQuestion extends Question {
-	/** @type {import('../../section.js').Section} */
+	/** @type {import('./manage-list-section.js').ManageListSection<ItemAnswers>} */
 	#section;
 	/** @type {boolean} */
 	#showAnswersInSummary;
 	#confirmationQuestionParam;
 
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').ManageListQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').ManageListQuestionParams<Answers>} params
 	 */
 	constructor(params) {
 		super({
@@ -182,6 +187,9 @@ export class ManageListQuestion extends Question {
 		return this.#section;
 	}
 
+	/**
+	 * @param {import('./manage-list-section.js').ManageListSection<ItemAnswers>} section
+	 */
 	set section(section) {
 		this.#section = section;
 	}

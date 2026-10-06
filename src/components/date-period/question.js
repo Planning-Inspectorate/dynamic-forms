@@ -8,10 +8,12 @@ const DEFAULT_DATE_FORMAT = 'HH:mm d MMMM yyyy';
 /**
  * Represents a date period, two dates which make up a period or range
  * @class
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {Question<Answers>}
  */
 export class DatePeriodQuestion extends Question {
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').DatePeriodQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').DatePeriodQuestionParams<Answers>} params
 	 */
 	constructor({
 		dateFormat = DEFAULT_DATE_FORMAT,

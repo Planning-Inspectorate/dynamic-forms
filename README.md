@@ -114,6 +114,8 @@ They can be added using middleware, and utility functions are available for this
   // get the answers from the session, and add JourneyResponse to `res.locals`
   const getJourneyResponse = buildGetJourneyResponseFromSession(JOURNEY_ID);
   // create the journey with the given journeyResponse and questions, and add to `res.locals`
+  // the Answers type argument is inferred here from createJourney's parameter types, but can also
+  // be given explicitly, e.g. buildGetJourney<HolidayAppViewModel>(...)
   const getJourney = buildGetJourney((req, journeyResponse) => createJourney(req, journeyResponse, questions));
   
   router.use(
@@ -121,6 +123,10 @@ They can be added using middleware, and utility functions are available for this
           getJourney
   );
 ```
+
+`buildGetJourney` is generic over `Answers` too, so `res.locals.journey` and `res.locals.journeyResponse`
+are typed with the same narrowed answer type as `createJourney`'s return value. Use the `JourneyLocals<Answers>`
+type to type `res.locals` in handlers that run after this middleware, e.g. `Response<unknown, JourneyLocals<HolidayAppViewModel>>`.
 
 The controllers available are:
 
@@ -293,9 +299,6 @@ We use JSDocs to describe the types used. This is helpful for the JavaScript dev
 Thank you for your co-operation and contributions!
 
 ### Tests
-
-Run `npm run test:types` to generate declarations and check the consumer answer-type
-fixtures using the existing TypeScript compiler.
 
 There are some lightweight tests in the `test` directory which sets up a basic journey and checks the rendering for each question as well as redirect logic.
 

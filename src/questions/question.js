@@ -6,6 +6,7 @@ import { answerObjectForManageList } from '#src/components/manage-list/utils.js'
 /**
  * A specific question within a journey which is made up of one (usually) or many (sometimes) components and their required content.
  * @class
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
  */
 export class Question {
 	/** @type {string} - html page title, defaults to question if not provided */
@@ -49,11 +50,11 @@ export class Question {
 	answerActionText = 'Answer';
 	/** @type {string} text to display for 'add' link */
 	addActionText = 'Add';
-	/** @type {import('#typedefs/question-props.d.ts').SummaryValueFormatter|undefined} custom function to format the summary display value */
+	/** @type {import('#typedefs/question-props.d.ts').SummaryValueFormatter<unknown, Answers>|undefined} custom function to format the summary display value */
 	formatSummaryValue;
 
 	/**
-	 * @param {import('../journey/journey-response.js').JourneyResponse} [response]
+	 * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>} [response]
 	 * @returns {boolean}
 	 */
 	// eslint-disable-next-line no-unused-vars -- response will be used by extending classes
@@ -73,7 +74,7 @@ export class Question {
 	_isInManageListSection = false;
 
 	/**
-	 * @param {import('#typedefs/question-types.d.ts').QuestionParameters} params
+	 * @param {import('#typedefs/question-types.d.ts').QuestionParameters<Answers>} params
 	 * @param {Record<string, Function>} [methodOverrides]
 	 */
 	constructor(
@@ -163,7 +164,7 @@ export class Question {
 
 	/**
 	 * Applies custom summary formatting if a formatSummaryValue function is provided
-	 * @param {import('#typedefs/question-props.d.ts').SummaryFormatterContext} context - the context for formatting
+	 * @param {import('#typedefs/question-props.d.ts').SummaryFormatterContext<unknown, Answers>} context - the context for formatting
 	 * @returns {string}
 	 */
 	#applyCustomSummaryFormatter(context) {
@@ -193,8 +194,8 @@ export class Question {
 	 * @param {Object} options
 	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} options.params
 	 * @param {import('../components/manage-list/question.js').ManageListQuestion} [options.manageListQuestion]
-	 * @param {import('../section.js').Section} options.section - the current section
-	 * @param {import('../journey/journey.js').Journey} options.journey - the journey we are in
+	 * @param {import('../section.js').Section<Answers>} options.section - the current section
+	 * @param {import('../journey/journey.js').Journey<Answers>} options.journey - the journey we are in
 	 * @param {Record<string, unknown>} [options.customViewData] additional data to send to view
 	 * @param {unknown} [options.payload]
 	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel}
@@ -211,8 +212,8 @@ export class Question {
 	/**
 	 * gets the base view model for this question
 	 *
-	 * @param {import('../section.js').Section} section - the current section
-	 * @param {import('../journey/journey.js').Journey} journey - the journey we are in
+	 * @param {import('../section.js').Section<Answers>} section - the current section
+	 * @param {import('../journey/journey.js').Journey<Answers>} journey - the journey we are in
 	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
 	 * @param {unknown} [payload]
 	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} [options] - required to support manage list question
@@ -282,7 +283,7 @@ export class Question {
 	/**
 	 * Get the answers object from the journey response, which may be nested in an array for manage list questions
 	 *
-	 * @param {import('../journey/journey-response.js').JourneyResponse} response
+	 * @param {import('../journey/journey-response.js').JourneyResponse<Answers>} response
 	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} [options]
 	 * @returns {Record<string, any>}
 	 */
@@ -318,8 +319,8 @@ export class Question {
 	/**
 	 * check for validation errors
 	 * @param {import('express').Request} req
-	 * @param {import('../journey/journey.js').Journey} journey
-	 * @param {import('../section.js').Section} section
+	 * @param {import('../journey/journey.js').Journey<Answers>} journey
+	 * @param {import('../section.js').Section<Answers>} section
 	 * @param {import('../components/manage-list/question.js').ManageListQuestion} [manageListQuestion]
 	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel|undefined} returns the view model for displaying the error or undefined if there are no errors
 	 */
@@ -346,7 +347,7 @@ export class Question {
 	 * Get the data to save from the request, returns an object of answers
 	 *
 	 * @param {import('express').Request} req
-	 * @param {import('../journey/journey-response.js').JourneyResponse} journeyResponse - current journey response
+	 * @param {import('../journey/journey-response.js').JourneyResponse<Answers>} journeyResponse - current journey response
 	 * @returns {Promise<{ answers: Record<string, unknown> }>}
 	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
 	async getDataToSave(req, journeyResponse) {
@@ -366,8 +367,8 @@ export class Question {
 	/**
 	 * check for errors after saving, by default this does nothing
 	 * @param {import('express').Request} req
-	 * @param {import('../journey/journey.js').Journey} journey
-	 * @param {import('../section.js').Section} sectionObj
+	 * @param {import('../journey/journey.js').Journey<Answers>} journey
+	 * @param {import('../section.js').Section<Answers>} sectionObj
 	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel | undefined} returns the view model for displaying the error or undefined if there are no errors
 	 */ //eslint-disable-next-line no-unused-vars
 	checkForSavingErrors(req, sectionObj, journey) {
@@ -378,7 +379,7 @@ export class Question {
 	 * Handles redirect after saving. Kept around for backwards compatibility.
 	 *
 	 * @param {import('express').Response} res
-	 * @param {import('../journey/journey.js').Journey} journey
+	 * @param {import('../journey/journey.js').Journey<Answers>} journey
 	 * @param {string} sectionSegment
 	 * @param {string} questionSegment
 	 * @returns {void}
@@ -394,7 +395,7 @@ export class Question {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 * @param {string} sectionSegment
-	 * @param {import('../journey/journey.js').Journey} journey
+	 * @param {import('../journey/journey.js').Journey<Answers>} journey
 	 * @param {unknown} answer
 	 * @param {boolean} [capitals] - deprecated: use capitaliseAnswer property instead
 	 * @returns {import('#typedefs/question-types.d.ts').SummaryRow[]}
@@ -433,7 +434,7 @@ export class Question {
 	/**
 	 * Returns the action link for the question
 	 * @param {string} sectionSegment
-	 * @param {import('../journey/journey.js').Journey} journey
+	 * @param {import('../journey/journey.js').Journey<Answers>} journey
 	 * @param {unknown} answer
 	 * @returns {import('#typedefs/question-types.d.ts').ActionView | import('#typedefs/question-types.d.ts').ActionView[] | undefined}
 	 */
@@ -499,7 +500,7 @@ export class Question {
 	}
 
 	/**
-	 * @param {import('../journey/journey-response.js').JourneyResponse} journeyResponse
+	 * @param {import('../journey/journey-response.js').JourneyResponse<Answers>} journeyResponse
 	 * @param {string} [fieldName] optional fieldname for multi field input questions
 	 * @returns {boolean}
 	 */

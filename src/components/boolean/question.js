@@ -39,9 +39,13 @@ export const booleanToYesNoOrNull = (value) => {
 	return null;
 };
 
+/**
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {RadioQuestion<Answers>}
+ */
 export class BooleanQuestion extends RadioQuestion {
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').BooleanQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').BooleanQuestionParams<Answers>} params
 	 */
 	constructor({
 		title,

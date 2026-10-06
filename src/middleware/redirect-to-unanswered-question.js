@@ -1,11 +1,13 @@
 /**
- * @typedef {function(import('../questions/question.js').Question, import('#journey-response').JourneyResponse): boolean} ShouldDisplayCondition
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @typedef {function(import('../questions/question.js').Question<Answers>, import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>): boolean} ShouldDisplayCondition
  */
 
 /**
  * Redirects to the first unanswered question in a journey, or to the task list if complete
  *
- * @param {ShouldDisplayCondition[]} [conditions]
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @param {ShouldDisplayCondition<Answers>[]} [conditions]
  * @returns {import('express').Handler}
  */
 export function redirectToUnansweredQuestion(conditions = []) {

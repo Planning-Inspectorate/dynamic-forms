@@ -2,7 +2,8 @@
 /** @typedef {(questionKeyTuples: QuestionKeyTuples) => boolean} CombinationFunc */
 
 /**
- * @param {import('../../journey/journey-response.js').JourneyResponse} response
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>} response
  * @returns {{and: CombinationFunc, or: CombinationFunc}}
  */
 export const logicalCombinations = (response) => ({
@@ -18,9 +19,10 @@ export const logicalCombinations = (response) => ({
  * @example
  * .withCondition(whenQuestionHasAnswer(question.q1, 'answer-1'))
  *
- * @param {import('../../questions/question.js').Question} question
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @param {import('../../questions/question.js').Question<Answers>} question
  * @param {unknown} expectedValue
- * @returns {import('../../section.js').QuestionCondition}
+ * @returns {import('../../section.js').QuestionCondition<Answers>}
  */
 export const whenQuestionHasAnswer = (question, expectedValue) => {
 	return (response) => questionHasAnswer(response, question, expectedValue);
@@ -29,8 +31,9 @@ export const whenQuestionHasAnswer = (question, expectedValue) => {
 /**
  * Does the question have the expected answer?
  *
- * @param {import('../../journey/journey-response.js').JourneyResponse} response
- * @param {import('../../questions/question.js').Question|{optionJoinString: string}} question
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>} response
+ * @param {import('../../questions/question.js').Question<Answers>|{optionJoinString: string}} question
  * @param {unknown} expectedValue
  * @returns {boolean}
  */
@@ -53,7 +56,8 @@ export const questionHasAnswer = (response, question, expectedValue) => {
 /**
  * Checks if any item in the specified answer field matches a condition.
  *
- * @param {import('../../journey/journey-response.js').JourneyResponse} response - The response object containing answers.
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>} response - The response object containing answers.
  * @param {any} question - The question containing the fieldName.
  * @param {(item: any) => boolean} [conditionFn] - A function to test each item. Returns true to indicate a match.
  * @returns {boolean} True if at least one item matches the condition.
@@ -70,7 +74,8 @@ export const questionArrayMeetsCondition = (response, question, conditionFn = ()
 };
 
 /**
- * @param {import('../../journey/journey-response.js').JourneyResponse} response
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>} response
  * @param {QuestionKeyTuples} questionKeyTuples
  * @param {Object} [options]
  * @param {'and' | 'or'} options.logicalCombinator
@@ -87,8 +92,9 @@ export const questionsHaveAnswers = (
 };
 
 /**
- * @param {import('../../journey/journey-response.js').JourneyResponse} response
- * @param {import('../../questions/question.js').Question} question
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>} response
+ * @param {import('../../questions/question.js').Question<Answers>} question
  * @returns {boolean}
  */
 export const questionHasNonEmptyStringAnswer = (response, question) => {
@@ -98,8 +104,9 @@ export const questionHasNonEmptyStringAnswer = (response, question) => {
 };
 
 /**
- * @param {import('../../journey/journey-response.js').JourneyResponse} response
- * @param {import('../../questions/question.js').Question} question
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>} response
+ * @param {import('../../questions/question.js').Question<Answers>} question
  * @returns {boolean}
  */
 export const questionHasNonEmptyNumberAnswer = (response, question) => {

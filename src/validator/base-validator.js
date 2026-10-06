@@ -1,6 +1,7 @@
 /**
  * @abstract
  * @class BaseValidator
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
  */
 export class BaseValidator {
 	/**
@@ -19,7 +20,7 @@ export class BaseValidator {
 	 * Subclasses must override this method.
 	 * @abstract
 	 * @param {{fieldName: string}} questionObj - The question object containing the fieldName to validate.
-	 * @param {import('../journey/journey-response.js').JourneyResponse} [journeyResponse] - The current journey response (optional).
+	 * @param {import('../journey/journey-response.js').JourneyResponse<Answers>} [journeyResponse] - The current journey response (optional).
 	 * @returns {import('express-validator').ValidationChain | import('express-validator').ValidationChain[]}
 	 */
 	// eslint-disable-next-line no-unused-vars

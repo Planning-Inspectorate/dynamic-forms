@@ -1,9 +1,13 @@
 import escape from 'escape-html';
 import OptionsQuestion from '../../questions/options-question.js';
 
+/**
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {OptionsQuestion<Answers>}
+ */
 export class RadioQuestion extends OptionsQuestion {
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').RadioQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').RadioQuestionParams<Answers>} params
 	 */
 	constructor({ label, html, legend, viewFolder, ...parentParams }) {
 		super({

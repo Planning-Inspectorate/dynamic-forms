@@ -1,9 +1,13 @@
 import OptionsQuestion from '../../questions/options-question.js';
 
+/**
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {OptionsQuestion<Answers>}
+ */
 export class SelectQuestion extends OptionsQuestion {
 	#disableAccessibleAutocomplete;
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').SelectQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').SelectQuestionParams<Answers>} params
 	 */
 	constructor({ label, html, legend, disableAccessibleAutocomplete, viewFolder, ...parentParams }) {
 		super({

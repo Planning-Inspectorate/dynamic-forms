@@ -23,16 +23,16 @@ export class JourneyResponse {
 	 * creates an instance of a JourneyResponse
 	 * @param {string} journeyId
 	 * @param {string} referenceId
-	 * @param {Answers | null} answers
+	 * @param {import('#typedefs/journey-types.d.ts').JourneyResponseAnswersInput<Answers>} answers
 	 * @param {string} [lpaCode]
 	 */
 	constructor(journeyId, referenceId, answers, lpaCode) {
 		this.journeyId = journeyId;
 		this.referenceId = referenceId;
 		if (answers) {
-			this.answers = answers;
+			this.answers = /** @type {Answers} */ (answers);
 		} else {
-			this.answers = {};
+			this.answers = /** @type {Answers} */ ({});
 		}
 		this.LPACode = lpaCode;
 	}

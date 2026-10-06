@@ -5,9 +5,13 @@ import { Address } from '../../lib/address.js';
 import { nl2br } from '../../lib/utils.js';
 import AddressValidator from '../../validator/address-validator.js';
 
+/**
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {Question<Answers>}
+ */
 export class AddressQuestion extends Question {
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').SiteAddressQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').SiteAddressQuestionParams<Answers>} params
 	 */
 	constructor(params) {
 		super({

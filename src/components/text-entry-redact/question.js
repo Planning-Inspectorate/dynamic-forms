@@ -6,10 +6,12 @@ export const TRUNCATED_MAX_LENGTH = 500;
 
 /**
  * @class
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {Question<Answers>}
  */
 export class TextEntryRedactQuestion extends Question {
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').TextEntryRedactQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').TextEntryRedactQuestionParams<Answers>} params
 	 */
 	constructor({
 		textEntryCheckbox,

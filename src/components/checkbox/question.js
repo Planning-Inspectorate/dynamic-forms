@@ -3,9 +3,13 @@ import OptionsQuestion from '../../questions/options-question.js';
 
 const defaultOptionJoinString = ',';
 
+/**
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {OptionsQuestion<Answers>}
+ */
 export class CheckboxQuestion extends OptionsQuestion {
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').CheckboxQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').CheckboxQuestionParams<Answers>} params
 	 */
 	constructor({ ...parentParams }) {
 		super({

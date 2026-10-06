@@ -4,10 +4,12 @@ import SingleLineInputQuestion from '../single-line-input/question.js';
  * Email input question that extends SingleLineInputQuestion
  * Automatically sets the input type to "email" and adds appropriate attributes
  * @class
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {SingleLineInputQuestion<Answers>}
  */
 export class EmailQuestion extends SingleLineInputQuestion {
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').EmailQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').EmailQuestionParams<Answers>} params
 	 */
 	constructor(params) {
 		// Set default input attributes for email

@@ -14,7 +14,7 @@ import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-act
 export class Journey {
 	/** @type {string} journeyId - a unique, human-readable id for this journey */
 	journeyId;
-	/** @type {Array.<import('../section.js').Section>} sections - sections within the journey */
+	/** @type {Array.<import('../section.js').Section<Answers>>} sections - sections within the journey */
 	sections = [];
 	/** @type {import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>} response - the user's response to the journey so far */
 	response;
@@ -47,7 +47,7 @@ export class Journey {
 	 * @param {string} [options.informationPageViewPath] - path to njk view for pdf summary page
 	 * @param {string} options.journeyTitle - part of the title in the njk view
 	 * @param {boolean} [options.returnToListing] - defines how the next/previous question handles end of sections
-	 * @param {import('../section.js').Section[]} options.sections
+	 * @param {import('../section.js').Section<Answers>[]} options.sections
 	 * @param {string} [options.initialBackLink] - back link when on the first question
 	 */
 	constructor({
@@ -146,7 +146,7 @@ export class Journey {
 	/**
 	 * Gets section based on segment
 	 * @param {string} sectionSegment
-	 * @returns {import('../section.js').Section | undefined}
+	 * @returns {import('../section.js').Section<Answers> | undefined}
 	 */
 	getSection(sectionSegment) {
 		return this.sections.find((s) => {
@@ -156,10 +156,10 @@ export class Journey {
 
 	/**
 	 * Get question within a section
-	 * @param {import('../section.js').Section} section
+	 * @param {import('../section.js').Section<Answers>} section
 	 * @param {string} questionSegment
 	 * @param {{action: string, itemId: string, question: string}} [manageListParams]
-	 * @returns {import('../questions/question.js').Question | undefined} question if it belongs in the given section
+	 * @returns {import('../questions/question.js').Question<Answers> | undefined} question if it belongs in the given section
 	 */
 	#getQuestion(section, questionSegment, manageListParams) {
 		const matchQuestion = (q, toMatch) => {
@@ -185,7 +185,7 @@ export class Journey {
 	/**
 	 * gets a question from the object's sections based on a section + question names
 	 * @param {import('#typedefs/journey-types.d.ts').RouteParams} params
-	 * @returns {import('../questions/question.js').Question | undefined} question found by lookup
+	 * @returns {import('../questions/question.js').Question<Answers> | undefined} question found by lookup
 	 */
 	getQuestionByParams(params) {
 		const section = this.getSection(params.section);

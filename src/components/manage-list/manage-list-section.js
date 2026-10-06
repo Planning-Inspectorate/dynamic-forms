@@ -2,6 +2,9 @@ import { Section } from '../../section.js';
 
 /**
  * Extends the Section class for extra logic around managing lists.
+ *
+ * @template {object} [ItemAnswers=import('#typedefs/journey-types.d.ts').ManageListAnswers]
+ * @extends {Section<ItemAnswers>}
  */
 export class ManageListSection extends Section {
 	constructor() {
@@ -21,7 +24,7 @@ export class ManageListSection extends Section {
 
 	/**
 	 * Fluent API method for adding questions
-	 * @param {import('../../questions/question.js').Question} question
+	 * @param {import('../../questions/question.js').Question<ItemAnswers>} question
 	 * @param {import('./manage-list-section.js').ManageListSection} [manageListSection]
 	 * @returns {this}
 	 */

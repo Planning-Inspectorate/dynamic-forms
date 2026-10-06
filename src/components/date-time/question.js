@@ -4,12 +4,16 @@ import { formatDateForDisplay, parseDateInput } from '../../lib/date-utils.js';
 const DEFAULT_DATE_FORMAT = 'd MMMM yyyy';
 const DEFAULT_TIME_FORMAT = 'HH:mma';
 
+/**
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {Question<Answers>}
+ */
 export class DateTimeQuestion extends Question {
 	static AM = 'am';
 	static PM = 'pm';
 
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').DateTimeQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').DateTimeQuestionParams<Answers>} params
 	 */
 	constructor({ dateFormat = DEFAULT_DATE_FORMAT, timeFormat = DEFAULT_TIME_FORMAT, ...parentParams }) {
 		super({

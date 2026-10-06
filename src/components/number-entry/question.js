@@ -1,9 +1,13 @@
 import { Question } from '#question';
 import { getPersistedNumberAnswer } from '../utils/persisted-number-answer.js';
 
+/**
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {Question<Answers>}
+ */
 export class NumberEntryQuestion extends Question {
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').NumberEntryQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').NumberEntryQuestionParams<Answers>} params
 	 */
 	constructor({ label, suffix, ...parentParams }) {
 		super({

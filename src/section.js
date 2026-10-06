@@ -2,7 +2,8 @@ import RequiredValidator from './validator/required-validator.js';
 import { answerObjectForManageList } from '#src/components/manage-list/utils.js';
 
 /**
- * @typedef {((response: import('#journey-response').JourneyResponse) => boolean)} QuestionCondition
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @typedef {((response: import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>) => boolean)} QuestionCondition
  */
 
 /**
@@ -15,6 +16,7 @@ export const END_OF_SECTION = Symbol('END_OF_SECTION');
 /**
  * Defines a section for a questionnaire, a set of Questions
  * @class
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
  */
 export class Section {
 	/**
@@ -28,7 +30,7 @@ export class Section {
 	segment;
 
 	/**
-	 * @type {Array<import('./questions/question.js').Question>} - questions within the section
+	 * @type {Array<import('./questions/question.js').Question<Answers>>} - questions within the section
 	 */
 	questions = [];
 
@@ -39,13 +41,13 @@ export class Section {
 
 	/**
 	 * A condition to apply to every question in this section
-	 * @type {QuestionCondition|null}
+	 * @type {QuestionCondition<Answers>|null}
 	 */
 	#sectionCondition = null;
 
 	/**
 	 * conditions to apply to a set of questions, until ended is true
-	 * @type {Object<string, {ended: boolean, condition: QuestionCondition}>}
+	 * @type {Object<string, {ended: boolean, condition: QuestionCondition<Answers>}>}
 	 */
 	#multiQuestionConditions = {};
 
@@ -62,7 +64,7 @@ export class Section {
 	/**
 	 * Add a condition to all questions in this section
 	 *
-	 * @param {QuestionCondition} shouldIncludeSection
+	 * @param {QuestionCondition<Answers>} shouldIncludeSection
 	 * @returns {this}
 	 */
 	withSectionCondition(shouldIncludeSection) {
@@ -81,7 +83,7 @@ export class Section {
 
 	/**
 	 * Fluent API method for adding questions
-	 * @param {import('./questions/question.js').Question} question
+	 * @param {import('./questions/question.js').Question<Answers>} question
 	 * @param {import('./components/manage-list/manage-list-section.js').ManageListSection} [manageListSection]
 	 * @returns {this}
 	 */
@@ -103,8 +105,8 @@ export class Section {
 
 	/**
 	 * Apply conditions to the given question
-	 * @param {import('./questions/question.js').Question} question
-	 * @param [condition] - specific condition for this question
+	 * @param {import('./questions/question.js').Question<Answers>} question
+	 * @param {QuestionCondition<Answers>} [condition] - specific condition for this question
 	 */
 	#applyConditions(question, condition) {
 		const conditions = [];
@@ -131,7 +133,7 @@ export class Section {
 
 	/**
 	 * Fluent API method for attaching conditions to the previously added question
-	 * @param {QuestionCondition} shouldIncludeQuestion
+	 * @param {QuestionCondition<Answers>} shouldIncludeQuestion
 	 * @returns {this}
 	 */
 	withCondition(shouldIncludeQuestion) {
@@ -172,7 +174,7 @@ export class Section {
 	/**
 	 * Fluent API method for starting a multi question condition
 	 * @param {string} conditionName
-	 * @param {QuestionCondition} shouldIncludeQuestion
+	 * @param {QuestionCondition<Answers>} shouldIncludeQuestion
 	 * @returns {this}
 	 */
 	startMultiQuestionCondition(conditionName, shouldIncludeQuestion) {
@@ -198,8 +200,8 @@ export class Section {
 
 	/**
 	 * Get the next question in this section given a questionParam (question fieldName)
-	 * @param {import('#typedefs/section-types.d.ts').GetNextQuestionParams} params
-	 * @returns {import('./questions/question.js').Question|Symbol|null}
+	 * @param {import('#typedefs/section-types.d.ts').GetNextQuestionParams<Answers>} params
+	 * @returns {import('./questions/question.js').Question<Answers>|Symbol|null}
 	 */
 	getNextQuestion(params) {
 		const { response, manageListQuestion, routeParams } = params;
@@ -227,8 +229,9 @@ export class Section {
 	/**
 	 * Implementation of getNextQuestion given a list of questions
 	 *
-	 * @param {import('#typedefs/section-types.d.ts').StaticGetNextQuestionParams} params
-	 * @returns {import('./questions/question.js').Question|Symbol|null}
+	 * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+	 * @param {import('#typedefs/section-types.d.ts').StaticGetNextQuestionParams<Answers>} params
+	 * @returns {import('./questions/question.js').Question<Answers>|Symbol|null}
 	 */
 	static getNextQuestion({ questions, questionFieldName, response, takeNextQuestion = false, reverse = false }) {
 		const numberOfQuestions = questions.length;
@@ -252,7 +255,7 @@ export class Section {
 
 	/**
 	 * checks answers on response to ensure that a answer is provided for each required question in the section
-	 * @param {import('#journey-response').JourneyResponse} journeyResponse
+	 * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>} journeyResponse
 	 * @returns {SectionStatus}
 	 */
 	getStatus(journeyResponse) {
@@ -309,7 +312,7 @@ export class Section {
 
 	/**
 	 * checks answers on response and return true if the status of the section is complete
-	 * @param {import('#journey-response').JourneyResponse} journeyResponse
+	 * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>} journeyResponse
 	 * @returns {boolean}
 	 */
 	isComplete(journeyResponse) {

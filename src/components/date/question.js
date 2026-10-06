@@ -5,10 +5,12 @@ const DEFAULT_DATE_FORMAT = 'd MMMM yyyy';
 
 /**
  * @class
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {Question<Answers>}
  */
 export class DateQuestion extends Question {
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').DateQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').DateQuestionParams<Answers>} params
 	 */
 	constructor({ dateFormat = DEFAULT_DATE_FORMAT, ...parentParams }) {
 		super({

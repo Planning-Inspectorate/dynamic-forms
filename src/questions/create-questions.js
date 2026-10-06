@@ -1,11 +1,12 @@
 /**
  * @template {string} K Question keys in questionPropsRecord
- * @template {import('#typedefs/question-props.d.ts').BaseQuestionProps} T
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @template {import('#typedefs/question-props.d.ts').BaseQuestionProps<Answers>} T
  * @param {{[questionName in K]: T}} questionPropsRecord
- * @param {Record<string, import('#typedefs/question-types.d.ts').QuestionClass>} questionClasses
+ * @param {Record<string, import('#typedefs/question-types.d.ts').QuestionClass<import('#src/questions/question.js').Question<Answers>>>} questionClasses
  * @param {{[questionType: string]: Record<string, Function>}} questionMethodOverrides
  * @param {{notStartedText?: string, continueButtonText?: string, changeActionText?: string, answerActionText?: string}} [textOverrides] - customise question text
- * @returns {{[questionName in K]: InstanceType<import('#typedefs/question-types.d.ts').QuestionClass>}} Returns the same question keys that were passed in with each value being an instantiated question
+ * @returns {{[questionName in K]: InstanceType<import('#typedefs/question-types.d.ts').QuestionClass<import('#src/questions/question.js').Question<Answers>>>}} Returns the same question keys that were passed in with each value being an instantiated question
  */
 export function createQuestions(questionPropsRecord, questionClasses, questionMethodOverrides, textOverrides) {
 	return Object.fromEntries(

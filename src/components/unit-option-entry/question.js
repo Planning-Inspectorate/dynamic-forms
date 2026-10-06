@@ -30,12 +30,16 @@ const defaultOptionJoinString = ',';
  *}} UnitOption
  */
 
+/**
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @extends {Question<Answers>}
+ */
 export class UnitOptionEntryQuestion extends Question {
 	/** @type {Array<UnitOption>} */
 	options;
 
 	/**
-	 * @param {import('#typedefs/question-props.d.ts').UnitOptionEntryQuestionParams} params
+	 * @param {import('#typedefs/question-props.d.ts').UnitOptionEntryQuestionParams<Answers>} params
 	 * @param {Record<string, Function>} [methodOverrides]
 	 */
 	constructor({ conditionalFieldName, options, label, ...parentParams }, methodOverrides) {

@@ -1,9 +1,10 @@
 /**
- *
- * @param {import('../../journey/journey-response.js').JourneyResponse} response
- * @param {import('./question.js')} manageListQuestion
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @template {object} [ItemAnswers=import('#typedefs/journey-types.d.ts').ManageListAnswers]
+ * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>} response
+ * @param {import('./question.js').ManageListQuestion<Answers, ItemAnswers>} manageListQuestion
  * @param {string} manageListItemId
- * @returns {Record<string, unknown>}
+ * @returns {Partial<ItemAnswers>}
  */
 export function answerObjectForManageList(response, manageListQuestion, manageListItemId) {
 	const answers = response.answers[manageListQuestion.fieldName];
@@ -16,8 +17,10 @@ export function answerObjectForManageList(response, manageListQuestion, manageLi
 /**
  * Similar to answerObjectForManageList but will edit response and add a new array entry if not found
  *
- * @param {import('../../journey/journey-response.js').JourneyResponse} response
- * @param {import('./question.js')} manageListQuestion
+ * @template {object} [Answers=import('#typedefs/journey-types.d.ts').JourneyAnswers]
+ * @template {object} [ItemAnswers=import('#typedefs/journey-types.d.ts').ManageListAnswers]
+ * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<Answers>} response
+ * @param {import('./question.js').ManageListQuestion<Answers, ItemAnswers>} manageListQuestion
  * @param {import('#typedefs/journey-types.d.ts').RouteParams} params
  * @returns {import('#typedefs/journey-types.d.ts').ManageListAnswers}
  */

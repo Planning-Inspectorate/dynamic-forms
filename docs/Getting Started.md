@@ -146,11 +146,24 @@ e.g.
 
 Now you are ready to implement any user journeys for your service. Add questions, journeys, and routes for each of them.
 
+### Typed answers (optional but recommended)
+
+Every core type exported by dynamic-forms (`Journey`, `JourneyResponse`, `QuestionProps`, `buildGetJourney`, etc.) is generic over the shape of your journey's answers, defaulting to a loosely-typed `JourneyAnswers`. Define an interface describing your journey's answers and pass it as the type argument so you get autocomplete and compile-time checking wherever answers are read or written, without needing `as`/type-casts.
+
+`view-model.ts`
+
+```typescript
+export interface HolidayAppViewModel {
+	destinationType: string;
+	nights: number;
+}
+```
+
 For example:
 
 `questions.ts`
 
-Use `satisfies Record<string, QuestionProps>` to get autocomplete for available question props specific for each component type.
+Use `satisfies Record<string, QuestionProps<HolidayAppViewModel>>` to get autocomplete for available question props specific for each component type, and to check `fieldName`s against the view model.
 
 ```typescript
 import {
@@ -160,6 +173,7 @@ import {
 	RequiredValidator
 } from '@planning-inspectorate/dynamic-forms';
 import type { QuestionProps } from '@planning-inspectorate/dynamic-forms';
+import type { HolidayAppViewModel } from './view-model.ts';
 
 export const questionProps = {
 	destinationType: {
@@ -183,7 +197,7 @@ export const questionProps = {
 		url: 'nights',
 		label: 'Nights'
 	}
-} satisfies Record<string, QuestionProps>;
+} satisfies Record<string, QuestionProps<HolidayAppViewModel>>;
 
 export function getQuestions() {
 	return createQuestions(questionProps, questionClasses, {}, {});
@@ -204,11 +218,12 @@ import {
 } from '@planning-inspectorate/dynamic-forms';
 import type { Request } from 'express';
 import type { Questions } from './questions.ts';
+import type { HolidayAppViewModel } from './view-model.ts';
 
 export const JOURNEY_ID = 'holidays';
 
-export function createJourney(req: Request, response: JourneyResponse, questions: Questions) {
-	return new Journey({
+export function createJourney(req: Request, response: JourneyResponse<HolidayAppViewModel>, questions: Questions) {
+	return new Journey<HolidayAppViewModel>({
 		journeyId: JOURNEY_ID,
 		sections: [
 			new Section('Questions', 'questions').addQuestion(questions.destinationType).addQuestion(questions.nights)
@@ -242,12 +257,15 @@ import {
 } from '@planning-inspectorate/dynamic-forms';
 import { createJourney, JOURNEY_ID } from './journey.ts';
 import { getQuestions } from './questions.ts';
+import type { HolidayAppViewModel } from './view-model.ts';
 
 export function createRoutes(): IRouter {
 	const router = createRouter({ mergeParams: true });
 
 	const questions = getQuestions();
 	const getJourneyResponse = buildGetJourneyResponseFromSession(JOURNEY_ID);
+	// the Answers type argument is inferred from createJourney's parameter types, but can also be given explicitly:
+	// buildGetJourney<HolidayAppViewModel>((req, journeyResponse) => ...)
 	const getJourney = buildGetJourney((req, journeyResponse) => createJourney(req, journeyResponse, questions));
 
 	router.use(getJourneyResponse, getJourney);
@@ -261,21 +279,14 @@ export function createRoutes(): IRouter {
 	router.get('/check-your-answers', buildList());
 	// route for saving all answers
 	router.post('/check-your-answers', (req, res) => {
-		const answers = res.locals?.journeyResponse?.answers as JourneyAnswers;
-		if (typeof answers !== 'object' || answers === null) {
-			throw new Error('answers should be an object');
-		}
+		// res.locals.journeyResponse.answers is typed as HolidayAppViewModel, no cast needed
+		const answers: HolidayAppViewModel = res.locals.journeyResponse.answers;
 		console.log('answers', answers);
 		// TODO: save to a database or similar!
 		res.redirect('/');
 	});
 
 	return router;
-}
-
-interface JourneyAnswers {
-	destinationType: string;
-	nights: number;
 }
 ```
 
