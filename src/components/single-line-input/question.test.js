@@ -11,6 +11,8 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 		const HTML = '/path/to/html.njk';
 		const HINT = 'hint';
 		const LABEL = 'A label';
+		const PREFIX = { text: '£', classes: 'govuk-!-font-weight-bold' };
+		const SUFFIX = { text: 'per year' };
 
 		const question = new SingleLineInputQuestion({
 			title: TITLE,
@@ -20,6 +22,8 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 			html: HTML,
 			hint: HINT,
 			label: LABEL,
+			prefix: PREFIX,
+			suffix: SUFFIX,
 			autocomplete: FIELDNAME
 		});
 
@@ -31,6 +35,8 @@ describe('./src/dynamic-forms/components/single-line-input/question.js', () => {
 		assert.strictEqual(question.html, HTML);
 		assert.strictEqual(question.hint, HINT);
 		assert.strictEqual(question.label, LABEL);
+		assert.strictEqual(question.prefix, PREFIX);
+		assert.strictEqual(question.suffix, SUFFIX);
 		assert.strictEqual(question.autocomplete, FIELDNAME);
 	});
 });
