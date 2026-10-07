@@ -1,15 +1,14 @@
 import { Question } from '#question';
 import { getPersistedNumberAnswer } from '../utils/persisted-number-answer.ts';
+import type {Affix, NumberEntryQuestionParams} from '#typedefs/question-props.ts';
+import type { QuestionViewModel } from '#typedefs/question-types.ts';
 
 /**
  * Normalises a suffix param into the govuk-frontend Affix shape.
  * Supports the legacy plain-string format for backwards compatibility,
  * emitting a deprecation warning when used.
- *
- * @param {string | import('#typedefs/question-props.d.ts').Affix | undefined} value
- * @returns {import('#typedefs/question-props.d.ts').Affix | undefined}
  */
-function toAffix(value) {
+function toAffix(value: string | Affix | undefined): Affix | undefined {
 	if (value === undefined) {
 		return undefined;
 	}
@@ -23,10 +22,11 @@ function toAffix(value) {
 }
 
 export class NumberEntryQuestion extends Question {
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').NumberEntryQuestionParams} params
-	 */
-	constructor({ label, prefix, suffix, ...parentParams }) {
+	prefix?: Affix;
+	suffix?: Affix;
+	label?: string;
+
+	constructor({ label, prefix, suffix, ...parentParams }: NumberEntryQuestionParams) {
 		super({
 			// default but allow overrides
 			capitaliseAnswer: false,
@@ -35,18 +35,15 @@ export class NumberEntryQuestion extends Question {
 		});
 
 		this.prefix = prefix;
-		this.suffix = toAffix(suffix, 'suffix');
+		this.suffix = toAffix(suffix);
 		this.label = label;
 	}
 
-	answerForViewModel(answers) {
-		return getPersistedNumberAnswer(answers[this.fieldName] || '');
+	answerForViewModel(answers: Record<string, unknown>) {
+		return getPersistedNumberAnswer((answers[this.fieldName] as number) || '');
 	}
 
-	/**
-	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
-	 */
-	addCustomDataToViewModel(viewModel) {
+	addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.prefix = this.prefix;
 		viewModel.question.suffix = this.suffix;

@@ -1,7 +1,17 @@
 import nunjucks from 'nunjucks';
+import type { QuestionMethodOverrides } from '../../questions/question.ts';
 import { Question } from '../../questions/question.ts';
 import { conditionalIsJustHTML } from '../utils/question-utils.ts';
 import { toArray } from '#src/lib/utils.ts';
+import type { Request } from 'express';
+import type { Journey } from '#journey';
+import type { Section } from '#section';
+import type { UnitOptionEntryQuestionParams } from '#typedefs/question-props.ts';
+import type {
+	BaseQuestionViewData,
+	PrepQuestionForRenderingOptions,
+	QuestionViewModel
+} from '#typedefs/question-types.ts';
 
 const defaultOptionJoinString = ',';
 
@@ -12,33 +22,42 @@ const defaultOptionJoinString = ',';
  * Each conditional must have a fieldName which uses the conditionalFieldName from the
  * UnitOptionEntryQuestion object as a base, followed by an underscore and unit reference
  * eg 'siteAreaSquareMetres_hectares' - this is required for validation and saving to the DB
- * @typedef {{
- *   text: string;
- *   value: string;
- *     hint?: object;
- *   checked?: boolean | undefined;
- *   attributes?: Record<string, string>;
- *   behaviour?: 'exclusive';
- *   conditional: {
- *     fieldName: string;
- *         suffix: string;
- *     value?: unknown;
- *         label?: string;
- *         hint?: string;
- *     conversionFactor?: number;
- *   }
- *}} UnitOption
  */
+type UnitOption = {
+	text: string;
+	value: string;
+	hint?: object;
+	checked?: boolean | undefined;
+	attributes?: Record<string, string>;
+	behaviour?: 'exclusive';
+	conditional: {
+		fieldName: string;
+		suffix: string;
+		value?: unknown;
+		label?: string;
+		hint?: string;
+		conversionFactor?: number;
+	};
+};
+
+export type UnitOptionView = Omit<UnitOption, 'conditional'> & {
+	conditional?: { html: string };
+};
+
+export type UnitOptionQuestionViewModel = BaseQuestionViewData & {
+	options: UnitOptionView[];
+};
 
 export class UnitOptionEntryQuestion extends Question {
-	/** @type {Array<UnitOption>} */
-	options;
+	options: UnitOption[];
+	conditionalFieldName: string;
+	label?: string;
+	optionJoinString: string;
 
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').UnitOptionEntryQuestionParams} params
-	 * @param {Record<string, Function>} [methodOverrides]
-	 */
-	constructor({ conditionalFieldName, options, label, ...parentParams }, methodOverrides) {
+	constructor(
+		{ conditionalFieldName, options, label, ...parentParams }: UnitOptionEntryQuestionParams,
+		methodOverrides?: QuestionMethodOverrides
+	) {
 		super(
 			{
 				// Prevent capitalisation of answers, but allow override
@@ -53,34 +72,36 @@ export class UnitOptionEntryQuestion extends Question {
 		if (!conditionalFieldName?.length) throw new Error('conditionalFieldName is mandatory');
 
 		this.conditionalFieldName = conditionalFieldName;
-		this.options = options;
+		this.options = options as UnitOption[];
 		this.label = label;
 		this.optionJoinString = defaultOptionJoinString;
 	}
 
 	/**
 	 * gets the view model for this question
-	 * @param {import('../../section.ts').Section} section - the current section
-	 * @param {import('#journey').Journey} journey - the journey we are in
-	 * @param {Record<string, unknown>} [customViewData] additional data to send to view
-	 * @param {Record<string, unknown>} [payload]
-	 * @param {import('#typedefs/question-types.d.ts').PrepQuestionForRenderingOptions} options
-	 * @returns {import('#typedefs/question-types.d.ts').QuestionViewModel & {
-	 *   question: import('#typedefs/question-types.d.ts').QuestionViewModel['question'] & {
-	 *     options:UnitOption[]
-	 *   }
-	 * }}
 	 */
-	prepQuestionForRendering(section, journey, customViewData, payload, options) {
-		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload, options);
+	prepQuestionForRendering(
+		section: Section,
+		journey: Journey,
+		customViewData?: Record<string, unknown>,
+		payload?: Record<string, unknown>,
+		options?: PrepQuestionForRenderingOptions
+	): QuestionViewModel<UnitOptionQuestionViewModel> {
+		const viewModel = super.prepQuestionForRendering(
+			section,
+			journey,
+			customViewData,
+			payload,
+			options
+		) as QuestionViewModel<UnitOptionQuestionViewModel>;
 		const answer = viewModel.question.value;
 		const answers = this.answerObjectFromJourneyResponse(journey.response, options);
 
-		/** @type {Array<UnitOption>} */
 		viewModel.question.options = [];
+		const optionViews: UnitOptionView[] = [];
 
 		for (const option of this.options) {
-			let optionData = { ...option };
+			const optionData = { ...option, conditional: undefined } as UnitOptionView;
 			if (optionData.value !== undefined) {
 				optionData.checked = (',' + answer + ',').includes(',' + optionData.value + ',');
 				if (!optionData.attributes) {
@@ -89,8 +110,8 @@ export class UnitOptionEntryQuestion extends Question {
 			}
 
 			// handle conditional (dependant) fields & set their answers
-			if (optionData.conditional !== undefined) {
-				let conditionalField = { ...optionData.conditional };
+			if (option.conditional !== undefined) {
+				const conditionalField = { ...option.conditional };
 
 				if (conditionalIsJustHTML(conditionalField)) continue;
 
@@ -116,23 +137,20 @@ export class UnitOptionEntryQuestion extends Question {
 				};
 			}
 
-			viewModel.question.options.push(optionData);
+			optionViews.push(optionData);
 		}
+		viewModel.question.options = optionViews;
 
 		return viewModel;
 	}
 
 	/**
 	 * Get the data to save from the request, returns an object of answers
-	 * @param {import('express').Request} req
-	 * @param {JourneyResponse} journeyResponse - current journey response
-	 * @returns {Promise<{ answers: Record<string, unknown> }>}
-	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
-	async getDataToSave(req, journeyResponse) {
-		const answers = {};
+	 */
+	async getDataToSave(req: Request) {
+		const answers: Record<string, unknown> = {};
 
-		/** @type {string[]} */
-		const fields = toArray(req.body[this.fieldName]);
+		const fields: string[] = toArray(req.body[this.fieldName]);
 		const fieldValues = fields.map((x) => x.trim());
 
 		const selectedOptions = this.options.filter(({ value }) => {
@@ -163,7 +181,7 @@ export class UnitOptionEntryQuestion extends Question {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 */
-	formatAnswerForSummary(sectionSegment, journey, answer) {
+	formatAnswerForSummary(sectionSegment: string, journey: Journey, answer: unknown) {
 		if (answer == null) return super.formatAnswerForSummary(sectionSegment, journey, answer);
 
 		const selectedOption = this.options.find((option) => option.value === answer);

@@ -1,11 +1,20 @@
 import OptionsQuestion from '../../questions/options-question.ts';
+import type { SelectQuestionParams } from '#typedefs/question-props.ts';
+import type { QuestionViewModel } from '#typedefs/question-types.ts';
 
 export class SelectQuestion extends OptionsQuestion {
 	#disableAccessibleAutocomplete;
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').SelectQuestionParams} params
-	 */
-	constructor({ label, html, legend, disableAccessibleAutocomplete, viewFolder, ...parentParams }) {
+	label?: string;
+	legend?: string;
+
+	constructor({
+		label,
+		html,
+		legend,
+		disableAccessibleAutocomplete,
+		viewFolder,
+		...parentParams
+	}: SelectQuestionParams) {
 		super({
 			...parentParams,
 			viewFolder: viewFolder || 'select'
@@ -17,10 +26,7 @@ export class SelectQuestion extends OptionsQuestion {
 		this.#disableAccessibleAutocomplete = disableAccessibleAutocomplete;
 	}
 
-	/**
-	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
-	 */
-	addCustomDataToViewModel(viewModel) {
+	addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.legend = this.legend;
 		viewModel.question.disableAccessibleAutocomplete = this.#disableAccessibleAutocomplete;
