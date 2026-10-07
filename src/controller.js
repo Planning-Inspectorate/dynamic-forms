@@ -6,12 +6,6 @@ import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-act
 import { toArray } from '#src/lib/utils.js';
 
 /**
- * @typedef {import('./journey/journey.js').Journey} Journey
- * @typedef {import('./questions/question.js').Question} Question
- * @typedef {import('./section.js').Section} Section
- */
-
-/**
  * @typedef {Object} SectionView
  * @property {string} heading
  * @property {string} status
@@ -77,7 +71,7 @@ export function buildList(viewData = {}) {
  */
 export async function list(req, res, pageCaption, viewData) {
 	//render check your answers view
-	/** @type {Journey} */
+	/** @type {import('./journey/journey.js').Journey} */
 	const journey = res.locals.journey;
 	/** @type {import("./journey/journey-response.js").JourneyResponse} */
 	const journeyResponse = res.locals.journeyResponse;
