@@ -1,7 +1,9 @@
 import { validationResult } from 'express-validator';
+import type { Handler, Request } from 'express';
+import type { Question } from '#src/questions/question.ts';
+import type { JourneyResponse } from '#src/journey/journey-response.ts';
 
-/** @type {import('express').Handler} */
-const validate = async (req, res, next) => {
+const validate: Handler = async (req, res, next) => {
 	const { journey, journeyResponse } = res.locals;
 
 	const questionObj = journey.getQuestionByParams(req.params);
@@ -26,7 +28,7 @@ const validate = async (req, res, next) => {
 
 export default validate;
 
-export function buildValidateBody(questions) {
+export function buildValidateBody(questions: Question[]): Handler {
 	return async (req, res, next) => {
 		for (const questionObj of questions) {
 			await validateQuestion(questionObj, req);
@@ -35,7 +37,7 @@ export function buildValidateBody(questions) {
 	};
 }
 
-async function validateQuestion(questionObj, req, journeyResponse = {}) {
+async function validateQuestion(questionObj: Question, req: Request, journeyResponse?: JourneyResponse) {
 	for (const validation of questionObj.validators) {
 		const validationRules = validation.validate(questionObj, journeyResponse);
 
@@ -55,7 +57,7 @@ async function validateQuestion(questionObj, req, journeyResponse = {}) {
 		} else {
 			const validatedRequest = await validationRules.run(req);
 
-			if (validatedRequest.errors.length > 0) {
+			if (!validatedRequest.isEmpty()) {
 				break;
 			}
 		}

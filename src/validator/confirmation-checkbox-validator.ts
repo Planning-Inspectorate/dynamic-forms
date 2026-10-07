@@ -6,22 +6,20 @@ import BaseValidator from './base-validator.ts';
  * @class
  */
 export class ConfirmationCheckboxValidator extends BaseValidator {
-	/**
-	 * @type {string} error message to display to user
-	 */
-	errorMessage = 'Please check the checkbox';
+	errorMessage: string;
+	checkboxName: string;
 
 	/**
 	 * creates an instance of a ConfirmationCheckboxValidator
-	 * @param {Object} params
-	 * @param {string} params.checkboxName
-	 * @param {string} params.errorMessage - custom error message to show on validation failure
+	 * @param params
+	 * @param params.checkboxName
+	 * @param params.errorMessage - custom error message to show on validation failure
 	 */
-	constructor({ checkboxName, errorMessage }) {
+	constructor({ checkboxName, errorMessage }: { checkboxName: string; errorMessage?: string }) {
 		super();
 
 		this.checkboxName = checkboxName;
-		this.errorMessage = errorMessage;
+		this.errorMessage = errorMessage || 'Please check the checkbox';
 	}
 
 	/**

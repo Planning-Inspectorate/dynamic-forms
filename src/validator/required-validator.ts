@@ -1,22 +1,19 @@
 import { body } from 'express-validator';
 
 import BaseValidator from './base-validator.ts';
+import type { Question } from '#src/questions/question.ts';
 
 /**
  * enforces a field is not empty
  * @class
  */
 export class RequiredValidator extends BaseValidator {
-	/**
-	 * @type {string} error message to display to user
-	 */
-	errorMessage = 'You must select an answer';
+	errorMessage: string = 'You must select an answer';
 
 	/**
 	 * creates an instance of a RequiredValidator
-	 * @param {string} [errorMessage] - custom error message to show on validation failure
 	 */
-	constructor(errorMessage) {
+	constructor(errorMessage?: string) {
 		super();
 
 		if (errorMessage) {
@@ -26,9 +23,8 @@ export class RequiredValidator extends BaseValidator {
 
 	/**
 	 * validates the response body, checking the questionObj's fieldname
-	 * @param {import('../questions/question.ts').Question} questionObj
 	 */
-	validate(questionObj) {
+	validate(questionObj: Question) {
 		return body(questionObj.fieldName).notEmpty().withMessage(this.errorMessage);
 	}
 

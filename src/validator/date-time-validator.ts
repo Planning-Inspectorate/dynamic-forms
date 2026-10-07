@@ -1,26 +1,23 @@
 import { body } from 'express-validator';
+import type { DateValidationSettings } from './date-validator.ts';
 import DateValidator from './date-validator.ts';
+import type DateTimeQuestion from '#src/components/date-time/question.ts';
 
 /**
  * enforces a user has entered a valid date
  * @class
  */
 export class DateTimeValidator extends DateValidator {
-	/**
-	 * creates an instance of a DateTimeValidator
-	 * @param {string} timeInputLabel - string representing the time fields as displayed on the UI as part of an error message
-	 * @param {string} [dateInputLabel] - string representing the date fields as displayed on the UI as part of an error message
-	 * @param {DateValidationSettings} [dateValidationSettings] - object containing rules to apply
-	 * @param {Object} [dateErrorMessages] - object containing custom date error messages to show on validation failure
-	 */
+	timeInputLabel: string;
+
 	constructor(
-		timeInputLabel,
-		dateInputLabel = timeInputLabel,
-		dateValidationSettings = {
+		timeInputLabel: string,
+		dateInputLabel: string = timeInputLabel,
+		dateValidationSettings: Omit<DateValidationSettings, 'optional'> = {
 			ensureFuture: false,
 			ensurePast: false
 		},
-		dateErrorMessages
+		dateErrorMessages?: Record<string, string>
 	) {
 		super(dateInputLabel, dateValidationSettings, dateErrorMessages);
 		this.timeInputLabel = timeInputLabel;
@@ -28,9 +25,8 @@ export class DateTimeValidator extends DateValidator {
 
 	/**
 	 * validates the response body, checking the values sent for the date are valid
-	 * @param {import('../components/date-time/question.ts').DateTimeQuestion} questionObj
 	 */
-	validate(questionObj) {
+	validate(questionObj: DateTimeQuestion) {
 		const fieldName = questionObj.fieldName;
 		const hourInput = `${fieldName}_hour`;
 		const minuteInput = `${fieldName}_minutes`;

@@ -1,17 +1,12 @@
-import { validationResult } from 'express-validator';
+import { type ResultFactory, type ValidationError, validationResult } from 'express-validator';
+import type { Handler } from 'express';
 
-/**
- * @typedef {{text: string, href: string}[]} GovUkErrorList
- * @typedef {Object<string, import('express-validator').ValidationError>} ExpressValidationErrors
- * @typedef {(errors: ExpressValidationErrors) => GovUkErrorList} ToErrorSummary
- */
+export type GovUkErrorList = { text: string; href: string }[];
+export type ExpressValidationErrors = Record<string, ValidationError>;
+export type ToErrorSummary = (errors: ExpressValidationErrors) => GovUkErrorList;
 
-/**
- * @type {ToErrorSummary}
- */
-export const expressValidationErrorsToGovUkErrorList = (expressValidationErrors) => {
-	/** @type {GovUkErrorList} */
-	const mappedErrors = [];
+export const expressValidationErrorsToGovUkErrorList: ToErrorSummary = (expressValidationErrors) => {
+	const mappedErrors: GovUkErrorList = [];
 
 	if (Object.keys(expressValidationErrors).length === 0) {
 		return mappedErrors;
@@ -29,16 +24,15 @@ export const expressValidationErrorsToGovUkErrorList = (expressValidationErrors)
 
 /**
  *
- * @param {import('express-validator').ResultFactory<import('express-validator').ValidationError>} [validate] - for testing
- * @param {ToErrorSummary} [toErrorSummary] - for testing
- * @returns {import('express').Handler}
+ * @param [validate] - for testing
+ * @param [toErrorSummary] - for testing
  */
 export const buildValidationErrorHandler = (
-	validate = validationResult,
-	toErrorSummary = expressValidationErrorsToGovUkErrorList
-) => {
+	validate: ResultFactory<ValidationError> = validationResult,
+	toErrorSummary: ToErrorSummary = expressValidationErrorsToGovUkErrorList
+): Handler => {
 	return (req, res, next) => {
-		let errors = validate(req);
+		const errors = validate(req);
 
 		if (errors.isEmpty()) {
 			return next();
