@@ -1,22 +1,23 @@
+import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 import BaseValidator from './base-validator.ts';
 import { toArray } from '#src/lib/utils.ts';
+import type OptionsQuestion from '#src/questions/options-question.ts';
+import { optionIsSelectable } from '#src/questions/options-question.ts';
+import type { Question } from '#src/questions/question.ts';
+import type { SelectableOption } from '#typedefs/question-props.ts';
 
 /**
  * enforces a field is not empty when condition is satisfied
  * @class
  */
 export class ConditionalRequiredValidator extends BaseValidator {
-	/**
-	 * @type {string} error message to display to user
-	 */
-	errorMessage = 'Provide further information';
+	errorMessage: string = 'Provide further information';
 
 	/**
 	 * creates an instance of a ConditionalRequiredValidator
-	 * @param {string} [errorMessage] - custom error message to show on validation failure
 	 */
-	constructor(errorMessage) {
+	constructor(errorMessage?: string) {
 		super();
 
 		if (errorMessage) {
@@ -26,10 +27,9 @@ export class ConditionalRequiredValidator extends BaseValidator {
 
 	/**
 	 * validates the response body, checking the questionObj's fieldname
-	 * @param {import('../questions/options-question.ts').OptionsQuestion} questionObj
 	 */
-	validate(questionObj) {
-		return questionObj.options.reduce((schema, option) => {
+	validate(questionObj: OptionsQuestion) {
+		return questionObj.options.filter(optionIsSelectable).reduce((schema, option) => {
 			if (option.conditional) {
 				schema.push(
 					body(this.getConditionalFieldName(questionObj, option))
@@ -39,14 +39,14 @@ export class ConditionalRequiredValidator extends BaseValidator {
 				);
 			}
 			return schema;
-		}, []);
+		}, [] as ValidationChain[]);
 	}
 
-	getConditionalFieldName(questionObj, option) {
-		return `${questionObj.fieldName}_${option.conditional.fieldName}`;
+	getConditionalFieldName(questionObj: Question, option: SelectableOption) {
+		return `${questionObj.fieldName}_${option.conditional?.fieldName}`;
 	}
 
-	isValueIncluded(questionObj, value) {
+	isValueIncluded(questionObj: Question, value: unknown) {
 		return body(questionObj.fieldName).custom((existingValues) => {
 			existingValues = toArray(existingValues);
 			return existingValues.includes(value);

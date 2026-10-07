@@ -2,11 +2,9 @@ import BaseValidator from './base-validator.ts';
 import { body } from 'express-validator';
 
 export class DocumentUploadValidator extends BaseValidator {
-	/**
-	 * @param {string} fieldName
-	 * @param {string} errorMessage
-	 */
-	constructor(fieldName, errorMessage = 'Upload an attachment') {
+	fieldName: string;
+
+	constructor(fieldName: string, errorMessage = 'Upload an attachment') {
 		super();
 		this.fieldName = fieldName;
 		this.errorMessage = errorMessage;

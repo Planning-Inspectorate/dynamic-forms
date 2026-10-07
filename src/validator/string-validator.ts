@@ -1,46 +1,47 @@
+import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 
 import BaseValidator from './base-validator.ts';
-/**
- * @typedef {Object} MinLength
- * @property {Number} minLength
- * @property {string} [minLengthMessage]
- */
+import type { Question } from '#src/questions/question.ts';
 
-/**
- * @typedef {Object} MaxLength
- * @property {Number} maxLength
- * @property {string} [maxLengthMessage]
- */
+export interface MinLength {
+	minLength: number;
+	minLengthMessage?: string;
+}
 
-/**
- * @typedef {Object} Regex
- * @property {String | RegExp} regex
- * @property {string} [regexMessage]
- */
+export interface MaxLength {
+	maxLength: number;
+	maxLengthMessage?: string;
+}
+
+export interface Regex {
+	regex: string | RegExp;
+	regexMessage?: string;
+}
+
+export interface StringValidatorParams {
+	minLength?: MinLength;
+	maxLength?: MaxLength;
+	regex?: Regex;
+	fieldName?: string;
+}
 
 export class StringValidator extends BaseValidator {
-	minLength = {
+	minLength: MinLength = {
 		minLength: 0,
 		minLengthMessage: ''
 	};
-	maxLength = {
+	maxLength: MaxLength = {
 		maxLength: 0,
 		maxLengthMessage: ''
 	};
-	regex = {
+	regex: Regex = {
 		regex: '',
 		regexMessage: ''
 	};
+	fieldName: string | undefined;
 
-	/**
-	 * @param {Object} params
-	 * @param {MinLength} [params.minLength]
-	 * @param {MaxLength} [params.maxLength]
-	 * @param {Regex} [params.regex]
-	 * @param {string} [params.fieldName]
-	 */
-	constructor({ minLength, maxLength, regex, fieldName } = {}) {
+	constructor({ minLength, maxLength, regex, fieldName }: StringValidatorParams = {}) {
 		super();
 
 		if (!minLength && !maxLength && !regex) throw new Error('String validator is invoked without any validations set!');
@@ -59,12 +60,13 @@ export class StringValidator extends BaseValidator {
 		this.fieldName = fieldName;
 	}
 
-	validate(questionObj) {
-		const minLengthValidator = (chain) =>
-			chain.isLength({ min: this.minLength.minLength }).withMessage(this.minLength.minLengthMessage);
-		const maxLengthValidator = (chain) =>
-			chain.isLength({ max: this.maxLength.maxLength }).withMessage(this.maxLength.maxLengthMessage);
-		const regexValidator = (chain) => chain.matches(new RegExp(this.regex.regex)).withMessage(this.regex.regexMessage);
+	validate(questionObj: Question) {
+		const minLengthValidator = (chain: ValidationChain) =>
+			chain.isLength({ min: this.minLength.minLength }).withMessage(this.minLength.minLengthMessage!);
+		const maxLengthValidator = (chain: ValidationChain) =>
+			chain.isLength({ max: this.maxLength.maxLength }).withMessage(this.maxLength.maxLengthMessage!);
+		const regexValidator = (chain: ValidationChain) =>
+			chain.matches(new RegExp(this.regex.regex)).withMessage(this.regex.regexMessage!);
 
 		let chain = body(this.fieldName ? this.fieldName : questionObj.fieldName);
 		if (this.minLength.minLength) {

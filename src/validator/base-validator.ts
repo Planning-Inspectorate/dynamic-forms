@@ -1,12 +1,12 @@
-/**
- * @abstract
- * @class BaseValidator
- */
-export class BaseValidator {
+import type { Question } from '#src/questions/question.ts';
+import type { JourneyResponse } from '#src/journey/journey-response.ts';
+import type { ValidationChain } from 'express-validator';
+
+export abstract class BaseValidator {
 	/**
-	 * @type {string} error message to display to user
+	 * error message to display to user
 	 */
-	errorMessage;
+	errorMessage: string | undefined;
 
 	constructor() {
 		if (this.constructor === BaseValidator) {
@@ -18,12 +18,8 @@ export class BaseValidator {
 	 * Validates response body against field validators.
 	 * Subclasses must override this method.
 	 * @abstract
-	 * @param {{fieldName: string}} questionObj - The question object containing the fieldName to validate.
-	 * @param {import('../journey/journey-response.ts').JourneyResponse} [journeyResponse] - The current journey response (optional).
-	 * @returns {import('express-validator').ValidationChain | import('express-validator').ValidationChain[]}
-	 */
-	// eslint-disable-next-line no-unused-vars
-	validate(questionObj, journeyResponse) {
+	 */ // eslint-disable-next-line @typescript-eslint/no-unused-vars
+	validate(questionObj: Question, journeyResponse?: JourneyResponse): ValidationChain | ValidationChain[] {
 		throw new Error('validate method must be implemented by subclass');
 	}
 

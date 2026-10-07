@@ -1,31 +1,38 @@
 import { body } from 'express-validator';
 
 import BaseValidator from './base-validator.ts';
+import type { Question } from '#src/questions/question.ts';
 
-/**
- * @typedef {Object} MinValue
- * @property {Number} min
- * @property {string} minMessage
- */
+export interface MinValue {
+	min: number;
+	minMessage: string;
+}
 
-/**
- * @typedef {Object} MaxValue
- * @property {Number} max
- * @property {string} maxMessage
- */
+export interface MaxValue {
+	max: number;
+	maxMessage: string;
+}
+
+export interface NumericValidatorParams {
+	min?: number;
+	minMessage?: string;
+	max?: number;
+	maxMessage?: string;
+	regex?: RegExp;
+	regexMessage?: string;
+	fieldName?: string;
+}
 
 export class NumericValidator extends BaseValidator {
-	/**
-	 * @param {Object} params
-	 * @param {number} [params.min]
-	 * @param {string} [params.minMessage]
-	 * @param {number} [params.max]
-	 * @param {string} [params.maxMessage]
-	 * @param {RegExp} [params.regex]
-	 * @param {string} [params.regexMessage]
-	 * @param {string} [params.fieldName]
-	 */
-	constructor({ min, minMessage, max, maxMessage, regex, regexMessage, fieldName } = {}) {
+	min: number | undefined;
+	minMessage: string;
+	max: number | undefined;
+	maxMessage: string;
+	regex: RegExp | undefined;
+	regexMessage: string;
+	fieldName: string | undefined;
+
+	constructor({ min, minMessage, max, maxMessage, regex, regexMessage, fieldName }: NumericValidatorParams = {}) {
 		super();
 		this.min = min;
 		this.minMessage = minMessage || `The value must be at least ${min}`;
@@ -36,7 +43,7 @@ export class NumericValidator extends BaseValidator {
 		this.fieldName = fieldName;
 	}
 
-	validate(questionObj) {
+	validate(questionObj: Question) {
 		let chain = body(this.fieldName ? this.fieldName : questionObj.fieldName);
 
 		if (this.regex) {

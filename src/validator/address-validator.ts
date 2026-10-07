@@ -1,8 +1,9 @@
 import { body } from 'express-validator';
 
 import BaseValidator from './base-validator.ts';
+import type { Question } from '#src/questions/question.ts';
 
-export const validatePostcode = (postcode, errorMessage = 'Enter a valid postcode') => {
+export const validatePostcode = (postcode: string, errorMessage = 'Enter a valid postcode') => {
 	const pattern =
 		/([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/;
 	const result = pattern.exec(postcode);
@@ -24,26 +25,37 @@ export const countyMinLength = 0;
 export const postcodeMaxLength = 8;
 export const postcodeMinLength = 5;
 
+export interface AddressRequiredFields {
+	addressLine1: boolean;
+	addressLine2: boolean;
+	townCity: boolean;
+	county: boolean;
+	postcode: boolean;
+}
+
+export interface AddressValidatorParams {
+	requiredFields?: AddressRequiredFields;
+}
+
 /**
  * enforces address fields are within allowed parameters
  * @class
  */
 export class AddressValidator extends BaseValidator {
+	requiredFields: AddressRequiredFields | undefined;
+
 	/**
 	 * creates an instance of an AddressValidator
-	 * @param {Object} [opts]
-	 * @param {{addressLine1: boolean, addressLine2: boolean, townCity: boolean, county: boolean, postcode: boolean}} [opts.requiredFields]
 	 */
-	constructor(opts) {
+	constructor(opts?: AddressValidatorParams) {
 		super();
 		this.requiredFields = opts?.requiredFields;
 	}
 
 	/**
 	 * validates response body using questionObj fieldname
-	 * @param {import('../questions/question.ts').Question} questionObj
 	 */
-	validate(questionObj) {
+	validate(questionObj: Question) {
 		const fieldName = questionObj.fieldName;
 
 		return [
@@ -57,9 +69,8 @@ export class AddressValidator extends BaseValidator {
 
 	/**
 	 * a validation chain for addressLine1
-	 * @param {string} fieldName
 	 */
-	#addressLine1Rule(fieldName) {
+	#addressLine1Rule(fieldName: string) {
 		const validator = body(fieldName + '_addressLine1');
 
 		if (!this.requiredFields?.addressLine1) {
@@ -76,9 +87,8 @@ export class AddressValidator extends BaseValidator {
 
 	/**
 	 * a validation chain for addressLine2
-	 * @param {string} fieldName
 	 */
-	#addressLine2Rule(fieldName) {
+	#addressLine2Rule(fieldName: string) {
 		const validator = body(fieldName + '_addressLine2');
 		if (!this.requiredFields?.addressLine2) {
 			validator.optional({ checkFalsy: true });
@@ -94,9 +104,8 @@ export class AddressValidator extends BaseValidator {
 
 	/**
 	 * a validation chain for townCity
-	 * @param {string} fieldName
 	 */
-	#townCityRule(fieldName) {
+	#townCityRule(fieldName: string) {
 		const validator = body(fieldName + '_townCity');
 		if (!this.requiredFields?.townCity) {
 			validator.optional({ checkFalsy: true });
@@ -111,9 +120,8 @@ export class AddressValidator extends BaseValidator {
 
 	/**
 	 * a validation chain for county
-	 * @param {string} fieldName
 	 */
-	#countyRule(fieldName) {
+	#countyRule(fieldName: string) {
 		const validator = body(fieldName + '_county');
 		if (!this.requiredFields?.county) {
 			validator.optional({ checkFalsy: true });
@@ -129,9 +137,8 @@ export class AddressValidator extends BaseValidator {
 
 	/**
 	 * a validation chain for postcode
-	 * @param {string} fieldName
 	 */
-	#postCodeRule(fieldName) {
+	#postCodeRule(fieldName: string) {
 		const validator = body(fieldName + '_postcode');
 		if (!this.requiredFields?.postcode) {
 			validator.optional({ checkFalsy: true });

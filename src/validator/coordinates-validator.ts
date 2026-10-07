@@ -3,17 +3,15 @@ import { body } from 'express-validator';
 
 export const requiredCoordinateLength = 6;
 
-/**
- * @typedef {Object} CoordinateField
- * @property {string} title
- * @property {string} fieldName
- */
+export interface CoordinateField {
+	title: string;
+	fieldName: string;
+}
+
 export class CoordinatesValidator extends BaseValidator {
-	/**
-	 * @param {CoordinateField} northing
-	 * @param {CoordinateField} easting
-	 */
-	constructor(northing, easting) {
+	northing: CoordinateField;
+	easting: CoordinateField;
+	constructor(northing: CoordinateField, easting: CoordinateField) {
 		super();
 		this.northing = northing;
 		this.easting = easting;
