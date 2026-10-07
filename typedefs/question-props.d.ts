@@ -261,6 +261,8 @@ export type SingleLineInputQuestionParams = CommonQuestionParams & {
 	inputAttributes?: Record<string, string>; // HTML attributes to add to the input
 	label?: string; // if defined this will show as a label for the input and the question will just be a standard h1
 	classes?: string; // HTML classes to add to the input
+	prefix?: Affix;
+	suffix?: Affix;
 };
 
 type SingleLineInputQuestionProps = SingleLineInputQuestionParams & {

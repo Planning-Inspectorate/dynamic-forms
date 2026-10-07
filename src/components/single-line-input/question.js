@@ -19,6 +19,8 @@ export class SingleLineInputQuestion extends Question {
 		this.label = params.label;
 		this.inputAttributes = params.inputAttributes || {};
 		this.classes = params.classes || '';
+		this.prefix = params.prefix;
+		this.suffix = params.suffix;
 	}
 
 	/**
@@ -32,6 +34,8 @@ export class SingleLineInputQuestion extends Question {
 		viewModel.question.type = type;
 
 		viewModel.question.classes = this.classes;
+		viewModel.question.prefix = this.prefix;
+		viewModel.question.suffix = this.suffix;
 	}
 }
 
