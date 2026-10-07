@@ -1,39 +1,52 @@
+import type { CustomValidator } from 'express-validator';
 import { body } from 'express-validator';
 import { isAfter, isBefore, isValid, parse } from 'date-fns';
 import { enGB } from 'date-fns/locale';
 
 import BaseValidator from './base-validator.ts';
 import { endOfDay, parseDateInput, startOfDay } from '../lib/date-utils.ts';
+import type DateQuestion from '#src/components/date/question.ts';
 
-/**
- * @typedef {Object} DateValidationSettings
- * @property {Boolean} [ensureFuture]
- * @property {Boolean} [ensurePast]
- * @property {Boolean} [optional]
- */
+export interface DateValidationSettings {
+	ensureFuture?: boolean;
+	ensurePast?: boolean;
+	optional?: boolean;
+}
 
 /**
  * enforces a user has entered a valid date
  * @class
  */
 export class DateValidator extends BaseValidator {
-	/** @type {DateValidationSettings} */
-	dateValidationSettings;
+	dateValidationSettings: DateValidationSettings;
+
+	emptyErrorMessage: string;
+	noDayErrorMessage: string;
+	noMonthErrorMessage: string;
+	noYearErrorMessage: string;
+	noDayMonthErrorMessage: string;
+	noDayYearErrorMessage: string;
+	noMonthYearErrorMessage: string;
+	invalidDateErrorMessage: string;
+	invalidMonthErrorMessage: string;
+	invalidYearErrorMessage: string;
+	futureDateErrorMessage: string;
+	pastDateErrorMessage: string;
 
 	/**
 	 * creates an instance of a DateValidator
-	 * @param {string} inputLabel - string representing the field as displayed on the UI as part of an error message
-	 * @param {DateValidationSettings} [dateValidationSettings] - object containing rules to apply
-	 * @param {Object} [errorMessages] - object containing custom error messages to show on validation failure
+	 * @param inputLabel - string representing the field as displayed on the UI as part of an error message
+	 * @param [dateValidationSettings] - object containing rules to apply
+	 * @param [errorMessages] - object containing custom error messages to show on validation failure
 	 */
 	constructor(
-		inputLabel,
-		dateValidationSettings = {
+		inputLabel: string,
+		dateValidationSettings: DateValidationSettings = {
 			ensureFuture: false,
 			ensurePast: false,
 			optional: false
 		},
-		errorMessages
+		errorMessages?: Record<string, string>
 	) {
 		super();
 
@@ -65,9 +78,8 @@ export class DateValidator extends BaseValidator {
 
 	/**
 	 * validates the response body, checking the values sent for the date are valid
-	 * @param {import('../components/date/question.ts').DateQuestion} questionObj
 	 */
-	validate(questionObj) {
+	validate(questionObj: DateQuestion) {
 		const fieldName = questionObj.fieldName;
 		const dayInput = `${fieldName}_day`;
 		const monthInput = `${fieldName}_month`;
@@ -77,7 +89,7 @@ export class DateValidator extends BaseValidator {
 		 * Run before every check, if the correct param set then skip the validation
 		 * when there is no data entered.
 		 */
-		const shouldValidate = (value, { req }) => {
+		const shouldValidate: CustomValidator = (value, { req }) => {
 			if (this.dateValidationSettings.optional === true) {
 				return !!(req.body[dayInput] || req.body[monthInput] || req.body[yearInput]);
 			}
@@ -191,9 +203,8 @@ export class DateValidator extends BaseValidator {
 
 	/**
 	 * generates default error messages based on GDS guidelines
-	 * @param {string} inputLabel
 	 */
-	#getDefaultErrorMessages(inputLabel) {
+	#getDefaultErrorMessages(inputLabel: string) {
 		const capitalisedInputLabel = inputLabel.charAt(0).toUpperCase() + inputLabel.slice(1);
 
 		return {

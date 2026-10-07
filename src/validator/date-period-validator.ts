@@ -5,34 +5,48 @@ import { enGB } from 'date-fns/locale';
 
 import BaseValidator from './base-validator.ts';
 import { parseDateInput, startOfDay } from '../lib/date-utils.ts';
+import type DateQuestion from '#src/components/date/question.ts';
+import type { DateValidationSettings } from '#src/validator/date-validator.ts';
 
-/**
- * @typedef {Object} DateValidationSettings
- * @property {Boolean} ensureFuture
- * @property {Boolean} ensurePast
- */
+export interface DatePeriodInputs {
+	dayInput: string;
+	monthInput: string;
+	yearInput: string;
+}
 
 /**
  * enforces a user has entered a valid date period
  * @class
  */
 export class DatePeriodValidator extends BaseValidator {
-	/** @type {DateValidationSettings} */
-	dateValidationSettings;
+	dateValidationSettings: Omit<DateValidationSettings, 'optional'>;
+
+	emptyErrorMessage: string;
+	noDayErrorMessage: string;
+	noMonthErrorMessage: string;
+	noYearErrorMessage: string;
+	noDayMonthErrorMessage: string;
+	noDayYearErrorMessage: string;
+	noMonthYearErrorMessage: string;
+	invalidDateErrorMessage: string;
+	invalidMonthErrorMessage: string;
+	invalidYearErrorMessage: string;
+	futureDateErrorMessage: string;
+	pastDateErrorMessage: string;
 
 	/**
 	 * creates an instance of a DateValidator
-	 * @param {string} inputLabel - string representing the field as displayed on the UI as part of an error message
-	 * @param {DateValidationSettings} [dateValidationSettings] - object containing rules to apply
-	 * @param {Object} [errorMessages] - object containing custom error messages to show on validation failure
+	 * @param inputLabel - string representing the field as displayed on the UI as part of an error message
+	 * @param [dateValidationSettings] - object containing rules to apply
+	 * @param [errorMessages] - object containing custom error messages to show on validation failure
 	 */
 	constructor(
-		inputLabel,
-		dateValidationSettings = {
+		inputLabel: string,
+		dateValidationSettings: Omit<DateValidationSettings, 'optional'> = {
 			ensureFuture: true,
 			ensurePast: false
 		},
-		errorMessages
+		errorMessages?: Record<string, string>
 	) {
 		super();
 
@@ -60,9 +74,8 @@ export class DatePeriodValidator extends BaseValidator {
 
 	/**
 	 * validates the response body, checking the values sent for the date are valid
-	 * @param {import('../components/date/question.ts').DateQuestion} questionObj
 	 */
-	validate(questionObj) {
+	validate(questionObj: DateQuestion) {
 		const fieldName = questionObj.fieldName;
 		const startDayInput = `${fieldName}_start_day`;
 		const startMonthInput = `${fieldName}_start_month`;
@@ -78,13 +91,17 @@ export class DatePeriodValidator extends BaseValidator {
 				yearInput: startYearInput
 			}),
 			...this.rulesForNotEmptyInput({ dayInput: endDayInput, monthInput: endMonthInput, yearInput: endYearInput }),
-			...this.rulesForValidInput({ dayInput: startDayInput, monthInput: startMonthInput, yearInput: startYearInput }),
+			...this.rulesForValidInput({
+				dayInput: startDayInput,
+				monthInput: startMonthInput,
+				yearInput: startYearInput
+			}),
 			...this.rulesForValidInput({ dayInput: endDayInput, monthInput: endMonthInput, yearInput: endYearInput }),
 			...this.rulesForDateIsInFuture({ dayInput: endDayInput, monthInput: endMonthInput, yearInput: endYearInput })
 		];
 	}
 
-	rulesForNotEmptyInput({ dayInput, monthInput, yearInput }) {
+	rulesForNotEmptyInput({ dayInput, monthInput, yearInput }: DatePeriodInputs) {
 		return [
 			body(dayInput)
 				.notEmpty()
@@ -125,7 +142,7 @@ export class DatePeriodValidator extends BaseValidator {
 		];
 	}
 
-	rulesForValidInput({ dayInput, monthInput, yearInput }) {
+	rulesForValidInput({ dayInput, monthInput, yearInput }: DatePeriodInputs) {
 		return [
 			body(dayInput)
 				.isInt({ min: 1, max: 31 })
@@ -151,7 +168,7 @@ export class DatePeriodValidator extends BaseValidator {
 		];
 	}
 
-	rulesForDateIsInFuture({ dayInput, monthInput, yearInput }) {
+	rulesForDateIsInFuture({ dayInput, monthInput, yearInput }: DatePeriodInputs) {
 		if (!this.dateValidationSettings.ensureFuture) {
 			return [];
 		}
@@ -178,9 +195,8 @@ export class DatePeriodValidator extends BaseValidator {
 
 	/**
 	 * generates default error messages based on GDS guidelines
-	 * @param {string} inputLabel
 	 */
-	#getDefaultErrorMessages(inputLabel) {
+	#getDefaultErrorMessages(inputLabel: string) {
 		const capitalisedInputLabel = inputLabel.charAt(0).toUpperCase() + inputLabel.slice(1);
 
 		return {

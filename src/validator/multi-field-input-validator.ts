@@ -1,57 +1,32 @@
 import { body } from 'express-validator';
 
 import BaseValidator from './base-validator.ts';
-/**
- * @typedef {Object} Regex
- * @property {String | RegExp} regex
- * @property {string} regexMessage
- */
+import type { MaxLength, MinLength, Regex } from '#src/validator/string-validator.ts';
 
-/**
- * @typedef {Object} MinLength
- * @property {Number} minLength
- * @property {string} minLengthMessage
- */
+export interface FieldBase {
+	fieldName: string;
+	minLength?: MinLength;
+	maxLength?: MaxLength;
+	regex?: Regex;
+}
 
-/**
- * @typedef {Object} MaxLength
- * @property {Number} maxLength
- * @property {string} maxLengthMessage
- */
+export interface RequiredField extends FieldBase {
+	required: true;
+	errorMessage: string;
+}
 
-/**
- * @typedef {Object} FieldBase
- * @property {string} fieldName
- * @property {MinLength} [minLength]
- * @property {MaxLength} [maxLength]
- * @property {Regex} [regex]
- */
+export interface OptionalField extends FieldBase {
+	required?: false;
+	errorMessage?: string;
+}
 
-/**
- * @typedef {FieldBase & {
- *   required: true,
- *   errorMessage: string
- * }} RequiredField
- */
-
-/**
- * @typedef {FieldBase & {
- *   required?: false,
- *   errorMessage?: string
- * }} OptionalField
- */
-
-/**
- * @typedef {RequiredField | OptionalField} Field
- */
+export type Field = RequiredField | OptionalField;
 
 export class MultiFieldInputValidator extends BaseValidator {
-	/**
-	 * @param {Object} params
-	 * @param {Field[]} [params.fields]
-	 * @param {string} [params.noInputsMessage]
-	 */
-	constructor({ fields, noInputsMessage } = {}) {
+	fields: Field[];
+	noInputsMessage: string;
+
+	constructor({ fields, noInputsMessage }: { fields?: Field[]; noInputsMessage?: string } = {}) {
 		super();
 
 		if (!fields) throw new Error('MultiFieldInput validator is invoked without any fields');
@@ -66,7 +41,7 @@ export class MultiFieldInputValidator extends BaseValidator {
 	validate() {
 		// const requiredFieldNames = this.requiredFields.map((requiredField) => requiredField.fieldName);
 
-		let rules = [];
+		const rules = [];
 
 		// results.push(body(requiredFieldNames).notEmpty().withMessage(this.noInputsMessage));
 
@@ -80,15 +55,15 @@ export class MultiFieldInputValidator extends BaseValidator {
 			}
 
 			if (minLength) {
-				rules.push(fieldBody.isLength({ min: minLength.minLength }).withMessage(minLength.minLengthMessage));
+				rules.push(fieldBody.isLength({ min: minLength.minLength }).withMessage(minLength.minLengthMessage!));
 			}
 
 			if (maxLength) {
-				rules.push(fieldBody.isLength({ max: maxLength.maxLength }).withMessage(maxLength.maxLengthMessage));
+				rules.push(fieldBody.isLength({ max: maxLength.maxLength }).withMessage(maxLength.maxLengthMessage!));
 			}
 
 			if (regex) {
-				rules.push(fieldBody.matches(new RegExp(regex.regex)).withMessage(regex.regexMessage));
+				rules.push(fieldBody.matches(new RegExp(regex.regex)).withMessage(regex.regexMessage!));
 			}
 		}
 
@@ -100,10 +75,8 @@ export class MultiFieldInputValidator extends BaseValidator {
 	}
 	/**
 	 * checks if a field is required
-	 * @param {string} fieldName
-	 * @returns {boolean}
 	 */
-	inputFieldIsRequired(fieldName) {
+	inputFieldIsRequired(fieldName: string) {
 		const field = this.fields.find((field) => field.fieldName === fieldName);
 		if (!field) {
 			throw new Error(`Field ${fieldName} not found`);

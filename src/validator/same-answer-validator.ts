@@ -1,16 +1,14 @@
 import { body } from 'express-validator';
 import BaseValidator from './base-validator.ts';
+import type { Question } from '#src/questions/question.ts';
 
 /**
  * Universal validator to ensure the answer to the current question is not the same as another question's answer
  */
 export class SameAnswerValidator extends BaseValidator {
-	/**
-	 * @param {string[]} fieldNamesToCompare - field name to compare against
-	 * @param {string} [errorMessage]
-	 */
+	fieldNamesToCompare: string[];
 
-	constructor(fieldNamesToCompare, errorMessage) {
+	constructor(fieldNamesToCompare: string[], errorMessage?: string) {
 		super();
 		this.fieldNamesToCompare = fieldNamesToCompare || [];
 		this.errorMessage = errorMessage || 'This answer cannot be the same as another answer';
@@ -18,9 +16,8 @@ export class SameAnswerValidator extends BaseValidator {
 
 	/**
 	 * validates the questionToCompare and compares it to the answer in the journeyResponse
-	 * @param questionObj
 	 */
-	validate(questionObj) {
+	validate(questionObj: Question) {
 		return body(questionObj.fieldName).custom((value, { req }) => {
 			const answers = req?.res?.locals?.journeyResponse?.answers || {};
 			if (this.fieldNamesToCompare.some((field) => value === answers[field])) {
