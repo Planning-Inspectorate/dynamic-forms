@@ -9,6 +9,7 @@ import { mockReq, mockRes } from '#test/utils/utils.js';
 import { BOOLEAN_OPTIONS } from '#src/components/boolean/question.js';
 import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.js';
 import { DynamicSection } from '#src/dynamic-section.js';
+import { Question } from '#question';
 
 const mockBaseUrl = '/manage-appeals/questionnaire';
 const mockRef = '123456';
@@ -23,128 +24,79 @@ function testSetup() {
 		new Section('Section 2', 'segment-2'),
 		new DynamicSection('Section 3', 'segment-3', 'arrayOfAnswers')
 	];
+	/**
+	 * Create a new question and set taskList if needed
+	 * Also mocks formatAnswerForSummary so it can be overridden later.
+	 * Default mock uses the original implementation
+	 *
+	 * @param {import('#typedefs/question-types.d.ts').QuestionParameters} params
+	 * @param {boolean} [taskList]
+	 * @returns {Question}
+	 */
+	const newQuestion = (params, taskList) => {
+		const q = new Question(params);
+		if (typeof taskList === 'boolean') {
+			q.taskList = taskList;
+		}
+		mock.method(q, 'formatAnswerForSummary');
+		return q;
+	};
 	// mock/override what we need
 	mock.method(sections[0], 'getStatus', () => SECTION_STATUS.COMPLETE);
 	mock.method(sections[0], 'isComplete', () => true);
 	sections[0].questions = [
-		{
+		newQuestion({
 			title: 'Title 1a',
 			question: 'Why?',
-			taskList: true,
 			fieldName: 'title-1a',
-			shouldDisplay: () => true,
-			formatAnswerForSummary: mock.fn(() => [
-				{
-					key: 'Title 1a',
-					value: mockAnswer,
-					action: {
-						href: '/manage-appeals/questionnaire/123456/segment-1/title-1a',
-						text: 'Answer',
-						visuallyHiddenText: 'Answer'
-					}
-				}
-			])
-		},
-		{
-			title: 'Title 1b',
-			question: 'Who?',
-			taskList: false,
-			fieldName: 'title-1b',
-			shouldDisplay: () => true,
-			formatAnswerForSummary: mock.fn(() => [
-				{
-					key: 'Title 1b',
-					value: mockAnswer,
-					action: {
-						href: '/manage-appeals/questionnaire/123456/segment-1/title-1b',
-						text: 'Answer',
-						visuallyHiddenText: 'Answer'
-					}
-				}
-			])
-		}
+			viewFolder: 'mock'
+		}),
+		newQuestion(
+			{
+				title: 'Title 1b',
+				question: 'Who?',
+				fieldName: 'title-1b',
+				viewFolder: 'mock'
+			},
+			false
+		)
 	];
 
 	mock.method(sections[1], 'getStatus', () => SECTION_STATUS.IN_PROGRESS);
 	mock.method(sections[1], 'isComplete', () => true);
 	sections[1].questions = [
-		{
+		newQuestion({
 			title: 'Title 2a',
 			question: 'How?',
-			taskList: true,
 			fieldName: 'title-2a',
-			shouldDisplay: () => true,
-			formatAnswerForSummary: () => [
-				{
-					key: 'Title 2a',
-					value: mockAnswer,
-					action: {
-						href: '/manage-appeals/questionnaire/123456/segment-2/title-2a',
-						text: 'Answer',
-						visuallyHiddenText: 'Answer'
-					}
-				}
-			]
-		},
-		{
+			viewFolder: 'mock'
+		}),
+		newQuestion({
 			title: 'Title 2b',
 			question: 'What?',
-			taskList: true,
 			fieldName: 'title-2b',
-			shouldDisplay: () => true,
-			formatAnswerForSummary: () => [
-				{
-					key: 'Title 2b',
-					value: mockAnswer,
-					action: {
-						href: '/manage-appeals/questionnaire/123456/segment-2/title-2b',
-						text: 'Answer',
-						visuallyHiddenText: 'Answer'
-					}
-				}
-			]
-		}
+			viewFolder: 'mock'
+		})
 	];
 
 	mock.method(sections[2], 'getStatus', () => SECTION_STATUS.NOT_STARTED);
 	mock.method(sections[2], 'isComplete', () => false);
 	sections[2].questions = [
-		{
-			title: 'Title 3a',
-			question: 'When?',
-			taskList: false,
-			fieldName: 'title-3a',
-			shouldDisplay: () => true,
-			formatAnswerForSummary: () => [
-				{
-					key: 'Title 3a',
-					value: mockAnswer,
-					action: {
-						href: '/manage-appeals/questionnaire/123456/segment-3/title-3a',
-						text: 'Answer',
-						visuallyHiddenText: 'Answer'
-					}
-				}
-			]
-		},
-		{
+		newQuestion(
+			{
+				title: 'Title 3a',
+				question: 'When?',
+				fieldName: 'title-3a',
+				viewFolder: 'mock'
+			},
+			false
+		),
+		newQuestion({
 			title: 'Title 3b',
 			question: 'Really?',
-			taskList: true,
 			fieldName: 'title-3b',
-			shouldDisplay: () => true,
-			formatAnswerForSummary: () => [
-				{
-					key: 'Title 3b',
-					value: mockAnswer,
-					action: {
-						href: '/manage-appeals/questionnaire/123456/segment-3/title-3b',
-						text: 'Answer',
-						visuallyHiddenText: 'Answer'
-					}
-				}
-			]
-		}
+			viewFolder: 'mock'
+		})
 	];
 
 	const journeyParams = {
@@ -223,12 +175,12 @@ describe('dynamic-form/controller', () => {
 			mockJourney.sections[0].questions[0].formatAnswerForSummary.mock.mockImplementation(() => [
 				{
 					key: 'Title 1a',
-					value: mockAnswer,
+					value: 'Yes',
 					action: [
 						{
 							href: '/manage-appeals/questionnaire/123456/segment-1/title-1a',
-							text: 'Answer',
-							visuallyHiddenText: 'Answer'
+							text: 'Change',
+							visuallyHiddenText: 'Why?'
 						},
 						{
 							href: '/manage-appeals/questionnaire/123456/segment-1/title-1a/edit',
@@ -334,23 +286,8 @@ describe('dynamic-form/controller', () => {
 			const { req, res, mockJourney } = testSetup();
 			const dynamicSection = mockJourney.sections[2];
 
-			// setup a dynamic section
-			// TODO: consider using real questions?
-			const format = (sectionSegment, journey, answer) => [
-				{
-					key: 'Some key',
-					value: answer,
-					action: {
-						href: '/manage-appeals/questionnaire/123456/segment-2/title-2a',
-						text: 'Answer',
-						visuallyHiddenText: 'Answer'
-					}
-				}
-			];
-			dynamicSection.questions[0].formatAnswerForSummary = mock.fn(format);
+			// show all questions
 			dynamicSection.questions[0].taskList = true;
-			dynamicSection.questions[1].formatAnswerForSummary = mock.fn(format);
-			dynamicSection.questions[1].taskList = true;
 			mockJourney.response.answers = {
 				arrayOfAnswers: [
 					{ id: 'id-1', 'title-3a': 'First answer', 'title-3b': 'Second answer' },
@@ -926,13 +863,13 @@ const _getmockSummaryListData = (mockJourney) => {
 								items: [
 									{
 										href: `${mockBaseUrl}/${mockRef}/${mockJourney.sections[0].segment}/${mockJourney.sections[0].questions[0].fieldName}`,
-										text: 'Answer',
-										visuallyHiddenText: 'Answer'
+										text: 'Change',
+										visuallyHiddenText: mockJourney.sections[0].questions[0].question
 									}
 								]
 							},
 							key: { text: mockJourney.sections[0].questions[0].title },
-							value: { html: 'Not started' }
+							value: { html: 'Yes' }
 						}
 					]
 				}
@@ -948,7 +885,7 @@ const _getmockSummaryListData = (mockJourney) => {
 									{
 										href: `${mockBaseUrl}/${mockRef}/${mockJourney.sections[1].segment}/${mockJourney.sections[1].questions[0].fieldName}`,
 										text: 'Answer',
-										visuallyHiddenText: 'Answer'
+										visuallyHiddenText: mockJourney.sections[1].questions[0].question
 									}
 								]
 							},
@@ -961,7 +898,7 @@ const _getmockSummaryListData = (mockJourney) => {
 									{
 										href: `${mockBaseUrl}/${mockRef}/${mockJourney.sections[1].segment}/${mockJourney.sections[1].questions[1].fieldName}`,
 										text: 'Answer',
-										visuallyHiddenText: 'Answer'
+										visuallyHiddenText: mockJourney.sections[1].questions[1].question
 									}
 								]
 							},
@@ -982,7 +919,7 @@ const _getmockSummaryListData = (mockJourney) => {
 									{
 										href: `${mockBaseUrl}/${mockRef}/${mockJourney.sections[2].segment}/${mockJourney.sections[2].questions[1].fieldName}`,
 										text: 'Answer',
-										visuallyHiddenText: 'Answer'
+										visuallyHiddenText: mockJourney.sections[2].questions[1].question
 									}
 								]
 							},
