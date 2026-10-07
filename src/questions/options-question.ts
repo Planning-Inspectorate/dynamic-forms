@@ -28,6 +28,20 @@ export type SelectableOptionView = {
 
 export type OptionView = SelectableOptionView | DividerOption;
 
+/**
+ * Answers with conditional values, for example:
+ * - Single value with conditional: { value: 'yes', conditional: { yes: 'details' } }
+ * - Multiple values with conditionals: { value: 'yes,no', conditional: { yes: 'details1', no: 'details2' } }
+ */
+export type AnswerWithConditional =
+	| string
+	| {
+			value: string;
+			conditional: {
+				[key: string]: string;
+			};
+	  };
+
 export class OptionsQuestion extends Question {
 	options: Option[];
 	optionJoinString: string;
@@ -85,7 +99,7 @@ export class OptionsQuestion extends Question {
 			if (option.conditional !== undefined) {
 				const conditionalField: Partial<SelectableOption['conditional']> = { ...option.conditional };
 
-				conditionalField.fieldName = getConditionalFieldName(this.fieldName, conditionalField.fieldName);
+				conditionalField.fieldName = getConditionalFieldName(this.fieldName, conditionalField.fieldName!);
 				conditionalField.value = answers[conditionalField.fieldName] || '';
 
 				optionView.conditional = {
@@ -117,7 +131,7 @@ export class OptionsQuestion extends Question {
 	 * Looks up the option text for the given value(s).
 	 */
 	formatAnswer(answer: unknown) {
-		if (answer === null || answer === undefined || answer === '') {
+		if (!answerIsConditional(answer)) {
 			return this.notStartedText;
 		}
 
@@ -166,10 +180,24 @@ export class OptionsQuestion extends Question {
 
 		return { answers };
 	}
+
+	/**
+	 * Get an option by its value, which by definition cannot be a DividerOption, so this gives a narrow type
+	 * than just calling `options.find`
+	 *
+	 * @param value
+	 */
+	optionByValue(value: string) {
+		return this.options.find((opt) => optionIsSelectable(opt) && opt.value === value) as SelectableOption | undefined;
+	}
 }
 
-function optionIsSelectable(option: Option): option is SelectableOption {
+export function optionIsSelectable(option: Option): option is SelectableOption {
 	return 'text' in option;
+}
+
+export function answerIsConditional(answer: unknown): answer is AnswerWithConditional {
+	return answer !== null && answer !== undefined && answer !== '';
 }
 
 export default OptionsQuestion;

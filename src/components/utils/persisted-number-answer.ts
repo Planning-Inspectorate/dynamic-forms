@@ -1,7 +1,4 @@
-/**
- * @param {number} answer
- */
-export const getPersistedNumberAnswer = (answer) => {
+export const getPersistedNumberAnswer = (answer: string | number) => {
 	if (answer === 0) {
 		// convert 0 to string to stop being treated as falsy
 		return answer.toString();

@@ -1,15 +1,25 @@
 import { Question } from '#question';
 
 import escape from 'escape-html';
+import type { IAddress } from '../../lib/address.ts';
 import { Address } from '../../lib/address.ts';
 import { nl2br } from '../../lib/utils.ts';
-import AddressValidator from '../../validator/address-validator.ts';
+import AddressValidator, { type AddressRequiredFields } from '../../validator/address-validator.ts';
+import type { SiteAddressQuestionParams } from '#typedefs/question-props.ts';
+import type { QuestionViewModel } from '#typedefs/question-types.ts';
+import type { Request } from 'express';
 
 export class AddressQuestion extends Question {
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').SiteAddressQuestionParams} params
-	 */
-	constructor(params) {
+	requiredFields?: AddressRequiredFields;
+	addressLabels: {
+		addressLine1: string;
+		addressLine2: string;
+		townCity: string;
+		county: string;
+		postcode: string;
+	};
+
+	constructor(params: SiteAddressQuestionParams) {
 		super({
 			...params,
 			viewFolder: 'address'
@@ -32,7 +42,6 @@ export class AddressQuestion extends Question {
 
 	/**
 	 * Gets the body field names used by this question in form submissions.
-	 * @returns {string[]}
 	 */
 	get bodyFieldNames() {
 		return [
@@ -44,19 +53,15 @@ export class AddressQuestion extends Question {
 		];
 	}
 
-	/**
-	 * @param {Record<string, any>} answers
-	 * @returns {*|string}
-	 */
-	answerForViewModel(answers) {
-		let address = answers[this.fieldName];
+	answerForViewModel(answers: Record<string, unknown>) {
+		let address = answers[this.fieldName] as IAddress | undefined;
 		if (!address) {
 			address = {
-				addressLine1: answers[this.fieldName + '_addressLine1'],
-				addressLine2: answers[this.fieldName + '_addressLine2'],
-				townCity: answers[this.fieldName + '_townCity'],
-				county: answers[this.fieldName + '_county'],
-				postcode: answers[this.fieldName + '_postcode']
+				addressLine1: answers[this.fieldName + '_addressLine1'] as string | undefined,
+				addressLine2: answers[this.fieldName + '_addressLine2'] as string | undefined,
+				townCity: answers[this.fieldName + '_townCity'] as string | undefined,
+				county: answers[this.fieldName + '_county'] as string | undefined,
+				postcode: answers[this.fieldName + '_postcode'] as string | undefined
 			};
 		}
 
@@ -69,20 +74,14 @@ export class AddressQuestion extends Question {
 		};
 	}
 
-	/**
-	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
-	 */
-	addCustomDataToViewModel(viewModel) {
+	addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.labels = this.addressLabels;
 	}
 
 	/**
 	 * Get the data to save from the request, returns an object of answers
-	 * @param {import('express').Request} req
-	 * @param {import('#journey-response').JourneyResponse} journeyResponse
-	 * @returns {Promise<{answers: Record<string, unknown>}>}
-	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
-	async getDataToSave(req, journeyResponse) {
+	 */
+	async getDataToSave(req: Request) {
 		const data = {
 			addressLine1: req.body[this.fieldName + '_addressLine1'],
 			addressLine2: req.body[this.fieldName + '_addressLine2'],
@@ -105,10 +104,9 @@ export class AddressQuestion extends Question {
 	}
 
 	/**
-	 * @param {Object<string, any>} answer
 	 * @returns The formatted address to be presented in the UI
 	 */
-	format(answer) {
+	format(answer: Record<string, unknown>) {
 		const addressComponents = [
 			answer.addressLine1,
 			answer.addressLine2,
@@ -123,13 +121,13 @@ export class AddressQuestion extends Question {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 */
-	formatAnswer(answer) {
+	formatAnswer(answer: Record<string, unknown> | null) {
 		if (answer === null) return '';
 		if (!answer) return this.notStartedText;
 		return nl2br(escape(this.format(answer)));
 	}
 
-	formatLabelFromRequiredFields(fieldName) {
+	formatLabelFromRequiredFields(fieldName: keyof AddressRequiredFields) {
 		if (this.requiredFields && this.requiredFields[fieldName]) {
 			return '';
 		} else {

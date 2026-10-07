@@ -2,26 +2,19 @@ import { Question } from '#question';
 import { Uuid } from '#src/lib/uuid.ts';
 import nunjucks from 'nunjucks';
 import { MANAGE_LIST_ACTIONS } from './manage-list-actions.ts';
-
-/**
- * @typedef {Object} ManageListQuestionParameters
- * @property {string} titleSingular - the single name of the list item, e.g. "Holiday activity"
- * @property {boolean} [showManageListQuestions] - whether to show the question titles as well as answers on the manage list summary page
- * @property {boolean} [showAnswersInSummary] - whether to show the answers on the main check-your-answers page (or just a count)
- * @property {string} [confirmationQuestion] - the name of the confirmation question to use when removing an item, default 'confirm'
- */
+import type { Section } from '#src/section.ts';
+import type { Request, Response } from 'express';
+import type { JourneyResponse } from '#journey-response';
+import type { ManageListQuestionParams } from '#typedefs/question-props.ts';
+import type { QuestionViewModel } from '#typedefs/question-types.ts';
+import type { Journey } from '#src/journey/journey.ts';
 
 export class ManageListQuestion extends Question {
-	/** @type {import('../../section.ts').Section} */
-	#section;
-	/** @type {boolean} */
-	#showAnswersInSummary;
-	#confirmationQuestionParam;
+	#section: Section | undefined;
+	readonly #showAnswersInSummary: boolean;
+	readonly #confirmationQuestionParam: string;
 
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').ManageListQuestionParams} params
-	 */
-	constructor(params) {
+	constructor(params: ManageListQuestionParams) {
 		super({
 			...params,
 			pageTitle: params.title,
@@ -41,8 +34,6 @@ export class ManageListQuestion extends Question {
 	 *
 	 * Used by controller and other logic.
 	 * Added as a getter so custom components can also be a manage list question.
-	 *
-	 * @returns {boolean}
 	 */
 	get isManageListQuestion() {
 		return true;
@@ -52,10 +43,7 @@ export class ManageListQuestion extends Question {
 		return this.#confirmationQuestionParam;
 	}
 
-	/**
-	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
-	 */
-	addCustomDataToViewModel(viewModel) {
+	addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.addAnotherLink = this.#addAnotherLink;
 		viewModel.question.firstQuestionUrl = this.#firstQuestionUrl;
 		viewModel.question.valueSummary = [];
@@ -76,28 +64,28 @@ export class ManageListQuestion extends Question {
 
 	/**
 	 * Format the answers to each of the manage list questions
-	 * @param {{id: string, [k: string]: string}} answer
-	 * @returns {{question: string, answer: string}[]}
 	 */
-	#formatItemAnswers(answer) {
+	#formatItemAnswers(answer: { id: string; [k: string]: string }) {
 		if (this.section.questions.length === 0) {
 			return [];
 		}
+		const response = {
+			answers: answer
+		};
+		// enough of a journey for display logic to work
 		const mockJourney = {
 			getCurrentQuestionUrl() {},
 			responseForSection() {
 				// this function is already passed the array-item
 				// call to formatAnswerForSummary may use responseForSection so we implement here
-				return this.response;
+				return response;
 			},
-			response: {
-				answers: answer
-			}
-		};
+			response
+		} as unknown as Journey;
 		return (
 			this.section.questions
 				// only show questions which should be displayed based on any conditional logic
-				.filter((q) => q.shouldDisplay({ answers: answer }))
+				.filter((q) => q.shouldDisplay(mockJourney.response))
 				.map((q) => {
 					const formatted = q
 						.formatAnswerForSummary('', mockJourney, answer[q.fieldName])
@@ -112,7 +100,7 @@ export class ManageListQuestion extends Question {
 		);
 	}
 
-	async getDataToSave(req, journeyResponse) {
+	async getDataToSave(req: Request, journeyResponse: JourneyResponse) {
 		return {
 			answers: {
 				[this.fieldName]: journeyResponse.answers[this.fieldName] || []
@@ -123,7 +111,7 @@ export class ManageListQuestion extends Question {
 	/**
 	 * Format the answer for display in the summary, either as a count or as a list of answers
 	 */
-	formatAnswer(answer) {
+	formatAnswer(answer: unknown) {
 		if (!answer || !Array.isArray(answer)) {
 			return this.notStartedText;
 		}
@@ -143,7 +131,11 @@ export class ManageListQuestion extends Question {
 		return this.notStartedText;
 	}
 
-	renderConfirmationAction(res, itemToRemove, viewModel) {
+	renderConfirmationAction(
+		res: Response,
+		itemToRemove: { id: string; [k: string]: string },
+		viewModel: QuestionViewModel
+	) {
 		viewModel.questionSummary = this.#formatItemAnswers(itemToRemove);
 		let view = `components/${this.viewFolder}/${this.confirmationQuestionParam}`;
 		if (this.viewFolder.includes('/')) {
@@ -156,8 +148,6 @@ export class ManageListQuestion extends Question {
 	/**
 	 * Create an 'add another' link,
 	 * to the first question in the manage list section
-	 *
-	 * @returns {string}
 	 */
 	get #addAnotherLink() {
 		if (this.section.questions.length === 0) {
@@ -170,8 +160,6 @@ export class ManageListQuestion extends Question {
 
 	/**
 	 * First question URL
-	 *
-	 * @returns {string}
 	 */
 	get #firstQuestionUrl() {
 		if (this.section.questions.length === 0) {
@@ -187,7 +175,7 @@ export class ManageListQuestion extends Question {
 		return this.#section;
 	}
 
-	set section(section) {
+	set section(section: Section) {
 		this.#section = section;
 	}
 }

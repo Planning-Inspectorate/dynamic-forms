@@ -1,38 +1,26 @@
 import RadioQuestion from '../radio/question.ts';
+import type { BooleanQuestionParams } from '#typedefs/question-props.ts';
+import type { Request } from 'express';
 
-/**
- * @typedef {"yes"|"no"} YesNo
- */
+export type YesNo = 'yes' | 'no';
 
 export const BOOLEAN_OPTIONS = Object.freeze({
 	YES: 'yes',
 	NO: 'no'
 });
 
-/**
- * @param {string|*} value
- * @returns {boolean}
- */
-export const yesNoToBoolean = (value) => {
+export const yesNoToBoolean = (value: string | boolean) => {
 	if (typeof value === 'boolean') {
 		return value;
 	}
 	return value === BOOLEAN_OPTIONS.YES;
 };
 
-/**
- * @param value
- * @return {YesNo}
- */
-export const booleanToYesNoValue = (value) => {
+export const booleanToYesNoValue = (value: boolean): YesNo => {
 	return value ? BOOLEAN_OPTIONS.YES : BOOLEAN_OPTIONS.NO;
 };
 
-/**
- * @param {boolean|null} value
- * @returns {string|null}
- */
-export const booleanToYesNoOrNull = (value) => {
+export const booleanToYesNoOrNull = (value: boolean | null) => {
 	if (typeof value === 'boolean') {
 		return booleanToYesNoValue(value);
 	}
@@ -40,9 +28,6 @@ export const booleanToYesNoOrNull = (value) => {
 };
 
 export class BooleanQuestion extends RadioQuestion {
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').BooleanQuestionParams} params
-	 */
 	constructor({
 		title,
 		question,
@@ -57,7 +42,7 @@ export class BooleanQuestion extends RadioQuestion {
 		options,
 		editable,
 		viewData
-	}) {
+	}: BooleanQuestionParams) {
 		let defaultOptions = options || [
 			{
 				text: 'Yes',
@@ -96,12 +81,9 @@ export class BooleanQuestion extends RadioQuestion {
 
 	/**
 	 * Get the data to save from the request, returns an object of answers
-	 * @param {import('express').Request} req
-	 * @param {JourneyResponse} journeyResponse - current journey response
-	 * @returns {Promise<{ answers: Record<string, unknown> }>}
-	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
-	async getDataToSave(req, journeyResponse) {
-		const answers = {};
+	 */
+	async getDataToSave(req: Request) {
+		const answers: Record<string, unknown> = {};
 		const fieldValue = req.body[this.fieldName]?.trim();
 
 		answers[this.fieldName] = fieldValue === BOOLEAN_OPTIONS.YES;
@@ -124,12 +106,8 @@ export class BooleanQuestion extends RadioQuestion {
 	 * is shallow and doesn't reach into manage-list item arrays, so nested
 	 * BooleanQuestions (e.g. a manage-list sub-question) would otherwise receive
 	 * the raw boolean.
-	 *
-	 * @param {Record<string, unknown>} answers
-	 * @param {boolean} isPayload
-	 * @returns {unknown|YesNo}
 	 */
-	answerForViewModel(answers, isPayload) {
+	answerForViewModel(answers: Record<string, unknown>, isPayload: boolean): YesNo | unknown {
 		const rawValue = answers[this.fieldName];
 		if (typeof rawValue === 'boolean') {
 			return booleanToYesNoValue(rawValue);
@@ -141,11 +119,8 @@ export class BooleanQuestion extends RadioQuestion {
 	 * Normalises a stored boolean answer back to 'yes'/'no' before formatting,
 	 * so summary/check-your-answers pages display 'Yes'/'No' instead of the
 	 * literal 'true'/'false' - see answerForViewModel for why this is needed.
-	 *
-	 * @param {unknown} answer
-	 * @returns {string}
 	 */
-	formatAnswer(answer) {
+	formatAnswer(answer: unknown) {
 		if (typeof answer === 'boolean') {
 			return super.formatAnswer(booleanToYesNoValue(answer));
 		}

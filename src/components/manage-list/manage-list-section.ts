@@ -1,4 +1,5 @@
 import { Section } from '../../section.ts';
+import type { Question } from '#src/questions/question.ts';
 
 /**
  * Extends the Section class for extra logic around managing lists.
@@ -12,20 +13,15 @@ export class ManageListSection extends Section {
 	 * Is this section a manage list section?
 	 *
 	 * Used by controller and other logic.
-	 *
-	 * @returns {boolean}
 	 */
 	get isManageListSection() {
 		return true;
 	}
 
 	/**
-	 * Fluent API method for adding questions
-	 * @param {import('../../questions/question.ts').Question} question
-	 * @param {import('./manage-list-section.ts').ManageListSection} [manageListSection]
-	 * @returns {this}
+	 * Override base implementation, to avoid adding nested manage lists
 	 */
-	addQuestion(question, manageListSection) {
+	addQuestion(question: Question, manageListSection?: ManageListSection) {
 		if (!question) {
 			throw new Error('question is required');
 		}

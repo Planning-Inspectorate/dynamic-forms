@@ -1,16 +1,24 @@
 import { Question } from '#question';
 import { nl2br } from '../../lib/utils.ts';
+import type { Request } from 'express';
+import type { JourneyResponse } from '#journey-response';
+import type { Journey } from '#journey';
+import type { Section } from '#section';
+import type { TextEntryRedactQuestionParams } from '#typedefs/question-props.ts';
+import type { PrepQuestionForRenderingOptions, QuestionViewModel } from '#typedefs/question-types.ts';
 
 export const REDACT_CHARACTER = '█';
 export const TRUNCATED_MAX_LENGTH = 500;
 
-/**
- * @class
- */
 export class TextEntryRedactQuestion extends Question {
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').TextEntryRedactQuestionParams} params
-	 */
+	textEntryCheckbox?: TextEntryRedactQuestionParams['textEntryCheckbox'];
+	label?: string;
+	onlyShowRedactedValueForSummary?: boolean;
+	useRedactedFieldNameForSave?: boolean;
+	showSuggestionsUi?: boolean;
+	summaryText?: string;
+	shouldTruncateSummary?: boolean;
+
 	constructor({
 		textEntryCheckbox,
 		label,
@@ -20,7 +28,7 @@ export class TextEntryRedactQuestion extends Question {
 		summaryText,
 		shouldTruncateSummary,
 		...parentParams
-	}) {
+	}: TextEntryRedactQuestionParams) {
 		super({
 			...parentParams,
 			viewFolder: 'text-entry-redact'
@@ -35,22 +43,23 @@ export class TextEntryRedactQuestion extends Question {
 		this.shouldTruncateSummary = shouldTruncateSummary;
 	}
 
-	/**
-	 * @param {import('express').Request} req
-	 * @param {import('#journey-response').JourneyResponse} journeyResponse
-	 * @returns {Promise<{answers: Record<string, unknown>}>}
-	 */
-	async getDataToSave(req, journeyResponse) {
+	async getDataToSave(req: Request, journeyResponse: JourneyResponse) {
 		if (this.useRedactedFieldNameForSave) {
 			const fieldName = this.fieldName + 'Redacted';
-			const answers = {};
+			const answers: Record<string, unknown> = {};
 			answers[fieldName] = req.body[this.fieldName];
 			return { answers };
 		}
 		return super.getDataToSave(req, journeyResponse);
 	}
 
-	prepQuestionForRendering(section, journey, customViewData, payload, options) {
+	prepQuestionForRendering(
+		section: Section,
+		journey: Journey,
+		customViewData?: Record<string, unknown>,
+		payload?: Record<string, unknown>,
+		options?: PrepQuestionForRenderingOptions
+	) {
 		const viewModel = super.prepQuestionForRendering(section, journey, customViewData, payload, options);
 		const answers = this.answerObjectFromJourneyResponse(journey.response, options);
 		const answer = viewModel.question.value;
@@ -59,14 +68,11 @@ export class TextEntryRedactQuestion extends Question {
 		return viewModel;
 	}
 
-	answerForViewModel(answers) {
-		return nl2br(answers[this.fieldName]);
+	answerForViewModel(answers: Record<string, unknown>) {
+		return nl2br(answers[this.fieldName] as string);
 	}
 
-	/**
-	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
-	 */
-	addCustomDataToViewModel(viewModel) {
+	addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.textEntryCheckbox = this.textEntryCheckbox;
 		viewModel.question.summaryText = this.summaryText;
@@ -76,21 +82,21 @@ export class TextEntryRedactQuestion extends Question {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 */
-	formatAnswerForSummary(sectionSegment, journey, answer, capitals = true) {
+	formatAnswerForSummary(sectionSegment: string, journey: Journey, answer: string, capitals = true) {
 		// get the response/answers for the section we're in - which might be a dynamic section
 		const response = journey.responseForSection(sectionSegment);
-		const redacted = response.answers[this.fieldName + 'Redacted'];
-		let toShow;
+		const redacted = response.answers[this.fieldName + 'Redacted'] as string | undefined;
+		let toShow: string | undefined;
 		if (this.onlyShowRedactedValueForSummary) {
 			toShow = redacted;
 		} else {
 			toShow = redacted || answer;
 		}
 
-		if (this.shouldTruncateSummary && toShow?.length > TRUNCATED_MAX_LENGTH) {
+		if (this.shouldTruncateSummary && (toShow?.length ?? 0) > TRUNCATED_MAX_LENGTH) {
 			const action = this.getAction(sectionSegment, journey, answer);
-			const truncatedToShow = toShow.substring(0, TRUNCATED_MAX_LENGTH);
-			toShow = `${truncatedToShow}... <a class="govuk-link govuk-link--no-visited-state" href="${action?.href}">Read more</a>`;
+			const truncatedToShow = toShow!.substring(0, TRUNCATED_MAX_LENGTH);
+			toShow = `${truncatedToShow}... <a class="govuk-link govuk-link--no-visited-state" href="${action && !Array.isArray(action) ? action.href : ''}">Read more</a>`;
 			return [
 				{
 					key: this.title ?? this.question,

@@ -1,16 +1,15 @@
 import { Question } from '#question';
+import type { Affix, SingleLineInputQuestionParams } from '#typedefs/question-props.ts';
+import type { QuestionViewModel } from '#typedefs/question-types.ts';
 
-/**
- * @class
- */
 export class SingleLineInputQuestion extends Question {
-	/** @type {Record<string, string>} */
-	inputAttributes;
+	inputAttributes: Record<string, string>;
+	label?: string;
+	classes: string;
+	prefix: Affix | undefined;
+	suffix: Affix | undefined;
 
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').SingleLineInputQuestionParams} params
-	 */
-	constructor(params) {
+	constructor(params: SingleLineInputQuestionParams) {
 		super({
 			...params,
 			viewFolder: 'single-line-input'
@@ -23,10 +22,7 @@ export class SingleLineInputQuestion extends Question {
 		this.suffix = params.suffix;
 	}
 
-	/**
-	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
-	 */
-	addCustomDataToViewModel(viewModel) {
+	addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.label = this.label;
 		// Extract type from attributes to pass separately to avoid duplication
 		const { type, ...otherAttributes } = this.inputAttributes;

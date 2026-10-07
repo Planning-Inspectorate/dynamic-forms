@@ -1,16 +1,14 @@
 import { formatDateForDisplay, parseDateInput } from '../../lib/date-utils.ts';
 import { Question } from '../../questions/question.ts';
+import type { Request } from 'express';
+import type { DateQuestionParams } from '#typedefs/question-props.ts';
 
 const DEFAULT_DATE_FORMAT = 'd MMMM yyyy';
 
-/**
- * @class
- */
 export class DateQuestion extends Question {
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').DateQuestionParams} params
-	 */
-	constructor({ dateFormat = DEFAULT_DATE_FORMAT, ...parentParams }) {
+	dateFormat: string;
+
+	constructor({ dateFormat = DEFAULT_DATE_FORMAT, ...parentParams }: DateQuestionParams) {
 		super({
 			...parentParams,
 			viewFolder: 'date'
@@ -20,7 +18,6 @@ export class DateQuestion extends Question {
 
 	/**
 	 * Gets the body field names used by this question in form submissions.
-	 * @returns {string[]}
 	 */
 	get bodyFieldNames() {
 		return [`${this.fieldName}_day`, `${this.fieldName}_month`, `${this.fieldName}_year`];
@@ -28,12 +25,9 @@ export class DateQuestion extends Question {
 
 	/**
 	 * Get the data to save from the request, returns an object of answers
-	 * @param {import('express').Request} req
-	 * @param {import('#journey-response').JourneyResponse} journeyResponse - current journey response
-	 * @returns {Promise.<Object>}
-	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
-	async getDataToSave(req, journeyResponse) {
-		const answers = {};
+	 */
+	async getDataToSave(req: Request) {
+		const answers: Record<string, unknown> = {};
 
 		const dayInput = req.body[`${this.fieldName}_day`];
 		const monthInput = req.body[`${this.fieldName}_month`];
@@ -44,7 +38,7 @@ export class DateQuestion extends Question {
 		return { answers };
 	}
 
-	answerForViewModel(answers, isPayload) {
+	answerForViewModel(answers: Record<string, unknown>, isPayload: boolean) {
 		let day;
 		let month;
 		let year;
@@ -72,12 +66,10 @@ export class DateQuestion extends Question {
 
 	/**
 	 * Formats a date answer for display in the summary.
-	 * @param {unknown} answer - the date value
-	 * @returns {string} the formatted date
 	 */
-	formatAnswer(answer) {
+	formatAnswer(answer: unknown) {
 		if (!answer) return this.notStartedText;
-		return formatDateForDisplay(answer, { format: this.dateFormat });
+		return formatDateForDisplay(answer as Date | string, { format: this.dateFormat });
 	}
 }
 

@@ -2,17 +2,24 @@ import { formatDateForDisplay, parseDateInput } from '../../lib/date-utils.ts';
 import { Question } from '#question';
 import { nl2br } from '../../lib/utils.ts';
 import escape from 'escape-html';
-
+import type { Request } from 'express';
+import type { DatePeriodQuestionParams } from '#typedefs/question-props.ts';
+import type { QuestionViewModel } from '#typedefs/question-types.ts';
 const DEFAULT_DATE_FORMAT = 'HH:mm d MMMM yyyy';
+
+type TimeParts = { hour: number; minute?: number; second?: number };
 
 /**
  * Represents a date period, two dates which make up a period or range
- * @class
  */
 export class DatePeriodQuestion extends Question {
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').DatePeriodQuestionParams} params
-	 */
+	dateFormat: string;
+	labels: { start: string; end: string };
+	hintStart?: string;
+	hintEnd?: string;
+	startTime: TimeParts;
+	endTime: TimeParts;
+
 	constructor({
 		dateFormat = DEFAULT_DATE_FORMAT,
 		hint,
@@ -22,7 +29,7 @@ export class DatePeriodQuestion extends Question {
 		hintEnd,
 		endTime,
 		...parentParams
-	}) {
+	}: DatePeriodQuestionParams) {
 		super({
 			...parentParams,
 			viewFolder: 'date-period'
@@ -35,10 +42,8 @@ export class DatePeriodQuestion extends Question {
 		this.startTime = startTime || { hour: 0, minute: 0, second: 0 };
 		this.endTime = endTime || { hour: 0, minute: 0, second: 0 };
 	}
-
 	/**
 	 * Gets the body field names used by this question in form submissions.
-	 * @returns {string[]}
 	 */
 	get bodyFieldNames() {
 		return [
@@ -50,23 +55,17 @@ export class DatePeriodQuestion extends Question {
 			`${this.fieldName}_end_year`
 		];
 	}
-
 	/**
 	 * Get the data to save from the request, returns an object of answers
-	 * @param {import('express').Request} req
-	 * @param {import('#journey-response').JourneyResponse} journeyResponse - current journey response
-	 * @returns {Promise.<Object>}
-	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
-	async getDataToSave(req, journeyResponse) {
-		const answers = {};
-
+	 */
+	async getDataToSave(req: Request) {
+		const answers: Record<string, unknown> = {};
 		const startDayInput = req.body[`${this.fieldName}_start_day`];
 		const startMonthInput = req.body[`${this.fieldName}_start_month`];
 		const startYearInput = req.body[`${this.fieldName}_start_year`];
 		const endDayInput = req.body[`${this.fieldName}_end_day`];
 		const endMonthInput = req.body[`${this.fieldName}_end_month`];
 		const endYearInput = req.body[`${this.fieldName}_end_year`];
-
 		const startDate = parseDateInput({
 			second: this.startTime.second,
 			minute: this.startTime.minute,
@@ -89,7 +88,7 @@ export class DatePeriodQuestion extends Question {
 		return { answers };
 	}
 
-	answerForViewModel(answers, isPayload) {
+	answerForViewModel(answers: Record<string, unknown>, isPayload: boolean) {
 		let startDay;
 		let startMonth;
 		let startYear;
@@ -105,7 +104,7 @@ export class DatePeriodQuestion extends Question {
 			endMonth = answers[`${this.fieldName}_end_month`];
 			endYear = answers[`${this.fieldName}_end_year`];
 		} else {
-			const answerPeriod = answers[this.fieldName];
+			const answerPeriod = answers[this.fieldName] as { start?: string | Date; end?: string | Date } | undefined;
 			if (answerPeriod && answerPeriod.start) {
 				const startDate = new Date(answerPeriod.start);
 				startDay = formatDateForDisplay(startDate, { format: 'd' });
@@ -119,7 +118,6 @@ export class DatePeriodQuestion extends Question {
 				endYear = formatDateForDisplay(endDate, { format: 'yyyy' });
 			}
 		}
-
 		return {
 			[`${this.fieldName}_start_day`]: startDay,
 			[`${this.fieldName}_start_month`]: startMonth,
@@ -129,11 +127,7 @@ export class DatePeriodQuestion extends Question {
 			[`${this.fieldName}_end_year`]: endYear
 		};
 	}
-
-	/**
-	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
-	 */
-	addCustomDataToViewModel(viewModel) {
+	addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.labels = this.labels;
 		viewModel.hintStart = this.hintStart;
 		viewModel.hintEnd = this.hintEnd;
@@ -141,11 +135,8 @@ export class DatePeriodQuestion extends Question {
 
 	/**
 	 * Formats the start/end date period for display in the summary.
-	 *
-	 * @param {{start?: string|Date, end?: string|Date}} answer
-	 * @returns {string}
 	 */
-	formatAnswer(answer) {
+	formatAnswer(answer: { start?: string | Date; end?: string | Date }) {
 		if (!answer) {
 			return this.notStartedText;
 		}
