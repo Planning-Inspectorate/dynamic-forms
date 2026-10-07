@@ -1,5 +1,7 @@
 import { Question } from '../../questions/question.ts';
 import { formatDateForDisplay, parseDateInput } from '../../lib/date-utils.ts';
+import type { Request } from 'express';
+import type { DateTimeQuestionParams } from '#typedefs/question-props.ts';
 
 const DEFAULT_DATE_FORMAT = 'd MMMM yyyy';
 const DEFAULT_TIME_FORMAT = 'HH:mma';
@@ -8,10 +10,14 @@ export class DateTimeQuestion extends Question {
 	static AM = 'am';
 	static PM = 'pm';
 
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').DateTimeQuestionParams} params
-	 */
-	constructor({ dateFormat = DEFAULT_DATE_FORMAT, timeFormat = DEFAULT_TIME_FORMAT, ...parentParams }) {
+	dateFormat: string;
+	timeFormat: string;
+
+	constructor({
+		dateFormat = DEFAULT_DATE_FORMAT,
+		timeFormat = DEFAULT_TIME_FORMAT,
+		...parentParams
+	}: DateTimeQuestionParams) {
 		super({
 			...parentParams,
 			viewFolder: 'date-time'
@@ -22,7 +28,6 @@ export class DateTimeQuestion extends Question {
 
 	/**
 	 * Gets the body field names used by this question in form submissions.
-	 * @returns {string[]}
 	 */
 	get bodyFieldNames() {
 		return [
@@ -37,12 +42,9 @@ export class DateTimeQuestion extends Question {
 
 	/**
 	 * Get the data to save from the request, returns an object of answers
-	 * @param {import('express').Request} req
-	 * @param {JourneyResponse} journeyResponse - current journey response
-	 * @returns {Promise.<Object>}
-	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
-	async getDataToSave(req, journeyResponse) {
-		const answers = {};
+	 */
+	async getDataToSave(req: Request) {
+		const answers: Record<string, unknown> = {};
 
 		const dayInput = req.body[`${this.fieldName}_day`];
 		const monthInput = req.body[`${this.fieldName}_month`];
@@ -62,7 +64,7 @@ export class DateTimeQuestion extends Question {
 		return { answers };
 	}
 
-	answerForViewModel(answers, isPayload) {
+	answerForViewModel(answers: Record<string, unknown>, isPayload: boolean) {
 		let day;
 		let month;
 		let year;
@@ -103,19 +105,17 @@ export class DateTimeQuestion extends Question {
 
 	/**
 	 * Formats a date-time answer for display in the summary.
-	 * @param {unknown} answer - the date value
-	 * @returns {string} the formatted date and time
 	 */
-	formatAnswer(answer) {
+	formatAnswer(answer: unknown) {
 		if (!answer) return this.notStartedText;
 
-		const formattedDate = formatDateForDisplay(answer, { format: this.dateFormat });
-		const formattedTime = formatDateForDisplay(answer, { format: this.timeFormat });
+		const formattedDate = formatDateForDisplay(answer as Date | string, { format: this.dateFormat });
+		const formattedTime = formatDateForDisplay(answer as Date | string, { format: this.timeFormat });
 
 		return `${formattedDate}<br>${formattedTime.toLowerCase()}`;
 	}
 
-	#convertTo24Hour(hour, period) {
+	#convertTo24Hour(hour: unknown, period: unknown) {
 		const hourValue = Number(hour);
 		switch (period) {
 			case DateTimeQuestion.AM:

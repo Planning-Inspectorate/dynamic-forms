@@ -1,14 +1,14 @@
-/** @typedef {[any, unknown][]} QuestionKeyTuples */
-/** @typedef {(questionKeyTuples: QuestionKeyTuples) => boolean} CombinationFunc */
+import type { JourneyResponse } from '#src/journey/journey-response.ts';
+import type { Question, QuestionCondition } from '#src/questions/question.ts';
 
-/**
- * @param {import('../../journey/journey-response.ts').JourneyResponse} response
- * @returns {{and: CombinationFunc, or: CombinationFunc}}
- */
-export const logicalCombinations = (response) => ({
-	and: (questionKeyTuples) =>
+export type QuestionKeyTuples = [any, unknown][];
+export type CombinationFunc = (questionKeyTuples: QuestionKeyTuples) => boolean;
+export type ConditionFunc = (item: unknown) => boolean;
+
+export const logicalCombinations = (response: JourneyResponse): { and: CombinationFunc; or: CombinationFunc } => ({
+	and: (questionKeyTuples: QuestionKeyTuples) =>
 		questionKeyTuples.every((questionKeyTuple) => questionHasAnswer(response, ...questionKeyTuple)),
-	or: (questionKeyTuples) =>
+	or: (questionKeyTuples: QuestionKeyTuples) =>
 		questionKeyTuples.some((questionKeyTuple) => questionHasAnswer(response, ...questionKeyTuple))
 });
 
@@ -17,24 +17,19 @@ export const logicalCombinations = (response) => ({
  *
  * @example
  * .withCondition(whenQuestionHasAnswer(question.q1, 'answer-1'))
- *
- * @param {import('../../questions/question.ts').Question} question
- * @param {unknown} expectedValue
- * @returns {import('../../section.ts').QuestionCondition}
  */
-export const whenQuestionHasAnswer = (question, expectedValue) => {
+export const whenQuestionHasAnswer = (question: Question, expectedValue: unknown): QuestionCondition => {
 	return (response) => questionHasAnswer(response, question, expectedValue);
 };
 
 /**
  * Does the question have the expected answer?
- *
- * @param {import('../../journey/journey-response.ts').JourneyResponse} response
- * @param {import('../../questions/question.ts').Question|{optionJoinString: string}} question
- * @param {unknown} expectedValue
- * @returns {boolean}
  */
-export const questionHasAnswer = (response, question, expectedValue) => {
+export const questionHasAnswer = (
+	response: JourneyResponse,
+	question: Question & { optionJoinString?: string },
+	expectedValue: unknown
+) => {
 	if (!response.answers) return false;
 	const answerField = response.answers[question.fieldName];
 
@@ -44,7 +39,7 @@ export const questionHasAnswer = (response, question, expectedValue) => {
 		// todo: DF-51 answers from options questions sometimes are array sometimes string, why?
 		if (!answerField) return false;
 		const answers = answerField.split(question.optionJoinString);
-		return answers.includes(expectedValue);
+		return answers.includes(expectedValue as string);
 	} else {
 		return answerField === expectedValue;
 	}
@@ -52,13 +47,12 @@ export const questionHasAnswer = (response, question, expectedValue) => {
 
 /**
  * Checks if any item in the specified answer field matches a condition.
- *
- * @param {import('../../journey/journey-response.ts').JourneyResponse} response - The response object containing answers.
- * @param {any} question - The question containing the fieldName.
- * @param {(item: any) => boolean} [conditionFn] - A function to test each item. Returns true to indicate a match.
- * @returns {boolean} True if at least one item matches the condition.
  */
-export const questionArrayMeetsCondition = (response, question, conditionFn = () => false) => {
+export const questionArrayMeetsCondition = (
+	response: JourneyResponse,
+	question: Question,
+	conditionFn: ConditionFunc = () => false
+) => {
 	if (!response.answers) return false;
 	const answerField = response.answers[question.fieldName];
 
@@ -69,40 +63,23 @@ export const questionArrayMeetsCondition = (response, question, conditionFn = ()
 	return false;
 };
 
-/**
- * @param {import('../../journey/journey-response.ts').JourneyResponse} response
- * @param {QuestionKeyTuples} questionKeyTuples
- * @param {Object} [options]
- * @param {'and' | 'or'} options.logicalCombinator
- * @returns {boolean}
- */
 export const questionsHaveAnswers = (
-	response,
-	questionKeyTuples,
-	{ logicalCombinator } = { logicalCombinator: 'and' }
+	response: JourneyResponse,
+	questionKeyTuples: QuestionKeyTuples,
+	{ logicalCombinator }: { logicalCombinator: 'and' | 'or' } = { logicalCombinator: 'and' }
 ) => {
 	const combinators = logicalCombinations(response);
 
 	return combinators[logicalCombinator](questionKeyTuples);
 };
 
-/**
- * @param {import('../../journey/journey-response.ts').JourneyResponse} response
- * @param {import('../../questions/question.ts').Question} question
- * @returns {boolean}
- */
-export const questionHasNonEmptyStringAnswer = (response, question) => {
+export const questionHasNonEmptyStringAnswer = (response: JourneyResponse, question: Question) => {
 	if (!response.answers) return false;
 	const answerField = response.answers[question.fieldName];
 	return typeof answerField === 'string' && answerField.trim().length > 0;
 };
 
-/**
- * @param {import('../../journey/journey-response.ts').JourneyResponse} response
- * @param {import('../../questions/question.ts').Question} question
- * @returns {boolean}
- */
-export const questionHasNonEmptyNumberAnswer = (response, question) => {
+export const questionHasNonEmptyNumberAnswer = (response: JourneyResponse, question: Question) => {
 	if (!response.answers) return false;
 	const answerField = response.answers[question.fieldName];
 	return typeof answerField === 'number' && !isNaN(answerField);

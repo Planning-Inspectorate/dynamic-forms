@@ -1,11 +1,13 @@
 import escape from 'escape-html';
-import OptionsQuestion from '../../questions/options-question.ts';
+import OptionsQuestion, { answerIsConditional } from '../../questions/options-question.ts';
+import type { RadioQuestionParams } from '#typedefs/question-props.ts';
+import type { QuestionViewModel } from '#typedefs/question-types.ts';
 
 export class RadioQuestion extends OptionsQuestion {
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').RadioQuestionParams} params
-	 */
-	constructor({ label, html, legend, viewFolder, ...parentParams }) {
+	label?: string;
+	legend?: string;
+
+	constructor({ label, html, legend, viewFolder, ...parentParams }: RadioQuestionParams) {
 		super({
 			...parentParams,
 			viewFolder: viewFolder || 'radio'
@@ -16,10 +18,7 @@ export class RadioQuestion extends OptionsQuestion {
 		this.legend = legend;
 	}
 
-	/**
-	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
-	 */
-	addCustomDataToViewModel(viewModel) {
+	addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.legend = this.legend;
 	}
@@ -27,12 +26,9 @@ export class RadioQuestion extends OptionsQuestion {
 	/**
 	 * Formats an answer value for display in the summary.
 	 * Handles object answers with conditional fields (e.g. { value: 'yes', conditional: { yes: 'details' } })
-	 *
-	 * @param {unknown} answer - the raw answer value
-	 * @returns {string} the formatted answer for display
 	 */
-	formatAnswer(answer) {
-		if (answer === null || answer === undefined || answer === '') {
+	formatAnswer(answer: unknown) {
+		if (!answerIsConditional(answer)) {
 			return this.notStartedText;
 		}
 
@@ -42,7 +38,7 @@ export class RadioQuestion extends OptionsQuestion {
 		}
 
 		// Handle object answers with conditional fields
-		const option = this.options.find((opt) => opt.value === answer.value);
+		const option = this.optionByValue(answer.value);
 		const optionText = escape(option ? option.text : answer.value);
 
 		const conditionalValue = answer.conditional?.[answer.value];

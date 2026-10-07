@@ -1,27 +1,12 @@
 import { Question } from '#question';
-/**
- * @import {QuestionViewModel} from '#question'
- * @import {Journey} from '#journey'
- * @import {JourneyResponse} from '#journey-response'
- * @import {Section} from '#section'
- */
+import type { TextEntryQuestionParams } from '#typedefs/question-props.ts';
+import type { QuestionViewModel } from '#typedefs/question-types.ts';
 
-/**
- * @typedef {Object} TextEntryCheckbox
- * @property {string} header
- * @property {string} text
- * @property {string} name
- * @property {string} [errorMessage]
- */
-
-/**
- * @class
- */
 export class TextEntryQuestion extends Question {
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').TextEntryQuestionParams} params
-	 */
-	constructor({ textEntryCheckbox, label, ...parentParams }) {
+	textEntryCheckbox?: TextEntryQuestionParams['textEntryCheckbox'];
+	label?: string;
+
+	constructor({ textEntryCheckbox, label, ...parentParams }: TextEntryQuestionParams) {
 		super({
 			...parentParams,
 			viewFolder: 'text-entry'
@@ -31,10 +16,7 @@ export class TextEntryQuestion extends Question {
 		this.label = label;
 	}
 
-	/**
-	 * @param {import('#typedefs/question-types.d.ts').QuestionViewModel} viewModel
-	 */
-	addCustomDataToViewModel(viewModel) {
+	addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.textEntryCheckbox = this.textEntryCheckbox;
 	}

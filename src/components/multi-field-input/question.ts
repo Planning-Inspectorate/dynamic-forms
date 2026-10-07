@@ -1,15 +1,18 @@
 import { Question } from '#question';
 import escape from 'escape-html';
 import { capitalize, nl2br } from '../../lib/utils.ts';
+import type { MultiFieldInputQuestionParams } from '#typedefs/question-props.ts';
+import type { Request } from 'express';
+import type { JourneyResponse } from '#journey-response';
+import type { Journey } from '#journey';
+import type { SummaryRow } from '#typedefs/question-types.ts';
 
-/**
- * @class
- */
+type InputField = MultiFieldInputQuestionParams['inputFields'][number];
+
 export class MultiFieldInputQuestion extends Question {
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').MultiFieldInputQuestionParams} params
-	 */
-	constructor({ inputFields, ...parentParams }) {
+	inputFields: MultiFieldInputQuestionParams['inputFields'];
+
+	constructor({ inputFields, ...parentParams }: MultiFieldInputQuestionParams) {
 		super({
 			// default but allow overrides
 			capitaliseAnswer: false,
@@ -26,13 +29,12 @@ export class MultiFieldInputQuestion extends Question {
 
 	/**
 	 * Gets the body field names used by this question in form submissions.
-	 * @returns {string[]}
 	 */
 	get bodyFieldNames() {
 		return this.inputFields.map((inputField) => inputField.fieldName);
 	}
 
-	answerForViewModel(answers) {
+	answerForViewModel(answers: Record<string, unknown>) {
 		return this.inputFields.map((inputField) => {
 			return {
 				...inputField,
@@ -43,12 +45,9 @@ export class MultiFieldInputQuestion extends Question {
 
 	/**
 	 * Get the data to save from the request, returns an object of answers
-	 * @param {import('express').Request} req
-	 * @param {import('#journey-response').JourneyResponse} journeyResponse - current journey response
-	 * @returns {Promise<{ answers: Record<string, unknown> }>}
-	 */ //eslint-disable-next-line no-unused-vars -- journeyResponse kept for other questions to use
-	async getDataToSave(req, journeyResponse) {
-		const answers = {};
+	 */
+	async getDataToSave(req: Request) {
+		const answers: Record<string, unknown> = {};
 
 		for (const inputField of this.inputFields) {
 			let value = req.body[inputField.fieldName];
@@ -64,11 +63,8 @@ export class MultiFieldInputQuestion extends Question {
 	/**
 	 * Formats an answer value for display in the summary.
 	 * Handles the ManageListSection edge case where nl2br should not be applied.
-	 *
-	 * @param {unknown} answer - the raw answer value (composed from multiple fields)
-	 * @returns {string} the formatted answer for display
 	 */
-	formatAnswer(answer) {
+	formatAnswer(answer: unknown) {
 		// Only show notStartedText for null/undefined, not for empty string
 		if (answer === null || answer === undefined) return this.notStartedText;
 		if (answer === '') return '';
@@ -85,11 +81,8 @@ export class MultiFieldInputQuestion extends Question {
 
 	/**
 	 * returns the formatted answers values to be used to build task list elements
-	 * @param {string} sectionSegment
-	 * @param {import('#journey').Journey} journey
-	 * @returns {import('#typedefs/question-types.d.ts').SummaryRow[]}
 	 */
-	formatAnswerForSummary(sectionSegment, journey) {
+	formatAnswerForSummary(sectionSegment: string, journey: Journey): SummaryRow[] {
 		// get the response/answers for the section we're in - which might be a dynamic section
 		const response = journey.responseForSection(sectionSegment);
 		// Handle unanswered case - delegate to parent for notStartedText
@@ -132,13 +125,8 @@ export class MultiFieldInputQuestion extends Question {
 
 	/**
 	 * Formats a single field value for summary display
-	 * @param {unknown} answer - the raw answer value
-	 * @param {import('#typedefs/question-props.d.ts').InputField} field - the input field config
-	 * @param {import('#journey').Journey} journey - the journey instance
-	 * @param {string} sectionSegment - the section segment
-	 * @returns {string}
 	 */
-	#formatFieldForSummary(answer, field, journey, sectionSegment) {
+	#formatFieldForSummary(answer: unknown, field: InputField, journey: Journey, sectionSegment: string) {
 		// Apply formatTextFunction (if provided) before escaping, same as answerForViewModel
 		const textFormattedAnswer = this.#formatValue(answer, field.formatTextFunction);
 		const formattedAnswer = escape(String(textFormattedAnswer));
@@ -161,23 +149,17 @@ export class MultiFieldInputQuestion extends Question {
 
 	/**
 	 * checks whether any answers have been provided for input field questions
-	 * @param {import('#journey-response').JourneyResponse} response
-	 * @returns {boolean}
 	 */
-	#allQuestionsUnanswered(response) {
+	#allQuestionsUnanswered(response: JourneyResponse) {
 		return this.inputFields.every((field) => response.answers[field.fieldName] === undefined);
 	}
 
 	/**
 	 * returns formated value/answer if formatting is provided (defaults to value provided)
-	 * @param {string} valueToFormat
-	 * @param {function} [formatTextFunction]
-	 * @returns {string}
-	 *
 	 */
-	#formatValue(valueToFormat, formatTextFunction) {
+	#formatValue(valueToFormat: unknown, formatTextFunction?: (text: string) => string) {
 		if (typeof formatTextFunction === 'function' && valueToFormat) {
-			return formatTextFunction(valueToFormat);
+			return formatTextFunction(valueToFormat as string);
 		}
 
 		return valueToFormat;

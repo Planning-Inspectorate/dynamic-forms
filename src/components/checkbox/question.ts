@@ -1,13 +1,11 @@
 import escape from 'escape-html';
-import OptionsQuestion from '../../questions/options-question.ts';
+import OptionsQuestion, { answerIsConditional } from '../../questions/options-question.ts';
+import type { CheckboxQuestionParams } from '#typedefs/question-props.ts';
 
 const defaultOptionJoinString = ',';
 
 export class CheckboxQuestion extends OptionsQuestion {
-	/**
-	 * @param {import('#typedefs/question-props.d.ts').CheckboxQuestionParams} params
-	 */
-	constructor({ ...parentParams }) {
+	constructor({ ...parentParams }: CheckboxQuestionParams) {
 		super({
 			// default but allow overrides
 			capitaliseAnswer: false,
@@ -23,15 +21,11 @@ export class CheckboxQuestion extends OptionsQuestion {
 	 * Handles object answers with conditional fields.
 	 * - Single value with conditional: { value: 'yes', conditional: { yes: 'details' } }
 	 * - Multiple values with conditionals: { value: 'yes,no', conditional: { yes: 'details1', no: 'details2' } }
-	 *
-	 * @param {unknown} answer - the raw answer value
-	 * @returns {string} the formatted answer for display
 	 */
-	formatAnswer(answer) {
-		if (answer === null || answer === undefined || answer === '') {
+	formatAnswer(answer: unknown) {
+		if (!answerIsConditional(answer)) {
 			return this.notStartedText;
 		}
-
 		// Handle simple string answers (e.g. '1,2')
 		if (typeof answer !== 'object' || answer.value === undefined) {
 			return super.formatAnswer(answer);
@@ -45,7 +39,7 @@ export class CheckboxQuestion extends OptionsQuestion {
 		const conditionals = answer.conditional || {};
 
 		const formattedParts = answerValues.map((value) => {
-			const option = this.options.find((opt) => opt.value === value);
+			const option = this.optionByValue(value);
 			const optionText = escape(option ? option.text : value);
 
 			// Check if this option has a conditional answer
