@@ -1,6 +1,8 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import { getConditionalAnswer, getConditionalFieldName } from './question-utils.ts';
+import OptionsQuestion from '#src/questions/options-question.ts';
+import type { SelectableOption } from '#typedefs/question-props.ts';
 
 describe('getConditionalFieldName', () => {
 	it('returns conditional field name given parent and child name', () => {
@@ -9,26 +11,32 @@ describe('getConditionalFieldName', () => {
 });
 
 describe('getConditionalAnswer', () => {
+	const simpleOption = (value: string, conditionalFieldName?: string) => {
+		const option: SelectableOption = {
+			value,
+			text: value
+		};
+		if (conditionalFieldName) {
+			option.conditional = {
+				fieldName: conditionalFieldName,
+				type: 'input'
+			};
+		}
+		return option;
+	};
 	const setup = () => {
 		const answers = {
 			field: 'yes',
 			otherField: 'yes',
 			field_conditional: 'test'
 		};
-		const question = {
+		const question = new OptionsQuestion({
+			title: 'Q',
+			question: 'q?',
 			fieldName: 'field',
-			options: [
-				{
-					value: 'yes',
-					conditional: {
-						fieldName: 'conditional'
-					}
-				},
-				{
-					value: 'no'
-				}
-			]
-		};
+			viewFolder: 'mock',
+			options: [simpleOption('yes', 'conditional'), simpleOption('no')]
+		});
 		return { answers, question };
 	};
 
@@ -73,26 +81,13 @@ describe('getConditionalAnswer', () => {
 				field_detailsA: 'details for A',
 				field_detailsC: 'details for C'
 			};
-			const question = {
+			const question = new OptionsQuestion({
+				title: 'Q',
+				question: 'q?',
 				fieldName: 'field',
-				options: [
-					{
-						value: 'a',
-						conditional: {
-							fieldName: 'detailsA'
-						}
-					},
-					{
-						value: 'b'
-					},
-					{
-						value: 'c',
-						conditional: {
-							fieldName: 'detailsC'
-						}
-					}
-				]
-			};
+				viewFolder: 'mock',
+				options: [simpleOption('a', 'detailsA'), simpleOption('b'), simpleOption('c', 'detailsC')]
+			});
 			return { answers, question };
 		};
 
