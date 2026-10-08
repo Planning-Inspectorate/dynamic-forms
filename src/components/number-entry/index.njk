@@ -23,9 +23,8 @@
                     id: question.fieldName,
                     name: question.fieldName,
                     value: question.value,
-                    suffix: {
-                        text: question.suffix
-                    },
+                    prefix: question.prefix,
+                    suffix: question.suffix,
                     errorMessage: errors[question.fieldName] and {
                         text: errors[question.fieldName].msg
                     },
