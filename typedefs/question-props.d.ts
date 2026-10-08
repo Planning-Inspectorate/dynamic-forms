@@ -86,7 +86,7 @@ export type DividerOption = { divider?: string };
 
 export type Option = SelectableOption | DividerOption;
 
-type Affix = {
+export type Affix = {
 	text: string;
 	classes?: string;
 };
@@ -228,7 +228,8 @@ export type MultiFieldInputQuestionProps = MultiFieldInputQuestionParams & {
 };
 
 export type NumberEntryQuestionParams = CommonQuestionParams & {
-	suffix?: string;
+	prefix?: Affix;
+	suffix?: string | Affix;
 	label?: string;
 };
 
