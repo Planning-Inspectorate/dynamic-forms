@@ -64,8 +64,9 @@ export function buildList(viewData = {}) {
 }
 
 /**
+ * @template {Record<string, any>} [TLocals=Record<string, any>]
  * @param {import('express').Request} req
- * @param {import('express').Response} res
+ * @param {import('express').Response<any, TLocals>} res
  * @param {string} pageCaption
  * @param {object} viewData
  */
@@ -186,9 +187,10 @@ export async function question(req, res) {
 }
 
 /**
+ * @template {Record<string, any>} [TLocals=Record<string, any>]
  * @typedef {Object} SaveParams
  * @property {import('express').Request} req
- * @property {import('express').Response} res
+ * @property {import('express').Response<any, TLocals>} res
  * @property {string} journeyId
  * @property {string} referenceId
  * @property {boolean} isManageListItem
@@ -201,11 +203,13 @@ export async function question(req, res) {
  */
 
 /**
- * @typedef {(params: SaveParams) => Promise<void>} SaveDataFn
+ * @template {Record<string, any>} [TLocals=Record<string, any>]
+ * @typedef {(params: SaveParams<TLocals>) => Promise<void>} SaveDataFn
  */
 
 /**
- * @param {SaveDataFn} saveData
+ * @template {Record<string, any>} [TLocals=Record<string, any>]
+ * @param {SaveDataFn<TLocals>} saveData
  * @param {boolean} [redirectToTaskListOnSuccess] - optionally redirect to the task list after save instead of next question
  * @returns {import('express').Handler}
  */
