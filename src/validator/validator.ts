@@ -1,7 +1,7 @@
 import { validationResult } from 'express-validator';
 import type { Handler, Request } from 'express';
-import type { Question } from '#src/questions/question.ts';
-import type { JourneyResponse } from '#src/journey/journey-response.ts';
+import type { Question } from '../questions/question.ts';
+import type { JourneyResponse } from '../journey/journey-response.ts';
 
 const validate: Handler = async (req, res, next) => {
 	const { journey, journeyResponse } = res.locals;

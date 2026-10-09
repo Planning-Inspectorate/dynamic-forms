@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
 
 import BaseValidator from './base-validator.ts';
-import type { Question } from '#src/questions/question.ts';
+import type { Question } from '../questions/question.ts';
 
 export const validatePostcode = (postcode: string, errorMessage = 'Enter a valid postcode') => {
 	const pattern =

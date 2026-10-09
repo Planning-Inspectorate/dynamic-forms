@@ -8,7 +8,7 @@ import {
 	mockAnswerBody,
 	renderQuestionCheck,
 	postAnswer
-} from '#test/utils/question-test-utils.ts';
+} from './utils/question-test-utils.ts';
 
 describe('question pages', () => {
 	it('should have a test for each question type', () => {
@@ -31,7 +31,7 @@ describe('question pages', () => {
 	 * @param {import('node:test').TestContext} ctx
 	 * @param {string} url
 	 * @param {string} snapshotName
-	 * @param {import('#src/questions/question.ts').Question} q
+	 * @param {import('../src/questions/question.ts').Question} q
 	 * @returns {Promise<void>}
 	 */
 	async function renderQuestionAndSnapshot(ctx, url, snapshotName, q) {
@@ -59,7 +59,7 @@ describe('question pages', () => {
 	/**
 	 * @param {import('node:test').TestContext} ctx
 	 * @param {string} url
-	 * @param {import('#src/questions/question.ts').Question} q
+	 * @param {import('../src/questions/question.ts').Question} q
 	 * @returns {Promise<string>}
 	 */
 	async function postQuestionCheck(ctx, url, q) {

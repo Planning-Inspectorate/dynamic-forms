@@ -1,9 +1,9 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
 import MultiFieldInputQuestion from './question.ts';
-import { Journey } from '#journey';
-import { Section } from '#section';
-import { DynamicSection } from '#src/dynamic-section.ts';
+import { Journey } from '../../journey/journey.ts';
+import { Section } from '../../section.ts';
+import { DynamicSection } from '../../dynamic-section.ts';
 
 const TITLE = 'title';
 const QUESTION = 'Question?';

@@ -1,7 +1,7 @@
 import BaseValidator from './base-validator.ts';
 import { body } from 'express-validator';
-import type { Question } from '#src/questions/question.ts';
-import type { JourneyResponse } from '#src/journey/journey-response.ts';
+import type { Question } from '../questions/question.ts';
+import type { JourneyResponse } from '../journey/journey-response.ts';
 import type { Request } from 'express';
 
 export interface CrossQuestionValidatorParams {

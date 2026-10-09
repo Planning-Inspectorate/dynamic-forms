@@ -1,16 +1,16 @@
 import { SECTION_STATUS } from './section.ts';
 import questionUtils from './components/utils/question-utils.ts';
-import { answerObjectForListItemSaving } from '#src/lib/answer-utils.ts';
-import { booleanToYesNoValue } from '#src/components/boolean/question.ts';
-import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.ts';
-import { toArray } from '#src/lib/utils.ts';
-import type { ActionView } from '#typedefs/question-types.ts';
+import { answerObjectForListItemSaving } from './lib/answer-utils.ts';
+import { booleanToYesNoValue } from './components/boolean/question.ts';
+import { MANAGE_LIST_ACTIONS } from './components/manage-list/manage-list-actions.ts';
+import { toArray } from './lib/utils.ts';
+import type { ActionView } from './types/question-types.ts';
 import type { Request, Response, Handler } from 'express';
-import type { Journey } from '#src/journey/journey.ts';
-import type { JourneyResponse } from '#journey-response';
-import type { ManageListAnswers, RouteParams } from '#typedefs/journey-types.ts';
-import type ManageListQuestion from '#src/components/manage-list/question.ts';
-import type { DynamicSection } from '#src/dynamic-section.ts';
+import type { Journey } from './journey/journey.ts';
+import type { JourneyResponse } from './journey/journey-response.ts';
+import type { ManageListAnswers, RouteParams } from './types/journey-types.ts';
+import type ManageListQuestion from './components/manage-list/question.ts';
+import type { DynamicSection } from './dynamic-section.ts';
 
 export interface SectionView {
 	heading: string;

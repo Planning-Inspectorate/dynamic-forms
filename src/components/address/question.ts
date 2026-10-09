@@ -1,12 +1,12 @@
-import { Question } from '#question';
+import { Question } from '../../questions/question.ts';
 
 import escape from 'escape-html';
 import type { IAddress } from '../../lib/address.ts';
 import { Address } from '../../lib/address.ts';
 import { nl2br } from '../../lib/utils.ts';
 import AddressValidator, { type AddressRequiredFields } from '../../validator/address-validator.ts';
-import type { SiteAddressQuestionParams } from '#typedefs/question-props.ts';
-import type { QuestionViewModel } from '#typedefs/question-types.ts';
+import type { SiteAddressQuestionParams } from '../../types/question-props.ts';
+import type { QuestionViewModel } from '../../types/question-types.ts';
 import type { Request } from 'express';
 
 export class AddressQuestion extends Question {

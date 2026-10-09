@@ -1,4 +1,4 @@
-import type { JourneyAnswers } from '#typedefs/journey-types.ts';
+import type { JourneyAnswers } from '../types/journey-types.ts';
 
 /**
  * Defines a response to a journey, a set of Answers to the questions

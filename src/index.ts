@@ -1,8 +1,8 @@
 // Type declaration files
-export * from '../typedefs/journey-types.ts';
-export * from '../typedefs/question-props.ts';
-export * from '../typedefs/question-types.ts';
-export * from '../typedefs/section-types.ts';
+export * from './types/journey-types.ts';
+export * from './types/question-props.ts';
+export * from './types/question-types.ts';
+export * from './types/section-types.ts';
 
 // Components
 export * from './components/address/question.ts';

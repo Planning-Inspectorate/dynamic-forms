@@ -1,7 +1,7 @@
 import escape from 'escape-html';
 import { capitalize, nl2br, trimTrailingSlash } from '../lib/utils.ts';
 import MultiFieldInputValidator from '../validator/multi-field-input-validator.ts';
-import { answerObjectForListItem } from '#src/lib/answer-utils.ts';
+import { answerObjectForListItem } from '../lib/answer-utils.ts';
 import type {
 	ActionLink,
 	ActionView,
@@ -9,16 +9,16 @@ import type {
 	QuestionParameters,
 	QuestionViewModel,
 	SummaryRow
-} from '#typedefs/question-types.ts';
-import type { SummaryFormatterContext, SummaryValueFormatter } from '#typedefs/question-props.ts';
-import type BaseValidator from '#src/validator/base-validator.ts';
-import type { JourneyResponse } from '#src/journey/journey-response.ts';
+} from '../types/question-types.ts';
+import type { SummaryFormatterContext, SummaryValueFormatter } from '../types/question-props.ts';
+import type BaseValidator from '../validator/base-validator.ts';
+import type { JourneyResponse } from '../journey/journey-response.ts';
 import type { Response, Request } from 'express';
-import type { Section } from '#src/section.ts';
-import type ManageListQuestion from '#src/components/manage-list/question.ts';
-import type { Journey } from '#src/journey/journey.ts';
-import type { RouteParams } from '#typedefs/journey-types.ts';
-import type { DynamicSection } from '#src/dynamic-section.ts';
+import type { Section } from '../section.ts';
+import type ManageListQuestion from '../components/manage-list/question.ts';
+import type { Journey } from '../journey/journey.ts';
+import type { RouteParams } from '../types/journey-types.ts';
+import type { DynamicSection } from '../dynamic-section.ts';
 
 export interface ToViewModelParams {
 	params: RouteParams;

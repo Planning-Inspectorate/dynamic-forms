@@ -1,11 +1,11 @@
-import { Question } from '#question';
+import { Question } from '../../questions/question.ts';
 import escape from 'escape-html';
 import { capitalize, nl2br } from '../../lib/utils.ts';
-import type { MultiFieldInputQuestionParams } from '#typedefs/question-props.ts';
+import type { MultiFieldInputQuestionParams } from '../../types/question-props.ts';
 import type { Request } from 'express';
-import type { JourneyResponse } from '#journey-response';
-import type { Journey } from '#journey';
-import type { SummaryRow } from '#typedefs/question-types.ts';
+import type { JourneyResponse } from '../../journey/journey-response.ts';
+import type { Journey } from '../../journey/journey.ts';
+import type { SummaryRow } from '../../types/question-types.ts';
 
 type InputField = MultiFieldInputQuestionParams['inputFields'][number];
 

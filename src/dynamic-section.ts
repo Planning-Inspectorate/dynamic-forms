@@ -1,4 +1,4 @@
-import { Section } from '#section';
+import { Section } from './section.ts';
 
 /**
  * Use a dynamic section for sections which are generated from an array of objects

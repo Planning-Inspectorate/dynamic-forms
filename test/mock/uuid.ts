@@ -1,4 +1,4 @@
-import { Uuid } from '#src/lib/uuid.ts';
+import { Uuid } from '../../src/lib/uuid.ts';
 
 /**
  *

@@ -4,7 +4,7 @@ import { questionClasses } from '../src/questions/questions.ts';
 import EmailValidator from '../src/validator/email-validator.ts';
 
 /**
- * @typedef {import('#typedefs/question-props.d.ts').QuestionProps} Props
+ * @typedef {import('../src/types/question-props.ts').QuestionProps} Props
  */
 
 /** @type {Record<string, Props>} */

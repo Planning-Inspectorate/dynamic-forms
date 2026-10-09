@@ -1,5 +1,5 @@
 import SingleLineInputQuestion from '../single-line-input/question.ts';
-import type { EmailQuestionParams } from '#typedefs/question-props.ts';
+import type { EmailQuestionParams } from '../../types/question-props.ts';
 
 /**
  * Email input question that extends SingleLineInputQuestion

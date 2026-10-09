@@ -6,7 +6,7 @@ import {
 	buildSaveDataToSession
 } from './session-answer-store.ts';
 import { BOOLEAN_OPTIONS } from '../components/boolean/question.ts';
-import { mockReq, mockRes } from '#test/utils/utils.ts';
+import { mockReq, mockRes } from '../../test/utils/utils.ts';
 
 describe('session-answer-store', () => {
 	describe('saveDataToSession', () => {

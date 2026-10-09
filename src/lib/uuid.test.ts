@@ -1,4 +1,4 @@
-import { Uuid } from '#src/lib/uuid.ts';
+import { Uuid } from './uuid.ts';
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 

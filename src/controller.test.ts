@@ -5,11 +5,11 @@ import { list, question, buildSave } from './controller.ts';
 import { Journey } from './journey/journey.ts';
 import { Section, SECTION_STATUS } from './section.ts';
 
-import { mockReq, mockRes } from '#test/utils/utils.ts';
-import { BOOLEAN_OPTIONS } from '#src/components/boolean/question.ts';
-import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.ts';
-import { DynamicSection } from '#src/dynamic-section.ts';
-import { Question } from '#question';
+import { mockReq, mockRes } from '../test/utils/utils.ts';
+import { BOOLEAN_OPTIONS } from './components/boolean/question.ts';
+import { MANAGE_LIST_ACTIONS } from './components/manage-list/manage-list-actions.ts';
+import { DynamicSection } from './dynamic-section.ts';
+import { Question } from './questions/question.ts';
 
 const mockBaseUrl = '/manage-appeals/questionnaire';
 const mockRef = '123456';
@@ -29,7 +29,7 @@ function testSetup() {
 	 * Also mocks formatAnswerForSummary so it can be overridden later.
 	 * Default mock uses the original implementation
 	 *
-	 * @param {import('#typedefs/question-types.d.ts').QuestionParameters} params
+	 * @param {import('./types/question-types.ts').QuestionParameters} params
 	 * @param {boolean} [taskList]
 	 * @returns {Question}
 	 */

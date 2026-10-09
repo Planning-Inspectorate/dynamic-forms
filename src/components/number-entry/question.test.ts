@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import NumberEntryQuestion from '#src/components/number-entry/question.ts';
+import NumberEntryQuestion from './question.ts';
 
 describe('number-entry', () => {
 	it('should allow capitaliseAnswer override', () => {

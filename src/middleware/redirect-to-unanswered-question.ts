@@ -1,5 +1,5 @@
-import type { Question } from '#src/questions/question.ts';
-import type { JourneyResponse } from '#src/journey/journey-response.ts';
+import type { Question } from '../questions/question.ts';
+import type { JourneyResponse } from '../journey/journey-response.ts';
 import type { Handler } from 'express';
 
 export type ShouldDisplayCondition = (question: Question, response: JourneyResponse) => boolean;

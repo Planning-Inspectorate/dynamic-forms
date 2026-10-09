@@ -1,5 +1,5 @@
 import RadioQuestion from '../radio/question.ts';
-import type { BooleanQuestionParams } from '#typedefs/question-props.ts';
+import type { BooleanQuestionParams } from '../../types/question-props.ts';
 import type { Request } from 'express';
 
 export type YesNo = 'yes' | 'no';

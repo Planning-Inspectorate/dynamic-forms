@@ -1,7 +1,7 @@
 import { formatDateForDisplay, parseDateInput } from '../../lib/date-utils.ts';
 import { Question } from '../../questions/question.ts';
 import type { Request } from 'express';
-import type { DateQuestionParams } from '#typedefs/question-props.ts';
+import type { DateQuestionParams } from '../../types/question-props.ts';
 
 const DEFAULT_DATE_FORMAT = 'd MMMM yyyy';
 

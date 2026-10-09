@@ -1,6 +1,6 @@
 import { body } from 'express-validator';
 import BaseValidator from './base-validator.ts';
-import type { Question } from '#src/questions/question.ts';
+import type { Question } from '../questions/question.ts';
 
 /**
  * Universal validator to ensure the answer to the current question is not the same as another question's answer

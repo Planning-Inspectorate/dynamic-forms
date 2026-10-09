@@ -1,6 +1,6 @@
-import type { BaseQuestionProps } from '#typedefs/question-props.ts';
-import type { QuestionClass } from '#typedefs/question-types.ts';
-import type { Question, QuestionMethodOverrides } from '#src/questions/question.ts';
+import type { BaseQuestionProps } from '../types/question-props.ts';
+import type { QuestionClass } from '../types/question-types.ts';
+import type { Question, QuestionMethodOverrides } from './question.ts';
 
 export interface TextOverrides {
 	notStartedText?: string;

@@ -1,5 +1,5 @@
 import { Section } from '../../section.ts';
-import type { Question } from '#src/questions/question.ts';
+import type { Question } from '../../questions/question.ts';
 
 /**
  * Extends the Section class for extra logic around managing lists.

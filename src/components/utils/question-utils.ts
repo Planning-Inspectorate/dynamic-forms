@@ -1,6 +1,6 @@
-import type OptionsQuestion from '#src/questions/options-question.ts';
-import type { Question } from '#src/questions/question.ts';
-import type UnitOptionEntryQuestion from '#src/components/unit-option-entry/question.ts';
+import type OptionsQuestion from '../../questions/options-question.ts';
+import type { Question } from '../../questions/question.ts';
+import type UnitOptionEntryQuestion from '../unit-option-entry/question.ts';
 
 export function getConditionalFieldName(parentField: string, conditionalField: string) {
 	return `${parentField}_${conditionalField}`;

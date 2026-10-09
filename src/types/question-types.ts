@@ -1,10 +1,10 @@
 import type { RouteParams } from './journey-types.d.ts';
-import type ManageListQuestion from '#src/components/manage-list/question.ts';
-import type BaseValidator from '#src/validator/base-validator.ts';
-import type { JourneyResponse } from '#src/journey/journey-response.ts';
+import type ManageListQuestion from '../components/manage-list/question.ts';
+import type BaseValidator from '../validator/base-validator.ts';
+import type { JourneyResponse } from '../journey/journey-response.ts';
 import type { SummaryValueFormatter } from './question-props.d.ts';
-import type { Question } from '#src/questions/question.ts';
-import type { trimTrailingSlash } from '#src/lib/utils.ts';
+import type { Question } from '../questions/question.ts';
+import type { trimTrailingSlash } from '../lib/utils.ts';
 
 export interface QuestionParameters {
 	title: string;

@@ -1,12 +1,12 @@
 import RequiredValidator from './validator/required-validator.ts';
-import { answerObjectForListItem } from '#src/lib/answer-utils.ts';
-import type { Question, QuestionCondition } from '#src/questions/question.ts';
-import type { JourneyResponse } from '#src/journey/journey-response.ts';
-import type { ManageListSection } from '#src/components/manage-list/manage-list-section.ts';
-import type ManageListQuestion from '#src/components/manage-list/question.ts';
-import type { GetNextQuestionParams, StaticGetNextQuestionParams } from '#typedefs/section-types.ts';
-import type MultiFieldInputQuestion from '#src/components/multi-field-input/question.ts';
-import type { DynamicSection } from '#src/dynamic-section.ts';
+import { answerObjectForListItem } from './lib/answer-utils.ts';
+import type { Question, QuestionCondition } from './questions/question.ts';
+import type { JourneyResponse } from './journey/journey-response.ts';
+import type { ManageListSection } from './components/manage-list/manage-list-section.ts';
+import type ManageListQuestion from './components/manage-list/question.ts';
+import type { GetNextQuestionParams, StaticGetNextQuestionParams } from './types/section-types.ts';
+import type MultiFieldInputQuestion from './components/multi-field-input/question.ts';
+import type { DynamicSection } from './dynamic-section.ts';
 
 /**
  * A value indicating the final question of a section has been reached

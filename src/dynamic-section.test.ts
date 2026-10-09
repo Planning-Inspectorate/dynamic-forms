@@ -1,8 +1,8 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
-import { DynamicSection } from '#src/dynamic-section.ts';
-import { SECTION_STATUS } from '#section';
-import { Question } from '#question';
+import { DynamicSection } from './dynamic-section.ts';
+import { SECTION_STATUS } from './section.ts';
+import { Question } from './questions/question.ts';
 
 // use a real question to avoid mocking lots of logic
 const mockQuestion = (fieldName = 'fieldName', required = true) =>

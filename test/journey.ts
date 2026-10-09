@@ -1,6 +1,6 @@
 import { Section } from '../src/section.ts';
 import { Journey } from '../src/journey/journey.ts';
-import { ManageListSection } from '#src/components/manage-list/manage-list-section.ts';
+import { ManageListSection } from '../src/components/manage-list/manage-list-section.ts';
 
 export const JOURNEY_ID = 'holiday-journey';
 

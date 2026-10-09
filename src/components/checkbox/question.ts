@@ -1,6 +1,6 @@
 import escape from 'escape-html';
 import OptionsQuestion, { answerIsConditional } from '../../questions/options-question.ts';
-import type { CheckboxQuestionParams } from '#typedefs/question-props.ts';
+import type { CheckboxQuestionParams } from '../../types/question-props.ts';
 
 const defaultOptionJoinString = ',';
 

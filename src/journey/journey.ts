@@ -3,13 +3,13 @@
  * (e.g. questionnaire). Specific journeys should be       *
  * instances of this class                                 *
  ***********************************************************/
-import type { Section } from '#src/section.ts';
-import { END_OF_SECTION } from '#src/section.ts';
-import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.ts';
-import type { JourneyResponse } from '#src/journey/journey-response.ts';
-import type { RouteParams } from '#typedefs/journey-types.ts';
-import type { Question } from '#src/questions/question.ts';
-import type ManageListQuestion from '#src/components/manage-list/question.ts';
+import type { Section } from '../section.ts';
+import { END_OF_SECTION } from '../section.ts';
+import { MANAGE_LIST_ACTIONS } from '../components/manage-list/manage-list-actions.ts';
+import type { JourneyResponse } from './journey-response.ts';
+import type { RouteParams } from '../types/journey-types.ts';
+import type { Question } from '../questions/question.ts';
+import type ManageListQuestion from '../components/manage-list/question.ts';
 import type { Response } from 'express';
 
 export type MakeBaseUrl = (journeyResponse: JourneyResponse) => string;

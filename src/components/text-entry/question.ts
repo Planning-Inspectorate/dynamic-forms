@@ -1,6 +1,6 @@
-import { Question } from '#question';
-import type { TextEntryQuestionParams } from '#typedefs/question-props.ts';
-import type { QuestionViewModel } from '#typedefs/question-types.ts';
+import { Question } from '../../questions/question.ts';
+import type { TextEntryQuestionParams } from '../../types/question-props.ts';
+import type { QuestionViewModel } from '../../types/question-types.ts';
 
 export class TextEntryQuestion extends Question {
 	textEntryCheckbox?: TextEntryQuestionParams['textEntryCheckbox'];

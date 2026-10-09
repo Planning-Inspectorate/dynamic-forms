@@ -1,7 +1,7 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
-import { ManageListSection } from '#src/components/manage-list/manage-list-section.ts';
-import { Section } from '#src/section.ts';
+import { ManageListSection } from './manage-list-section.ts';
+import { Section } from '../../section.ts';
 
 describe('components/manage-list/manage-list-section', () => {
 	it('should extend Section', () => {

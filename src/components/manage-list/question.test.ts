@@ -1,11 +1,11 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
-import ManageListQuestion from '#src/components/manage-list/question.ts';
-import { ManageListSection } from '#src/components/manage-list/manage-list-section.ts';
-import { mockJourney } from '#test/mock/journey.ts';
-import { mockRandomUUID } from '#test/mock/uuid.ts';
-import { configureNunjucksTestEnv } from '#test/utils/nunjucks.ts';
-import { assertSnapshot } from '#test/utils/utils.ts';
+import ManageListQuestion from './question.ts';
+import { ManageListSection } from './manage-list-section.ts';
+import { mockJourney } from '../../../test/mock/journey.ts';
+import { mockRandomUUID } from '../../../test/mock/uuid.ts';
+import { configureNunjucksTestEnv } from '../../../test/utils/nunjucks.ts';
+import { assertSnapshot } from '../../../test/utils/utils.ts';
 
 describe('components/manage-list/question', () => {
 	const TITLE = 'Things';

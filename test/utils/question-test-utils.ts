@@ -1,22 +1,22 @@
 import assert from 'assert';
-import { getQuestions } from '#test/questions.ts';
-import { COMPONENT_TYPES } from '#src/index.ts';
-import { createApp } from '#test/utils/app.ts';
-import { buildGetJourney } from '#src/middleware/build-get-journey.ts';
-import { buildGetJourneyResponseFromSession, saveDataToSession } from '#src/lib/session-answer-store.ts';
-import { createJourney, JOURNEY_ID } from '#test/journey.ts';
-import { buildList, buildSave, question } from '#src/controller.ts';
-import validate from '#src/validator/validator.ts';
-import { validationErrorHandler } from '#src/validator/validation-error-handler.ts';
-import { TestServer } from '#test/utils/test-server.ts';
-import { BOOLEAN_OPTIONS } from '#src/components/boolean/question.ts';
-import { escapeForRegExp } from '#test/utils/utils.ts';
-import { mockRandomUUID } from '#test/mock/uuid.ts';
+import { getQuestions } from '../questions.ts';
+import { COMPONENT_TYPES } from '../../src/index.ts';
+import { createApp } from './app.ts';
+import { buildGetJourney } from '../../src/middleware/build-get-journey.ts';
+import { buildGetJourneyResponseFromSession, saveDataToSession } from '../../src/lib/session-answer-store.ts';
+import { createJourney, JOURNEY_ID } from '../journey.ts';
+import { buildList, buildSave, question } from '../../src/controller.ts';
+import validate from '../../src/validator/validator.ts';
+import { validationErrorHandler } from '../../src/validator/validation-error-handler.ts';
+import { TestServer } from './test-server.ts';
+import { BOOLEAN_OPTIONS } from '../../src/components/boolean/question.ts';
+import { escapeForRegExp } from './utils.ts';
+import { mockRandomUUID } from '../mock/uuid.ts';
 
 /**
  * @typedef {Object} CreateAppOptions
  * @property {string} journeyId - The journey ID for session storage
- * @property {(questions: Object, response: import('#src/journey/journey-response.ts').JourneyResponse) => import('#src/journey/journey.ts').Journey} createJourneyFn - Function to create the journey
+ * @property {(questions: Object, response: import('../../src/journey/journey-response.ts').JourneyResponse) => import('../../src/journey/journey.ts').Journey} createJourneyFn - Function to create the journey
  * @property {Object} questions - The questions object
  */
 

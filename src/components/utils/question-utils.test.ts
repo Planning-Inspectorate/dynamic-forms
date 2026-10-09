@@ -1,8 +1,8 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import { getConditionalAnswer, getConditionalFieldName } from './question-utils.ts';
-import OptionsQuestion from '#src/questions/options-question.ts';
-import type { SelectableOption } from '#typedefs/question-props.ts';
+import OptionsQuestion from '../../questions/options-question.ts';
+import type { SelectableOption } from '../../types/question-props.ts';
 
 describe('getConditionalFieldName', () => {
 	it('returns conditional field name given parent and child name', () => {
