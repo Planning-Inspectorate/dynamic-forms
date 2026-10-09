@@ -175,6 +175,41 @@ const update: SaveDataFn = async ({
 }
 ```
 
+`SaveDataFn` and `SaveParams` accept two optional generics: `TData` to type the `data` parameter, and `TLocals` to type `res.locals`. Both default to their current behaviour, so you only need to provide the ones you want to narrow. For example, to type `data`:
+
+```typescript
+type MyData = {
+    answers: {
+        myField: string;
+    };
+};
+
+const update: SaveDataFn<MyData> = async ({data}) => {
+    const answers = data.answers; // typed as { myField: string }
+
+    console.log('saving', answers);
+
+    // TODO: map to database
+    // TODO: write to database
+}
+```
+
+To type `res.locals` as well, pass `TLocals` as the second generic:
+
+```typescript
+type MyLocals = JourneyLocals & {
+    userId: string;
+};
+
+const update: SaveDataFn<MyData, MyLocals> = async ({data, res}) => {
+    const userId = res.locals.userId; // typed as string
+
+    console.log('saving', data.answers, 'for', userId);
+
+    // TODO: map to database
+    // TODO: write to database
+}
+```
 
 ### Conditions
 
