@@ -10,6 +10,7 @@ import { BOOLEAN_OPTIONS } from './components/boolean/question.ts';
 import { MANAGE_LIST_ACTIONS } from './components/manage-list/manage-list-actions.ts';
 import { DynamicSection } from './dynamic-section.ts';
 import { Question } from './questions/question.ts';
+import type { QuestionParameters } from './types/question-types.ts';
 
 const mockBaseUrl = '/manage-appeals/questionnaire';
 const mockRef = '123456';
@@ -28,12 +29,8 @@ function testSetup() {
 	 * Create a new question and set taskList if needed
 	 * Also mocks formatAnswerForSummary so it can be overridden later.
 	 * Default mock uses the original implementation
-	 *
-	 * @param {import('./types/question-types.ts').QuestionParameters} params
-	 * @param {boolean} [taskList]
-	 * @returns {Question}
 	 */
-	const newQuestion = (params, taskList) => {
+	const newQuestion = (params: QuestionParameters, taskList?: boolean) => {
 		const q = new Question(params);
 		if (typeof taskList === 'boolean') {
 			q.taskList = taskList;

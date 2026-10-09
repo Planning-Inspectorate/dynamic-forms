@@ -1,18 +1,20 @@
 import { describe, it } from 'node:test';
 import assert from 'assert';
-import { COMPONENT_TYPES, Journey, Section } from '../src/index.ts';
+import {
+	COMPONENT_TYPES,
+	Journey,
+	type SecondaryAction,
+	Section,
+	createQuestions,
+	questionClasses
+} from '../src/index.ts';
 import { createAppWithQuestions } from './utils/question-test-utils.ts';
-import { createQuestions } from '../src/questions/create-questions.ts';
-import { questionClasses } from '../src/questions/questions.ts';
 import { questionProps, questionsInOrder } from './questions.ts';
 import { assertSnapshot } from './utils/utils.ts';
 import { mockRandomUUID } from './mock/uuid.ts';
 import { createJourney as createTestJourney, JOURNEY_ID } from './journey.ts';
 
-/**
- * @type {import('../src/types/question-types.ts').SecondaryAction[]}
- */
-const testSecondaryActions = [
+const testSecondaryActions: SecondaryAction[] = [
 	{
 		text: 'Save and return',
 		href: '/return',

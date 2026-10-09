@@ -1,15 +1,12 @@
 import { Section } from '../src/section.ts';
 import { Journey } from '../src/journey/journey.ts';
 import { ManageListSection } from '../src/components/manage-list/manage-list-section.ts';
+import type { JourneyResponse } from '../src/index.ts';
+import type { AllQuestions } from './questions.ts';
 
 export const JOURNEY_ID = 'holiday-journey';
 
-/**
- * @param {{[questionType: string]: import('../src/questions/question.ts').Question}} questions
- * @param {import('../src/journey/journey-response.ts').JourneyResponse} response
- * @returns {Journey}
- */
-export function createJourney(questions, response) {
+export function createJourney(questions: AllQuestions, response: JourneyResponse): Journey {
 	return new Journey({
 		journeyId: JOURNEY_ID,
 		sections: [
