@@ -1,16 +1,21 @@
 import assert from 'assert';
 import { getQuestions } from '../questions.ts';
 import type { Journey, JourneyResponse, QuestionProps } from '../../src/index.ts';
-import { COMPONENT_TYPES } from '../../src/index.ts';
+import {
+	COMPONENT_TYPES,
+	buildGetJourney,
+	buildGetJourneyResponseFromSession,
+	saveDataToSession,
+	buildList,
+	buildSave,
+	question,
+	validate,
+	validationErrorHandler,
+	BOOLEAN_OPTIONS
+} from '../../src/index.ts';
 import { createApp } from './app.ts';
-import { buildGetJourney } from '../../src/middleware/build-get-journey.ts';
-import { buildGetJourneyResponseFromSession, saveDataToSession } from '../../src/lib/session-answer-store.ts';
 import { createJourney, JOURNEY_ID } from '../journey.ts';
-import { buildList, buildSave, question } from '../../src/controller.ts';
-import validate from '../../src/validator/validator.ts';
-import { validationErrorHandler } from '../../src/validator/validation-error-handler.ts';
 import { TestServer } from './test-server.ts';
-import { BOOLEAN_OPTIONS } from '../../src/components/boolean/question.ts';
 import { escapeForRegExp } from './utils.ts';
 import { mockRandomUUID } from '../mock/uuid.ts';
 import type { TestContext } from 'node:test';

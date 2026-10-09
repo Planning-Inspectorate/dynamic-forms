@@ -1,8 +1,5 @@
 import type { QuestionProps } from '../src/index.ts';
-import { COMPONENT_TYPES } from '../src/index.ts';
-import { createQuestions } from '../src/questions/create-questions.ts';
-import { questionClasses } from '../src/questions/questions.ts';
-import EmailValidator from '../src/validator/email-validator.ts';
+import { COMPONENT_TYPES, createQuestions, questionClasses, EmailValidator } from '../src/index.ts';
 
 export const questionProps = {
 	holidayActivities: {
