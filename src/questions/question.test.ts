@@ -1,0 +1,565 @@
+import { describe, it, mock } from 'node:test';
+import assert from 'node:assert';
+import { Question } from './question.ts';
+import { mockRes } from '../../test/utils/utils.ts';
+
+const res = mockRes();
+
+describe('./src/dynamic-forms/question.ts', () => {
+	const TITLE = 'Question1';
+	const QUESTION_STRING = 'What is your favourite colour?';
+	const DESCRIPTION = 'A question about your favourite colour';
+	const TYPE = 'Select';
+	const FIELDNAME = 'favouriteColour';
+	const URL = '/test';
+	const VALIDATORS = [1];
+	const HTML = 'resources/question12/content.html';
+	const HINT = 'This is how you submit the form';
+
+	const getTestQuestion = ({
+		title = TITLE,
+		question = QUESTION_STRING,
+		description = DESCRIPTION,
+		viewFolder = TYPE,
+		fieldName = FIELDNAME,
+		url = URL,
+		validators = VALIDATORS,
+		pageTitle = undefined,
+		html = undefined,
+		hint = undefined,
+		autocomplete = FIELDNAME,
+		actionLink,
+		viewData
+	} = {}) => {
+		return new Question({
+			title,
+			pageTitle,
+			question,
+			description,
+			viewFolder,
+			fieldName,
+			url,
+			validators,
+			html,
+			hint,
+			autocomplete,
+			viewData,
+			actionLink
+		});
+	};
+
+	describe('constructor', () => {
+		it('should create', () => {
+			const question = getTestQuestion({ html: HTML, hint: HINT });
+
+			assert.strictEqual(question instanceof Question, true);
+			assert.strictEqual(question.title, TITLE);
+			assert.strictEqual(question.question, QUESTION_STRING);
+			assert.strictEqual(question.viewFolder, TYPE);
+			assert.strictEqual(question.fieldName, FIELDNAME);
+			assert.strictEqual(question.url, URL);
+			assert.strictEqual(question.pageTitle, QUESTION_STRING);
+			assert.strictEqual(question.description, DESCRIPTION);
+			assert.strictEqual(question.validators, VALIDATORS);
+			assert.strictEqual(question.html, HTML);
+			assert.strictEqual(question.hint, HINT);
+			assert.strictEqual(question.isManageListQuestion, false);
+		});
+		it('should support viewData field', () => {
+			const question = getTestQuestion({ viewData: { test: 'test' } });
+
+			assert.strictEqual(question.viewData.test, 'test');
+		});
+
+		it('should use pageTitle if set', () => {
+			const pageTitle = 'a';
+
+			const question = getTestQuestion({ pageTitle });
+
+			assert.strictEqual(question.pageTitle, pageTitle);
+		});
+
+		it('should not set validators if not an array', () => {
+			const validators = {};
+
+			const question = getTestQuestion({ validators });
+
+			assert.deepStrictEqual(question.validators, []);
+		});
+
+		it('should throw if mandatory parameters not supplied to constructor', () => {
+			const TITLE = 'Question1';
+			const QUESTION_STRING = 'What is your favourite colour?';
+			const FIELDNAME = 'favouriteColour';
+			const VIEWFOLDER = 'view/';
+			assert.throws(
+				() => new Question({ question: QUESTION_STRING, fieldName: FIELDNAME, viewFolder: VIEWFOLDER }),
+				new Error('title parameter is mandatory')
+			);
+			assert.throws(
+				() => new Question({ title: TITLE, fieldName: FIELDNAME, viewFolder: VIEWFOLDER }),
+				new Error('question parameter is mandatory')
+			);
+			assert.throws(
+				() => new Question({ title: TITLE, question: QUESTION_STRING, viewFolder: VIEWFOLDER }),
+				new Error('fieldName parameter is mandatory')
+			);
+			assert.throws(
+				() => new Question({ title: TITLE, question: QUESTION_STRING, fieldName: FIELDNAME }),
+				new Error('viewFolder parameter is mandatory')
+			);
+		});
+	});
+
+	describe('isInManageListSection', () => {
+		it('should default to false', () => {
+			const question = getTestQuestion();
+			assert.strictEqual(question.isInManageListSection, false);
+		});
+		it('should support setting isInManageListSection', () => {
+			const question = getTestQuestion();
+			assert.strictEqual(question.isInManageListSection, false);
+			question.isInManageListSection = true;
+			assert.strictEqual(question.isInManageListSection, true);
+		});
+		it('should not support setting isInManageListSection false', () => {
+			const question = getTestQuestion();
+			assert.strictEqual(question.isInManageListSection, false);
+			assert.throws(
+				() => (question.isInManageListSection = false),
+				(error) => {
+					assert.strictEqual(error.message, 'Question isInManageListSection is false by default');
+					return true;
+				}
+			);
+		});
+	});
+
+	describe('bodyFieldNames', () => {
+		it('should return an array containing the fieldName by default', () => {
+			const question = getTestQuestion();
+			assert.deepStrictEqual(question.bodyFieldNames, [FIELDNAME]);
+		});
+	});
+
+	describe('prepQuestionForRendering', () => {
+		it('should prepQuestionForRendering', () => {
+			const question = getTestQuestion();
+
+			const section = {
+				name: 'section-name'
+			};
+
+			const journey = {
+				baseUrl: '',
+				taskListUrl: 'task',
+				journeyTemplate: 'template',
+				journeyTitle: 'title',
+				response: {
+					answers: {
+						[question.fieldName]: { a: 1 }
+					}
+				},
+				getBackLink: () => {
+					return 'back';
+				}
+			};
+
+			const customViewData = { hello: 'hi' };
+			const result = question.prepQuestionForRendering(section, journey, customViewData);
+
+			assert.deepStrictEqual(result.question, {
+				value: journey.response.answers[question.fieldName],
+				question: question.question,
+				fieldName: question.fieldName,
+				pageTitle: question.pageTitle,
+				description: question.description,
+				html: question.html,
+				hint: undefined,
+				interfaceType: undefined,
+				autocomplete: question.autocomplete
+			});
+			assert.deepStrictEqual(result.answer, journey.response.answers[question.fieldName]);
+			assert.deepStrictEqual(result.layoutTemplate, journey.journeyTemplate);
+			assert.deepStrictEqual(result.pageCaption, section.name);
+			assert.deepStrictEqual(result.showBackToListLink, question.showBackToListLink);
+			assert.deepStrictEqual(result.listLink, journey.taskListUrl);
+			assert.deepStrictEqual(result.journeyTitle, journey.journeyTitle);
+			assert.deepStrictEqual(result.hello, 'hi');
+			assert.ok(result.util);
+			assert.ok(typeof result.util.trimTrailingSlash === 'function');
+		});
+		it('should include viewData in viewModel', () => {
+			const question = getTestQuestion({ viewData: { test: 'data' } });
+
+			const section = {
+				name: 'section-name'
+			};
+
+			const journey = {
+				baseUrl: '',
+				taskListUrl: 'task',
+				journeyTemplate: 'template',
+				journeyTitle: 'title',
+				response: {
+					answers: {
+						[question.fieldName]: { a: 1 }
+					}
+				},
+				getBackLink: () => {
+					return 'back';
+				}
+			};
+
+			const result = question.prepQuestionForRendering(section, journey);
+
+			assert.deepStrictEqual(result.test, 'data');
+		});
+	});
+
+	describe('answerObjectFromJourney', () => {
+		it('should return journey response for regular questions', () => {
+			const question = getTestQuestion();
+			const answers = { myField: 'my-value' };
+			const journeyResponse = {
+				answers
+			};
+			const got = question.answerObjectFromJourneyResponse(journeyResponse);
+			assert.strictEqual(got, answers);
+		});
+		it('should return the manage list item object for manage list questions', () => {
+			const question = getTestQuestion();
+			question.isInManageListSection = true;
+			const manageListQuestion = {
+				fieldName: 'manageListQuestion'
+			};
+			const answers = {
+				id: '1',
+				myField: 'my-value'
+			};
+			const journeyResponse = {
+				answers: {
+					manageListQuestion: [answers]
+				}
+			};
+			const params = { manageListItemId: '1' };
+			const got = question.answerObjectFromJourneyResponse(journeyResponse, { params, manageListQuestion });
+			assert.strictEqual(got, answers);
+		});
+
+		it('should fallback to {} if manage list item id not found', () => {
+			const question = getTestQuestion();
+			question.isInManageListSection = true;
+			const manageListQuestion = {
+				fieldName: 'manageListQuestion'
+			};
+			const answers = {
+				id: '2',
+				myField: 'my-value'
+			};
+			const journeyResponse = {
+				answers: {
+					manageListQuestion: [answers]
+				}
+			};
+			const params = { manageListItemId: '1' };
+			let got = question.answerObjectFromJourneyResponse(journeyResponse, { params, manageListQuestion });
+			assert.deepStrictEqual(got, {});
+			// also fallback to {} if there is no manageListQuestion answer
+			delete journeyResponse.answers.manageListQuestion;
+			got = question.answerObjectFromJourneyResponse(journeyResponse, { params, manageListQuestion });
+			assert.deepStrictEqual(got, {});
+		});
+		it('should error if a manage list question is missing required parameters', () => {
+			const question = getTestQuestion();
+			question.isInManageListSection = true;
+			const answers = { myField: 'my-value' };
+			const journeyResponse = { answers };
+			assert.throws(
+				() => question.answerObjectFromJourneyResponse(journeyResponse),
+				/no list item id for manage list question/
+			);
+			const params = { manageListItemId: '1' };
+			assert.throws(
+				() => question.answerObjectFromJourneyResponse(journeyResponse, { params }),
+				/no manageListQuestion for manage list question/
+			);
+		});
+
+		it('should return dynamic section object', () => {
+			const question = getTestQuestion();
+			const answers = {
+				id: 'section-1',
+				myField: 'my-value'
+			};
+			const journeyResponse = {
+				answers: {
+					myList: [answers]
+				}
+			};
+			const params = { section: 'section-1' };
+			const got = question.answerObjectFromJourneyResponse(journeyResponse, {
+				params,
+				dynamicSection: { fieldName: 'myList' }
+			});
+			assert.strictEqual(got, answers);
+		});
+	});
+
+	describe('renderAction', () => {
+		it('should renderAction', () => {
+			const question = getTestQuestion();
+
+			const viewModel = { test: 'data' };
+
+			question.renderAction(res, viewModel);
+
+			assert.deepStrictEqual(res.render.mock.calls[0].arguments, [
+				`components/${question.viewFolder}/index`,
+				viewModel
+			]);
+		});
+	});
+
+	describe('checkForValidationErrors', () => {
+		it('should return viewmodel if errors present on req', () => {
+			const expectedResult = { a: 1 };
+			const req = { body: { errors: { error: 'we have an error' } } };
+			const question = getTestQuestion();
+			question.toViewModel = mock.fn(() => expectedResult);
+
+			const result = question.checkForValidationErrors(req);
+
+			assert.deepStrictEqual(result, expectedResult);
+		});
+
+		it('should return undefined if errors not present on req', () => {
+			const req = { body: {} };
+			const question = getTestQuestion();
+
+			const result = question.checkForValidationErrors(req);
+
+			assert.strictEqual(result, undefined);
+		});
+
+		it('should handle undefined body', () => {
+			const req = { body: undefined };
+			const question = getTestQuestion();
+
+			assert.doesNotThrow(() => question.checkForValidationErrors(req));
+		});
+	});
+
+	describe('getDataToSave', () => {
+		it('should return answer from req.body', async () => {
+			const question = getTestQuestion();
+
+			const req = {
+				body: {
+					[question.fieldName]: { a: 1 }
+				}
+			};
+
+			const result = await question.getDataToSave(req);
+
+			const expectedResult = {
+				answers: {
+					[question.fieldName]: { a: 1 }
+				}
+			};
+			assert.deepStrictEqual(result, expectedResult);
+		});
+
+		it('should handle nested properties', async () => {
+			const question = getTestQuestion();
+
+			const req = {
+				body: {
+					[question.fieldName]: { a: 1 },
+					[question.fieldName + '_1']: { a: 2 },
+					[question.fieldName + '_2']: { a: 3 }
+				}
+			};
+
+			const result = await question.getDataToSave(req);
+
+			const expectedResult = {
+				answers: {
+					[question.fieldName]: { a: 1 },
+					[question.fieldName + '_1']: { a: 2 },
+					[question.fieldName + '_2']: { a: 3 }
+				}
+			};
+			assert.deepStrictEqual(result, expectedResult);
+		});
+	});
+
+	describe('checkForSavingErrors', () => {
+		it('should do nothing', async () => {
+			const question = getTestQuestion();
+			const result = question.checkForSavingErrors();
+			assert.strictEqual(result, undefined);
+		});
+	});
+
+	describe('formatAnswerForSummary', () => {
+		it('should return answer if no altText', async () => {
+			const journey = {
+				getNextQuestionUrl: () => {
+					return 'back';
+				},
+				getCurrentQuestionUrl: () => {
+					return 'current';
+				}
+			};
+			const question = getTestQuestion();
+			const answer = 'Yes';
+			const result = question.formatAnswerForSummary('segment', journey, answer);
+			assert.strictEqual(result[0].value, answer);
+		});
+
+		it('should return "Not Started" if no value for answer', async () => {
+			const journey = {
+				getNextQuestionUrl: () => {
+					return 'back';
+				},
+				getCurrentQuestionUrl: () => {
+					return 'current';
+				}
+			};
+			const question = getTestQuestion();
+			const result = question.formatAnswerForSummary('segment', journey, null);
+			assert.strictEqual(result[0].value, question.notStartedText);
+		});
+		it('should support actionLink parameter', () => {
+			const actionLink = { href: '/custom', text: 'Custom Action' };
+			const question = getTestQuestion({ actionLink });
+			assert.deepStrictEqual(question.actionLink, actionLink);
+		});
+		it('should use actionLink in getAction if provided', () => {
+			const actionLink = { href: '/custom', text: 'Custom Action' };
+			const question = getTestQuestion({ actionLink });
+			const journey = {
+				getCurrentQuestionUrl: () => '/should-not-be-used'
+			};
+			const result = question.getAction('segment', journey, 'answer');
+			assert.deepStrictEqual(result, {
+				href: '/custom',
+				text: 'Custom Action',
+				visuallyHiddenText: question.question
+			});
+		});
+
+		it('should use default action if actionLink is not provided', () => {
+			const question = getTestQuestion();
+			const journey = {
+				getCurrentQuestionUrl: (segment, fieldName) => `/question/${segment}/${fieldName}`
+			};
+			const result = question.getAction('segment', journey, 'answer');
+			assert.deepStrictEqual(result, {
+				href: `/question/segment/${question.fieldName}`,
+				text: question.changeActionText,
+				visuallyHiddenText: question.question
+			});
+		});
+	});
+
+	describe('isRequired', () => {
+		it('should not be required if no validators', () => {
+			const q = getTestQuestion({ validators: [] });
+			assert.strictEqual(q.isRequired(), false);
+		});
+		it('should be required if any validator is required', () => {
+			const q = getTestQuestion({
+				validators: [{ isRequired: () => false }, { isRequired: () => true }]
+			});
+			assert.strictEqual(q.isRequired(), true);
+		});
+	});
+
+	describe('formatSummaryValue', () => {
+		it('should default to undefined', () => {
+			const question = getTestQuestion();
+			assert.strictEqual(question.formatSummaryValue, undefined);
+		});
+
+		it('should accept formatSummaryValue in constructor', () => {
+			const formatter = ({ formattedAnswer }) => `<em>${formattedAnswer}</em>`;
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue: formatter
+			});
+			assert.strictEqual(question.formatSummaryValue, formatter);
+		});
+
+		it('should apply custom formatting in formatAnswerForSummary when provided', () => {
+			const journey = {
+				getCurrentQuestionUrl: () => 'current'
+			};
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue: ({ formattedAnswer }) => `<strong>${formattedAnswer}</strong>`
+			});
+			const result = question.formatAnswerForSummary('segment', journey, 'test answer');
+			assert.strictEqual(result[0].value, '<strong>Test answer</strong>');
+		});
+
+		it('should use default formatting when formatSummaryValue is not provided', () => {
+			const journey = {
+				getCurrentQuestionUrl: () => 'current'
+			};
+			const question = getTestQuestion();
+			const result = question.formatAnswerForSummary('segment', journey, 'test answer');
+			assert.strictEqual(result[0].value, 'Test answer');
+		});
+
+		it('should allow access to journey in formatter', () => {
+			const journey = {
+				getCurrentQuestionUrl: () => 'current',
+				response: { answers: { otherField: 'other value' } }
+			};
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue: ({ formattedAnswer, journey }) => {
+					const extra = journey.response.answers.otherField;
+					return `${formattedAnswer} (${extra})`;
+				}
+			});
+			const result = question.formatAnswerForSummary('segment', journey, 'test');
+			assert.strictEqual(result[0].value, 'Test (other value)');
+		});
+
+		it('should pass all context properties to formatSummaryValue', () => {
+			const formatSummaryValue = mock.fn((ctx) => ctx.formattedAnswer);
+			const journey = {
+				id: 'test-journey',
+				getCurrentQuestionUrl: () => 'current'
+			};
+			const question = new Question({
+				title: TITLE,
+				question: QUESTION_STRING,
+				viewFolder: TYPE,
+				fieldName: FIELDNAME,
+				formatSummaryValue
+			});
+			question.formatAnswerForSummary('my-segment', journey, 'my-answer');
+
+			assert.strictEqual(formatSummaryValue.mock.callCount(), 1);
+			const receivedContext = formatSummaryValue.mock.calls[0].arguments[0];
+			assert.strictEqual(receivedContext.answer, 'my-answer');
+			assert.strictEqual(receivedContext.formattedAnswer, 'My-answer');
+			assert.strictEqual(receivedContext.question, question);
+			assert.strictEqual(receivedContext.journey, journey);
+			assert.strictEqual(receivedContext.sectionSegment, 'my-segment');
+		});
+	});
+});

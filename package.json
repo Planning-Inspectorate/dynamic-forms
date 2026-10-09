@@ -2,9 +2,20 @@
   "name": "@planning-inspectorate/dynamic-forms",
   "version": "0.0.0-semantically-released",
   "description": "This package is for building GDS forms using a configuration-based approach.",
-  "main": "./src/index.js",
+  "main": "dist/index.js",
   "type": "module",
-  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "imports": {
+    "#pkg-for-tests": {
+      "dist": "./dist/index.js",
+      "default": "./src/index.ts"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Planning-Inspectorate/dynamic-forms.git"
@@ -13,13 +24,14 @@
     "node": ">=22.18.0"
   },
   "scripts": {
+    "build": "rm -rf dist && tsc && npm run copy-templates",
+    "copy-templates": "(cd src && find . -name '*.njk' -exec cp --parents {} ../dist \\;)",
     "commitlint": "commitlint --from=$(git rev-parse $(git cherry origin/main | head -n 1 | cut -c 3-)^1)",
     "lint": "npx eslint .",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
-    "generate-types": "npx tsc --project tsconfig.json",
-    "reset-generated-types": "find . -name \"*.d.ts\" -not -path \"./typedefs/*\" -not -path \"./node_modules/*\" -delete && find . -name \"*.d.ts.map\" -not -path \"./node_modules/*\" -delete",
     "prepare": "node .husky/install.mjs",
+    "prepack": "npm run build",
     "test": "node --test",
     "test-coverage": "node --test --experimental-test-coverage"
   },
@@ -30,23 +42,15 @@
     "express-validator": "^7.2.1",
     "nunjucks": "^3.2.4"
   },
-  "imports": {
-    "#question-types": "./typedefs/question-types.d.ts",
-    "#typedefs/*": "./typedefs/*",
-    "#test/*": "./test/*",
-    "#base-validator": "./src/validator/base-validator.js",
-    "#journey": "./src/journey/journey.js",
-    "#journey-response": "./src/journey/journey-response.js",
-    "#question": "./src/questions/question.js",
-    "#section": "./src/section.js",
-    "#src/*": "./src/*"
-  },
   "devDependencies": {
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
     "@eslint/js": "^10.0.1",
     "@planning-inspectorate/coding-standards": "^1.0.0",
+    "@types/escape-html": "^1.0.4",
     "@types/express": "^5.0.6",
+    "@types/nunjucks": "^3.2.6",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "body-parser": "^2.2.0",
     "conventional-changelog-conventionalcommits": "^10.2.0",
     "cookie-parser": "^1.4.7",
@@ -61,7 +65,8 @@
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-prisma": "^5.0.0",
-    "semantic-release": "^25.0.9"
+    "semantic-release": "^25.0.9",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
   },
   "publishConfig": {
     "access": "public"
