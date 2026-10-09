@@ -334,7 +334,7 @@ Commits must follow conventional commits, and the commit types will be used by s
 ### Other points to note
 
 - Maintain `index.ts` - if you're adding code that users of this module will import, ensure it is exported in `index.ts`
-- Shared type definitions should be placed in the `src/types/` folder (e.g. `src/types/question-types.d.ts`)
+- Shared type definitions should be placed in the `src/types/` folder (e.g. `src/types/question-types.ts`)
 - Use `.ts` imports in source files. The TypeScript option `rewriteRelativeImportExtensions` is enabled. Tests run with Node's type-stripping, and the output files have the `.ts` extension re-written to `.js`.
 
 ### Releases
