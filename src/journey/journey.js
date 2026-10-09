@@ -9,17 +9,18 @@ import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-act
 /**
  * A journey (An entire set of questions required for a completion of a submission)
  * @class
+ * @template {object} [TAnswers=import("#typedefs/journey-types.d.ts").JourneyAnswers]
  */
 export class Journey {
 	/** @type {string} journeyId - a unique, human-readable id for this journey */
 	journeyId;
 	/** @type {Array.<import('../section.js').Section>} sections - sections within the journey */
 	sections = [];
-	/** @type {import('./journey-response.js').JourneyResponse} response - the user's response to the journey so far */
+	/** @type {import('#typedefs/journey-types.d.ts').JourneyResponseLike<TAnswers>} response - the user's response to the journey so far */
 	response;
 	/** @type {string} baseUrl - base url of the journey, gets prepended to question urls */
 	baseUrl = '';
-	/** @type {(journeyResponse: import('./journey-response.js').JourneyResponse) => string} makeBaseUrl - function to generate base url of the journey */
+	/** @type {(journeyResponse: import('#typedefs/journey-types.d.ts').JourneyResponseLike<TAnswers>) => string} makeBaseUrl - function to generate base url of the journey */
 	makeBaseUrl = () => '';
 	/** @type {string} taskListUrl - url that renders the task list */
 	taskListUrl = '';
@@ -38,9 +39,9 @@ export class Journey {
 	 * creates an instance of a journey
 	 * @param {object} options
 	 * @param {string} options.journeyId - a unique, human-readable id for this journey
-	 * @param {(response: import('./journey-response.js').JourneyResponse) => string} options.makeBaseUrl - base url of journey
+	 * @param {(response: import('#typedefs/journey-types.d.ts').JourneyResponseLike<TAnswers>) => string} options.makeBaseUrl - base url of journey
 	 * @param {string} [options.taskListUrl] - task list url - added to base url, can be left undefined
-	 * @param {import('./journey-response.js').JourneyResponse} options.response - user's response
+	 * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<TAnswers>} options.response - user's response
 	 * @param {string} options.journeyTemplate - template used for all views
 	 * @param {string} options.taskListTemplate - path to njk view for listing page
 	 * @param {string} [options.informationPageViewPath] - path to njk view for pdf summary page
@@ -408,7 +409,7 @@ export class Journey {
 	}
 
 	/**
-	 * @param {import('./journey-response.js').JourneyResponse} journeyResponse
+	 * @param {import('#typedefs/journey-types.d.ts').JourneyResponseLike<TAnswers>} journeyResponse
 	 */
 	setResponse(journeyResponse) {
 		this.response = journeyResponse;

@@ -66,6 +66,24 @@ describe('Journey class', () => {
 	});
 
 	describe('constructor', () => {
+		it('should accept structural responses and retain them when updating the response', () => {
+			const response = {
+				journeyId: 'TEST',
+				referenceId: 'first',
+				answers: { holidayDestination: 'beach', holidayActivities: ['swimming', 'sightseeing'] }
+			};
+			constructorArgs.response = response;
+			constructorArgs.makeBaseUrl = (currentResponse) => `/journey/${currentResponse.referenceId}`;
+			const journey = new Journey(constructorArgs);
+			assert.strictEqual(journey.response, response);
+			assert.strictEqual(journey.baseUrl, '/journey/first');
+
+			const updatedResponse = { ...response, referenceId: 'second', LPACode: 'LPA' };
+			journey.setResponse(updatedResponse);
+			assert.strictEqual(journey.response, updatedResponse);
+			assert.strictEqual(journey.baseUrl, '/journey/second');
+		});
+
 		it('should throw if no arguments passed into constructor', () => {
 			assert.throws(() => new Journey({}), Error);
 		});
