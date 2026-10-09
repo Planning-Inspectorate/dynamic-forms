@@ -3,7 +3,7 @@ import assert from 'assert';
 import { manageListQuestions, questionsInOrder } from './questions.ts';
 import { assertSnapshot, escapeForRegExp } from './utils/utils.ts';
 import { createAppWithQuestions, mockAnswer, mockAnswerBody } from './utils/question-test-utils.ts';
-import { COMPONENT_TYPES } from '../src/index.ts';
+import { COMPONENT_TYPES } from '#pkg-for-tests';
 
 describe('check-your-answers', () => {
 	it(`should render all question rows with no answers`, async (ctx) => {

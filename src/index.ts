@@ -43,6 +43,7 @@ export * from './lib/address-utils.ts';
 export * from './lib/date-utils.ts';
 export * from './lib/session-answer-store.ts';
 export * from './lib/utils.ts';
+export * from './lib/uuid.ts'; // not intended to be used, only for tests
 
 // middleware
 export * from './middleware/build-get-journey.ts';
