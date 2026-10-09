@@ -1,20 +1,22 @@
-import { describe, it } from 'node:test';
+import { describe, it, type TestContext } from 'node:test';
 import assert from 'assert';
-import { Section } from '../src/section.ts';
-import { DynamicSection } from '../src/dynamic-section.ts';
-import { Journey } from '../src/journey/journey.ts';
-import { COMPONENT_TYPES } from '../src/index.ts';
-import { createQuestions } from '../src/questions/create-questions.ts';
-import { questionClasses } from '../src/questions/questions.ts';
-import { whenQuestionHasAnswer } from '../src/components/utils/question-has-answer.ts';
-import { BOOLEAN_OPTIONS } from '../src/components/boolean/question.ts';
+import {
+	Section,
+	DynamicSection,
+	Journey,
+	COMPONENT_TYPES,
+	createQuestions,
+	questionClasses,
+	whenQuestionHasAnswer,
+	BOOLEAN_OPTIONS,
+	type QuestionProps
+} from '../src/index.ts';
 import { createAppWithQuestions, renderQuestionCheck, postAnswer } from './utils/question-test-utils.ts';
 
 const JOURNEY_ID = 'dynamic-journey';
 
 /**
  * Question props for conditional journey tests
- * @type {Record<string, import('../src/questions/question-props.ts').QuestionProps>}
  */
 const questionProps = {
 	// Section 1: Insurance (simple + chained conditions)
@@ -73,7 +75,7 @@ const questionProps = {
 			{ value: 'bank-transfer', text: 'Bank transfer' }
 		]
 	}
-};
+} satisfies Record<string, QuestionProps>;
 
 // Dynamic sections: questions asked once per traveller (holiday-goer)
 const travellerQuestionProps = {
@@ -124,8 +126,6 @@ const travellerQuestionProps = {
  * The travellers that each get their own DynamicSection.
  * In a real journey this list would typically come from a ManageList question
  * or a database; here it is fixed to keep the test deterministic.
- *
- * @type {Array<{ id: string, name: string }>}
  */
 const travellers = [
 	{ id: 'traveller-1', name: 'Din Djarin' },
@@ -215,10 +215,8 @@ function createConditionalJourney(questions, response) {
 
 /**
  * Helper to create an app with the conditional journey
- * @param {import('node:test').TestContext} ctx
- * @returns {Promise<import('./utils/test-server.ts').TestServer>}
  */
-function createAppWithJourney(ctx) {
+function createAppWithJourney(ctx: TestContext) {
 	return createAppWithQuestions(ctx, {
 		journeyId: JOURNEY_ID,
 		questions: createQuestions(questionProps, questionClasses, {}),

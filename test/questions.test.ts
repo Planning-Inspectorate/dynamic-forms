@@ -1,7 +1,7 @@
-import { describe, it } from 'node:test';
+import { describe, it, type TestContext } from 'node:test';
 import assert from 'assert';
 import { manageListQuestions, questionsInOrder } from './questions.ts';
-import { COMPONENT_TYPES } from '../src/index.ts';
+import { COMPONENT_TYPES, Question } from '../src/index.ts';
 import { assertSnapshot } from './utils/utils.ts';
 import {
 	createAppWithQuestions,
@@ -27,14 +27,12 @@ describe('question pages', () => {
 		}
 	});
 
-	/**
-	 * @param {import('node:test').TestContext} ctx
-	 * @param {string} url
-	 * @param {string} snapshotName
-	 * @param {import('../src/questions/question.ts').Question} q
-	 * @returns {Promise<void>}
-	 */
-	async function renderQuestionAndSnapshot(ctx, url, snapshotName, q) {
+	async function renderQuestionAndSnapshot(
+		ctx: TestContext,
+		url: string,
+		snapshotName: string,
+		q: Question
+	): Promise<void> {
 		const testServer = await createAppWithQuestions(ctx);
 		const text = await renderQuestionCheck(ctx, testServer, url, q.question);
 
@@ -56,13 +54,7 @@ describe('question pages', () => {
 		assertSnapshot(ctx, text, snapshotName + '.html');
 	}
 
-	/**
-	 * @param {import('node:test').TestContext} ctx
-	 * @param {string} url
-	 * @param {import('../src/questions/question.ts').Question} q
-	 * @returns {Promise<string>}
-	 */
-	async function postQuestionCheck(ctx, url, q) {
+	async function postQuestionCheck(ctx: TestContext, url: string, q: Question): Promise<string> {
 		const testServer = await createAppWithQuestions(ctx);
 		const payload = mockAnswerBody(q);
 		return postAnswer(testServer, url, payload);

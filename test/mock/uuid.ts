@@ -1,11 +1,9 @@
 import { Uuid } from '../../src/lib/uuid.ts';
+import type { TestContext } from 'node:test';
 
-/**
- *
- * @param {import('node:test').TestContext} ctx
- * @param {string} [uuid]
- */
-export function mockRandomUUID(ctx, uuid = '00000000-0000-0000-0000-000000000000') {
+type UuidType = ReturnType<typeof Uuid.randomUUID>;
+
+export function mockRandomUUID(ctx: TestContext, uuid: UuidType = '00000000-0000-0000-0000-000000000000') {
 	const original = Uuid.randomUUID;
 	Uuid.randomUUID = ctx.mock.fn(() => uuid);
 	// restore after the tests
