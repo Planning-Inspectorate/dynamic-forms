@@ -1,13 +1,16 @@
 import { describe, it } from 'node:test';
-import { COMPONENT_TYPES } from '../src/components/utils/component-types.ts';
-import { createQuestions } from '../src/questions/create-questions.ts';
-import { questionClasses } from '../src/questions/questions.ts';
-import { Section, SECTION_STATUS } from '../src/section.ts';
+import {
+	COMPONENT_TYPES,
+	createQuestions,
+	questionClasses,
+	SECTION_STATUS,
+	Section,
+	JourneyResponse,
+	RequiredValidator,
+	DateValidator,
+	AddressValidator
+} from '../src/index.ts';
 import assert from 'node:assert';
-import { JourneyResponse } from '../src/journey/journey-response.ts';
-import RequiredValidator from '../src/validator/required-validator.ts';
-import DateValidator from '../src/validator/date-validator.ts';
-import AddressValidator from '../src/validator/address-validator.ts';
 import type { QuestionProps } from '../src/index.ts';
 
 /**

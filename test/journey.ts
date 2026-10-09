@@ -1,6 +1,4 @@
-import { Section } from '../src/section.ts';
-import { Journey } from '../src/journey/journey.ts';
-import { ManageListSection } from '../src/components/manage-list/manage-list-section.ts';
+import { Section, Journey, ManageListSection } from '../src/index.ts';
 import type { JourneyResponse } from '../src/index.ts';
 import type { AllQuestions } from './questions.ts';
 

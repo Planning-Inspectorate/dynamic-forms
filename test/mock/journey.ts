@@ -1,4 +1,4 @@
-import { Journey } from '../../src/journey/journey.ts';
+import { Journey } from '../../src/index.ts';
 
 export function mockJourney() {
 	return new Journey({
