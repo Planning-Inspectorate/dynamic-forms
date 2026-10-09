@@ -18,7 +18,8 @@
     "node": ">=22.18.0"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc",
+    "build": "rm -rf dist && tsc && npm run copy-templates",
+    "copy-templates": "(cd src && find . -name '*.njk' -exec cp --parents {} ../dist \\;)",
     "commitlint": "commitlint --from=$(git rev-parse $(git cherry origin/main | head -n 1 | cut -c 3-)^1)",
     "lint": "npx eslint .",
     "format": "prettier --write .",
