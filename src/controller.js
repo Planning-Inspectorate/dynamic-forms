@@ -56,6 +56,10 @@ function buildSectionRowViewModel(key, value, action) {
 }
 
 /**
+ * @typedef {{ journey: import('./journey/journey.js').Journey, journeyResponse: import('./journey/journey-response.js').JourneyResponse } & Record<string, any>} JourneyLocals
+ */
+
+/**
  * @param {object} [viewData]
  * @returns {import('express').Handler}
  */
@@ -64,8 +68,9 @@ export function buildList(viewData = {}) {
 }
 
 /**
+ * @template {Record<string, any>} [TLocals=JourneyLocals]
  * @param {import('express').Request} req
- * @param {import('express').Response} res
+ * @param {import('express').Response<any, TLocals>} res
  * @param {string} pageCaption
  * @param {object} viewData
  */
@@ -186,9 +191,11 @@ export async function question(req, res) {
 }
 
 /**
+ * @template [TData=Object<string, any>]
+ * @template {Record<string, any>} [TLocals=JourneyLocals]
  * @typedef {Object} SaveParams
  * @property {import('express').Request} req
- * @property {import('express').Response} res
+ * @property {import('express').Response<any, TLocals>} res
  * @property {string} journeyId
  * @property {string} referenceId
  * @property {boolean} isManageListItem
@@ -197,15 +204,19 @@ export async function question(req, res) {
  * @property {boolean} isDynamicSection is this save action for a question within a DynamicSection?
  * @property {string} [dynamicSectionId] if this is within a DynamicSection, what is the section ID (segment)
  * @property {string} [dynamicSectionFieldName] if this is within a DynamicSection, what is the fieldName for the array?
- * @property {Object<string, any>} data
+ * @property {TData} data
  */
 
 /**
- * @typedef {(params: SaveParams) => Promise<void>} SaveDataFn
+ * @template [TData=Object<string, any>]
+ * @template {Record<string, any>} [TLocals=JourneyLocals]
+ * @typedef {(params: SaveParams<TData, TLocals>) => Promise<void>} SaveDataFn
  */
 
 /**
- * @param {SaveDataFn} saveData
+ * @template [TData=Object<string, any>]
+ * @template {Record<string, any>} [TLocals=JourneyLocals]
+ * @param {SaveDataFn<TData, TLocals>} saveData
  * @param {boolean} [redirectToTaskListOnSuccess] - optionally redirect to the task list after save instead of next question
  * @returns {import('express').Handler}
  */
