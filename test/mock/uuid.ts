@@ -1,4 +1,4 @@
-import { Uuid } from '../../src/lib/uuid.ts';
+import { Uuid } from '#pkg-for-tests';
 import type { TestContext } from 'node:test';
 
 type UuidType = ReturnType<typeof Uuid.randomUUID>;

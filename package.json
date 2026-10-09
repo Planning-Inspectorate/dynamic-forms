@@ -10,6 +10,12 @@
       "default": "./dist/index.js"
     }
   },
+  "imports": {
+    "#pkg-for-tests": {
+      "dist": "./dist/index.js",
+      "default": "./src/index.ts"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Planning-Inspectorate/dynamic-forms.git"
