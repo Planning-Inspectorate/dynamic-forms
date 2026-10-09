@@ -1,13 +1,9 @@
+import type { QuestionProps } from '../src/index.ts';
 import { COMPONENT_TYPES } from '../src/index.ts';
 import { createQuestions } from '../src/questions/create-questions.ts';
 import { questionClasses } from '../src/questions/questions.ts';
 import EmailValidator from '../src/validator/email-validator.ts';
 
-/**
- * @typedef {import('../src/types/question-props.ts').QuestionProps} Props
- */
-
-/** @type {Record<string, Props>} */
 export const questionProps = {
 	holidayActivities: {
 		type: COMPONENT_TYPES.CHECKBOX,
@@ -244,7 +240,7 @@ export const questionProps = {
 			{ value: 'medical', text: 'Medical needs' }
 		]
 	}
-};
+} satisfies Record<string, QuestionProps>;
 
 // questions in order for the journey - used to check the journey redirects to the next question correctly
 export const questionsInOrder = [
@@ -277,3 +273,5 @@ export const manageListQuestions = [
 ];
 
 export const getQuestions = () => createQuestions(questionProps, questionClasses, {});
+
+export type AllQuestions = ReturnType<typeof getQuestions>;

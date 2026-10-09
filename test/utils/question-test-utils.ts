@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { getQuestions } from '../questions.ts';
+import type { Journey, JourneyResponse, QuestionProps } from '../../src/index.ts';
 import { COMPONENT_TYPES } from '../../src/index.ts';
 import { createApp } from './app.ts';
 import { buildGetJourney } from '../../src/middleware/build-get-journey.ts';
@@ -12,20 +13,16 @@ import { TestServer } from './test-server.ts';
 import { BOOLEAN_OPTIONS } from '../../src/components/boolean/question.ts';
 import { escapeForRegExp } from './utils.ts';
 import { mockRandomUUID } from '../mock/uuid.ts';
+import type { TestContext } from 'node:test';
+import type { ErrorRequestHandler } from 'express';
 
-/**
- * @typedef {Object} CreateAppOptions
- * @property {string} journeyId - The journey ID for session storage
- * @property {(questions: Object, response: import('../../src/journey/journey-response.ts').JourneyResponse) => import('../../src/journey/journey.ts').Journey} createJourneyFn - Function to create the journey
- * @property {Object} questions - The questions object
- */
+interface CreateAppOptions {
+	journeyId: string;
+	createJourneyFn: (questions: object, response: JourneyResponse) => Journey;
+	questions: object;
+}
 
-/**
- * @param {import('node:test').TestContext} ctx
- * @param {CreateAppOptions} [options]
- * @returns {Promise<TestServer>}
- */
-export async function createAppWithQuestions(ctx, options) {
+export async function createAppWithQuestions(ctx: TestContext, options?: CreateAppOptions): Promise<TestServer> {
 	const app = createApp();
 	const questions = options?.questions ?? getQuestions();
 	const journeyId = options?.journeyId ?? JOURNEY_ID;
@@ -60,10 +57,7 @@ export async function createAppWithQuestions(ctx, options) {
 		res.status(404);
 	});
 
-	/**
-	 * @type {import('express').ErrorRequestHandler}
-	 */
-	function errorHandler(error, req, res, next) {
+	const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
 		console.log('Internal server error for', req.method, req.url);
 		console.log(error);
 		if (res.headersSent) {
@@ -71,7 +65,7 @@ export async function createAppWithQuestions(ctx, options) {
 		}
 		res.status(500);
 		res.send(error.stack);
-	}
+	};
 
 	app.use(errorHandler);
 
@@ -83,10 +77,8 @@ export async function createAppWithQuestions(ctx, options) {
 
 /**
  * Returns a mock value for an input field based on its properties.
- * @param {Object} field - An input field descriptor (not a full question)
- * @returns {string|number}
  */
-function mockInputFieldValue(field) {
+function mockInputFieldValue(field: { inputmode?: string; pattern?: string }): string | number {
 	if (field.inputmode === 'numeric' || field.pattern === '[0-9]*') {
 		return 1;
 	}
@@ -95,10 +87,8 @@ function mockInputFieldValue(field) {
 
 /**
  * Build a valid payload for a question.
- * @param {import('../src/questions/question-props.ts').QuestionProps} q
- * @returns {Object}
  */
-export function mockAnswerBody(q) {
+export function mockAnswerBody(q: QuestionProps) {
 	switch (q.type) {
 		case COMPONENT_TYPES.BOOLEAN:
 			return { [q.fieldName]: BOOLEAN_OPTIONS.YES };
@@ -190,10 +180,8 @@ export function mockAnswerBody(q) {
 
 /**
  * Build a valid & formatted answer for a question.
- * @param {import('../src/questions/question-props.ts').QuestionProps} q
- * @returns {Object}
  */
-export function mockAnswer(q) {
+export function mockAnswer(q: QuestionProps) {
 	switch (q.type) {
 		case COMPONENT_TYPES.BOOLEAN:
 			return BOOLEAN_OPTIONS.YES;
@@ -258,13 +246,13 @@ export function mockAnswer(q) {
 
 /**
  * Helper to render a question and check it's displayed correctly
- * @param {import('node:test').TestContext} ctx
- * @param {import('./test-server.ts').TestServer} testServer
- * @param {string} url
- * @param {string} questionText
- * @returns {Promise<string>}
  */
-export async function renderQuestionCheck(ctx, testServer, url, questionText) {
+export async function renderQuestionCheck(
+	ctx: TestContext,
+	testServer: TestServer,
+	url: string,
+	questionText: string
+): Promise<string> {
 	mockRandomUUID(ctx);
 	const response = await testServer.get(url, { redirect: 'manual' });
 	assert.strictEqual(response.status, 200, `Expected 200 for ${url}, got ${response.status}`);
@@ -276,12 +264,12 @@ export async function renderQuestionCheck(ctx, testServer, url, questionText) {
 
 /**
  * Helper to POST an answer and check the redirect
- * @param {import('./test-server.ts').TestServer} testServer
- * @param {string} url
- * @param {Record<string, unknown>} payload
- * @returns {Promise<string|null>}
  */
-export async function postAnswer(testServer, url, payload) {
+export async function postAnswer(
+	testServer: TestServer,
+	url: string,
+	payload: Record<string, unknown>
+): Promise<string | null> {
 	const response = await testServer.post(url, payload, { redirect: 'manual' });
 	if (![302, 303].includes(response.status)) {
 		const text = await response.text();

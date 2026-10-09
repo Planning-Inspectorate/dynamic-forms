@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { describe, it } from 'node:test';
+import { describe, it, type TestContext } from 'node:test';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import { TestServer } from './test-server.ts';
@@ -31,11 +31,7 @@ function createApp() {
 	return app;
 }
 
-/**
- * @param {import('node:test').TestContext} ctx
- * @returns {Promise<TestServer>}
- */
-async function newTestServer(ctx) {
+async function newTestServer(ctx: TestContext) {
 	const server = new TestServer(createApp());
 	await server.start();
 	ctx.after(async () => await server.stop());

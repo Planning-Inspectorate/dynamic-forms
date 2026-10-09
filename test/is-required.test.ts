@@ -8,17 +8,13 @@ import { JourneyResponse } from '../src/journey/journey-response.ts';
 import RequiredValidator from '../src/validator/required-validator.ts';
 import DateValidator from '../src/validator/date-validator.ts';
 import AddressValidator from '../src/validator/address-validator.ts';
-
-/**
- * @typedef {import('../src/questions/question-props.ts').QuestionProps} Props
- */
+import type { QuestionProps } from '../src/index.ts';
 
 /**
  * Check logic related to the question.isRequired method, which in turn drives the section status logic
  */
 describe('is-required', () => {
-	/** @type {() => Record<string, Props>} */
-	const getQuestionProps = () => ({
+	const getQuestionProps: () => Record<string, QuestionProps> = () => ({
 		holidayActivities: {
 			type: COMPONENT_TYPES.CHECKBOX,
 			title: 'Holiday Activities',

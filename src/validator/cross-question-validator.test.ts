@@ -16,10 +16,8 @@ function createMockRequest(answers) {
 
 /**
  * Creates a mock question object with a simple getDataToSave that returns the body field value.
- * @param {string} fieldName
- * @returns {{fieldName: string, bodyFieldNames: string[], getDataToSave: Function}}
  */
-function createMockQuestion(fieldName) {
+function createMockQuestion(fieldName: string) {
 	return {
 		fieldName,
 		bodyFieldNames: [fieldName],
@@ -33,10 +31,8 @@ function createMockQuestion(fieldName) {
 
 /**
  * Creates a mock date question that extracts date from day/month/year fields.
- * @param {string} fieldName
- * @returns {{fieldName: string, bodyFieldNames: string[], getDataToSave: Function}}
  */
-function createMockDateQuestion(fieldName) {
+function createMockDateQuestion(fieldName: string) {
 	return {
 		fieldName,
 		bodyFieldNames: [`${fieldName}_day`, `${fieldName}_month`, `${fieldName}_year`],
@@ -58,10 +54,8 @@ function createMockDateQuestion(fieldName) {
 
 /**
  * Creates a mock date-period question that extracts start/end dates.
- * @param {string} fieldName
- * @returns {{fieldName: string, bodyFieldNames: string[], getDataToSave: Function}}
  */
-function createMockDatePeriodQuestion(fieldName) {
+function createMockDatePeriodQuestion(fieldName: string) {
 	return {
 		fieldName,
 		bodyFieldNames: [

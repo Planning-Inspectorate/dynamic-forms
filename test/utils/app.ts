@@ -6,7 +6,6 @@ import { configureNunjucksTestEnv } from './nunjucks.ts';
 
 /**
  * Create an Express app configured for testing with Nunjucks and session support.
- * @returns {import('express').Express}
  */
 export function createApp() {
 	const app = express();

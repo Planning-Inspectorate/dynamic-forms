@@ -1,22 +1,33 @@
 import http from 'http';
+import type { TestContext } from 'node:test';
 
-const DEFAULT_OPTIONS = {
+const DEFAULT_OPTIONS: RequestInit = {
 	credentials: 'include'
 };
 
 export class TestServer {
 	// Private cookie jar for storing cookies between requests
-	/** @type {Object<string, string>} */
-	#cookieJar = {};
-	#timeoutMs;
+	readonly #cookieJar: Record<string, string> = {};
+	readonly requestListener: http.RequestListener;
+	readonly #timeoutMs: number;
+	rememberCookies: boolean;
+	server: http.Server | null;
+	port: number | null;
+
+	static async withContext(ctx: TestContext, requestListener: http.RequestListener): Promise<TestServer> {
+		const server = new TestServer(requestListener);
+		await server.start();
+		ctx.after(async () => await server.stop());
+		return server;
+	}
 
 	/**
-	 * @param {import('http').RequestListener} requestListener
-	 * @param {object} [options]
-	 * @param {number} [options.timeoutMs] - timeout to use for fetch requests
-	 * @param {boolean} [options.rememberCookies] - If true, cookies are stored and sent with each request
+	 * @param requestListener
+	 * @param [options]
+	 * @param [options.rememberCookies] - If true, cookies are stored and sent with each request
+	 * @param [options.timeoutMs] - timeout to use for fetch requests
 	 */
-	constructor(requestListener, options = {}) {
+	constructor(requestListener: http.RequestListener, options: { rememberCookies?: boolean; timeoutMs?: number } = {}) {
 		this.requestListener = requestListener;
 		this.server = null;
 		this.port = null;
@@ -26,29 +37,34 @@ export class TestServer {
 
 	/**
 	 * Starts the server on a random port.
-	 * @returns {Promise<void>}
 	 */
-	async start() {
+	async start(): Promise<void> {
 		if (this.server) return;
-		this.server = http.createServer(this.requestListener);
-		await new Promise((resolve, reject) => {
-			this.server.listen(0, '127.0.0.1');
-			this.server.on('listening', () => {
-				this.port = this.server.address().port;
-				resolve();
+		const server = http.createServer(this.requestListener);
+		await new Promise<void>((resolve, reject) => {
+			server.listen(0, '127.0.0.1');
+			server.on('listening', () => {
+				const address = server.address();
+				if (address !== null && typeof address === 'object' && 'port' in address) {
+					this.port = address.port;
+					resolve();
+				} else {
+					reject('unable to get server port');
+				}
 			});
-			this.server.on('error', reject);
+			server.on('error', reject);
 		});
+		this.server = server;
 	}
 
 	/**
 	 * Stops the server.
-	 * @returns {Promise<void>}
 	 */
-	async stop() {
-		if (!this.server) return;
-		await new Promise((resolve, reject) => {
-			this.server.close((err) => {
+	async stop(): Promise<void> {
+		const server = this.server;
+		if (!server) return;
+		await new Promise<void>((resolve, reject) => {
+			server.close((err) => {
 				if (err) reject(err);
 				else resolve();
 			});
@@ -59,27 +75,20 @@ export class TestServer {
 
 	/**
 	 * Performs a GET request to the server.
-	 * @param {string} path
-	 * @param {RequestInit} [options]
-	 * @returns {Promise<Response>}
 	 */
-	async get(path, options = {}) {
+	async get(path: string, options: RequestInit = {}): Promise<Response> {
 		if (!this.server || !this.port) {
 			throw new Error('Server is not started');
 		}
-		const fetchOptions = { headers: {}, ...DEFAULT_OPTIONS, ...options, method: 'GET' };
+		const fetchOptions: RequestInit = { headers: {}, ...DEFAULT_OPTIONS, ...options, method: 'GET' };
 		this.#addCookies(fetchOptions.headers);
 		return this.#fetch(path, fetchOptions);
 	}
 
 	/**
 	 * Performs a GET request to the server, following a maximum number of redirects.
-	 * @param {string} path
-	 * @param {number} maxRedirects
-	 * @param {RequestInit} [options]
-	 * @returns {Promise<Response>}
 	 */
-	async getWithRedirects(path, maxRedirects, options = {}) {
+	async getWithRedirects(path: string, maxRedirects: number, options: RequestInit = {}): Promise<Response> {
 		if (!this.server || !this.port) {
 			throw new Error('Server is not started');
 		}
@@ -87,7 +96,7 @@ export class TestServer {
 			// can just use get() directly otherwise
 			throw new Error('maxRedirects must be greater than 0');
 		}
-		let response;
+		let response: Response | undefined;
 		let currentPath = path;
 		let numRedirects = 0;
 		while (true) {
@@ -98,7 +107,11 @@ export class TestServer {
 				response.headers.has('location') &&
 				numRedirects < maxRedirects
 			) {
-				currentPath = response.headers.get('location');
+				const location = response.headers.get('location');
+				if (location === null) {
+					break;
+				}
+				currentPath = location;
 				numRedirects++;
 				continue;
 			}
@@ -112,12 +125,8 @@ export class TestServer {
 
 	/**
 	 * Performs a POST request to the server.
-	 * @param {string} path
-	 * @param {object} [body]
-	 * @param {RequestInit} [options]
-	 * @returns {Promise<Response>}
 	 */
-	async post(path, body = {}, options = {}) {
+	async post(path: string, body: unknown = {}, options: RequestInit = {}): Promise<Response> {
 		if (!this.server || !this.port) {
 			throw new Error('Server is not started');
 		}
@@ -135,11 +144,8 @@ export class TestServer {
 
 	/**
 	 * Perform a fetch request with a timeout
-	 *
-	 * @param {string} path
-	 * @param {RequestInit} [options]
 	 */
-	async #fetch(path, options) {
+	async #fetch(path: string, options: RequestInit) {
 		// set up an abort controller to cancel requests after timeout
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), this.#timeoutMs);
@@ -161,9 +167,11 @@ export class TestServer {
 		}
 	}
 
-	#addCookies(headers) {
+	#addCookies(headers: HeadersInit | undefined) {
 		if (!this.rememberCookies) return;
+		if (!headers) return;
 		if (this.#cookies) {
+			// @ts-expect-error this is OK, we only use the header set
 			headers.Cookie = this.#cookies;
 		}
 	}
@@ -176,9 +184,8 @@ export class TestServer {
 
 	/**
 	 * Update the internal cookie jar from a fetch Response
-	 * @param {Response} response
 	 */
-	#updateCookies(response) {
+	#updateCookies(response: Response) {
 		const cookies = response.headers.getSetCookie();
 		if (!cookies) return;
 		const cookieKv = cookies.map((c) => c.split(';')[0]);

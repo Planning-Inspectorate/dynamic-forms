@@ -1,5 +1,5 @@
 import path from 'path';
-import { mock } from 'node:test';
+import { mock, type TestContext } from 'node:test';
 
 export function testDir() {
 	return path.join(import.meta.dirname, '..');
@@ -9,12 +9,7 @@ export function snapshotsDir() {
 	return path.join(testDir(), 'snapshots');
 }
 
-/**
- * @param {import('node:test').TestContext} ctx
- * @param {string} content
- * @param {string} name
- */
-export function assertSnapshot(ctx, content, name) {
+export function assertSnapshot(ctx: TestContext, content: string, name: string) {
 	ctx.assert.fileSnapshot(
 		content.replaceAll('\r\n', '\n'), // OS agnostic line endings
 		path.join(snapshotsDir(), name),
@@ -24,24 +19,7 @@ export function assertSnapshot(ctx, content, name) {
 	);
 }
 
-/**
- * @returns {import('pino').BaseLogger}
- */
-export function mockLogger() {
-	return {
-		level: 'debug',
-		silent: mock.fn(),
-		trace: mock.fn(),
-		info: mock.fn(),
-		debug: mock.fn(),
-		warn: mock.fn(),
-		error: mock.fn(),
-		fatal: mock.fn()
-	};
-}
-
 export const mockReq = () => ({
-	log: mockLogger(),
 	params: {},
 	body: {},
 	originalUrl: '/original-url'
@@ -62,9 +40,7 @@ export const mockRes = () => {
 
 /**
  * escapes all RegExp meta-characters in a string
- * @param {string} s
- * @returns {string}
  */
-export function escapeForRegExp(s) {
+export function escapeForRegExp(s: string): string {
 	return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
