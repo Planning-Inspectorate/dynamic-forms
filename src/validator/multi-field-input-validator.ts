@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
 
 import BaseValidator from './base-validator.ts';
-import type { MaxLength, MinLength, Regex } from '#src/validator/string-validator.ts';
+import type { MaxLength, MinLength, Regex } from './string-validator.ts';
 
 export interface FieldBase {
 	fieldName: string;

@@ -1,7 +1,7 @@
 import { JourneyResponse } from '../journey/journey-response.ts';
 import { booleanToYesNoValue } from '../components/boolean/question.ts';
-import type { SaveDataFn } from '#src/controller.ts';
-import type { JourneyAnswers, ManageListAnswers } from '#typedefs/journey-types.ts';
+import type { SaveDataFn } from '../controller.ts';
+import type { JourneyAnswers, ManageListAnswers } from '../types/journey-types.ts';
 import type { Request, Handler } from 'express';
 
 type RequestWithSession = Request & {

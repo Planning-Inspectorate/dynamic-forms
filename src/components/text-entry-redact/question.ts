@@ -1,11 +1,11 @@
-import { Question } from '#question';
+import { Question } from '../../questions/question.ts';
 import { nl2br } from '../../lib/utils.ts';
 import type { Request } from 'express';
-import type { JourneyResponse } from '#journey-response';
-import type { Journey } from '#journey';
-import type { Section } from '#section';
-import type { TextEntryRedactQuestionParams } from '#typedefs/question-props.ts';
-import type { PrepQuestionForRenderingOptions, QuestionViewModel } from '#typedefs/question-types.ts';
+import type { JourneyResponse } from '../../journey/journey-response.ts';
+import type { Journey } from '../../journey/journey.ts';
+import type { Section } from '../../section.ts';
+import type { TextEntryRedactQuestionParams } from '../../types/question-props.ts';
+import type { PrepQuestionForRenderingOptions, QuestionViewModel } from '../../types/question-types.ts';
 
 export const REDACT_CHARACTER = '█';
 export const TRUNCATED_MAX_LENGTH = 500;

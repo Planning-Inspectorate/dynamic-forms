@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
 import type { DateValidationSettings } from './date-validator.ts';
 import DateValidator from './date-validator.ts';
-import type DateTimeQuestion from '#src/components/date-time/question.ts';
+import type DateTimeQuestion from '../components/date-time/question.ts';
 
 /**
  * enforces a user has entered a valid date

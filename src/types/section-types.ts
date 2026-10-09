@@ -1,6 +1,6 @@
-import type { JourneyResponse } from '#src/journey/journey-response.ts';
-import type ManageListQuestion from '#src/components/manage-list/question.ts';
-import type { Question } from '#src/questions/question.ts';
+import type { JourneyResponse } from '../journey/journey-response.ts';
+import type ManageListQuestion from '../components/manage-list/question.ts';
+import type { Question } from '../questions/question.ts';
 import type { RouteParams } from './journey-types.d.ts';
 
 export interface GetNextQuestionParams {

@@ -1,6 +1,6 @@
-import { Question } from '#question';
-import type { Affix, SingleLineInputQuestionParams } from '#typedefs/question-props.ts';
-import type { QuestionViewModel } from '#typedefs/question-types.ts';
+import { Question } from '../../questions/question.ts';
+import type { Affix, SingleLineInputQuestionParams } from '../../types/question-props.ts';
+import type { QuestionViewModel } from '../../types/question-types.ts';
 
 export class SingleLineInputQuestion extends Question {
 	inputAttributes: Record<string, string>;

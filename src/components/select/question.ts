@@ -1,6 +1,6 @@
 import OptionsQuestion from '../../questions/options-question.ts';
-import type { SelectQuestionParams } from '#typedefs/question-props.ts';
-import type { QuestionViewModel } from '#typedefs/question-types.ts';
+import type { SelectQuestionParams } from '../../types/question-props.ts';
+import type { QuestionViewModel } from '../../types/question-types.ts';
 
 export class SelectQuestion extends OptionsQuestion {
 	#disableAccessibleAutocomplete;

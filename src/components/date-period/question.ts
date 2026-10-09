@@ -1,10 +1,10 @@
 import { formatDateForDisplay, parseDateInput } from '../../lib/date-utils.ts';
-import { Question } from '#question';
+import { Question } from '../../questions/question.ts';
 import { nl2br } from '../../lib/utils.ts';
 import escape from 'escape-html';
 import type { Request } from 'express';
-import type { DatePeriodQuestionParams } from '#typedefs/question-props.ts';
-import type { QuestionViewModel } from '#typedefs/question-types.ts';
+import type { DatePeriodQuestionParams } from '../../types/question-props.ts';
+import type { QuestionViewModel } from '../../types/question-types.ts';
 const DEFAULT_DATE_FORMAT = 'HH:mm d MMMM yyyy';
 
 type TimeParts = { hour: number; minute?: number; second?: number };

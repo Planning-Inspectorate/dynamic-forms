@@ -1,39 +1,19 @@
 {
-	"include": ["**/*.ts", "**/*.js"],
-	"exclude": [
-		"node_modules",
-		"packages/database/src/client/**",
-		"**/*.test.ts",
-		"**/*.test.js",
-		"test/**",
-		"*.config.js",
-		"typedefs/**"
-	],
+	"include": ["**/*.ts"],
+	"exclude": ["node_modules", "**/*.test.ts", "test/**"],
 	"compilerOptions": {
 		"allowImportingTsExtensions": true,
-		"allowJs": true,
-		"allowSyntheticDefaultImports": true,
-		"baseUrl": ".",
-		"checkJs": false,
 		"declaration": true,
 		"declarationMap": true,
-		"emitDeclarationOnly": true,
 		"erasableSyntaxOnly": true,
 		"esModuleInterop": true,
 		"module": "NodeNext",
 		"moduleResolution": "nodenext",
-		"strict": true,
-		"target": "esnext",
+		"outDir": "dist",
+		"rewriteRelativeImportExtensions": true,
+		"rootDir": "src",
 		"skipLibCheck": true,
-		"paths": {
-			"#question-types": ["./typedefs/question-types.ts"],
-			"#typedefs/*": ["./typedefs/*"],
-			"#src/*": ["./src/*"],
-			"#test/*": ["./test/*"],
-			"#question": ["./src/questions/question.ts"],
-			"#journey": ["./src/journey/journey.ts"],
-			"#journey-response": ["./src/journey/journey-response.ts"],
-			"#section": ["./src/section.ts"]
-		}
+		"strict": true,
+		"target": "esnext"
 	}
 }
