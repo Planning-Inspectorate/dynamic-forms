@@ -5,8 +5,8 @@ import { enGB } from 'date-fns/locale';
 
 import BaseValidator from './base-validator.ts';
 import { parseDateInput, startOfDay } from '../lib/date-utils.ts';
-import type DateQuestion from '#src/components/date/question.ts';
-import type { DateValidationSettings } from '#src/validator/date-validator.ts';
+import type DateQuestion from '../components/date/question.ts';
+import type { DateValidationSettings } from './date-validator.ts';
 
 export interface DatePeriodInputs {
 	dayInput: string;

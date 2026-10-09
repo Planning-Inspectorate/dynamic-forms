@@ -1,7 +1,7 @@
 import escape from 'escape-html';
 import OptionsQuestion, { answerIsConditional } from '../../questions/options-question.ts';
-import type { RadioQuestionParams } from '#typedefs/question-props.ts';
-import type { QuestionViewModel } from '#typedefs/question-types.ts';
+import type { RadioQuestionParams } from '../../types/question-props.ts';
+import type { QuestionViewModel } from '../../types/question-types.ts';
 
 export class RadioQuestion extends OptionsQuestion {
 	label?: string;

@@ -1,5 +1,5 @@
-import type { JourneyResponse } from '#src/journey/journey-response.ts';
-import type { Journey } from '#src/journey/journey.ts';
+import type { JourneyResponse } from '../journey/journey-response.ts';
+import type { Journey } from '../journey/journey.ts';
 import type { Request, Handler } from 'express';
 
 export type CreateJourney = (req: Request, journeyResponse: JourneyResponse) => Journey;

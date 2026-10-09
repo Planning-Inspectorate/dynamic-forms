@@ -2,16 +2,16 @@ import nunjucks from 'nunjucks';
 import type { QuestionMethodOverrides } from '../../questions/question.ts';
 import { Question } from '../../questions/question.ts';
 import { conditionalIsJustHTML } from '../utils/question-utils.ts';
-import { toArray } from '#src/lib/utils.ts';
+import { toArray } from '../../lib/utils.ts';
 import type { Request } from 'express';
-import type { Journey } from '#journey';
-import type { Section } from '#section';
-import type { UnitOptionEntryQuestionParams } from '#typedefs/question-props.ts';
+import type { Journey } from '../../journey/journey.ts';
+import type { Section } from '../../section.ts';
+import type { UnitOptionEntryQuestionParams } from '../../types/question-props.ts';
 import type {
 	BaseQuestionViewData,
 	PrepQuestionForRenderingOptions,
 	QuestionViewModel
-} from '#typedefs/question-types.ts';
+} from '../../types/question-types.ts';
 
 const defaultOptionJoinString = ',';
 

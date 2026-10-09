@@ -2,9 +2,9 @@ import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 
 import BaseValidator from './base-validator.ts';
-import { toArray } from '#src/lib/utils.ts';
-import type UnitOptionEntryQuestion from '#src/components/unit-option-entry/question.ts';
-import type { Question } from '#src/questions/question.ts';
+import { toArray } from '../lib/utils.ts';
+import type UnitOptionEntryQuestion from '../components/unit-option-entry/question.ts';
+import type { Question } from '../questions/question.ts';
 
 export interface UnitOptionEntryValidatorParams {
 	errorMessage?: string;

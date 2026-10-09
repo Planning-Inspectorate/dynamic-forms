@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import ValidOptionValidator from '../../validator/valid-option-validator.ts';
 import SelectQuestion from './question.ts';
 import nunjucks from 'nunjucks';
-import { configureNunjucksTestEnv } from '#test/utils/nunjucks.ts';
+import { configureNunjucksTestEnv } from '../../../test/utils/nunjucks.ts';
 
 const TITLE = 'Select question';
 const QUESTION = 'A select question';

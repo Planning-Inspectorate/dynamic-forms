@@ -1,13 +1,13 @@
-import { Question } from '#question';
-import { Uuid } from '#src/lib/uuid.ts';
+import { Question } from '../../questions/question.ts';
+import { Uuid } from '../../lib/uuid.ts';
 import nunjucks from 'nunjucks';
 import { MANAGE_LIST_ACTIONS } from './manage-list-actions.ts';
-import type { Section } from '#src/section.ts';
+import type { Section } from '../../section.ts';
 import type { Request, Response } from 'express';
-import type { JourneyResponse } from '#journey-response';
-import type { ManageListQuestionParams } from '#typedefs/question-props.ts';
-import type { QuestionViewModel } from '#typedefs/question-types.ts';
-import type { Journey } from '#src/journey/journey.ts';
+import type { JourneyResponse } from '../../journey/journey-response.ts';
+import type { ManageListQuestionParams } from '../../types/question-props.ts';
+import type { QuestionViewModel } from '../../types/question-types.ts';
+import type { Journey } from '../../journey/journey.ts';
 
 export class ManageListQuestion extends Question {
 	#section: Section | undefined;

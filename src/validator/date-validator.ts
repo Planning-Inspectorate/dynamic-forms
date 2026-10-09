@@ -5,7 +5,7 @@ import { enGB } from 'date-fns/locale';
 
 import BaseValidator from './base-validator.ts';
 import { endOfDay, parseDateInput, startOfDay } from '../lib/date-utils.ts';
-import type DateQuestion from '#src/components/date/question.ts';
+import type DateQuestion from '../components/date/question.ts';
 
 export interface DateValidationSettings {
 	ensureFuture?: boolean;

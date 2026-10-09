@@ -1,7 +1,7 @@
-import { Question } from '#question';
+import { Question } from '../../questions/question.ts';
 import { getPersistedNumberAnswer } from '../utils/persisted-number-answer.ts';
-import type {Affix, NumberEntryQuestionParams} from '#typedefs/question-props.ts';
-import type { QuestionViewModel } from '#typedefs/question-types.ts';
+import type { Affix, NumberEntryQuestionParams } from '../../types/question-props.ts';
+import type { QuestionViewModel } from '../../types/question-types.ts';
 
 /**
  * Normalises a suffix param into the govuk-frontend Affix shape.

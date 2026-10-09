@@ -1,8 +1,8 @@
 import { describe, it, mock, beforeEach } from 'node:test';
 import assert from 'node:assert';
 import { Journey } from './journey.ts';
-import { Section } from '#src/section.ts';
-import { MANAGE_LIST_ACTIONS } from '#src/components/manage-list/manage-list-actions.ts';
+import { Section } from '../section.ts';
+import { MANAGE_LIST_ACTIONS } from '../components/manage-list/manage-list-actions.ts';
 
 const mockSectionDetails = [
 	{

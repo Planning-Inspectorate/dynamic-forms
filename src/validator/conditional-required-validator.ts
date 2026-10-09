@@ -1,11 +1,11 @@
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 import BaseValidator from './base-validator.ts';
-import { toArray } from '#src/lib/utils.ts';
-import type OptionsQuestion from '#src/questions/options-question.ts';
-import { optionIsSelectable } from '#src/questions/options-question.ts';
-import type { Question } from '#src/questions/question.ts';
-import type { SelectableOption } from '#typedefs/question-props.ts';
+import { toArray } from '../lib/utils.ts';
+import type OptionsQuestion from '../questions/options-question.ts';
+import { optionIsSelectable } from '../questions/options-question.ts';
+import type { Question } from '../questions/question.ts';
+import type { SelectableOption } from '../types/question-props.ts';
 
 /**
  * enforces a field is not empty when condition is satisfied

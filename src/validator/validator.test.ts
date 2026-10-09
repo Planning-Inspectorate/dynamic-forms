@@ -4,7 +4,7 @@ import validate from './validator.ts';
 import RequiredValidator from './required-validator.ts';
 import ValidOptionValidator from './valid-option-validator.ts';
 import AddressValidator from './address-validator.ts';
-import DateValidator from '#src/validator/date-validator.ts';
+import DateValidator from './date-validator.ts';
 
 describe('./src/dynamic-forms/validator/validator.ts', () => {
 	let mockRes;

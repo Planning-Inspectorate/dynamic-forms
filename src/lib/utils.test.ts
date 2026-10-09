@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { toArray, trimTrailingSlash } from '#src/lib/utils.ts';
+import { toArray, trimTrailingSlash } from './utils.ts';
 
 describe('utils', () => {
 	describe('trimTrailingSlash', () => {

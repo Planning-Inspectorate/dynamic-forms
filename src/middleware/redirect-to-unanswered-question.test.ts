@@ -7,7 +7,7 @@ import { Journey } from '../journey/journey.ts';
 import { Section } from '../section.ts';
 import { COMPONENT_TYPES } from '../components/utils/component-types.ts';
 import { questionHasAnswer } from '../components/utils/question-has-answer.ts';
-import { DynamicSection } from '#src/dynamic-section.ts';
+import { DynamicSection } from '../dynamic-section.ts';
 
 describe('redirectToUnansweredQuestion Middleware', () => {
 	const questions = {

@@ -1,19 +1,19 @@
 import { describe, it } from 'node:test';
 import assert from 'assert';
-import { Section } from '#src/section.ts';
-import { Journey } from '#src/journey/journey.ts';
-import { COMPONENT_TYPES } from '#src/index.ts';
-import { createQuestions } from '#src/questions/create-questions.ts';
-import { questionClasses } from '#src/questions/questions.ts';
-import { whenQuestionHasAnswer } from '#src/components/utils/question-has-answer.ts';
-import { BOOLEAN_OPTIONS } from '#src/components/boolean/question.ts';
-import { createAppWithQuestions, renderQuestionCheck, postAnswer } from '#test/utils/question-test-utils.ts';
+import { Section } from '../src/section.ts';
+import { Journey } from '../src/journey/journey.ts';
+import { COMPONENT_TYPES } from '../src/index.ts';
+import { createQuestions } from '../src/questions/create-questions.ts';
+import { questionClasses } from '../src/questions/questions.ts';
+import { whenQuestionHasAnswer } from '../src/components/utils/question-has-answer.ts';
+import { BOOLEAN_OPTIONS } from '../src/components/boolean/question.ts';
+import { createAppWithQuestions, renderQuestionCheck, postAnswer } from './utils/question-test-utils.ts';
 
 const JOURNEY_ID = 'conditional-journey';
 
 /**
  * Question props for conditional journey tests
- * @type {Record<string, import('#src/questions/question-props.ts').QuestionProps>}
+ * @type {Record<string, import('../src/questions/question-props.ts').QuestionProps>}
  */
 const conditionalQuestionProps = {
 	// Section 1: Insurance (simple + chained conditions)
@@ -205,7 +205,7 @@ function createConditionalJourney(questions, response) {
 /**
  * Helper to create an app with the conditional journey
  * @param {import('node:test').TestContext} ctx
- * @returns {Promise<import('#test/utils/test-server.ts').TestServer>}
+ * @returns {Promise<import('./utils/test-server.ts').TestServer>}
  */
 function createAppWithJourney(ctx) {
 	return createAppWithQuestions(ctx, {

@@ -1,5 +1,5 @@
-import type { JourneyResponse } from '#journey-response';
-import type { ManageListAnswers } from '#typedefs/journey-types.ts';
+import type { JourneyResponse } from '../journey/journey-response.ts';
+import type { ManageListAnswers } from '../types/journey-types.ts';
 
 export type WithFieldName = {
 	fieldName: string;

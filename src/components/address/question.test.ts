@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import AddressQuestion from './question.ts';
 import { Address } from '../../lib/address.ts';
 import AddressValidator from '../../validator/address-validator.ts';
-import { configureNunjucksTestEnv } from '#test/utils/nunjucks.ts';
+import { configureNunjucksTestEnv } from '../../../test/utils/nunjucks.ts';
 
 describe('AddressQuestion', () => {
 	const TITLE = 'What is the site address?';

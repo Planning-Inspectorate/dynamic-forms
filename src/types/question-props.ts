@@ -1,6 +1,6 @@
 import type { QuestionParameters } from './question-types.d.ts';
-import type { Question } from '../src/questions/question.ts';
-import type { Journey } from '../src/journey/journey.ts';
+import type { Question } from '../questions/question.ts';
+import type { Journey } from '../journey/journey.ts';
 
 /**
  * Context passed to the custom summary formatter
