@@ -9,9 +9,9 @@ import {
 	RequiredValidator,
 	DateValidator,
 	AddressValidator
-} from '../src/index.ts';
+} from '#pkg-for-tests';
 import assert from 'node:assert';
-import type { QuestionProps } from '../src/index.ts';
+import type { QuestionProps } from '#pkg-for-tests';
 
 /**
  * Check logic related to the question.isRequired method, which in turn drives the section status logic

@@ -7,7 +7,7 @@ import {
 	Section,
 	createQuestions,
 	questionClasses
-} from '../src/index.ts';
+} from '#pkg-for-tests';
 import { createAppWithQuestions } from './utils/question-test-utils.ts';
 import { questionProps, questionsInOrder } from './questions.ts';
 import { assertSnapshot } from './utils/utils.ts';

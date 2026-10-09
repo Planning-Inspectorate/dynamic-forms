@@ -343,7 +343,9 @@ The package will be released automatically using semantic-release, on merge to m
 
 ### Tests
 
-There are some lightweight tests in the `test` directory which sets up a basic journey and checks the rendering for each question as well as redirect logic. For any package imports, import via `src/index.ts` rather than specific files.
+There are some lightweight tests in the `test` directory which sets up a basic journey and checks the rendering for each question as well as redirect logic.
+
+For any package imports, import via `#pkg-for-tests` rather than specific files. This allows switching the tests to use the built package using the Node-flag `--conditions=dist` and the env var `TEST_DIST=true`. This is run on PR.
 
 When adding a new question type, be sure to add an example question into `test/questions.js`, and mock answers into `test/questions.test.js#mockAnswerBody` and `test/questions.test.js#mockAnswer`. Also, the question should be added to the journey in `test/journey.js`.
 

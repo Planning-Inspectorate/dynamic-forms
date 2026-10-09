@@ -1,7 +1,7 @@
 import { describe, it, type TestContext } from 'node:test';
 import assert from 'assert';
 import { manageListQuestions, questionsInOrder } from './questions.ts';
-import { COMPONENT_TYPES, Question } from '../src/index.ts';
+import { COMPONENT_TYPES, Question } from '#pkg-for-tests';
 import { assertSnapshot } from './utils/utils.ts';
 import {
 	createAppWithQuestions,

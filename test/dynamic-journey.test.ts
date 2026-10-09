@@ -10,7 +10,7 @@ import {
 	whenQuestionHasAnswer,
 	BOOLEAN_OPTIONS,
 	type QuestionProps
-} from '../src/index.ts';
+} from '#pkg-for-tests';
 import { createAppWithQuestions, renderQuestionCheck, postAnswer } from './utils/question-test-utils.ts';
 
 const JOURNEY_ID = 'dynamic-journey';

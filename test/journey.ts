@@ -1,5 +1,5 @@
-import { Section, Journey, ManageListSection } from '../src/index.ts';
-import type { JourneyResponse } from '../src/index.ts';
+import { Section, Journey, ManageListSection } from '#pkg-for-tests';
+import type { JourneyResponse } from '#pkg-for-tests';
 import type { AllQuestions } from './questions.ts';
 
 export const JOURNEY_ID = 'holiday-journey';
