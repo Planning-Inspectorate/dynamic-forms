@@ -16,7 +16,7 @@ const defaultOptionJoinString = ',';
  *   attributes?: Record<string, string>;
  *   behaviour?: 'exclusive';
  *   conditional?: {
- *     question: string;
+ *     question?: string;
  *     type: string;
  *     fieldName: string;
  *	   inputClasses?: string;
