@@ -7,8 +7,31 @@ import AddressValidator, {
 	addressLine2MaxLength,
 	postcodeMaxLength,
 	postcodeMinLength,
-	townCityMaxLength
+	townCityMaxLength,
+	validatePostcode
 } from './address-validator.js';
+
+describe('validatePostcode', () => {
+	it('should accept standard postcode formats and GIR 0AA', () => {
+		for (const postcode of ['SW11 2DR', 'M1 1AA', 'M11AA', 'B33 8TH', 'W1A 1HQ', 'EC1A 1BB', 'GIR 0AA']) {
+			assert.strictEqual(validatePostcode(postcode), postcode);
+		}
+	});
+
+	it('should be case-insensitive and ignore all whitespace', () => {
+		assert.strictEqual(validatePostcode('sw11 2dr'), 'sw11 2dr');
+		assert.strictEqual(validatePostcode(' S W 1 1 2D R    '), ' S W 1 1 2D R    ');
+		assert.strictEqual(validatePostcode('eC1a\t1bB'), 'eC1a\t1bB');
+	});
+
+	it('should reject invalid postcodes and partial matches', () => {
+		for (const postcode of ['', 'SW11X2DR', 'SW11-2DR', 'Q1 1AA', 'V1 1AA', 'M1 1CA', 'xBS1 6PN', 'BS1 6PNx']) {
+			assert.throws(() => validatePostcode(postcode), {
+				message: 'Enter a valid postcode'
+			});
+		}
+	});
+});
 
 describe('AddressValidator', () => {
 	it('should validate a valid address without errors', async () => {
