@@ -3,10 +3,12 @@ import { body } from 'express-validator';
 import BaseValidator from './base-validator.js';
 
 export const validatePostcode = (postcode, errorMessage = 'Enter a valid postcode') => {
+	const normalizedPostcode = postcode.replace(/[ \t\n\v\f\r]/g, '').toUpperCase();
+	// @see https://github.com/alphagov/ier-frontend/blob/master/app/uk/gov/gds/ier/validation/PostcodeValidator.scala
 	const pattern =
-		/([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/;
-	const result = pattern.exec(postcode);
-	if (!result) {
+		/^(?:GIR0AA|(?:[A-PR-UWY-Z][0-9]{1,2}|[A-PR-UWY-Z][A-HK-Y][0-9]{1,2}|[A-PR-UWY-Z][0-9][A-HJKSTUW]|[A-PR-UWY-Z][A-HK-Y][0-9][ABEHMNPRVWXY])[0-9][ABDEFGHJLNPQRSTUWXYZ]{2})$/;
+
+	if (!pattern.test(normalizedPostcode)) {
 		throw new Error(errorMessage);
 	}
 	return postcode;
