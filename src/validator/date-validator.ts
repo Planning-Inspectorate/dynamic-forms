@@ -72,14 +72,14 @@ export class DateValidator extends BaseValidator {
 		this.dateValidationSettings = dateValidationSettings;
 	}
 
-	isRequired() {
+	override isRequired() {
 		return !this.dateValidationSettings.optional;
 	}
 
 	/**
 	 * validates the response body, checking the values sent for the date are valid
 	 */
-	validate(questionObj: DateQuestion) {
+	override validate(questionObj: DateQuestion) {
 		const fieldName = questionObj.fieldName;
 		const dayInput = `${fieldName}_day`;
 		const monthInput = `${fieldName}_month`;

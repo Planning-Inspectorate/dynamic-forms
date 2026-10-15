@@ -45,7 +45,7 @@ export class DynamicSection extends Section {
 	/**
 	 * Indicate that this section is dynamic, and answers should be pulled from an array
 	 */
-	get isDynamicSection() {
+	override get isDynamicSection() {
 		return true;
 	}
 }

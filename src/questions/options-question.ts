@@ -65,7 +65,7 @@ export class OptionsQuestion extends Question {
 	/**
 	 * gets the view model for this question
 	 */
-	prepQuestionForRendering(
+	override prepQuestionForRendering(
 		section: Section,
 		journey: Journey,
 		customViewData?: Record<string, unknown>,
@@ -131,7 +131,7 @@ export class OptionsQuestion extends Question {
 	 * Formats an answer value for display in the summary.
 	 * Looks up the option text for the given value(s).
 	 */
-	formatAnswer(answer: unknown) {
+	override formatAnswer(answer: unknown) {
 		if (!answerIsConditional(answer)) {
 			return this.notStartedText;
 		}

@@ -29,7 +29,7 @@ export class DateTimeQuestion extends Question {
 	/**
 	 * Gets the body field names used by this question in form submissions.
 	 */
-	get bodyFieldNames() {
+	override get bodyFieldNames() {
 		return [
 			`${this.fieldName}_day`,
 			`${this.fieldName}_month`,
@@ -43,7 +43,7 @@ export class DateTimeQuestion extends Question {
 	/**
 	 * Get the data to save from the request, returns an object of answers
 	 */
-	async getDataToSave(req: Request) {
+	override async getDataToSave(req: Request) {
 		const answers: Record<string, unknown> = {};
 
 		const dayInput = req.body[`${this.fieldName}_day`];
@@ -64,7 +64,7 @@ export class DateTimeQuestion extends Question {
 		return { answers };
 	}
 
-	answerForViewModel(answers: Record<string, unknown>, isPayload: boolean) {
+	override answerForViewModel(answers: Record<string, unknown>, isPayload: boolean) {
 		let day;
 		let month;
 		let year;
@@ -106,7 +106,7 @@ export class DateTimeQuestion extends Question {
 	/**
 	 * Formats a date-time answer for display in the summary.
 	 */
-	formatAnswer(answer: unknown) {
+	override formatAnswer(answer: unknown) {
 		if (!answer) return this.notStartedText;
 
 		const formattedDate = formatDateForDisplay(answer as Date | string, { format: this.dateFormat });

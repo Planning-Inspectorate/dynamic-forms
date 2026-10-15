@@ -22,7 +22,7 @@ export class CheckboxQuestion extends OptionsQuestion {
 	 * - Single value with conditional: { value: 'yes', conditional: { yes: 'details' } }
 	 * - Multiple values with conditionals: { value: 'yes,no', conditional: { yes: 'details1', no: 'details2' } }
 	 */
-	formatAnswer(answer: unknown) {
+	override formatAnswer(answer: unknown) {
 		if (!answerIsConditional(answer)) {
 			return this.notStartedText;
 		}

@@ -57,7 +57,7 @@ export class AddressValidator extends BaseValidator {
 	/**
 	 * validates response body using questionObj fieldname
 	 */
-	validate(questionObj: Question) {
+	override validate(questionObj: Question) {
 		const fieldName = questionObj.fieldName;
 
 		return [
@@ -157,7 +157,7 @@ export class AddressValidator extends BaseValidator {
 			});
 	}
 
-	isRequired() {
+	override isRequired() {
 		if (this.requiredFields) {
 			return Object.values(this.requiredFields).some((field) => Boolean(field));
 		}

@@ -17,7 +17,7 @@ export class SameAnswerValidator extends BaseValidator {
 	/**
 	 * validates the questionToCompare and compares it to the answer in the journeyResponse
 	 */
-	validate(questionObj: Question) {
+	override validate(questionObj: Question) {
 		return body(questionObj.fieldName).custom((value, { req }) => {
 			const answers = req?.res?.locals?.journeyResponse?.answers || {};
 			if (this.fieldNamesToCompare.some((field) => value === answers[field])) {

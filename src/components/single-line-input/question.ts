@@ -22,7 +22,7 @@ export class SingleLineInputQuestion extends Question {
 		this.suffix = params.suffix;
 	}
 
-	addCustomDataToViewModel(viewModel: QuestionViewModel) {
+	override addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.label = this.label;
 		// Extract type from attributes to pass separately to avoid duplication
 		const { type, ...otherAttributes } = this.inputAttributes;

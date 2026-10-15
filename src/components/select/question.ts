@@ -26,7 +26,7 @@ export class SelectQuestion extends OptionsQuestion {
 		this.#disableAccessibleAutocomplete = disableAccessibleAutocomplete;
 	}
 
-	addCustomDataToViewModel(viewModel: QuestionViewModel) {
+	override addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.legend = this.legend;
 		viewModel.question.disableAccessibleAutocomplete = this.#disableAccessibleAutocomplete;

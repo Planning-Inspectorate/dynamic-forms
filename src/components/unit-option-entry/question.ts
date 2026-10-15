@@ -80,7 +80,7 @@ export class UnitOptionEntryQuestion extends Question {
 	/**
 	 * gets the view model for this question
 	 */
-	prepQuestionForRendering(
+	override prepQuestionForRendering(
 		section: Section,
 		journey: Journey,
 		customViewData?: Record<string, unknown>,
@@ -147,7 +147,7 @@ export class UnitOptionEntryQuestion extends Question {
 	/**
 	 * Get the data to save from the request, returns an object of answers
 	 */
-	async getDataToSave(req: Request) {
+	override async getDataToSave(req: Request) {
 		const answers: Record<string, unknown> = {};
 
 		const fields: string[] = toArray(req.body[this.fieldName]);
@@ -181,7 +181,7 @@ export class UnitOptionEntryQuestion extends Question {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 */
-	formatAnswerForSummary(sectionSegment: string, journey: Journey, answer: unknown) {
+	override formatAnswerForSummary(sectionSegment: string, journey: Journey, answer: unknown) {
 		if (answer == null) return super.formatAnswerForSummary(sectionSegment, journey, answer);
 
 		const selectedOption = this.options.find((option) => option.value === answer);

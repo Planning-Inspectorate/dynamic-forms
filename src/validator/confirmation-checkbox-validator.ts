@@ -6,7 +6,7 @@ import BaseValidator from './base-validator.ts';
  * @class
  */
 export class ConfirmationCheckboxValidator extends BaseValidator {
-	errorMessage: string;
+	override errorMessage: string;
 	checkboxName: string;
 
 	/**
@@ -25,7 +25,7 @@ export class ConfirmationCheckboxValidator extends BaseValidator {
 	/**
 	 * validates the response body, checking the checkbox name
 	 */
-	validate() {
+	override validate() {
 		return body(this.checkboxName).notEmpty().withMessage(this.errorMessage);
 	}
 }

@@ -9,6 +9,7 @@
 		"esModuleInterop": true,
 		"module": "NodeNext",
 		"moduleResolution": "nodenext",
+		"noImplicitOverride": true,
 		"outDir": "dist",
 		"rewriteRelativeImportExtensions": true,
 		"rootDir": "src",

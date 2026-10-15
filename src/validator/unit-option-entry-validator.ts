@@ -20,7 +20,7 @@ export interface UnitOptionEntryValidatorParams {
  * @class
  */
 export class UnitOptionEntryValidator extends BaseValidator {
-	errorMessage: string;
+	override errorMessage: string;
 	unit: string;
 	min: number | undefined;
 	max: number | undefined;
@@ -40,7 +40,7 @@ export class UnitOptionEntryValidator extends BaseValidator {
 	/**
 	 * validates the response body, checking the questionObj's fieldname
 	 */
-	validate(questionObj: UnitOptionEntryQuestion) {
+	override validate(questionObj: UnitOptionEntryQuestion) {
 		return questionObj.options.reduce((schema, option) => {
 			schema.push(
 				body(option.conditional.fieldName)

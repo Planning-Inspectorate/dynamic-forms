@@ -26,7 +26,7 @@ export class DateTimeValidator extends DateValidator {
 	/**
 	 * validates the response body, checking the values sent for the date are valid
 	 */
-	validate(questionObj: DateTimeQuestion) {
+	override validate(questionObj: DateTimeQuestion) {
 		const fieldName = questionObj.fieldName;
 		const hourInput = `${fieldName}_hour`;
 		const minuteInput = `${fieldName}_minutes`;

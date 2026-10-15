@@ -17,7 +17,7 @@ export class CoordinatesValidator extends BaseValidator {
 		this.easting = easting;
 	}
 
-	validate() {
+	override validate() {
 		return [
 			body(this.northing.fieldName)
 				.optional({ checkFalsy: true })

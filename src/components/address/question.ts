@@ -42,7 +42,7 @@ export class AddressQuestion extends Question {
 	/**
 	 * Gets the body field names used by this question in form submissions.
 	 */
-	get bodyFieldNames() {
+	override get bodyFieldNames() {
 		return [
 			`${this.fieldName}_addressLine1`,
 			`${this.fieldName}_addressLine2`,
@@ -52,7 +52,7 @@ export class AddressQuestion extends Question {
 		];
 	}
 
-	answerForViewModel(answers: Record<string, unknown>) {
+	override answerForViewModel(answers: Record<string, unknown>) {
 		let address = answers[this.fieldName] as Address | undefined;
 		if (!address) {
 			address = {
@@ -73,14 +73,14 @@ export class AddressQuestion extends Question {
 		};
 	}
 
-	addCustomDataToViewModel(viewModel: QuestionViewModel) {
+	override addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.labels = this.addressLabels;
 	}
 
 	/**
 	 * Get the data to save from the request, returns an object of answers
 	 */
-	async getDataToSave(req: Request) {
+	override async getDataToSave(req: Request) {
 		const data = {
 			addressLine1: req.body[this.fieldName + '_addressLine1'],
 			addressLine2: req.body[this.fieldName + '_addressLine2'],
@@ -105,7 +105,7 @@ export class AddressQuestion extends Question {
 	/**
 	 * @returns The formatted address to be presented in the UI
 	 */
-	format(answer: Record<string, unknown>) {
+	override format(answer: Record<string, unknown>) {
 		const addressComponents = [
 			answer.addressLine1,
 			answer.addressLine2,
@@ -120,7 +120,7 @@ export class AddressQuestion extends Question {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 */
-	formatAnswer(answer: Record<string, unknown> | null) {
+	override formatAnswer(answer: Record<string, unknown> | null) {
 		if (answer === null) return '';
 		if (!answer) return this.notStartedText;
 		return nl2br(escape(this.format(answer)));
