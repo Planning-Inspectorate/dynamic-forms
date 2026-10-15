@@ -43,7 +43,7 @@ export class TextEntryRedactQuestion extends Question {
 		this.shouldTruncateSummary = shouldTruncateSummary;
 	}
 
-	async getDataToSave(req: Request, journeyResponse: JourneyResponse) {
+	override async getDataToSave(req: Request, journeyResponse: JourneyResponse) {
 		if (this.useRedactedFieldNameForSave) {
 			const fieldName = this.fieldName + 'Redacted';
 			const answers: Record<string, unknown> = {};
@@ -53,7 +53,7 @@ export class TextEntryRedactQuestion extends Question {
 		return super.getDataToSave(req, journeyResponse);
 	}
 
-	prepQuestionForRendering(
+	override prepQuestionForRendering(
 		section: Section,
 		journey: Journey,
 		customViewData?: Record<string, unknown>,
@@ -68,11 +68,11 @@ export class TextEntryRedactQuestion extends Question {
 		return viewModel;
 	}
 
-	answerForViewModel(answers: Record<string, unknown>) {
+	override answerForViewModel(answers: Record<string, unknown>) {
 		return nl2br(answers[this.fieldName] as string);
 	}
 
-	addCustomDataToViewModel(viewModel: QuestionViewModel) {
+	override addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.textEntryCheckbox = this.textEntryCheckbox;
 		viewModel.question.summaryText = this.summaryText;
@@ -82,7 +82,7 @@ export class TextEntryRedactQuestion extends Question {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 */
-	formatAnswerForSummary(sectionSegment: string, journey: Journey, answer: string, capitals = true) {
+	override formatAnswerForSummary(sectionSegment: string, journey: Journey, answer: string, capitals = true) {
 		// get the response/answers for the section we're in - which might be a dynamic section
 		const response = journey.responseForSection(sectionSegment);
 		const redacted = response.answers[this.fieldName + 'Redacted'] as string | undefined;

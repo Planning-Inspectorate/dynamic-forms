@@ -10,7 +10,7 @@ export class DocumentUploadValidator extends BaseValidator {
 		this.errorMessage = errorMessage;
 	}
 
-	validate() {
+	override validate() {
 		return [
 			body(this.fieldName).custom((_, { req }) => {
 				const decodedJson = Buffer.from(req.body?.[this.fieldName], 'base64').toString('utf-8');

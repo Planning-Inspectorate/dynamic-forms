@@ -60,7 +60,7 @@ export class StringValidator extends BaseValidator {
 		this.fieldName = fieldName;
 	}
 
-	validate(questionObj: Question) {
+	override validate(questionObj: Question) {
 		const minLengthValidator = (chain: ValidationChain) =>
 			chain.isLength({ min: this.minLength.minLength }).withMessage(this.minLength.minLengthMessage!);
 		const maxLengthValidator = (chain: ValidationChain) =>

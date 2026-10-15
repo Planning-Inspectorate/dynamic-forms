@@ -33,7 +33,7 @@ export class EmailValidator extends BaseValidator {
 	options: IsEmailOptions;
 
 	fieldName: string | undefined;
-	errorMessage: string;
+	override errorMessage: string;
 
 	constructor({
 		options = {},
@@ -62,7 +62,7 @@ export class EmailValidator extends BaseValidator {
 		this.fieldName = fieldName;
 	}
 
-	validate(questionObj: Question) {
+	override validate(questionObj: Question) {
 		const fieldName = this.fieldName || questionObj.fieldName;
 
 		return body(fieldName).isEmail(this.options).withMessage(this.errorMessage);

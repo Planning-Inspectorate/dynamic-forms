@@ -8,7 +8,7 @@ import type { Question } from '../questions/question.ts';
  * @class
  */
 export class RequiredValidator extends BaseValidator {
-	errorMessage: string = 'You must select an answer';
+	override errorMessage: string = 'You must select an answer';
 
 	/**
 	 * creates an instance of a RequiredValidator
@@ -24,11 +24,11 @@ export class RequiredValidator extends BaseValidator {
 	/**
 	 * validates the response body, checking the questionObj's fieldname
 	 */
-	validate(questionObj: Question) {
+	override validate(questionObj: Question) {
 		return body(questionObj.fieldName).notEmpty().withMessage(this.errorMessage);
 	}
 
-	isRequired() {
+	override isRequired() {
 		return true;
 	}
 }

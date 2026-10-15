@@ -38,7 +38,7 @@ export class MultiFieldInputValidator extends BaseValidator {
 	 * validates response body against question's required fields
 	 */
 
-	validate() {
+	override validate() {
 		// const requiredFieldNames = this.requiredFields.map((requiredField) => requiredField.fieldName);
 
 		const rules = [];
@@ -70,7 +70,7 @@ export class MultiFieldInputValidator extends BaseValidator {
 		return rules;
 	}
 
-	isRequired() {
+	override isRequired() {
 		return Object.values(this.fields).some((field) => Boolean(field.required));
 	}
 	/**

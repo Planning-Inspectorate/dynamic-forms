@@ -18,7 +18,7 @@ export class RadioQuestion extends OptionsQuestion {
 		this.legend = legend;
 	}
 
-	addCustomDataToViewModel(viewModel: QuestionViewModel) {
+	override addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.legend = this.legend;
 	}
@@ -27,7 +27,7 @@ export class RadioQuestion extends OptionsQuestion {
 	 * Formats an answer value for display in the summary.
 	 * Handles object answers with conditional fields (e.g. { value: 'yes', conditional: { yes: 'details' } })
 	 */
-	formatAnswer(answer: unknown) {
+	override formatAnswer(answer: unknown) {
 		if (!answerIsConditional(answer)) {
 			return this.notStartedText;
 		}

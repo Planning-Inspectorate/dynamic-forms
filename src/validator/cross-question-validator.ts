@@ -72,7 +72,7 @@ export class CrossQuestionValidator extends BaseValidator {
 	 * Uses the question's getDataToSave method to extract and format body values when useBodyValuesForCurrent is true,
 	 * allowing generic handling of any question type without needing to know its internal structure.
 	 */
-	validate(questionObj: Question, journeyResponse: JourneyResponse) {
+	override validate(questionObj: Question, journeyResponse: JourneyResponse) {
 		const fieldName = questionObj.fieldName;
 		const bodyFieldName = this.#getBodyFieldName(questionObj);
 

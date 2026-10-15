@@ -10,7 +10,7 @@ import { optionIsSelectable } from '../questions/options-question.ts';
  * @class
  */
 export class ValidOptionValidator extends BaseValidator {
-	errorMessage: string;
+	override errorMessage: string;
 	/**
 	 * creates an instance of a ValidOptionValidator
 	 */
@@ -27,7 +27,7 @@ export class ValidOptionValidator extends BaseValidator {
 	/**
 	 * validates the response body, checking the value sent for the questionObj's fieldname is within the predefined list of options
 	 */
-	validate(questionObj: OptionsQuestion) {
+	override validate(questionObj: OptionsQuestion) {
 		return body(questionObj.fieldName)
 			.custom((value) => {
 				if (!value) return true;

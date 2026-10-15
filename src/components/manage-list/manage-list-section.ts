@@ -21,7 +21,7 @@ export class ManageListSection extends Section {
 	/**
 	 * Override base implementation, to avoid adding nested manage lists
 	 */
-	addQuestion(question: Question, manageListSection?: ManageListSection) {
+	override addQuestion(question: Question, manageListSection?: ManageListSection) {
 		if (!question) {
 			throw new Error('question is required');
 		}

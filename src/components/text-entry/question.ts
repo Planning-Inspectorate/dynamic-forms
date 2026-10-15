@@ -16,7 +16,7 @@ export class TextEntryQuestion extends Question {
 		this.label = label;
 	}
 
-	addCustomDataToViewModel(viewModel: QuestionViewModel) {
+	override addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.textEntryCheckbox = this.textEntryCheckbox;
 	}

@@ -75,7 +75,7 @@ export class DatePeriodValidator extends BaseValidator {
 	/**
 	 * validates the response body, checking the values sent for the date are valid
 	 */
-	validate(questionObj: DateQuestion) {
+	override validate(questionObj: DateQuestion) {
 		const fieldName = questionObj.fieldName;
 		const startDayInput = `${fieldName}_start_day`;
 		const startMonthInput = `${fieldName}_start_month`;

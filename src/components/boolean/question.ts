@@ -82,7 +82,7 @@ export class BooleanQuestion extends RadioQuestion {
 	/**
 	 * Get the data to save from the request, returns an object of answers
 	 */
-	async getDataToSave(req: Request) {
+	override async getDataToSave(req: Request) {
 		const answers: Record<string, unknown> = {};
 		const fieldValue = req.body[this.fieldName]?.trim();
 
@@ -107,7 +107,7 @@ export class BooleanQuestion extends RadioQuestion {
 	 * BooleanQuestions (e.g. a manage-list sub-question) would otherwise receive
 	 * the raw boolean.
 	 */
-	answerForViewModel(answers: Record<string, unknown>, isPayload: boolean): YesNo | unknown {
+	override answerForViewModel(answers: Record<string, unknown>, isPayload: boolean): YesNo | unknown {
 		const rawValue = answers[this.fieldName];
 		if (typeof rawValue === 'boolean') {
 			return booleanToYesNoValue(rawValue);
@@ -120,7 +120,7 @@ export class BooleanQuestion extends RadioQuestion {
 	 * so summary/check-your-answers pages display 'Yes'/'No' instead of the
 	 * literal 'true'/'false' - see answerForViewModel for why this is needed.
 	 */
-	formatAnswer(answer: unknown) {
+	override formatAnswer(answer: unknown) {
 		if (typeof answer === 'boolean') {
 			return super.formatAnswer(booleanToYesNoValue(answer));
 		}

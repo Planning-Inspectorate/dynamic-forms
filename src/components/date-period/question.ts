@@ -45,7 +45,7 @@ export class DatePeriodQuestion extends Question {
 	/**
 	 * Gets the body field names used by this question in form submissions.
 	 */
-	get bodyFieldNames() {
+	override get bodyFieldNames() {
 		return [
 			`${this.fieldName}_start_day`,
 			`${this.fieldName}_start_month`,
@@ -58,7 +58,7 @@ export class DatePeriodQuestion extends Question {
 	/**
 	 * Get the data to save from the request, returns an object of answers
 	 */
-	async getDataToSave(req: Request) {
+	override async getDataToSave(req: Request) {
 		const answers: Record<string, unknown> = {};
 		const startDayInput = req.body[`${this.fieldName}_start_day`];
 		const startMonthInput = req.body[`${this.fieldName}_start_month`];
@@ -88,7 +88,7 @@ export class DatePeriodQuestion extends Question {
 		return { answers };
 	}
 
-	answerForViewModel(answers: Record<string, unknown>, isPayload: boolean) {
+	override answerForViewModel(answers: Record<string, unknown>, isPayload: boolean) {
 		let startDay;
 		let startMonth;
 		let startYear;
@@ -127,7 +127,7 @@ export class DatePeriodQuestion extends Question {
 			[`${this.fieldName}_end_year`]: endYear
 		};
 	}
-	addCustomDataToViewModel(viewModel: QuestionViewModel) {
+	override addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.labels = this.labels;
 		viewModel.hintStart = this.hintStart;
 		viewModel.hintEnd = this.hintEnd;
@@ -136,7 +136,7 @@ export class DatePeriodQuestion extends Question {
 	/**
 	 * Formats the start/end date period for display in the summary.
 	 */
-	formatAnswer(answer: { start?: string | Date; end?: string | Date }) {
+	override formatAnswer(answer: { start?: string | Date; end?: string | Date }) {
 		if (!answer) {
 			return this.notStartedText;
 		}

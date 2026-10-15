@@ -30,11 +30,11 @@ export class MultiFieldInputQuestion extends Question {
 	/**
 	 * Gets the body field names used by this question in form submissions.
 	 */
-	get bodyFieldNames() {
+	override get bodyFieldNames() {
 		return this.inputFields.map((inputField) => inputField.fieldName);
 	}
 
-	answerForViewModel(answers: Record<string, unknown>) {
+	override answerForViewModel(answers: Record<string, unknown>) {
 		return this.inputFields.map((inputField) => {
 			return {
 				...inputField,
@@ -46,7 +46,7 @@ export class MultiFieldInputQuestion extends Question {
 	/**
 	 * Get the data to save from the request, returns an object of answers
 	 */
-	async getDataToSave(req: Request) {
+	override async getDataToSave(req: Request) {
 		const answers: Record<string, unknown> = {};
 
 		for (const inputField of this.inputFields) {
@@ -64,7 +64,7 @@ export class MultiFieldInputQuestion extends Question {
 	 * Formats an answer value for display in the summary.
 	 * Handles the ManageListSection edge case where nl2br should not be applied.
 	 */
-	formatAnswer(answer: unknown) {
+	override formatAnswer(answer: unknown) {
 		// Only show notStartedText for null/undefined, not for empty string
 		if (answer === null || answer === undefined) return this.notStartedText;
 		if (answer === '') return '';
@@ -82,7 +82,7 @@ export class MultiFieldInputQuestion extends Question {
 	/**
 	 * returns the formatted answers values to be used to build task list elements
 	 */
-	formatAnswerForSummary(sectionSegment: string, journey: Journey): SummaryRow[] {
+	override formatAnswerForSummary(sectionSegment: string, journey: Journey): SummaryRow[] {
 		// get the response/answers for the section we're in - which might be a dynamic section
 		const response = journey.responseForSection(sectionSegment);
 		// Handle unanswered case - delegate to parent for notStartedText

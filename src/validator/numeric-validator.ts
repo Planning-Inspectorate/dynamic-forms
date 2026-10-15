@@ -43,7 +43,7 @@ export class NumericValidator extends BaseValidator {
 		this.fieldName = fieldName;
 	}
 
-	validate(questionObj: Question) {
+	override validate(questionObj: Question) {
 		let chain = body(this.fieldName ? this.fieldName : questionObj.fieldName);
 
 		if (this.regex) {

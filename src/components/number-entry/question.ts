@@ -39,11 +39,11 @@ export class NumberEntryQuestion extends Question {
 		this.label = label;
 	}
 
-	answerForViewModel(answers: Record<string, unknown>) {
+	override answerForViewModel(answers: Record<string, unknown>) {
 		return getPersistedNumberAnswer((answers[this.fieldName] as number) || '');
 	}
 
-	addCustomDataToViewModel(viewModel: QuestionViewModel) {
+	override addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.label = this.label;
 		viewModel.question.prefix = this.prefix;
 		viewModel.question.suffix = this.suffix;

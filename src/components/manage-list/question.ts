@@ -35,7 +35,7 @@ export class ManageListQuestion extends Question {
 	 * Used by controller and other logic.
 	 * Added as a getter so custom components can also be a manage list question.
 	 */
-	get isManageListQuestion() {
+	override get isManageListQuestion() {
 		return true;
 	}
 
@@ -43,7 +43,7 @@ export class ManageListQuestion extends Question {
 		return this.#confirmationQuestionParam;
 	}
 
-	addCustomDataToViewModel(viewModel: QuestionViewModel) {
+	override addCustomDataToViewModel(viewModel: QuestionViewModel) {
 		viewModel.question.addAnotherLink = this.#addAnotherLink;
 		viewModel.question.firstQuestionUrl = this.#firstQuestionUrl;
 		viewModel.question.valueSummary = [];
@@ -100,7 +100,7 @@ export class ManageListQuestion extends Question {
 		);
 	}
 
-	async getDataToSave(req: Request, journeyResponse: JourneyResponse) {
+	override async getDataToSave(req: Request, journeyResponse: JourneyResponse) {
 		return {
 			answers: {
 				[this.fieldName]: journeyResponse.answers[this.fieldName] || []
@@ -111,7 +111,7 @@ export class ManageListQuestion extends Question {
 	/**
 	 * Format the answer for display in the summary, either as a count or as a list of answers
 	 */
-	formatAnswer(answer: unknown) {
+	override formatAnswer(answer: unknown) {
 		if (!answer || !Array.isArray(answer)) {
 			return this.notStartedText;
 		}

@@ -12,7 +12,7 @@ import type { SelectableOption } from '../types/question-props.ts';
  * @class
  */
 export class ConditionalRequiredValidator extends BaseValidator {
-	errorMessage: string = 'Provide further information';
+	override errorMessage: string = 'Provide further information';
 
 	/**
 	 * creates an instance of a ConditionalRequiredValidator
@@ -28,7 +28,7 @@ export class ConditionalRequiredValidator extends BaseValidator {
 	/**
 	 * validates the response body, checking the questionObj's fieldname
 	 */
-	validate(questionObj: OptionsQuestion) {
+	override validate(questionObj: OptionsQuestion) {
 		return questionObj.options.filter(optionIsSelectable).reduce((schema, option) => {
 			if (option.conditional) {
 				schema.push(
