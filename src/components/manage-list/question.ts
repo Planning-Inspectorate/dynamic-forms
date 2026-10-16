@@ -7,7 +7,7 @@ import type { Request, Response } from 'express';
 import type { JourneyResponse } from '../../journey/journey-response.ts';
 import type { ManageListQuestionParams } from '../../types/question-props.ts';
 import type { QuestionViewModel } from '../../types/question-types.ts';
-import type { Journey } from '../../journey/journey.ts';
+import { JourneyForDisplay } from '../../journey/journey-for-display.ts';
 
 export class ManageListQuestion extends Question {
 	#section: Section | undefined;
@@ -69,19 +69,7 @@ export class ManageListQuestion extends Question {
 		if (this.section.questions.length === 0) {
 			return [];
 		}
-		const response = {
-			answers: answer
-		};
-		// enough of a journey for display logic to work
-		const mockJourney = {
-			getCurrentQuestionUrl() {},
-			responseForSection() {
-				// this function is already passed the array-item
-				// call to formatAnswerForSummary may use responseForSection so we implement here
-				return response;
-			},
-			response
-		} as unknown as Journey;
+		const mockJourney = new JourneyForDisplay(answer);
 		return (
 			this.section.questions
 				// only show questions which should be displayed based on any conditional logic
