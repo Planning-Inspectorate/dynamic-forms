@@ -189,8 +189,16 @@ export class OptionsQuestion extends Question {
 	 * @param value
 	 */
 	optionByValue(value: string) {
-		return this.options.find((opt) => optionIsSelectable(opt) && opt.value === value) as SelectableOption | undefined;
+		return this.options.find(findSelectableOptionByValue(value));
 	}
+}
+
+/**
+ * Find a selection option by value, and assert that it is of type SelectableOption.
+ * Returns a function to use with `Array.find`
+ */
+export function findSelectableOptionByValue(value: string) {
+	return (option: Option): option is SelectableOption => optionIsSelectable(option) && option.value === value;
 }
 
 export function optionIsSelectable(option: Option): option is SelectableOption {

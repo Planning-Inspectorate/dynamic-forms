@@ -88,5 +88,10 @@ describe('public API', () => {
 		assert.equal(typeof api.TRUNCATED_MAX_LENGTH, 'number');
 		assert.equal(typeof api.END_OF_SECTION, 'symbol');
 		assert.equal(typeof api.SECTION_STATUS, 'object');
+
+		// OptionQuestions methods
+		assert.equal(typeof api.answerIsConditional, 'function');
+		assert.equal(typeof api.findSelectableOptionByValue, 'function');
+		assert.equal(typeof api.optionIsSelectable, 'function');
 	});
 });
