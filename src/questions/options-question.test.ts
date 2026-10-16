@@ -1,6 +1,6 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
-import OptionsQuestion from './options-question.ts';
+import OptionsQuestion, { findSelectableOptionByValue } from './options-question.ts';
 import ValidOptionValidator from '../validator/valid-option-validator.ts';
 import nunjucks from 'nunjucks';
 
@@ -407,6 +407,47 @@ describe('./src/dynamic-forms/question.ts', () => {
 			});
 			const result = question.formatAnswer('a,b');
 			assert.strictEqual(result, '&lt;b&gt;Bold&lt;/b&gt;<br>&lt;i&gt;Italic&lt;/i&gt;');
+		});
+	});
+
+	describe('findSelectableOptionByValue', () => {
+		it('should return true for a selectable option with a matching value', () => {
+			const predicate = findSelectableOptionByValue('blue');
+			assert.strictEqual(predicate({ text: 'Blue', value: 'blue' }), true);
+		});
+
+		it('should return false for a selectable option with a non-matching value', () => {
+			const predicate = findSelectableOptionByValue('blue');
+			assert.strictEqual(predicate({ text: 'Red', value: 'red' }), false);
+		});
+
+		it('should return false for a divider option', () => {
+			const predicate = findSelectableOptionByValue('blue');
+			assert.strictEqual(predicate({ divider: 'or' }), false);
+		});
+
+		it('should return a matching selectable option when found via Array.find', () => {
+			const options = [
+				{ text: 'Blue', value: 'blue' },
+				{ text: 'Red', value: 'red' }
+			];
+			const result = options.find(findSelectableOptionByValue('red'));
+			assert.deepStrictEqual(result, { text: 'Red', value: 'red' });
+		});
+
+		it('should return undefined when no option matches the value', () => {
+			const options = [
+				{ text: 'Blue', value: 'blue' },
+				{ text: 'Red', value: 'red' }
+			];
+			const result = options.find(findSelectableOptionByValue('green'));
+			assert.strictEqual(result, undefined);
+		});
+
+		it('should ignore divider options and match the correct selectable option', () => {
+			const options = [{ text: 'Blue', value: 'blue' }, { divider: 'or' }, { text: 'Red', value: 'red' }];
+			const result = options.find(findSelectableOptionByValue('red'));
+			assert.deepStrictEqual(result, { text: 'Red', value: 'red' });
 		});
 	});
 });
