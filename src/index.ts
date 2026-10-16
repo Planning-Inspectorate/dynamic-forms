@@ -35,6 +35,7 @@ export * from './controller.ts';
 
 // Journey
 export { Journey } from './journey/journey.ts';
+export * from './journey/journey-for-display.ts';
 export { JourneyResponse } from './journey/journey-response.ts';
 
 // lib

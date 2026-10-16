@@ -55,6 +55,7 @@ describe('public API', () => {
 		assert.equal(typeof api.DynamicSection, 'function');
 		assert.equal(typeof api.Section, 'function');
 		assert.equal(typeof api.Journey, 'function');
+		assert.equal(typeof api.JourneyForDisplay, 'function');
 		assert.equal(typeof api.JourneyResponse, 'function');
 	});
 
