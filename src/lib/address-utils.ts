@@ -1,9 +1,9 @@
 export interface AddressAlternative {
-	line1?: string;
-	line2?: string;
-	townCity?: string;
-	county?: string;
-	postcode?: string;
+	line1?: string | null;
+	line2?: string | null;
+	townCity?: string | null;
+	county?: string | null;
+	postcode?: string | null;
 }
 
 /**
