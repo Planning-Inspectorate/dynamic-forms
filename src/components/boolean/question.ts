@@ -9,7 +9,11 @@ export const BOOLEAN_OPTIONS = Object.freeze({
 	NO: 'no'
 });
 
-export const yesNoToBoolean = (value: string | boolean) => {
+/**
+ * Convert values into a boolean, unless it is already.
+ * Only returns true if the value passed is the BOOLEAN_OPTIONS.YES value (or a boolean true)
+ */
+export const yesNoToBoolean = (value: unknown) => {
 	if (typeof value === 'boolean') {
 		return value;
 	}

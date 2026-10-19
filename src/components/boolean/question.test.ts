@@ -1,6 +1,6 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
-import BooleanQuestion, { BOOLEAN_OPTIONS, booleanToYesNoValue } from './question.ts';
+import BooleanQuestion, { BOOLEAN_OPTIONS, booleanToYesNoValue, yesNoToBoolean } from './question.ts';
 
 describe('./src/dynamic-forms/components/boolean/question.ts', () => {
 	const TITLE = 'A boolean question';
@@ -109,6 +109,26 @@ describe('./src/dynamic-forms/components/boolean/question.ts', () => {
 		it('formats a no string answer as No', () => {
 			const booleanQuestion = newQuestion();
 			assert.strictEqual(booleanQuestion.formatAnswer(BOOLEAN_OPTIONS.NO), 'No');
+		});
+	});
+
+	describe('yesNoToBoolean', () => {
+		it('should leave boolean values as-is', () => {
+			const f = false;
+			assert.strictEqual(yesNoToBoolean(f), f);
+			const t = true;
+			assert.strictEqual(yesNoToBoolean(t), t);
+		});
+		it('should convert string values', () => {
+			assert.strictEqual(yesNoToBoolean(BOOLEAN_OPTIONS.YES), true);
+			assert.strictEqual(yesNoToBoolean(BOOLEAN_OPTIONS.NO), false);
+			assert.strictEqual(yesNoToBoolean('random string'), false);
+		});
+		it('should convert other values to false', () => {
+			assert.strictEqual(yesNoToBoolean(Symbol()), false);
+			assert.strictEqual(yesNoToBoolean(12454), false);
+			assert.strictEqual(yesNoToBoolean({}), false);
+			assert.strictEqual(yesNoToBoolean(undefined), false);
 		});
 	});
 });
