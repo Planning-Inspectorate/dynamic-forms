@@ -202,7 +202,7 @@ export function findSelectableOptionByValue(value: string) {
 }
 
 export function optionIsSelectable(option: Option): option is SelectableOption {
-	return 'text' in option;
+	return 'text' in option || 'value' in option;
 }
 
 export function answerIsConditional(answer: unknown): answer is AnswerWithConditional {
