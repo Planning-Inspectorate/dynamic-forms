@@ -46,7 +46,7 @@
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
     "@eslint/js": "^10.0.1",
-    "@planning-inspectorate/coding-standards": "^1.0.0",
+    "@planning-inspectorate/coding-standards": "^2.0.0",
     "@types/escape-html": "^1.0.4",
     "@types/express": "^5.0.6",
     "@types/nunjucks": "^3.2.6",
