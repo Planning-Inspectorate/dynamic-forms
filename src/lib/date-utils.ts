@@ -7,7 +7,10 @@ const ukTimeZone = 'Europe/London';
  * Display the date in Europe/London
  * @returns formatted date string or empty string if invalid value passed in
  */
-export function formatDateForDisplay(date: Date | string, { format = 'd MMM yyyy' } = { format: 'd MMM yyyy' }) {
+export function formatDateForDisplay(
+	date: Date | string | undefined,
+	{ format = 'd MMM yyyy' } = { format: 'd MMM yyyy' }
+) {
 	if (!date || !isValid(new Date(date))) return '';
 
 	return formatInTimeZone(date, ukTimeZone, format);
