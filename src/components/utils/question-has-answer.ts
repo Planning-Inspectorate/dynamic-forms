@@ -1,7 +1,7 @@
 import type { JourneyResponse } from '../../journey/journey-response.ts';
 import type { Question, QuestionCondition } from '../../questions/question.ts';
 
-export type QuestionKeyTuples = [any, unknown][];
+export type QuestionKeyTuples = [Question, unknown][];
 export type CombinationFunc = (questionKeyTuples: QuestionKeyTuples) => boolean;
 export type ConditionFunc = (item: unknown) => boolean;
 
