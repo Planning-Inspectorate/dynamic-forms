@@ -54,7 +54,14 @@ function buildSectionRowViewModel(key: string, value: string, action?: ActionVie
 	};
 }
 
-export interface JourneyLocals extends Record<string, any> {
+// specify new types so we can ignore the eslint rule '@typescript-eslint/no-explicit-any' in one place
+// this any is used as it is what is defined in the express types
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type DefaultLocals = Record<string, any>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ResponseWithLocals<TLocals extends DefaultLocals> = Response<any, TLocals>;
+
+export interface JourneyLocals extends DefaultLocals {
 	journey: Journey;
 	journeyResponse: JourneyResponse;
 }
@@ -66,9 +73,9 @@ export function buildList(viewData: Record<string, unknown> = {}): Handler {
 /**
  * Controller to render the task-list/check-your-answers page
  */
-export async function list<TLocals extends Record<string, any> = JourneyLocals>(
+export async function list<TLocals extends DefaultLocals = JourneyLocals>(
 	req: Request,
-	res: Response<any, TLocals>,
+	res: ResponseWithLocals<TLocals>,
 	pageCaption: string,
 	viewData: Record<string, unknown>
 ) {
@@ -184,9 +191,9 @@ export async function question(req: Request, res: Response) {
 	return question.renderAction(res, viewModel);
 }
 
-export interface SaveParams<TData = Record<string, unknown>, TLocals extends Record<string, any> = JourneyLocals> {
+export interface SaveParams<TData = Record<string, unknown>, TLocals extends DefaultLocals = JourneyLocals> {
 	req: Request;
-	res: Response<any, TLocals>;
+	res: ResponseWithLocals<TLocals>;
 	journeyId: string;
 	referenceId: string;
 	isManageListItem: boolean;
@@ -202,7 +209,7 @@ export interface SaveParams<TData = Record<string, unknown>, TLocals extends Rec
 	dynamicSectionFieldName?: string;
 }
 
-export type SaveDataFn<TData = Record<string, unknown>, TLocals extends Record<string, any> = JourneyLocals> = (
+export type SaveDataFn<TData = Record<string, unknown>, TLocals extends DefaultLocals = JourneyLocals> = (
 	params: SaveParams<TData, TLocals>
 ) => Promise<void>;
 
@@ -210,11 +217,11 @@ export type SaveDataFn<TData = Record<string, unknown>, TLocals extends Record<s
  * @param saveData
  * @param [redirectToTaskListOnSuccess] - optionally redirect to the task list after save instead of next question
  */
-export function buildSave<TData = Record<string, unknown>, TLocals extends Record<string, any> = JourneyLocals>(
+export function buildSave<TData = Record<string, unknown>, TLocals extends DefaultLocals = JourneyLocals>(
 	saveData: SaveDataFn<TData, TLocals>,
 	redirectToTaskListOnSuccess?: boolean
 ) {
-	return async (req: Request, res: Response<any, TLocals>) => {
+	return async (req: Request, res: ResponseWithLocals<TLocals>) => {
 		const journey = res.locals.journey as Journey;
 		const journeyResponse = res.locals.journeyResponse as JourneyResponse;
 

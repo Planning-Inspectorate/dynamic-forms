@@ -38,7 +38,7 @@ export interface QuestionParameters {
 		 * Secondary action buttons
 		 */
 		secondaryActions?: SecondaryAction[];
-		[key: string]: any;
+		[key: string]: unknown;
 	};
 }
 
