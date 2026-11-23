@@ -46,7 +46,7 @@
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
     "@eslint/js": "^10.0.1",
-    "@planning-inspectorate/coding-standards": "^1.0.0",
+    "@planning-inspectorate/coding-standards": "^2.0.0",
     "@types/escape-html": "^1.0.4",
     "@types/express": "^5.0.6",
     "@types/nunjucks": "^3.2.6",
@@ -65,7 +65,7 @@
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-prisma": "^5.0.0",
-    "semantic-release": "^25.0.9",
+    "semantic-release": "^26.0.1",
     "typescript": "npm:@typescript/typescript6@^6.0.2"
   },
   "publishConfig": {
